@@ -1,0 +1,168 @@
+---
+title: "Data lifecycle"
+subtitle: "Bio300B Lecture 1"
+author: "Richard J. Telford (Richard.Telford@uib.no)"
+institute: "Institutt for biovitenskap, UiB"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+<style type="text/css">
+.remark-slide-content {
+    font-size: 24px;
+    padding: 1em 4em 1em 4em;
+}
+</style>
+
+# Biology is applied data science!
+
+ - Nearly all papers include data visualisation and analysis
+ - Need to be able to understand the methods used to 
+ 
+ 
+
+---
+# Changing expectations
+
+- FAIR and open science
+- Reproducible research
+
+---
+# Data life-cycle
+
+``` {r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, error = TRUE)
+library("tidyverse")
+data(penguins, package = 'palmerpenguins')
+options(tibble.print_min = 3)
+```
+
+
+```{r data-life-cycle}
+library(DiagrammeR)
+grViz("
+      digraph circo {
+      
+      graph [layout = dot,  rankdir = TB]
+      
+      node [shape = egg, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = 'Palatino']
+      a [label = 'Design']
+      b [label = 'Gather', fillcolor = grey]
+      b2 [label = 'Enter']
+      b3 [label = 'Import']
+      c [label = 'Tidy']
+      d [label = 'Transform']
+      e [label = 'Visualise']
+      f [label = 'Analyse']
+      g [label = 'Communicate']
+      h [label = 'Archive', fillcolor = grey]
+      i [label = 'Death', shape = diamond, fillcolor = grey]
+      j [label = 'Find & Reuse', fillcolor = grey]
+      
+      a->b->b2->b3->c->d->e->f->e
+      e->g->h
+      f->g->i
+      e->d
+      f->d
+      d->f
+      h->j->b3 [style=dashed, color=darkgrey, fontsize = 18, fixedsize = FALSE, fontname = 'Palatino']
+      subgraph {
+        rank = same; a; b; b2
+      }
+      subgraph {
+        rank = same; e; f;
+      }
+
+      subgraph {
+        rank = same; j; b3;
+      }
+
+      }
+     ", height = 500)
+```
+
+---
+# Experimental Design
+
+- Randomisation
+- Power and sample size
+
+---
+# Data entry
+
+---
+# Visualise with ggplot2 
+
+
+---
+# Communicate results with R markdown
+
+
+
+---
+# Data death
+
+```{r info-content, out.width="60%"}
+knitr::include_graphics("figures/1-s2.0-S157495410500004X-gr1.jpg")
+```
+
+Natural degradation in information content associated with **data** and **metadata**—information entropy
+
+.footnote[[Michener (2006)](https://doi.org/10.1016/j.ecoinf.2005.08.004)]
+
+
+---
+# Empirical evidence of data loss
+
+```{r, out.width="85%"}
+knitr::include_graphics("figures/gr1.jpg")
+```
+.footnote[[Vines et al. (2014)](https://doi.org/10.1016/j.cub.2013.11.014)]
+
+???
+  
+- morphological dimensions from plants or animals  
+- examined the availability of data from 516 studies between 2 and 22 years old
+- The odds of a data set being reported as extant fell by 17% per year
+- Broken e-mails and obsolete storage devices were the main obstacles to data sharing
+- Policies mandating data archiving at publication are clearly needed
+---
+# What would happen if you lost all of your research data?
+
+> I was focussed on creating high resolution, 3D time lapse videos of developing crustacean embryos, so all of my work was digital-based. **When I lost my laptop and backups, I lost 400GB of data and close to four years of work.** As a direct result I ended up getting an MPhil rather than the PhD I’d been working towards. I was hoping to have an illustrious career in science and for a time it seemed like everything would be stopped in its tracks.
+
+.footnote[[Billy Hinchen](https://www.digital-science.com/blog/2014/04/what-would-happen-if-you-lost-all-of-your-research-data/)]
+
+---
+```{r}
+knitr::include_graphics("figures/rutgers-stolen-ad.jpeg")
+```
+
+.right[.footnote[[Rutgers University Ph.D. candidate](https://www.technobuffalo.com/ouch-thief-steals-laptop-containing-5-years-of-ph-d-students-research-data)]]
+
+---
+background-image: url("figures/418rKTEACTL._AC_.jpg")
+# Obsolescent storage equipment
+
+
+.footnote[[One in stock at Amazon](https://www.amazon.com/Iomega-ZIP-250-Parallel-external/dp/B000092QKK)]
+
+
+
+
+---
+# Back up your data!
+
+
+---
+# Archiving data
+
+
+Sensitive data
+
+Meta data
