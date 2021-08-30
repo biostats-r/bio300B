@@ -1,0 +1,57 @@
+---
+title: "Bio300B Topics"
+
+date: "3/10/2021"
+output: bookdown::markdown_document2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#  Introduction
+
+ - Data life-cycle
+ - Why R
+ - R and R studio
+ - basic R use
+ - Help
+ 
+# Importing data and dataset manipulation
+
+- importing data with `readr`
+- `tidyr` for tidying datasets
+- data manipulation with `dplyr`
+
+# Communicating science
+
+- ggplot
+- R markdown
+
+#  Experimental Design
+
+- Experimental design
+- Study design problems
+- Statistical power
+
+#  Descriptive statistics
+
+#  Into to linear models
+
+#  Multiple linear models
+
+#  Generalised linear models
+
+#  Linear mixed effects models
+
+#  Into to Bayesian statistics
+
+#  Some other statistical methods
+
+- Survival analysis
+- multivariate methods
+
+# Summary
+
+
+    
