@@ -387,7 +387,7 @@ You probably never need to open R directly.
 knitr::include_graphics("figures/RStudiogui.png")
 ```
 
---- 
+---
 # Getting the best out of RStudio
 
 - projects
