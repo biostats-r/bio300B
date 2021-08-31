@@ -4,10 +4,15 @@
     <title>Data lifecycle</title>
     <meta charset="utf-8" />
     <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)" />
-    <meta name="date" content="2021-08-30" />
+    <meta name="date" content="2021-08-31" />
     <script src="libs/header-attrs-2.10/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"x59d5ca9a0e7485384949602229796af","expires":1}</script>
+    <script src="libs/himalaya-1.1.0/himalaya.js"></script>
+    <script src="libs/js-cookie-3.0.0/js.cookie.js"></script>
+    <link href="libs/editable-0.2.6/editable.css" rel="stylesheet" />
+    <script src="libs/editable-0.2.6/editable.js"></script>
     <script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
     <script src="libs/viz-1.8.2/viz.js"></script>
     <link href="libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
@@ -21,7 +26,7 @@ class: center, middle, inverse, title-slide
 ## Bio300B Lecture 1
 ### Richard J. Telford (<a href="mailto:Richard.Telford@uib.no" class="email">Richard.Telford@uib.no</a>)
 ### Institutt for biovitenskap, UiB
-### 30 August 2021
+### 31 August 2021
 
 ---
 
@@ -32,12 +37,50 @@ class: center, middle, inverse, title-slide
 }
 &lt;/style&gt;
 
+## Who I am
+
+ - Palaeoecologist/ecologist with numerical interests
+ - R user since 2002
+ 
+ - Interested in
+    - Reconstructing environmental change
+    - Effect of climate change on ecosystems
+    - Reproducibility in science
+
+email: richard.telford@uib.no
+
+---
+# Practicalities
+
+- Lectures
+  - zoom until korona rules change
+  - recorded
+  - slides https://biostats-r.github.io/bio300B/
+- Practicals
+  - 4 sessions per week
+  - R books https://biostats-r.github.io/biostats/
+  - Interactive tutorials https://github.com/biostats-r/biostats.tutorials
+- Software
+  - R version &gt;= 4.1
+  - Recent RStudio
+  - `tidyverse` and `bookdown` packages
+
+
+---
+# Why do biologists need statistics anyway?
+
+
+
+.can-edit[
+- 
+]
+
+---
 # Biology is applied data science!
 
  - Nearly all papers include data visualisation and analysis
- - Need to be able to understand the methods used to 
- 
- 
+ - Need to be able to understand the methods used to evaluate paper
+ - Need to be able to make visualisations and analyses for papers, reports, theses
 
 ---
 # Changing expectations
@@ -45,32 +88,143 @@ class: center, middle, inverse, title-slide
 - FAIR and open science
 - Reproducible research
 
+[Most scientists 'can't replicate studies by their peers'](http://www.bbc.com/news/science-environment-39054778)
+
 ---
 # Data life-cycle
 
 
 
 
-<div id="htmlwidget-59cf73e5a452c98fb886" style="width:504px;height:500px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-59cf73e5a452c98fb886">{"x":{"diagram":"\n      digraph circo {\n      \n      graph [layout = dot,  rankdir = TB]\n      \n      node [shape = egg, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = \"Palatino\"]\n      a [label = \"Design\"]\n      b [label = \"Gather\", fillcolor = grey]\n      b2 [label = \"Enter\"]\n      b3 [label = \"Import\"]\n      c [label = \"Tidy\"]\n      d [label = \"Transform\"]\n      e [label = \"Visualise\"]\n      f [label = \"Analyse\"]\n      g [label = \"Communicate\"]\n      h [label = \"Archive\", fillcolor = grey]\n      i [label = \"Death\", shape = diamond, fillcolor = grey]\n      j [label = \"Find & Reuse\", fillcolor = grey]\n      \n      a->b->b2->b3->c->d->e->f->e\n      e->g->h\n      f->g->i\n      e->d\n      f->d\n      d->f\n      h->j->b3 [style=dashed, color=darkgrey, fontsize = 18, fixedsize = FALSE, fontname = \"Palatino\"]\n      subgraph {\n        rank = same; a; b; b2\n      }\n      subgraph {\n        rank = same; e; f;\n      }\n\n      subgraph {\n        rank = same; j; b3;\n      }\n\n      }\n     ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-1526b6d63914c4ff9f0f" style="width:504px;height:500px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1526b6d63914c4ff9f0f">{"x":{"diagram":"\n      digraph circo {\n      \n      graph [layout = dot,  rankdir = TB]\n      \n      node [shape = egg, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = \"Palatino\"]\n      a [label = \"Design\"]\n      b [label = \"Gather\", fillcolor = grey]\n      b2 [label = \"Enter\"]\n      b3 [label = \"Import\"]\n\n      d [label = \"Clean\"]\n      e [label = \"Visualise\"]\n      f [label = \"Analyse\"]\n      g [label = \"Communicate\"]\n      h [label = \"Archive\", fillcolor = grey]\n      i [label = \"Death\", shape = diamond, fillcolor = grey]\n      j [label = \"Find & Reuse\", fillcolor = grey]\n      \n      a->b->b2->b3->d->e->f->e\n      e->g->h\n      f->g->i\n      e->d\n      f->d\n      d->f\n      h->j->b3 [style=dashed, color=darkgrey, fontsize = 18, fixedsize = FALSE, fontname = \"Palatino\"]\n      subgraph {\n        rank = same; a; b; b2\n      }\n      subgraph {\n        rank = same; e; f;\n      }\n\n      subgraph {\n        rank = same; j; b3;\n      }\n\n      }\n     ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 ---
 # Experimental Design
 
+Lecture 4
+
 - Randomisation
-- Power and sample size
+- How many replicates do you need?
+- Statistical traps
 
 ---
 # Data entry
+
+
+- Make your data easy to import.
+- Proof read &amp; data validation
+
+- Lock data file. No more edits.
+
+---
+# Spreadsheets
+
+Practical recommendations for organizing spreadsheet data to reduce errors and ease later analyses.
+- be consistent
+- write dates as YYYY-MM-DD
+- do not leave any cells empty
+- put just one thing in a cell
+- organize the data as a single rectangle (rows = subjects; columns = variables;  single header row)
+- create a data dictionary
+- do not include calculations in the raw data files
+- do not use font, colour or highlighting as data
+- choose good names for things
+- use data validation to avoid data entry errors
+- save the data in plain text files.
+
+.footnote[[Broman &amp; Woo (2018) Data Organization in Spreadsheets](https://doi.org/10.1080/00031305.2017.1375989)]
+
+---
+# Examples
+
+When is 1-9-2021?
+
+Sex coded as 0 &amp; 1
+
+
+---
+# Data importing
+
+R can import almost any data type.
+
+- CSV files with `readr`
+- Excel files with `readxl`
+- shapefiles with `sf`
+- NetCDF with `ncdf4`
+
+---
+# Data cleaning
+
+- Process your data with code
+- Reproducible analyses
+- `tidyverse` (Lecture 2)
+
+
+```r
+library(tidyverse)
+data(penguins, package = "palmerpenguins")
+penguins |&gt; 
+  group_by(species) |&gt; 
+  summarise(
+    n = n(), 
+    mean_mass = mean(body_mass_g, na.rm = TRUE))
+```
+
+```
+## # A tibble: 3 × 3
+##   species       n mean_mass
+##   &lt;fct&gt;     &lt;int&gt;     &lt;dbl&gt;
+## 1 Adelie      152     3701.
+## 2 Chinstrap    68     3733.
+## 3 Gentoo      124     5076.
+```
+
 
 ---
 # Visualise with ggplot2 
 
 
+```r
+library(ggplot2)
+library(ggbeeswarm)
+ggplot(penguins, aes(x = species, 
+                     y = bill_length_mm, 
+                     colour = species)) + 
+  geom_beeswarm() +
+  scale_colour_brewer(palette = "Set1") +
+  labs(x = "Species", y = "Bill length mm", colour = "Species") +
+  theme_bw(base_size = 16)
+```
+
+![](lecture_1_data_lifecycle_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
+
+---
+# Data analysis
+
+- Huge number of statistical methods implemented in R
+- Can implement new methods
+
+This course will focus on
+- Exploratory data analysis (5)
+- Descriptive statistics (5)
+- Linear models (6-7)
+- Generalised linear models (8)
+- Mixed effect models (9)
+- Bayesian analysis (10)
+
 ---
 # Communicate results with R markdown
 
+Tradition
+ - text in Word, code in R
+ - copy figures, tables etc into Word
+ - find mistakes. Return to step 2.
 
+R markdown
+- Code and text interwoven
+- Reproducible, dynamic documents
+- This presentation made with R markdown (`Xaringan::moon_reader`)
 
 ---
 # Data death
@@ -95,6 +249,7 @@ Natural degradation in information content associated with **data** and **metada
 - The odds of a data set being reported as extant fell by 17% per year
 - Broken e-mails and obsolete storage devices were the main obstacles to data sharing
 - Policies mandating data archiving at publication are clearly needed
+
 ---
 # What would happen if you lost all of your research data?
 
@@ -114,20 +269,116 @@ background-image: url("figures/418rKTEACTL._AC_.jpg")
 
 .footnote[[One in stock at Amazon](https://www.amazon.com/Iomega-ZIP-250-Parallel-external/dp/B000092QKK)]
 
-
-
-
 ---
-# Back up your data!
+# Back up your raw data!
 
+- Keep raw data
+- Multiple places
+- Physical and cloud services
+- Be paranoid!
 
 ---
 # Archiving data
 
+Many research funders and journals demand that data are archived.
+
+- subject specific archives 
+  - [GeneBank](https://www.ncbi.nlm.nih.gov/genbank/)
+  - [GBIF](https://www.gbif.org/)
+- Generalist repositories
+ - [DRYAD](https://datadryad.org/stash)
+ - [OSF](https://osf.io/)
+ - [Zenodo](https://zenodo.org/)
+- University based
+   - [DataverseNO](https://dataverse.no/dataverse/uib)
+ 
+
+
+.footnote[[Open Access to Research Data](https://www.uib.no/en/ub/111372/open-access-research-data)]
+
+---
+# Special problems
 
 Sensitive data
 
-Meta data
+.pull-left[## Examples
+.can-edit[
+- 
+]]
+.pull-right[## Solutions 
+.can-edit[
+- 
+]]
+
+---
+# FAIR principles
+
+- Findable
+- Accessible
+- Interoperable
+- Reusable
+  
+Meta data is as important as data.  
+   
+???
+Metadata is structured information that describes, explains, locates, and makes it easier to retrieve and use an information resource.
+---
+# Data management plans
+
+
+How data are to be collected and handled both during a research project, and after the project is completed 
+
+Write one before you start work.
+
+![](https://www.uib.no/sites/w3.uib.no/files/styles/content_main_wide_1x/public/20171119_benefitsdmp_tekengebied-1_large.png?itok=YnWxrDdr&amp;timestamp=1616058199)&lt;!-- --&gt;
+
+.footnote[[UiB Library](https://www.uib.no/en/ub/143694/data-management-plans)]
+
+
+
+---
+# Why <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:steelblue;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>?
+
++ free
++ open source
++ large and friendly user community
++ many statistical methods implemented
++ makes publication ready figures 
++ reproducible research
++ code is easy to share and publish. 
+
+---
+# R GUI
+
+&lt;img src="figures/Rgui.png" width="100%" /&gt;
+
+You probably never need to open R directly.
+
+---
+# RStudio IDE
+
+&lt;img src="figures/RStudiogui.png" width="100%" /&gt;
+
+--- 
+# Getting the best out of RStudio
+
+- projects
+ - keep track of everything
+- code completion
+
+
+---
+# More R
+
+- Rklubben 
+  - Fix someone else's R problems 
+  - Fridays 1400-1600 on Zoom
+- BIO303 Ordination and Gradient Analysis
+  - Autumn semester
+- Bio302 Biostatisics II
+ - Spring semester
+- Short course on writing R packages
+ - October 2021
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
