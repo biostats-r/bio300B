@@ -393,7 +393,22 @@ knitr::include_graphics("figures/RStudiogui.png")
 - projects
  - keep track of everything
 - code completion
+- bracket matching
 
+---
+# Getting help
+
+`?length` - find function length in open packages
+
+`??length` - help search
+
+```{r echo = TRUE, eval = FALSE}
+library(introverse)
+get_help("length")# quotation marks
+```
+ [Stackoverflow.com](https://stackoverflow.com/questions/tagged/r)
+
+Google error messages
 
 ---
 # More R
