@@ -48,6 +48,14 @@ Standard format
 .footnote[[Wickham (2014) Tidy data](https://vita.had.co.nz/papers/tidy-data.pdf)]
 
 ---
+# Untidy data
+
+``` {r tidy, echo=FALSE, message=FALSE}
+table2 <- read_delim(file = "data/nottidy.csv", delim = ";")
+knitr::kable(table2 |> select(1:5))
+```
+
+---
 # The heart of your analysis pipeline
 
 ```{r tidy-heart, echo = FALSE}
