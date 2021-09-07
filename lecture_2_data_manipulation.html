@@ -40,19 +40,23 @@ class: center, middle, inverse, title-slide
 - Do in code for reproducibility
 - Often not taught
 
+&lt;div class="figure"&gt;
+&lt;img src="figures/wild_data.jpg" alt="Meme showing cute puppy representing data used in tutorials and a weird dog representing data in the wild."  /&gt;
+&lt;p class="caption"&gt;Figure from [towards_AI](https://twitter.com/towards_AI/status/1332567246011555840?s=20)&lt;/p&gt;
+&lt;/div&gt;
+
 
 ---
 # Tidy data
 
     Happy families are all alike; every 
-    unhappy family is unhappy in its own way 
-    Tolstoy 
-    
-Standard format    
+    unhappy family is unhappy in its own way    Tolstoy 
     
 - Every column is a variable.
 - Every row is an observation.
 - Every cell is a single value.
+
+&lt;img src="figures/tidy1.png" title="Representation of tidy data, showing variables in columns, observations in rows, and single values in each cell. Source: R for Data Science" alt="Representation of tidy data, showing variables in columns, observations in rows, and single values in each cell. Source: R for Data Science" width="100%" /&gt;
 
 .footnote[[Wickham (2014) Tidy data](https://vita.had.co.nz/papers/tidy-data.pdf)]
 
@@ -74,8 +78,8 @@ Standard format
 ---
 # The heart of your analysis pipeline
 
-<div id="htmlwidget-ad224cac712da90e6824" style="width:504px;height:500px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-ad224cac712da90e6824">{"x":{"diagram":"\n      digraph circo {\n      \n      graph [layout = dot,  rankdir = TB]\n      node [shape = circle, fontsize = 18, style = filled, fillcolor =  orange, fixedsize = FALSE, fontname = \"Palatino\", label = \"\"]\n      a1 [shape = circle, fillcolor = purple]\n      a2 [shape = doubleoctagon, fillcolor = darkgreen]\n      a3 [shape = star]\n      \n      node [shape = egg, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = \"Palatino\"]\n\n      b [label = \"Tidy data\", shape = box]\n      c [label = \"Clean and tidy data\", shape = box]\n\n      d [label = \"Analysis\"]\n      e [label = \"Visualisation\"]\n      \n      {a1, a2, a3}->b->c->{d, e}\n\n      }\n     ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-a14f8a0e4713a8136dde" style="width:504px;height:500px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a14f8a0e4713a8136dde">{"x":{"diagram":"\n      digraph circo {\n      \n      graph [layout = dot,  rankdir = TB]\n      node [shape = circle, fontsize = 18, style = filled, fillcolor =  orange, fixedsize = FALSE, fontname = \"Palatino\", label = \"\"]\n      a1 [shape = circle, fillcolor = purple]\n      a2 [shape = doubleoctagon, fillcolor = darkgreen]\n      a3 [shape = star]\n      \n      node [shape = egg, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = \"Palatino\"]\n\n      b [label = \"Tidy data\", shape = box]\n      c [label = \"Clean and tidy data\", shape = box]\n\n      d [label = \"Analysis\"]\n      e [label = \"Visualisation\"]\n      \n      {a1, a2, a3}->b->c->{d, e}\n\n      }\n     ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 
 
@@ -100,12 +104,11 @@ summarise(
 
 ```
 ## # A tibble: 6 × 3
-##   species   sex    bill_length_mean
-##   &lt;fct&gt;     &lt;fct&gt;             &lt;dbl&gt;
-## 1 Adelie    female             37.3
-## 2 Adelie    male               40.4
-## 3 Chinstrap female             46.6
-## # … with 3 more rows
+##   species sex    bill_length_mean
+##   &lt;fct&gt;   &lt;fct&gt;             &lt;dbl&gt;
+## 1 Adelie  female             37.3
+## 2 Adelie  male               40.4
+## # … with 4 more rows
 ```
 ---
 Second solution
@@ -153,7 +156,7 @@ Pipe puts result of left hand side into first available argument on right hand s
 
 Long data vs wide data
 
-![](figures/tidyr-pivot_longer_wider.gif)&lt;!-- --&gt;
+&lt;img src="figures/tidyr-pivot_longer_wider.gif" title="Animation showing how pivot_longer converts wide data to long, and pivot_wider does the opposite." alt="Animation showing how pivot_longer converts wide data to long, and pivot_wider does the opposite."  /&gt;
 
 
 ---
@@ -190,12 +193,19 @@ mites_long
 
 ```
 ## # A tibble: 20 × 3
-##   sample taxon  count
-##    &lt;int&gt; &lt;chr&gt;  &lt;int&gt;
-## 1      1 Brachy    17
-## 2      1 PHTH       5
-## 3      1 HPAV       5
-## # … with 17 more rows
+##    sample taxon  count
+##     &lt;int&gt; &lt;chr&gt;  &lt;int&gt;
+##  1      1 Brachy    17
+##  2      1 PHTH       5
+##  3      1 HPAV       5
+##  4      1 RARD       3
+##  5      2 Brachy     2
+##  6      2 PHTH       7
+##  7      2 HPAV      16
+##  8      2 RARD       0
+##  9      3 Brachy     4
+## 10      3 PHTH       3
+## # … with 10 more rows
 ```
 
 ---
@@ -246,8 +256,7 @@ penguins |&gt;
 ##   &lt;fct&gt;            &lt;dbl&gt;
 ## 1 Adelie            39.1
 ## 2 Adelie            39.5
-## 3 Adelie            40.3
-## # … with 341 more rows
+## # … with 342 more rows
 ```
 
 
@@ -263,8 +272,7 @@ penguins |&gt;
 ##   &lt;fct&gt;   &lt;fct&gt;                 &lt;int&gt;       &lt;int&gt; &lt;fct&gt;  &lt;int&gt;
 ## 1 Adelie  Torgersen               181        3750 male    2007
 ## 2 Adelie  Torgersen               186        3800 female  2007
-## 3 Adelie  Torgersen               195        3250 female  2007
-## # … with 341 more rows
+## # … with 342 more rows
 ```
 
 ---
@@ -282,8 +290,7 @@ penguins |&gt;
 ##            &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;
 ## 1           39.1          18.7               181        3750
 ## 2           39.5          17.4               186        3800
-## 3           40.3          18                 195        3250
-## # … with 341 more rows
+## # … with 342 more rows
 ```
 
 
@@ -298,8 +305,7 @@ penguins |&gt;
 ##   &lt;fct&gt;   &lt;fct&gt;     &lt;fct&gt;  &lt;int&gt;
 ## 1 Adelie  Torgersen male    2007
 ## 2 Adelie  Torgersen female  2007
-## 3 Adelie  Torgersen female  2007
-## # … with 341 more rows
+## # … with 342 more rows
 ```
 
 
@@ -319,8 +325,7 @@ penguins |&gt;
 ##   &lt;fct&gt;            &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;
 ## 1 Adelie            39.1          18.7               181
 ## 2 Adelie            39.5          17.4               186
-## 3 Adelie            40.3          18                 195
-## # … with 341 more rows
+## # … with 342 more rows
 ```
 - `starts_with()`
 - `contains()`
@@ -337,12 +342,11 @@ penguins |&gt; filter(species == "Gentoo")
 
 ```
 ## # A tibble: 124 × 8
-##   species island bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
-##   &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;
-## 1 Gentoo  Biscoe           46.1          13.2               211        4500
-## 2 Gentoo  Biscoe           50            16.3               230        5700
-## 3 Gentoo  Biscoe           48.7          14.1               210        4450
-## # … with 121 more rows, and 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;
+##   species island bill_length_mm bill_depth_mm flipper_length_… body_mass_g sex  
+##   &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;       &lt;int&gt; &lt;fct&gt;
+## 1 Gentoo  Biscoe           46.1          13.2              211        4500 fema…
+## 2 Gentoo  Biscoe           50            16.3              230        5700 male 
+## # … with 122 more rows, and 1 more variable: year &lt;int&gt;
 ```
 
 One or more logical statements
@@ -350,6 +354,7 @@ One or more logical statements
 - `==`
 - `&gt;=`
 - `&lt;`
+- `!=`
 
 ---
 # near()
@@ -399,12 +404,11 @@ penguins |&gt;
 
 ```
 ## # A tibble: 192 × 8
-##   species island bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
-##   &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;
-## 1 Gentoo  Biscoe           46.1          13.2               211        4500
-## 2 Gentoo  Biscoe           50            16.3               230        5700
-## 3 Gentoo  Biscoe           48.7          14.1               210        4450
-## # … with 189 more rows, and 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;
+##   species island bill_length_mm bill_depth_mm flipper_length_… body_mass_g sex  
+##   &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;       &lt;int&gt; &lt;fct&gt;
+## 1 Gentoo  Biscoe           46.1          13.2              211        4500 fema…
+## 2 Gentoo  Biscoe           50            16.3              230        5700 male 
+## # … with 190 more rows, and 1 more variable: year &lt;int&gt;
 ```
 
 - `|` OR
@@ -419,12 +423,11 @@ penguins |&gt;
 
 ```
 ## # A tibble: 192 × 8
-##   species island bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
-##   &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;
-## 1 Gentoo  Biscoe           46.1          13.2               211        4500
-## 2 Gentoo  Biscoe           50            16.3               230        5700
-## 3 Gentoo  Biscoe           48.7          14.1               210        4450
-## # … with 189 more rows, and 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;
+##   species island bill_length_mm bill_depth_mm flipper_length_… body_mass_g sex  
+##   &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;       &lt;int&gt; &lt;fct&gt;
+## 1 Gentoo  Biscoe           46.1          13.2              211        4500 fema…
+## 2 Gentoo  Biscoe           50            16.3              230        5700 male 
+## # … with 190 more rows, and 1 more variable: year &lt;int&gt;
 ```
 
 ---
@@ -440,12 +443,11 @@ penguins |&gt;
 
 ```
 ## # A tibble: 11 × 8
-##   species island bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
-##   &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;
-## 1 Adelie  Dream            37            16.9               185        3000
-## 2 Adelie  Dream            37.5          18.9               179        2975
-## 3 Adelie  Biscoe           34.5          18.1               187        2900
-## # … with 8 more rows, and 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;
+##   species island bill_length_mm bill_depth_mm flipper_length_… body_mass_g sex  
+##   &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;       &lt;int&gt; &lt;fct&gt;
+## 1 Adelie  Dream            37            16.9              185        3000 fema…
+## 2 Adelie  Dream            37.5          18.9              179        2975 &lt;NA&gt; 
+## # … with 9 more rows, and 1 more variable: year &lt;int&gt;
 ```
 
 Solution
@@ -458,12 +460,11 @@ penguins |&gt;
 
 ```
 ## # A tibble: 11 × 8
-##   species island bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
-##   &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;
-## 1 Adelie  Dream            37            16.9               185        3000
-## 2 Adelie  Dream            37.5          18.9               179        2975
-## 3 Adelie  Biscoe           34.5          18.1               187        2900
-## # … with 8 more rows, and 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;
+##   species island bill_length_mm bill_depth_mm flipper_length_… body_mass_g sex  
+##   &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;       &lt;int&gt; &lt;fct&gt;
+## 1 Adelie  Dream            37            16.9              185        3000 fema…
+## 2 Adelie  Dream            37.5          18.9              179        2975 &lt;NA&gt; 
+## # … with 9 more rows, and 1 more variable: year &lt;int&gt;
 ```
 
 ---
@@ -483,12 +484,11 @@ penguins |&gt;
 
 ```
 ## # A tibble: 124 × 8
-##   species island bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
-##   &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;
-## 1 Gentoo  Biscoe           46.1          13.2               211        4500
-## 2 Gentoo  Biscoe           50            16.3               230        5700
-## 3 Gentoo  Biscoe           48.7          14.1               210        4450
-## # … with 121 more rows, and 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;
+##   species island bill_length_mm bill_depth_mm flipper_length_… body_mass_g sex  
+##   &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;       &lt;int&gt; &lt;fct&gt;
+## 1 Gentoo  Biscoe           46.1          13.2              211        4500 fema…
+## 2 Gentoo  Biscoe           50            16.3              230        5700 male 
+## # … with 122 more rows, and 1 more variable: year &lt;int&gt;
 ```
 
 Regular expressions for more powerful matching.
@@ -509,13 +509,12 @@ penguins |&gt; mutate(
 
 ```
 ## # A tibble: 344 × 10
-##   species island    bill_length_mm bill_depth_mm flipper_length_… body_mass_g
-##   &lt;chr&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;       &lt;int&gt;
-## 1 adelie  Torgersen           39.1          18.7              181        3750
-## 2 adelie  Torgersen           39.5          17.4              186        3800
-## 3 adelie  Torgersen           40.3          18                195        3250
-## # … with 341 more rows, and 4 more variables: sex &lt;fct&gt;, year &lt;int&gt;,
-## #   body_mass_kg &lt;dbl&gt;, bill_ratio &lt;dbl&gt;
+##   species island bill_length_mm bill_depth_mm flipper_length_… body_mass_g sex  
+##   &lt;chr&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;       &lt;int&gt; &lt;fct&gt;
+## 1 adelie  Torge…           39.1          18.7              181        3750 male 
+## 2 adelie  Torge…           39.5          17.4              186        3800 fema…
+## # … with 342 more rows, and 3 more variables: year &lt;int&gt;, body_mass_kg &lt;dbl&gt;,
+## #   bill_ratio &lt;dbl&gt;
 ```
 
 ---
@@ -563,12 +562,11 @@ penguins |&gt;
 ```
 ## # A tibble: 344 × 8
 ## # Groups:   species, island [5]
-##   species island    bill_length_mm bill_depth_mm flipper_length_… body_mass_g
-##   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;       &lt;int&gt;
-## 1 Adelie  Torgersen           39.1          18.7              181        3750
-## 2 Adelie  Torgersen           39.5          17.4              186        3800
-## 3 Adelie  Torgersen           40.3          18                195        3250
-## # … with 341 more rows, and 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;
+##   species island bill_length_mm bill_depth_mm flipper_length_… body_mass_g sex  
+##   &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;       &lt;int&gt; &lt;fct&gt;
+## 1 Adelie  Torge…           39.1          18.7              181        3750 male 
+## 2 Adelie  Torge…           39.5          17.4              186        3800 fema…
+## # … with 342 more rows, and 1 more variable: year &lt;int&gt;
 ```
 
 Mutate and summarise now work per group
@@ -590,12 +588,11 @@ penguins |&gt;
 ```
 ## # A tibble: 344 × 10
 ## # Groups:   species [3]
-##   species island    bill_length_mm bill_depth_mm flipper_length_… body_mass_g
-##   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;       &lt;int&gt;
-## 1 Adelie  Torgersen           39.1          18.7              181        3750
-## 2 Adelie  Torgersen           39.5          17.4              186        3800
-## 3 Adelie  Torgersen           40.3          18                195        3250
-## # … with 341 more rows, and 4 more variables: sex &lt;fct&gt;, year &lt;int&gt;,
+##   species island bill_length_mm bill_depth_mm flipper_length_… body_mass_g sex  
+##   &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;       &lt;int&gt; &lt;fct&gt;
+## 1 Adelie  Torge…           39.1          18.7              181        3750 male 
+## 2 Adelie  Torge…           39.5          17.4              186        3800 fema…
+## # … with 342 more rows, and 3 more variables: year &lt;int&gt;,
 ## #   bill_length_mean &lt;dbl&gt;, bill_length_centred &lt;dbl&gt;
 ```
 
@@ -641,8 +638,7 @@ penguins |&gt;
 ##   &lt;fct&gt;   &lt;fct&gt;  &lt;fct&gt;  &lt;int&gt;
 ## 1 Adelie  Biscoe female    22
 ## 2 Adelie  Biscoe male      22
-## 3 Adelie  Dream  female    27
-## # … with 10 more rows
+## # … with 11 more rows
 ```
 
 ```r
@@ -657,8 +653,7 @@ penguins |&gt;
 ##   &lt;fct&gt;   &lt;fct&gt;  &lt;fct&gt;  &lt;int&gt;
 ## 1 Adelie  Biscoe female    22
 ## 2 Adelie  Biscoe male      22
-## 3 Adelie  Dream  female    27
-## # … with 10 more rows
+## # … with 11 more rows
 ```
 
 ---
@@ -666,7 +661,7 @@ penguins |&gt;
 
 Merge two tibbles
 
-![](figures/left-join.gif)&lt;!-- --&gt;
+&lt;img src="figures/left-join.gif" title="Animation showing how left_join merges two data frames by a common variable." alt="Animation showing how left_join merges two data frames by a common variable."  /&gt;
 
 ---
 # left_join()
@@ -920,7 +915,7 @@ Wickham, H. Style Guide _Advanced R_
 [http://adv-r.had.co.nz/Style.html](http://adv-r.had.co.nz/Style.html)
 ]
 .pull-right[
-![](figures/r4ds.png)&lt;!-- --&gt;
+&lt;img src="figures/r4ds.png" title="Front page of the R for Data Science book with a kākāpō." alt="Front page of the R for Data Science book with a kākāpō."  /&gt;
 ]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>

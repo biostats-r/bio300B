@@ -32,19 +32,24 @@ options(dplyr.print_min = 2, dplyr.print_max = 3)
 - Do in code for reproducibility
 - Often not taught
 
+```{r, echo = FALSE, fig.cap="Figure from [towards_AI](https://twitter.com/towards_AI/status/1332567246011555840?s=20)", fig.alt = "Meme showing cute puppy representing data used in tutorials and a weird dog representing data in the wild."}
+knitr::include_graphics("figures/wild_data.jpg")
+```
+
 
 ---
 # Tidy data
 
     Happy families are all alike; every 
-    unhappy family is unhappy in its own way 
-    Tolstoy 
-    
-Standard format    
+    unhappy family is unhappy in its own way    Tolstoy 
     
 - Every column is a variable.
 - Every row is an observation.
 - Every cell is a single value.
+
+```{r, echo = FALSE, fig.alt = "Representation of tidy data, showing variables in columns, observations in rows, and single values in each cell. Source: R for Data Science", out.width="100%"}
+knitr::include_graphics("figures/tidy1.png")
+```
 
 .footnote[[Wickham (2014) Tidy data](https://vita.had.co.nz/papers/tidy-data.pdf)]
 
@@ -59,7 +64,7 @@ knitr::kable(table2 |> select(1:5))
 ---
 # The heart of your analysis pipeline
 
-```{r tidy-heart, echo = FALSE}
+```{r tidy-heart, echo = FALSE, fig.alt = "Diagram showing tidy data at the heart of data analysis"}
 library(DiagrammeR)
 grViz("
       digraph circo {
@@ -146,7 +151,7 @@ Pipe puts result of left hand side into first available argument on right hand s
 
 Long data vs wide data
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, fig.alt = "Animation showing how pivot_longer converts wide data to long, and pivot_wider does the opposite."}
 knitr::include_graphics("figures/tidyr-pivot_longer_wider.gif")
 ```
 
@@ -256,6 +261,7 @@ One or more logical statements
 - `==`
 - `>=`
 - `<`
+- `!=`
 
 ---
 # near()
@@ -424,7 +430,7 @@ penguins |>
 
 Merge two tibbles
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, fig.alt = "Animation showing how left_join merges two data frames by a common variable."}
 knitr::include_graphics("figures/left-join.gif")
 ```
 
@@ -620,7 +626,7 @@ Wickham, H. Style Guide _Advanced R_
 [http://adv-r.had.co.nz/Style.html](http://adv-r.had.co.nz/Style.html)
 ]
 .pull-right[
-```{r, echo = FALSE}
+```{r, echo = FALSE, fig.alt = "Front page of the R for Data Science book with a kākāpō."}
 knitr::include_graphics("figures/r4ds.png")
 ```
 ]
