@@ -30,6 +30,7 @@ options(dplyr.print_min = 2, dplyr.print_max = 3)
 - Critical
 - Time consuming 
 - Do in code for reproducibility
+- Often not taught
 
 
 ---
@@ -191,6 +192,15 @@ mites_wide
 ```{r, echo=FALSE}
 options(dplyr.print_min = 2, dplyr.print_max = 3)
 ```
+
+---
+# Key dplyr functions
+
+- `select()`
+- `filter()`
+- `mutate()`
+- `summarise()`
+- `group_by()`
 
 ---
 # Selecting columns  
@@ -355,6 +365,7 @@ Useful functions
 - limits `min()` `max()`
 - centre `mean()` `median()`
 - spread `sd()`
+- number `n()` `n_distinct()`
 
 ---
 # Grouping data

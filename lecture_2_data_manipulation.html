@@ -38,6 +38,7 @@ class: center, middle, inverse, title-slide
 - Critical
 - Time consuming 
 - Do in code for reproducibility
+- Often not taught
 
 
 ---
@@ -73,8 +74,8 @@ Standard format
 ---
 # The heart of your analysis pipeline
 
-<div id="htmlwidget-1b3516a20594cdab7e23" style="width:504px;height:500px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-1b3516a20594cdab7e23">{"x":{"diagram":"\n      digraph circo {\n      \n      graph [layout = dot,  rankdir = TB]\n      node [shape = circle, fontsize = 18, style = filled, fillcolor =  orange, fixedsize = FALSE, fontname = \"Palatino\", label = \"\"]\n      a1 [shape = circle, fillcolor = purple]\n      a2 [shape = doubleoctagon, fillcolor = darkgreen]\n      a3 [shape = star]\n      \n      node [shape = egg, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = \"Palatino\"]\n\n      b [label = \"Tidy data\", shape = box]\n      c [label = \"Clean and tidy data\", shape = box]\n\n      d [label = \"Analysis\"]\n      e [label = \"Visualisation\"]\n      \n      {a1, a2, a3}->b->c->{d, e}\n\n      }\n     ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-ad224cac712da90e6824" style="width:504px;height:500px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ad224cac712da90e6824">{"x":{"diagram":"\n      digraph circo {\n      \n      graph [layout = dot,  rankdir = TB]\n      node [shape = circle, fontsize = 18, style = filled, fillcolor =  orange, fixedsize = FALSE, fontname = \"Palatino\", label = \"\"]\n      a1 [shape = circle, fillcolor = purple]\n      a2 [shape = doubleoctagon, fillcolor = darkgreen]\n      a3 [shape = star]\n      \n      node [shape = egg, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = \"Palatino\"]\n\n      b [label = \"Tidy data\", shape = box]\n      c [label = \"Clean and tidy data\", shape = box]\n\n      d [label = \"Analysis\"]\n      e [label = \"Visualisation\"]\n      \n      {a1, a2, a3}->b->c->{d, e}\n\n      }\n     ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 
 
@@ -219,6 +220,15 @@ mites_wide
 ## 5      5      5     8    13     9
 ```
 
+
+---
+# Key dplyr functions
+
+- `select()`
+- `filter()`
+- `mutate()`
+- `summarise()`
+- `group_by()`
 
 ---
 # Selecting columns  
@@ -539,6 +549,7 @@ Useful functions
 - limits `min()` `max()`
 - centre `mean()` `median()`
 - spread `sd()`
+- number `n()` `n_distinct()`
 
 ---
 # Grouping data
