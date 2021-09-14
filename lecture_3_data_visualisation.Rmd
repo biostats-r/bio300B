@@ -1,0 +1,327 @@
+---
+title: "Data visualisation"
+subtitle: "Bio300B Lecture 3"
+author: "Richard J. Telford (Richard.Telford@uib.no)"
+institute: "Institutt for biovitenskap, UiB"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+<style type="text/css">
+.remark-slide-content {
+    font-size: 24px;
+    padding: 1em 4em 1em 4em;
+}
+</style>
+
+```{r setup, echo=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, error = TRUE, message = FALSE)
+library("tidyverse")
+data(penguins, package = "palmerpenguins")
+options(dplyr.print_min = 2, dplyr.print_max = 3)
+theme_set(theme_grey(base_size = 18))
+library(patchwork)
+```
+
+
+
+# Data visualisation
+
+- A picture is worth a thousand words
+- Tell a story with figures
+- Avoid common mistakes
+
+
+---
+# ggplot2
+
+- one of at three schemes for graphics in R
+- part of tidyverse
+
+A system for 'declaratively' creating graphics, based on "The Grammar of Graphics".
+
+You provide the data, tell 'ggplot2' how to map variables to aesthetics, what graphical primitives to use, it takes care of the details.
+
+---
+# ggplot in action
+
+```{r make_plot, fig.keep="none"}
+plot <- ggplot(data = penguins,     # Data
+       mapping = aes(               # Aesthetics
+         x = body_mass_g,    
+         y = bill_length_mm, 
+         colour = species)) +
+  geom_point() +                    # Geometries
+  scale_colour_brewer(palette = "Set1") + # scales
+  labs(x = "Body mass, g",          # labels
+       y = "Bill length mm", 
+       colour = "Species") +
+  theme_bw()                        # themes
+                                    # Also facets
+plot
+```
+
+
+---
+```{r echo = FALSE}
+plot + theme_bw(base_size = 18)
+```
+
+---
+# Data 
+
+Tibble or data frame with all data to be plotted.
+
+Tidy data
+
+Can process data within `ggplot` but usually best to do it before
+
+Can add data to the whole plot or to individual geoms
+
+---
+# Aesthetics
+
+`mapping` specifies which variables in the data should be mapped onto
+which aesthetics with `aes()`
+
+Each geom takes different aesthetics
+
+Common aesthetics
+
+- x, y
+- fill, colour
+- shape
+- linetype
+
+---
+# Setting vs mapping
+
+.pull-left[
+### Mapping in aes()
+```{r mapping, fig.height = 3, fig.width=4}
+ggplot(penguins, aes(x = flipper_length_mm, 
+           fill = "blue")) +
+geom_histogram()
+```
+]
+
+.pull-right[
+### Setting in the geom
+```{r setting, fig.height = 3, fig.width=3}
+ggplot(penguins, aes(x = flipper_length_mm)) +
+geom_histogram(fill = "blue")
+```
+]
+---
+# geoms
+
+Many geoms, some in extra packages
+
+Use different geoms for different plot types
+
+Important geoms
+
+- `geom_point()`
+- `geom_boxplot()`
+- `geom_histogram()`
+- `geom_smooth()`
+
+---
+# Geoms to show distributions
+
+```{r}
+base <- ggplot(penguins, aes(x = flipper_length_mm))
+hist <- base + geom_histogram()
+dens <- base + geom_density()
+```
+
+```{r dist, echo = FALSE, fig.height = 6, message = FALSE}
+hist + dens
+```
+
+---
+# Geoms to show many distributions
+
+```{r boxplots-etc}
+base <- ggplot(penguins, aes(x = species, y = flipper_length_mm))
+
+p_prange <- base + stat_summary(fun.data = mean_sdl)
+p_box <- base + geom_boxplot(aes(fill = species))
+p_vio <- base + geom_violin(aes(fill = species))
+p_jit <- base + geom_jitter(aes(colour = species))
+library(ggbeeswarm)
+p_quasi <- base + geom_quasirandom(aes(colour = species))
+
+```
+
+---
+```{r boxplots-etc-plot, echo=FALSE, fig.width=9}
+p_prange + labs(title= "geom_pointrange()") + 
+p_box + labs(title = "geom_boxplot()") +
+  p_vio + labs(title = "geom_violin()") +
+  p_jit + labs(title = "geom_jitter()") +
+  p_quasi + labs(title = "geom_quasirandom()") +
+  plot_layout(nrow = 2) &
+  labs(y = "Flipper length") &
+  theme(axis.title.x = element_blank(), legend.position = "none")
+```
+
+
+---
+# Scales
+
+Control how 
+
+- variables are mapped onto the aesthetics
+- axes breaks
+
+All called scale_aesthetic_description
+
+- `scale_x_log()`
+- `scale_y_reverse()`
+- `scale_colour_viridis_c()`
+- `scale_shape_manual()`
+
+---
+# Labels
+
+- plot, axis and legend titles
+
+```{r labs, fig.height = 4}
+ggplot(penguins, aes(x = body_mass_g, y = bill_length_mm, colour = species)) +
+  geom_point() +
+  labs(x = "Body mass g",
+       y = "Bill length mm", 
+       colour = "Species", 
+       title = "Bill length against body mass ") 
+```
+
+
+
+---
+# Facets
+
+Split data into separate panels.
+
+```{r facets, fig.height = 5}
+plot + facet_wrap(~ species)
+```
+
+
+
+---
+# Themes
+
+Change how non-data elements of the plot look
+
+Entire themes
+
+```{r themes, echo = FALSE, fig.width=9, fig.height=6}
+plot + theme_grey() + labs(title = "theme_grey()") +
+plot + theme_bw() + labs(title = "theme_bw()") +
+plot + theme_classic() + labs(title = "theme_classic()") +
+plot + theme_minimal() + labs(title = "theme_minimal()") 
+  
+  
+```
+
+---
+# Themes
+
+Can also change individual elements
+
+```{r theme2, fig.height=5}
+plot + theme(legend.position = "top")
+```
+
+
+---
+# Colour & fills
+
+```{r fill-colour, echo = FALSE}
+fill <- ggplot(penguins, aes(x = species, y = flipper_length_mm, fill = species)) +
+  geom_boxplot()
+
+colour <- ggplot(penguins, aes(x = species, y = flipper_length_mm, colour = species)) +
+  geom_boxplot()
+
+colour + labs(title = "colour = species") + fill + labs(title = "fill = species") & theme(legend.position = "none")
+```
+
+---
+# Colour deficient vision
+
+```{r cvd, fig.width=8, fig.height=6}
+den <- ggplot(penguins, aes(x = bill_length_mm, fill = species)) +
+  geom_density(alpha = 0.7)
+den
+```
+
+---
+```{r cvd-grid, fig.width=9, fig.height=7}
+colorblindr::cvd_grid(den)
+```
+
+---
+# \#End rainbow
+
+```{r endrainbow, echo = FALSE}
+knitr::include_graphics("figures/jpe12646-fig-0003-m.webp")
+```
+
+
+
+---
+# Better colour scale
+
+```{r cvd2, fig.width=8, fig.height=6}
+den <- ggplot(penguins, aes(x = bill_length_mm, fill = species)) +
+  geom_density(alpha = 0.7) +
+  scale_fill_brewer(palette = "Set1")
+den
+```
+
+---
+```{r cvd2-grid, fig.width=9, fig.height=7}
+colorblindr::cvd_grid(den)
+```
+
+---
+# Using colour effectively
+
+Choose an appropriate palette.
+
+### Qualitative palettes
+
+```{r brewer-qual}
+RColorBrewer::display.brewer.all(type = "qual")
+```
+---
+### Sequential palettes
+
+```{r brewer-seq}
+RColorBrewer::display.brewer.all(type = "seq")
+```
+---
+### Dividing palettes
+
+```{r brewer-div}
+RColorBrewer::display.brewer.all(type = "div")
+```
+
+---
+# Viridis
+
+```{r viridis, message = FALSE}
+ggplot(penguins, aes(x = body_mass_g, y = flipper_length_mm)) +
+  geom_point(aes(colour = flipper_length_mm)) +
+  scale_colour_viridis_c()
+```
+
+
+

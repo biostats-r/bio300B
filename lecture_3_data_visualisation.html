@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Data visualisation</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)" />
+    <meta name="date" content="2021-09-14" />
+    <script src="libs/header-attrs-2.10/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Data visualisation
+## Bio300B Lecture 3
+### Richard J. Telford (<a href="mailto:Richard.Telford@uib.no" class="email">Richard.Telford@uib.no</a>)
+### Institutt for biovitenskap, UiB
+### 14 September 2021
+
+---
+
+&lt;style type="text/css"&gt;
+.remark-slide-content {
+    font-size: 24px;
+    padding: 1em 4em 1em 4em;
+}
+&lt;/style&gt;
+
+
+
+
+
+# Data visualisation
+
+- A picture is worth a thousand words
+- Tell a story with figures
+- Avoid common mistakes
+
+
+---
+# ggplot2
+
+- one of at three schemes for graphics in R
+- part of tidyverse
+
+A system for 'declaratively' creating graphics, based on "The Grammar of Graphics".
+
+You provide the data, tell 'ggplot2' how to map variables to aesthetics, what graphical primitives to use, it takes care of the details.
+
+---
+# ggplot in action
+
+
+```r
+plot &lt;- ggplot(data = penguins,     # Data
+       mapping = aes(               # Aesthetics
+         x = body_mass_g,    
+         y = bill_length_mm, 
+         colour = species)) +
+  geom_point() +                    # Geometries
+  scale_colour_brewer(palette = "Set1") + # scales
+  labs(x = "Body mass, g",          # labels
+       y = "Bill length mm", 
+       colour = "Species") +
+  theme_bw()                        # themes
+                                    # Also facets
+plot
+```
+
+
+---
+![](lecture_3_data_visualisation_files/figure-html/unnamed-chunk-1-1.png)&lt;!-- --&gt;
+
+---
+# Data 
+
+Tibble or data frame with all data to be plotted.
+
+Tidy data
+
+Can process data within `ggplot` but usually best to do it before
+
+Can add data to the whole plot or to individual geoms
+
+---
+# Aesthetics
+
+`mapping` specifies which variables in the data should be mapped onto
+which aesthetics with `aes()`
+
+Each geom takes different aesthetics
+
+Common aesthetics
+
+- x, y
+- fill, colour
+- shape
+- linetype
+
+---
+# Setting vs mapping
+
+.pull-left[
+### Mapping in aes()
+
+```r
+ggplot(penguins, aes(x = flipper_length_mm, 
+           fill = "blue")) +
+geom_histogram()
+```
+
+![](lecture_3_data_visualisation_files/figure-html/mapping-1.png)&lt;!-- --&gt;
+]
+
+.pull-right[
+### Setting in the geom
+
+```r
+ggplot(penguins, aes(x = flipper_length_mm)) +
+geom_histogram(fill = "blue")
+```
+
+![](lecture_3_data_visualisation_files/figure-html/setting-1.png)&lt;!-- --&gt;
+]
+---
+# geoms
+
+Many geoms, some in extra packages
+
+Use different geoms for different plot types
+
+Important geoms
+
+- `geom_point()`
+- `geom_boxplot()`
+- `geom_histogram()`
+- `geom_smooth()`
+
+---
+# Geoms to show distributions
+
+
+```r
+base &lt;- ggplot(penguins, aes(x = flipper_length_mm))
+hist &lt;- base + geom_histogram()
+dens &lt;- base + geom_density()
+```
+
+![](lecture_3_data_visualisation_files/figure-html/dist-1.png)&lt;!-- --&gt;
+
+---
+# Geoms to show many distributions
+
+
+```r
+base &lt;- ggplot(penguins, aes(x = species, y = flipper_length_mm))
+
+p_prange &lt;- base + stat_summary(fun.data = mean_sdl)
+p_box &lt;- base + geom_boxplot(aes(fill = species))
+p_vio &lt;- base + geom_violin(aes(fill = species))
+p_jit &lt;- base + geom_jitter(aes(colour = species))
+library(ggbeeswarm)
+p_quasi &lt;- base + geom_quasirandom(aes(colour = species))
+```
+
+---
+![](lecture_3_data_visualisation_files/figure-html/boxplots-etc-plot-1.png)&lt;!-- --&gt;
+
+
+---
+# Scales
+
+Control how 
+
+- variables are mapped onto the aesthetics
+- axes breaks
+
+All called scale_aesthetic_description
+
+- `scale_x_log()`
+- `scale_y_reverse()`
+- `scale_colour_viridis_c()`
+- `scale_shape_manual()`
+
+---
+# Labels
+
+- plot, axis and legend titles
+
+
+```r
+ggplot(penguins, aes(x = body_mass_g, y = bill_length_mm, colour = species)) +
+  geom_point() +
+  labs(x = "Body mass g",
+       y = "Bill length mm", 
+       colour = "Species", 
+       title = "Bill length against body mass ") 
+```
+
+![](lecture_3_data_visualisation_files/figure-html/labs-1.png)&lt;!-- --&gt;
+
+
+
+---
+# Facets
+
+Split data into separate panels.
+
+
+```r
+plot + facet_wrap(~ species)
+```
+
+![](lecture_3_data_visualisation_files/figure-html/facets-1.png)&lt;!-- --&gt;
+
+
+
+---
+# Themes
+
+Change how non-data elements of the plot look
+
+Entire themes
+
+![](lecture_3_data_visualisation_files/figure-html/themes-1.png)&lt;!-- --&gt;
+
+---
+# Themes
+
+Can also change individual elements
+
+
+```r
+plot + theme(legend.position = "top")
+```
+
+![](lecture_3_data_visualisation_files/figure-html/theme2-1.png)&lt;!-- --&gt;
+
+
+---
+# Colour &amp; fills
+
+![](lecture_3_data_visualisation_files/figure-html/fill-colour-1.png)&lt;!-- --&gt;
+
+---
+# Colour deficient vision
+
+
+```r
+den &lt;- ggplot(penguins, aes(x = bill_length_mm, fill = species)) +
+  geom_density(alpha = 0.7)
+den
+```
+
+![](lecture_3_data_visualisation_files/figure-html/cvd-1.png)&lt;!-- --&gt;
+
+---
+
+```r
+colorblindr::cvd_grid(den)
+```
+
+![](lecture_3_data_visualisation_files/figure-html/cvd-grid-1.png)&lt;!-- --&gt;
+
+---
+# \#End rainbow
+
+![](figures/jpe12646-fig-0003-m.webp)&lt;!-- --&gt;
+
+
+
+---
+# Better colour scale
+
+
+```r
+den &lt;- ggplot(penguins, aes(x = bill_length_mm, fill = species)) +
+  geom_density(alpha = 0.7) +
+  scale_fill_brewer(palette = "Set1")
+den
+```
+
+![](lecture_3_data_visualisation_files/figure-html/cvd2-1.png)&lt;!-- --&gt;
+
+---
+
+```r
+colorblindr::cvd_grid(den)
+```
+
+![](lecture_3_data_visualisation_files/figure-html/cvd2-grid-1.png)&lt;!-- --&gt;
+
+---
+# Using colour effectively
+
+Choose an appropriate palette.
+
+### Qualitative palettes
+
+
+```r
+RColorBrewer::display.brewer.all(type = "qual")
+```
+
+![](lecture_3_data_visualisation_files/figure-html/brewer-qual-1.png)&lt;!-- --&gt;
+---
+### Sequential palettes
+
+
+```r
+RColorBrewer::display.brewer.all(type = "seq")
+```
+
+![](lecture_3_data_visualisation_files/figure-html/brewer-seq-1.png)&lt;!-- --&gt;
+---
+### Dividing palettes
+
+
+```r
+RColorBrewer::display.brewer.all(type = "div")
+```
+
+![](lecture_3_data_visualisation_files/figure-html/brewer-div-1.png)&lt;!-- --&gt;
+
+---
+# Viridis
+
+
+```r
+ggplot(penguins, aes(x = body_mass_g, y = flipper_length_mm)) +
+  geom_point(aes(colour = flipper_length_mm)) +
+  scale_colour_viridis_c()
+```
+
+![](lecture_3_data_visualisation_files/figure-html/viridis-1.png)&lt;!-- --&gt;
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
