@@ -4,11 +4,16 @@
     <title>Data lifecycle</title>
     <meta charset="utf-8" />
     <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)" />
-    <meta name="date" content="2021-08-31" />
+    <meta name="date" content="2021-09-19" />
     <script src="libs/header-attrs-2.10/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
-    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"b892bf8617a4484b9a864ee5f5ca3e9e","expires":1}</script>
+    <script src="libs/clipboard-2.0.6/clipboard.min.js"></script>
+    <link href="libs/shareon-1.4.1/shareon.min.css" rel="stylesheet" />
+    <script src="libs/shareon-1.4.1/shareon.min.js"></script>
+    <link href="libs/xaringanExtra-shareagain-0.2.6/shareagain.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-shareagain-0.2.6/shareagain.js"></script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"b063506a3d2640f186ef6373293b1c67","expires":1}</script>
     <script src="libs/himalaya-1.1.0/himalaya.js"></script>
     <script src="libs/js-cookie-3.0.0/js.cookie.js"></script>
     <link href="libs/editable-0.2.6/editable.css" rel="stylesheet" />
@@ -26,7 +31,7 @@ class: center, middle, inverse, title-slide
 ## Bio300B Lecture 1
 ### Richard J. Telford (<a href="mailto:Richard.Telford@uib.no" class="email">Richard.Telford@uib.no</a>)
 ### Institutt for biovitenskap, UiB
-### 31 August 2021
+### 19 September 2021
 
 ---
 
@@ -36,6 +41,8 @@ class: center, middle, inverse, title-slide
     padding: 1em 4em 1em 4em;
 }
 &lt;/style&gt;
+
+
 
 ## Who I am
 
@@ -96,8 +103,8 @@ email: richard.telford@uib.no
 
 
 
-<div id="htmlwidget-35492f47ff09f4364cd3" style="width:504px;height:500px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-35492f47ff09f4364cd3">{"x":{"diagram":"\n      digraph circo {\n      \n      graph [layout = dot,  rankdir = TB]\n      \n      node [shape = egg, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = \"Palatino\"]\n      a [label = \"Design\"]\n      b [label = \"Gather\", fillcolor = grey]\n      b2 [label = \"Enter\"]\n      b3 [label = \"Import\"]\n\n      d [label = \"Clean\"]\n      e [label = \"Visualise\"]\n      f [label = \"Analyse\"]\n      g [label = \"Communicate\"]\n      h [label = \"Archive\", fillcolor = grey]\n      i [label = \"Death\", shape = diamond, fillcolor = grey]\n      j [label = \"Find & Reuse\", fillcolor = grey]\n      \n      a->b->b2->b3->d->e->f->e\n      e->g->h\n      f->g->i\n      e->d\n      f->d\n      d->f\n      h->j->b3 [style=dashed, color=darkgrey, fontsize = 18, fixedsize = FALSE, fontname = \"Palatino\"]\n      subgraph {\n        rank = same; a; b; b2\n      }\n      subgraph {\n        rank = same; e; f;\n      }\n\n      subgraph {\n        rank = same; j; b3;\n      }\n\n      }\n     ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-1e8bce881a4897e57983" style="width:504px;height:500px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1e8bce881a4897e57983">{"x":{"diagram":"\n      digraph circo {\n      \n      graph [layout = dot,  rankdir = TB]\n      \n      node [shape = egg, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = \"Palatino\"]\n      a [label = \"Design\"]\n      b [label = \"Gather\", fillcolor = grey]\n      b2 [label = \"Enter\"]\n      b3 [label = \"Import\"]\n\n      d [label = \"Clean\"]\n      e [label = \"Visualise\"]\n      f [label = \"Analyse\"]\n      g [label = \"Communicate\"]\n      h [label = \"Archive\", fillcolor = grey]\n      i [label = \"Death\", shape = diamond, fillcolor = grey]\n      j [label = \"Find & Reuse\", fillcolor = grey]\n      \n      a->b->b2->b3->d->e->f->e\n      e->g->h\n      f->g->i\n      e->d\n      f->d\n      d->f\n      h->j->b3 [style=dashed, color=darkgrey, fontsize = 18, fixedsize = FALSE, fontname = \"Palatino\"]\n      subgraph {\n        rank = same; a; b; b2\n      }\n      subgraph {\n        rank = same; e; f;\n      }\n\n      subgraph {\n        rank = same; j; b3;\n      }\n\n      }\n     ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 ---
 # Experimental Design
@@ -258,7 +265,7 @@ Natural degradation in information content associated with **data** and **metada
 .footnote[[Billy Hinchen](https://www.digital-science.com/blog/2014/04/what-would-happen-if-you-lost-all-of-your-research-data/)]
 
 ---
-![](figures/rutgers-stolen-ad.jpeg)&lt;!-- --&gt;
+&lt;img src="figures/rutgers-stolen-ad.jpeg" width="629" /&gt;
 
 .right[.footnote[[Rutgers University Ph.D. candidate](https://www.technobuffalo.com/ouch-thief-steals-laptop-containing-5-years-of-ph-d-students-research-data)]]
 

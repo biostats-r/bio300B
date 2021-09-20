@@ -4,10 +4,18 @@
     <title>Data manipulation</title>
     <meta charset="utf-8" />
     <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)" />
-    <meta name="date" content="2021-09-07" />
+    <meta name="date" content="2021-09-19" />
     <script src="libs/header-attrs-2.10/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <script src="libs/clipboard-2.0.6/clipboard.min.js"></script>
+    <link href="libs/xaringanExtra-clipboard-0.2.6/xaringanExtra-clipboard.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-clipboard-0.2.6/xaringanExtra-clipboard.js"></script>
+    <script>window.xaringanExtraClipboard(null, {"button":"Copy Code","success":"Copied!","error":"Press Ctrl+C to Copy"})</script>
+    <link href="libs/shareon-1.4.1/shareon.min.css" rel="stylesheet" />
+    <script src="libs/shareon-1.4.1/shareon.min.js"></script>
+    <link href="libs/xaringanExtra-shareagain-0.2.6/shareagain.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-shareagain-0.2.6/shareagain.js"></script>
     <script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
     <script src="libs/viz-1.8.2/viz.js"></script>
     <link href="libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
@@ -21,7 +29,7 @@ class: center, middle, inverse, title-slide
 ## Bio300B Lecture 2
 ### Richard J. Telford (<a href="mailto:Richard.Telford@uib.no" class="email">Richard.Telford@uib.no</a>)
 ### Institutt for biovitenskap, UiB
-### 07 September 2021
+### 19 September 2021
 
 ---
 
@@ -33,6 +41,11 @@ class: center, middle, inverse, title-slide
 &lt;/style&gt;
 
 
+
+
+
+
+
 # Data cleaning
 
 - Critical
@@ -41,7 +54,7 @@ class: center, middle, inverse, title-slide
 - Often not taught
 
 &lt;div class="figure"&gt;
-&lt;img src="figures/wild_data.jpg" alt="Meme showing cute puppy representing data used in tutorials and a weird dog representing data in the wild."  /&gt;
+&lt;img src="figures/wild_data.jpg" alt="Meme showing cute puppy representing data used in tutorials and a weird dog representing data in the wild." width="1636" /&gt;
 &lt;p class="caption"&gt;Figure from [towards_AI](https://twitter.com/towards_AI/status/1332567246011555840?s=20)&lt;/p&gt;
 &lt;/div&gt;
 
@@ -78,8 +91,8 @@ class: center, middle, inverse, title-slide
 ---
 # The heart of your analysis pipeline
 
-<div id="htmlwidget-a14f8a0e4713a8136dde" style="width:504px;height:500px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a14f8a0e4713a8136dde">{"x":{"diagram":"\n      digraph circo {\n      \n      graph [layout = dot,  rankdir = TB]\n      node [shape = circle, fontsize = 18, style = filled, fillcolor =  orange, fixedsize = FALSE, fontname = \"Palatino\", label = \"\"]\n      a1 [shape = circle, fillcolor = purple]\n      a2 [shape = doubleoctagon, fillcolor = darkgreen]\n      a3 [shape = star]\n      \n      node [shape = egg, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = \"Palatino\"]\n\n      b [label = \"Tidy data\", shape = box]\n      c [label = \"Clean and tidy data\", shape = box]\n\n      d [label = \"Analysis\"]\n      e [label = \"Visualisation\"]\n      \n      {a1, a2, a3}->b->c->{d, e}\n\n      }\n     ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-1e4f237ee2fcef79fa01" style="width:504px;height:500px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1e4f237ee2fcef79fa01">{"x":{"diagram":"\n      digraph circo {\n      \n      graph [layout = dot,  rankdir = TB]\n      node [shape = circle, fontsize = 18, style = filled, fillcolor =  orange, fixedsize = FALSE, fontname = \"Palatino\", label = \"\"]\n      a1 [shape = circle, fillcolor = purple]\n      a2 [shape = doubleoctagon, fillcolor = darkgreen]\n      a3 [shape = star]\n      \n      node [shape = egg, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = \"Palatino\"]\n\n      b [label = \"Tidy data\", shape = box]\n      c [label = \"Clean and tidy data\", shape = box]\n\n      d [label = \"Analysis\"]\n      e [label = \"Visualisation\"]\n      \n      {a1, a2, a3}->b->c->{d, e}\n\n      }\n     ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 
 
@@ -915,7 +928,7 @@ Wickham, H. Style Guide _Advanced R_
 [http://adv-r.had.co.nz/Style.html](http://adv-r.had.co.nz/Style.html)
 ]
 .pull-right[
-&lt;img src="figures/r4ds.png" title="Front page of the R for Data Science book with a kākāpō." alt="Front page of the R for Data Science book with a kākāpō."  /&gt;
+&lt;img src="figures/r4ds.png" title="Front page of the R for Data Science book with a kākāpō." alt="Front page of the R for Data Science book with a kākāpō." width="667" /&gt;
 ]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>

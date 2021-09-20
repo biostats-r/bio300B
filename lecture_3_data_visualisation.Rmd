@@ -28,6 +28,13 @@ theme_set(theme_grey(base_size = 18))
 library(patchwork)
 ```
 
+```{r share-again, echo = FALSE}
+xaringanExtra::use_share_again()
+```
+
+```{r xaringanExtra-clipboard, echo=FALSE}
+xaringanExtra::use_clipboard()
+```
 
 
 # Data visualisation
@@ -323,5 +330,6 @@ ggplot(penguins, aes(x = body_mass_g, y = flipper_length_mm)) +
   scale_colour_viridis_c()
 ```
 
-
+<!-- --- -->
+<!-- # Redundant encoding -->
 

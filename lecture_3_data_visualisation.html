@@ -4,10 +4,18 @@
     <title>Data visualisation</title>
     <meta charset="utf-8" />
     <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)" />
-    <meta name="date" content="2021-09-14" />
+    <meta name="date" content="2021-09-19" />
     <script src="libs/header-attrs-2.10/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <script src="libs/clipboard-2.0.6/clipboard.min.js"></script>
+    <link href="libs/shareon-1.4.1/shareon.min.css" rel="stylesheet" />
+    <script src="libs/shareon-1.4.1/shareon.min.js"></script>
+    <link href="libs/xaringanExtra-shareagain-0.2.6/shareagain.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-shareagain-0.2.6/shareagain.js"></script>
+    <link href="libs/xaringanExtra-clipboard-0.2.6/xaringanExtra-clipboard.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-clipboard-0.2.6/xaringanExtra-clipboard.js"></script>
+    <script>window.xaringanExtraClipboard(null, {"button":"Copy Code","success":"Copied!","error":"Press Ctrl+C to Copy"})</script>
   </head>
   <body>
     <textarea id="source">
@@ -17,7 +25,7 @@ class: center, middle, inverse, title-slide
 ## Bio300B Lecture 3
 ### Richard J. Telford (<a href="mailto:Richard.Telford@uib.no" class="email">Richard.Telford@uib.no</a>)
 ### Institutt for biovitenskap, UiB
-### 14 September 2021
+### 19 September 2021
 
 ---
 
@@ -27,6 +35,9 @@ class: center, middle, inverse, title-slide
     padding: 1em 4em 1em 4em;
 }
 &lt;/style&gt;
+
+
+
 
 
 
@@ -336,7 +347,8 @@ ggplot(penguins, aes(x = body_mass_g, y = flipper_length_mm)) +
 
 ![](lecture_3_data_visualisation_files/figure-html/viridis-1.png)&lt;!-- --&gt;
 
-
+&lt;!-- --- --&gt;
+&lt;!-- # Redundant encoding --&gt;
 
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>

@@ -25,6 +25,15 @@ library("tidyverse")
 data(penguins, package = "palmerpenguins")
 options(dplyr.print_min = 2, dplyr.print_max = 3)
 ```
+
+```{r xaringanExtra-clipboard, echo=FALSE}
+xaringanExtra::use_clipboard()
+```
+
+```{r share-again, echo = FALSE}
+xaringanExtra::use_share_again()
+```
+
 # Data cleaning
 
 - Critical
