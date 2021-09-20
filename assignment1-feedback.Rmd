@@ -1,0 +1,255 @@
+---
+title: "Assignment 1 feedback"
+subtitle: "Bio300B"
+author: "Richard J. Telford (Richard.Telford@uib.no)"
+institute: "Institutt for biovitenskap, UiB"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+
+```{r setup, include=FALSE, echo =  TRUE}
+
+```
+
+```{r, message = FALSE}
+#activate the package
+library(tidyverse)
+
+#import file into object
+biomass <- read_delim(file = "data/biomass2015_H.csv",     
+                    delim = ",")
+
+#tidy data
+biomass_long <- biomass |>
+  pivot_longer(cols = H1:H10, 
+               names_to = "height", 
+               values_to = "value",
+               values_drop_na = TRUE)
+
+#mean height with 10 or more observations
+biomass_mean_height <- biomass_long |>                     
+  group_by(species) |> 
+  filter(n() >= 10) |> 
+  summarise(mean_height = mean(value)) |> 
+  arrange(desc(mean_height))
+```
+---
+# Result
+
+```{r, message = FALSE, echo = FALSE}
+biomass_mean_height
+```
+
+
+---
+# Downloading the data
+
+In browser "file" > "save as" or with
+
+```{r, eval = FALSE}
+download.file(url =  "https://raw.githubusercontent.com/biostats-r/biostats/main/WorkingInR/data/biomass2015_H.csv", 
+              destfile = "data/biomass2015_H.csv")
+```
+
+---
+
+# Importing the data
+
+```{r, eval = FALSE}
+biomass <- read_delim(file = "data/biomass2015_H.csv", delim = ",") # best
+
+read.delim() # not ideal
+# Use Rstudio projects with relative paths
+setwd("___") # bad idea
+read_csv("my drive/Biostatistics/datalab 2/biomass2015_H.csv") # bad idea
+file.choose() # very bad idea - need to find the file every time
+```
+ 
+---
+# pivot longer
+
+```{r}
+# very hard to do without pivot longer
+biomass %>%
+  drop_na(H1:H10) %>% 
+  group_by(species) %>% 
+  summarise(mean_value = mean(H1:H10))
+```
+
+ 
+---
+# Removing the NA
+
+Must be done in or after pivot_longer()
+
+```{r}
+biomass %>%   
+  drop_na(H1:H10) %>%      #Remove all NA values
+  pivot_longer(cols = H1:H10, names_to = "Height", values_to = "value") |> 
+  summarise(n = n())
+```
+```{r}
+biomass %>%   
+  pivot_longer(cols = H1:H10, names_to = "Height", values_to = "value") |> 
+  drop_na(value) |> 
+  summarise(n = n())
+```
+
+---
+##  values_drop_na
+```{r}
+
+
+mb <- microbenchmark::microbenchmark(
+  IN =  biomass |>
+  pivot_longer(cols = H1:H10, 
+               names_to = "height", 
+               values_to = "value",
+               values_drop_na = TRUE),
+ AFTER = biomass |>
+  pivot_longer(cols = H1:H10, 
+               names_to = "height", 
+               values_to = "value") |> 
+  drop_na(value)
+)
+
+mb
+```
+
+---
+```{r, message = FALSE}
+autoplot(mb)
+```
+
+
+---
+# filter fun
+
+
+```{r, eval=FALSE}
+Biomass_long |> drop_na(value) # easiest - best
+Biomass_long |> filter(!is.na(value)) # good
+
+
+Biomass_long |> filter(value != "NA") # accidentally works
+Biomass_long |> filter(value >= 0) # accidentally works
+
+Biomass_long |> na.omit() # dangerous
+```
+
+
+---
+# dropping rare taxa
+
+`n()`
+or `add_count()` AFTER `group_by()`
+
+```{r}
+# with mutate
+biomass_long |> 
+  group_by(species) |>  
+  mutate(n = n()) |>  
+  filter(n< 10)
+
+# one step
+biomass_long |> 
+  group_by(species) |>  
+  filter(n() < 10)
+
+# with summarise (very hard)
+biomass_long |> 
+  group_by(species) |>  
+  summarise(n = n()) |>  
+  filter(n< 10)
+```
+
+---
+
+```{r}
+#gjsnitt høyde til de med mer enn 10 
+summarise(group_by(biomass_long, species),
+          mean(value, na.rm= TRUE)) %>% 
+  filter(species != ("Agrostis")) %>% 
+  filter(species != ("Fragaria orientalis")) %>% 
+  filter(species != ("Gentiana trichotoma ")) %>%  
+  filter(species != ("Halenia elliptica")) %>%  
+  filter(species != ("Juncus leucomelas")) %>%  
+  filter(species != ("Ligusticum scapiforme")) %>%  
+  filter(species != ("Pedicularis.sp")) %>% 
+  filter(species != ("Primula amethystina subsp.argutidens")) %>% 
+  filter(species != ("mix")) %>% 
+  filter(species != ("Rhodiola bupleuroides"))
+```
+
+---
+# select()?
+
+```{r}
+mb <- microbenchmark::microbenchmark(
+  BEFORE =  biomass |> 
+  select(species, H1:H10) |> 
+  pivot_longer(cols = H1:H10, 
+               names_to = "height", 
+               values_to = "value"),
+ AFTER = biomass |>
+  pivot_longer(cols = H1:H10, 
+               names_to = "height", 
+               values_to = "value") |> 
+  select(species, value)
+)
+
+mb
+
+```
+
+
+
+---
+# comments
+
+- long comments at ends of lines are difficult to read.
+- Put long comments on line before code
+
+---
+# weeds
+
+Remove unused code
+
+```{r, eval = FALSE}
+# All the height column which have 10 readings (removed all NA)
+View(height_all)
+names(height_all)
+str(height_all)
+height_all_long <- height_all |> pivot_longer(cols = H1:H10, names_to = "heights", values_to = "height")
+view(height_all_long)
+
+```
+
+---
+# Missing code
+
+include all code necessary to reproduce result
+
+- library()
+- import code
+
+
+---
+# pipes
+
+new line after every pipe.
+
+```{r, eval = FALSE}
+# Difficult to read without pipes
+summarise(group_by(biomass, species), mean = mean(height, na.rm = TRUE))
+```
+
+
+
