@@ -1,0 +1,143 @@
+---
+title: "Experimental Design"
+subtitle: "Bio300B Lecture 4"
+author: "Richard J. Telford (Richard.Telford@uib.no)"
+institute: "Institutt for biovitenskap, UiB"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+<style type="text/css">
+.remark-slide-content {
+    font-size: 24px;
+    padding: 1em 4em 1em 4em;
+}
+</style>
+
+```{r setup, echo=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, error = TRUE, message = FALSE)
+library("tidyverse")
+
+theme_set(theme_grey(base_size = 18))
+library(patchwork)
+```
+
+```{r share-again}
+xaringanExtra::use_share_again()
+```
+
+# Starting with a hypothesis
+
+- Proposed explanation for observations
+- Testable
+
+Null hypothesis H~0~ - no relationship  
+Alternative hypothesis H~1~ - relationship
+
+
+# Testing a hypothesis - types of evidence
+
+- Experimental
+- Observational
+
+Which is better? Why are both needed?
+
+---
+class: inverse
+background-image: url("figures/dead-calluna.jpg")
+background-position: center
+background-size: contain
+# Dead _Calluna vulgaris__
+
+.footnote[[landpress](https://www.uib.no/en/rg/EECRG/95156/landpress)]
+
+
+---
+class: inverse
+background-image: url("figures/EBYP1YCWkAMJXWp.jpeg")
+background-position: center
+background-size: contain
+# Drought experiment
+
+.footnote[[landpress](https://www.uib.no/en/rg/EECRG/95156/landpress)]
+
+
+---
+class: inverse
+background-image: url("figures/118.jpg")
+background-position: center
+background-size: contain
+
+# Controls
+
+- Turf transplants
+- Warmer/Wetter
+
+.footnote[[Seedclim](https://audhalbritter.com/seedclim-large-scale-climate-change-experiment-in-the-western-norwegian-fjords/)]
+
+
+---
+# Randomisation
+
+- reduces bias
+- stratified random designs possible
+
+---
+# Unbalanced design
+
+Is an experiment with 100 treatment subjects and 10 control subjects valid?
+
+What about 57 treatment subjects and 53 control subjects?
+
+Why might you get an unbalanced design
+
+---
+
+
+class: inverse
+background-image: url("figures/46695412244_66616e8523_c.jpg")
+background-position: center
+background-size: contain
+# Pseudoreplication
+
+Want to test the effect of different fish foods
+
+Mass of each fish measured.
+
+Can each fish be treated as an independent observation in your analysis?
+
+.footnote[[WorldFish](https://www.flickr.com/photos/theworldfishcenter/46695412244)]
+
+
+---
+# Blinding
+
+- Two videos: pigs bred for social breeding value, controls
+- Count positive and negative interactions
+
+
+```{r blinging}
+knitr::include_graphics("figures/happy_pigs.jpg")
+```
+
+- Same pigs. Video inverted.
+
+.footnote[[Tuyttens et al (2014)](https://doi.org/10.1016/j.anbehav.2014.02.007)]
+
+
+---
+# Correlation != Causation
+
+```{r spurious, out.width="100%"}
+knitr::include_graphics("figures/chart.png")
+```
+r = 0.95
+
+.footnote[https://www.tylervigen.com/spurious-correlations]
+
