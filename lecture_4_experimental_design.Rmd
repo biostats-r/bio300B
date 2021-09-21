@@ -37,8 +37,8 @@ xaringanExtra::use_share_again()
 - Proposed explanation for observations
 - Testable
 
-Null hypothesis H~0~ - no relationship  
-Alternative hypothesis H~1~ - relationship
+Null hypothesis H<sub>0</sub> - no relationship  
+Alternative hypothesis H<sub>1</sub> - relationship
 
 ---
 # Testing a hypothesis - types of evidence
