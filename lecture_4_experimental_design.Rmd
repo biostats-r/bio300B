@@ -40,7 +40,7 @@ xaringanExtra::use_share_again()
 Null hypothesis H~0~ - no relationship  
 Alternative hypothesis H~1~ - relationship
 
-
+---
 # Testing a hypothesis - types of evidence
 
 - Experimental
@@ -56,6 +56,19 @@ background-size: contain
 # Dead _Calluna vulgaris__
 
 .footnote[[landpress](https://www.uib.no/en/rg/EECRG/95156/landpress)]
+
+
+
+---
+# Correlation != Causation
+
+```{r spurious, out.width="100%"}
+knitr::include_graphics("figures/chart.png")
+```
+r = 0.95
+
+.footnote[https://www.tylervigen.com/spurious-correlations]
+
 
 
 ---
@@ -129,15 +142,4 @@ knitr::include_graphics("figures/happy_pigs.jpg")
 - Same pigs. Video inverted.
 
 .footnote[[Tuyttens et al (2014)](https://doi.org/10.1016/j.anbehav.2014.02.007)]
-
-
----
-# Correlation != Causation
-
-```{r spurious, out.width="100%"}
-knitr::include_graphics("figures/chart.png")
-```
-r = 0.95
-
-.footnote[https://www.tylervigen.com/spurious-correlations]
 
