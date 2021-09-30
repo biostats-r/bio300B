@@ -1,0 +1,80 @@
+---
+title: "Practical 5"
+author: "Richard Telford"
+date: "9/28/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Do all the exercises in R markdown.
+
+## Describing penguins
+
+With the penguin data
+
+-  calculate the minimum, maximum and range of bill lengths for Gentoo penguins
+- calculate the mean and median body for each species
+- calculate the variance and the standard deviation of body mass for each species.
+- Calculate the standard error of the mean for the body mass of each species.
+- Calculate the 95% confidence interval for the mean body mass.
+
+## We want to test the hypothesis that bill length is sex dependent in Adelie penguins.
+
+- What is the null hypothesis
+- Make a plot of the relevant data
+- Choose a suitable statistical test and run it. 
+- Interpret the output.
+
+## Power test
+
+We want to test whether fertiliser A is better than fertiliser B gives a higher yield of tomatoes.
+
+- A typical tomato plant yields 1 kg of tomatoes (sd = 0.2 kg)
+- A change of yield of 0.1 kg would be interesting
+
+- Design an experiment to test this hypotheis
+- How many replicates do we need to have an 80% probability of detecting an effect of 0.1kg at p = 0.05 
+- If we want stronger evidence (p = 0.01), how many replicates do we need.
+
+- hint: `pwr` package
+
+Aslo explore this graphically with simulations using `biostats.tutorials::power_lm_app()` **You will need to install the biostats.tutorial package again** 
+
+For the exercise below, decide from the description of the hypothesis and data what type of analysis would be appropriate. 
+
+## Exercise 3.
+
+You have a dataset that is about size of bilberry leaves depending on light level in the area they have 
+been growing. Each observation (leaf) is assumed to be independent of the others, i.e. there are no 
+clustering of the data. The response variable (Leaf.area) is a continuous variable. The predictor variable
+(Light.level) is a categorical variable with the three levels; low, intermediate and high.
+You want to test the following hypothesis: H0: The leaf area of bilberries (cm) does not depend on light 
+level in the area where the plants have been growing.
+What family of test would you choose for this kind of data and what R function should you use? 
+
+## Exercise 4.
+
+You suspect that the number of eggs in the brood chamber of Daphnia magna varies
+depending on the protein availability of the feed when the mother is producing her eggs. You
+have done an experiment where you have used two different feed qualities with respect to
+amount of proteins available. You did the experiment to test the following hypothesis:
+H0: The number of eggs in the third clutch of D. magna mothers do not depend on protein availability 
+of the feed.
+You count the number of eggs from 30 females in each of the two feed groups. The observations are 
+assumed to be independent of each other since the D. magna mothers were kept singly in jars.
+
+What family of test would you choose for this kind of data and what R function should you use?
+
+## Exercise 5.
+
+When working in field you discovered that the zygoptera larvae in five lakes in Bergen had a new type 
+of ectoparasite never described before. As a first step in your investigations about this parasite, you 
+want to compare the probability of being infested depending on lake. You did the study in a simple way
+by collecting 30 individual zygoptera larvae in each lake and checked whether they were infested 
+(response variable given the value 1) or not (response variable given the value 0).
+You want to test the following hypothesis: H0: The probability of infestation by the ectoparasite do not 
+differ between lakes.
+What family of test would you choose for this kind of data and what R function should you use?
