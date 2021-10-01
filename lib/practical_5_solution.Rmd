@@ -7,6 +7,14 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+#activate packages - best done in setup chunk to avoid startup messages being printed
+library(tidyverse)
+# load data  - or use library(palmerpenguins)
+data(penguins, package = "palmerpenguins")
+
+# set default theme
+theme_set(theme_bw())
 ```
 
 Do all the exercises in R markdown.
@@ -16,10 +24,80 @@ Do all the exercises in R markdown.
 With the penguin data
 
 -  calculate the minimum, maximum and range of bill lengths for Gentoo penguins
+
+```{r gentoo-min}
+gentoo <- penguins |> 
+  filter(species == "Gentoo")
+
+min(gentoo$bill_length_mm, na.rm= TRUE)
+# OR
+gentoo |> 
+  drop_na(bill_length_mm) |> 
+  summarise(
+    min_bill_len = min(bill_length_mm),
+    max_bill_len = max(bill_length_mm),
+    range = max_bill_len - min_bill_len
+  )
+```
+
 - calculate the mean and median body mass for each species
+
+```{r}
+penguins |> 
+  drop_na(body_mass_g) |>
+  group_by(species) |> 
+  summarise(
+    mean_mass = mean(body_mass_g),
+    median_mass = median(body_mass_g)
+  )
+
+```
+
 - calculate the variance and the standard deviation of body mass for each species.
+```{r}
+penguins |> 
+  drop_na(body_mass_g) |>
+  group_by(species) |> 
+  summarise(
+    var_mass = var(body_mass_g),
+    sd_mass = sd(body_mass_g)
+  )
+
+
+```
+
+
 - Calculate the standard error of the mean for the body mass of each species.
+
+```{r se-mass}
+penguins |> 
+  drop_na(body_mass_g) |>
+  group_by(species) |> 
+  summarise(
+    sd_mass = sd(body_mass_g),
+    n = n(),
+    se_mass = sd_mass/sqrt(n)
+  )
+
+
+```
+
 - Calculate the 95% confidence interval for the mean body mass.
+
+```{r ci-mass}
+penguins |> 
+  drop_na(body_mass_g) |>
+  group_by(species) |> 
+  summarise(
+    mean_mass = mean(body_mass_g),
+    sd_mass = sd(body_mass_g),
+    se_mass = sd_mass/sqrt(n()),
+    upper_ci = mean_mass + 1.96 * se_mass,
+    lower_ci = mean_mass - 1.96 * se_mass
+  )
+
+
+```
 
 ## We want to test the hypothesis that bill length is sex dependent in Adelie penguins.
 
@@ -27,6 +105,29 @@ With the penguin data
 - Make a plot of the relevant data
 - Choose a suitable statistical test and run it. 
 - Interpret the output.
+
+```{r adelie}
+adelie <- penguins |> 
+  filter(species == "Adelie") |> 
+  drop_na(sex, bill_length_mm)
+```
+
+```{r adelie-plot}
+
+adelie |> 
+  ggplot(aes(x = sex, y = bill_length_mm, fill = sex)) +
+  geom_violin(draw_quantiles = 0.5, show.legend = FALSE) +
+  scale_fill_viridis_d() +
+  labs(x = "Sex", y = "Bill length mm")
+  
+  
+```
+
+```{r adelie-t-test}
+t.test(bill_length_mm ~ sex, data = adelie)
+```
+
+
 
 ## Power test
 
@@ -40,6 +141,20 @@ We want to test whether fertiliser A is better than fertiliser B gives a higher 
 - If we want stronger evidence (p = 0.01), how many replicates do we need.
 
 - hint: `pwr` package
+
+```{r}
+library(pwr)
+#need a t-test power analysis
+tomato_power <- pwr.t.test(
+  d = 0.5, # difference in mean (0.1)/ sd (0.2)
+  sig.level = 0.05, #typical value
+  power = 0.8 # typical value
+)
+
+tomato_power
+plot(tomato_power)
+```
+
 
 Also explore this graphically with simulations using `biostats.tutorials::power_lm_app()` **You will need to install the biostats.tutorial package again** 
 
@@ -55,6 +170,11 @@ You want to test the following hypothesis: H0: The leaf area of bilberries (cm) 
 level in the area where the plants have been growing.
 What family of test would you choose for this kind of data and what R function should you use? 
 
+- independent obs
+- response variable continuous
+- predictor variable categorical
+- linear model (anova) lm()
+
 ## Exercise 4.
 
 You suspect that the number of eggs in the brood chamber of _Daphnia magna_ varies
@@ -68,6 +188,11 @@ assumed to be independent of each other since the _D. magna_ mothers were kept s
 
 What family of test would you choose for this kind of data and what R function should you use?
 
+- observations independent
+- response counts
+- predictor categorical
+- gemeralised linear model (poisson family) glm()
+
 ## Exercise 5.
 
 When working in field you discovered that the zygoptera larvae in five lakes in Bergen had a new type 
@@ -79,3 +204,9 @@ You want to test the following hypothesis: H0: The probability of infestation by
 differ between lakes.
 
 What family of test would you choose for this kind of data and what R function should you use?
+
+- observations independent
+- response binary
+- predictor categorical
+- generalised linear model (binomial family) glm()
+- you would never get funding for this work - it is a very uninteresting hypothesis
