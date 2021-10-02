@@ -117,6 +117,7 @@ summarise(
   bill_length_mean = mean(bill_length_mm),
   .groups = "drop")
 ```
+
 ---
 Second solution
 
@@ -139,7 +140,7 @@ p_3 <- summarise(p_2,
 ```
 
 ---
-# pipe solution
+## pipe solution
 
 ```{r}
 p <- penguins |> 
@@ -184,7 +185,7 @@ mites # part of vegan::mite
 ```
 
 ---
-# pivot_longer()
+## pivot_longer()
 
 ```{r}
 mites_long <- mites |> 
@@ -195,7 +196,7 @@ mites_long
 ```
 
 ---
-# pivot_wider()
+## pivot_wider()
 
 ```{r}
 mites_wide <- mites_long |> 
@@ -232,7 +233,7 @@ penguins |>
 ```
 
 ---
-# Selecting adjacent columns
+## Selecting adjacent columns
 
 ```{r}
 penguins |> 
@@ -246,7 +247,7 @@ penguins |>
 
 
 ---
-# Select helpers
+## Select helpers
 
 `ends_with()`
 ```{r}
@@ -273,7 +274,7 @@ One or more logical statements
 - `!=`
 
 ---
-# near()
+## near()
 
 Problem:
 
@@ -293,7 +294,7 @@ near(sqrt(2) ^ 2, 2)
 ```
 
 ---
-# `%in%`
+## `%in%`
 
 Problem
 
@@ -312,7 +313,7 @@ penguins |>
 ```
 
 ---
-# `between()`
+## `between()`
 
 Problem
 
@@ -329,7 +330,7 @@ penguins |>
 ```
 
 ---
-# Partial string matches
+## Partial string matches
 
 Problem
 
@@ -358,7 +359,7 @@ penguins |> mutate(
 ```
 
 ---
-# Useful functions for mutate
+## Useful functions for mutate
 
 - mutate character columns with `stringr`, `glue`
 - mutate factor columns with `forcats`
@@ -444,7 +445,7 @@ knitr::include_graphics("figures/left-join.gif")
 ```
 
 ---
-# left_join()
+## left_join()
 
 .pull-left[
 ```{r}
