@@ -74,7 +74,7 @@ florida
 ## Input
 
 ```{r, eval = FALSE}
-The maximum monthly precipitation is `max(florida$Nedbor_mnd)` mm.
+The maximum monthly precipitation is `r max(florida$Nedbor_mnd)` mm.
 ```
 
 
