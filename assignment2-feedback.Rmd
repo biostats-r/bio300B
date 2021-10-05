@@ -1,0 +1,212 @@
+---
+title: "Assignment 2 feedback"
+subtitle: "Bio300B"
+author: "Richard J. Telford (Richard.Telford@uib.no)"
+institute: "Institutt for biovitenskap, UiB"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+
+```{r setup, include=FALSE, echo =  TRUE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, error = TRUE, message = FALSE, fig.height = 4, fig.width = 5)
+options(tibble.print_max = 5, tibble.print_min = 5)
+```
+```{r xaringanExtra-clipboard, echo=FALSE}
+xaringanExtra::use_clipboard()
+```
+
+```{r share-again, echo = FALSE}
+xaringanExtra::use_share_again()
+```
+
+
+# Packages
+
+```{r, message = FALSE}
+#activate the package
+library(tidyverse)
+library(lubridate)
+library(gt)
+theme_set(theme_bw())
+```
+
+---
+# Loading data
+
+## fix with read_delim
+
+```{r method-1}
+florida <- read_delim(file = "data/Florida-precip.csv", 
+                      delim = ";",
+                      locale = locale(decimal_mark = ","),
+                      col_names = c("name", "station", "date", "precip"),
+                      skip = 1, 
+                      col_types = cols(date = col_date("%m.%Y"))) |> 
+  drop_na(date)
+
+florida
+```
+
+---
+## import then fix
+
+```{r method-2, message = FALSE}
+florida <- read_delim(file = "data/Florida-precip.csv", 
+                      delim = ";",
+                      locale = locale(decimal_mark = ",")) |> 
+  rename(Tid_norsk_normaltid="Tid(norsk normaltid)", Nedbor_mnd = "Nedbør (mnd)") |> 
+  mutate(Tid_norsk_normaltid = my(Tid_norsk_normaltid)) |> 
+  drop_na(Tid_norsk_normaltid)
+
+florida
+```
+
+---
+# Inline code
+
+## Input
+
+```{r, eval = FALSE}
+The maximum monthly precipitation is `max(florida$Nedbor_mnd)` mm.
+```
+
+
+## Output
+
+The maximum monthly precipitation is `r max(florida$Nedbor_mnd)` mm.
+
+
+
+---
+# Extracting the month & year
+
+```{r}
+florida <- florida |> 
+  mutate(
+    month = month(Tid_norsk_normaltid, label = TRUE), 
+    year = year(Tid_norsk_normaltid))
+florida
+```
+
+---
+# Annual cycle plot
+
+## geom_col
+
+```{r col}
+florida |> 
+  group_by(month) |> 
+  summarise(precip = mean(Nedbor_mnd)) |> 
+  ggplot(aes(x = month, y = precip, fill = precip)) +
+  geom_col() +
+  labs(x = "", y = "Precipitation mm")
+```
+
+---
+## geom_point
+
+
+```{r point}
+florida |> 
+  ggplot(aes(x = month, y = Nedbor_mnd)) +
+  geom_point() +
+  labs(x = "", y = "Precipitation mm")
+```
+
+---
+## geom_line
+
+
+```{r line}
+florida |> 
+  ggplot(aes(x = month, y = Nedbor_mnd, colour = year, group = year)) +
+  geom_line() +
+  scale_colour_viridis_c() +
+  labs(x = "", y = "Precipitation mm")
+```
+
+---
+## geom_boxplot
+
+
+```{r boxplot}
+florida |> 
+  ggplot(aes(x = month, y = Nedbor_mnd)) +
+  geom_boxplot() +
+  labs(x = "", y = "Precipitation mm")
+```
+---
+## geom_violin
+
+
+```{r violinplot}
+florida |> 
+  ggplot(aes(x = month, y = Nedbor_mnd)) +
+  geom_violin(fill = "skyblue") +
+  labs(x = "", y = "Precipitation mm")
+```
+
+---
+# Second plot
+
+Sum summer precipitation
+
+```{r}
+library(gghighlight)
+summer_precip <- florida |> 
+  filter(month %in% c("May", "Jun", "Jul", "Aug")) |> 
+  group_by(year) |> 
+  summarise(precip = sum(Nedbor_mnd))
+```
+
+---
+```{r summerline}
+ggplot(summer_precip, aes(x = year, y = precip)) +
+  geom_line() +
+  geom_point(colour = "blue") +
+  gghighlight(year == 2021, ) +
+  labs(x = "Year", y = "Precipitation mm")
+
+```
+
+
+---
+```{r hist}
+ggplot(summer_precip, aes(x = precip)) +
+  geom_histogram(bins = 20, fill = "red") +
+  gghighlight(year == 2021) +
+  geom_segment(
+    aes(xend = precip, y = 4, yend = 0), 
+    data = summer_precip |> filter(year == 2021),
+    arrow = arrow(type = "closed", length = unit(4, "mm")), colour = "blue") +
+  geom_text(aes(y = 4, label = year), 
+    data = summer_precip |> filter(year == 2021),
+    vjust = 0, colour = "blue") +
+  labs(x = "Precipitation mm")
+
+```
+
+---
+# Table
+
+```{r table}
+Month_precip <- florida |>
+  group_by(month) |>
+  summarise(mean_precip = mean(Nedbor_mnd), 
+            sd_precip = sd(Nedbor_mnd)) 
+
+Month_precip |>
+  gt(caption = "Mean and standard deviation of monthly precipitation in Florida, Bergen") |>
+  fmt_number(-month, decimals = 0) |> 
+  cols_label(month = "Month",
+             mean_precip = "Mean Precipitation",
+             sd_precip = "St. Dev. Precip.")
+```
+
