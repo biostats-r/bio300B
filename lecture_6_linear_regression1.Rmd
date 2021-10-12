@@ -1,6 +1,6 @@
 ---
 title: "Linear Regression 1"
-subtitle: "Bio300B Lecture 2"
+subtitle: "Bio300B Lecture 6"
 author: "Richard J. Telford (Richard.Telford@uib.no)"
 institute: "Institutt for biovitenskap, UiB"
 date: "`r format(Sys.Date(), '%d %B %Y')`"
@@ -25,7 +25,6 @@ library("tidyverse")
 library("patchwork")
 library(broom)
 library(glue)
-library(multcomp)
 theme_set(theme_bw(base_size = 18))
 data(penguins, package = "palmerpenguins")
 options(dplyr.print_min = 2, dplyr.print_max = 3, digits = 4)
@@ -68,6 +67,7 @@ g1
 ---
 ## Covariance
 
+.pull-left[
 Association between two variables
 
 $S_{xy} = \frac{\Sigma (x_i - \mu_x)(y_i - \mu_y)}{n - 1}$
@@ -78,15 +78,22 @@ $S_{xy} = S_{yx}$
 - \+ = positive association
 - \- = negative association
 - `cov()`
+]
+
+.pull-right[
+![](`r knitr::fig_chunk('corr', 'png')`)
+
+
+]
 
 ---
 ## Correlation
 
-Pearson coefficient of correlation
+.pull-left[Pearson coefficient of correlation
 
 Standardised association
 
-- $S_{xy}$ - covariance of x and y
+- $S_{xy}$ - covariance of x & y
 - $S_x^2$ - variance of x
 - $S_y^2$ - variance of y
 
@@ -97,6 +104,12 @@ $r_{xy} = \frac{S_{xy}}{\sqrt{S_x^2S_y^2}}$
 - \- = negative association
 
 $r_{xy} = r_{yx}$
+]
+.pull-right[
+![](`r knitr::fig_chunk('corr', 'png')`)
+
+
+]
 
 ---
 ## Correlations in R
@@ -139,13 +152,29 @@ Not robust to outliers
 ---
 # Least squares regression
 
-- Describe the relationship between the response variable y and the predictor variable x
+- Describe relationship between response _y_ and predictor _x_
 $$y = β_0 + β_1x$$
 - Estimate model coefficients with uncertainty
 - Test if terms in the model are significant
 - Check the method's assumptions
 - View the model diagnostics
 - Make predictions with confidence intervals
+
+```{r lin-mods, echo = FALSE, fig.width = 8, fig.height = 4, message = FALSE}
+gentoo <- penguins |> filter(species == "Gentoo")
+p1 <- ggplot(gentoo, aes(x = body_mass_g, y = bill_length_mm)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(x = "Body mass g", y = "Bill length mm", title = "Continuous")
+
+p2 <- ggplot(penguins, aes(x = species, y = body_mass_g)) +
+  ggbeeswarm::geom_quasirandom() +
+  stat_summary(colour = "red", fun.data = "mean_cl_normal") +
+  labs(x = "Species", y = "Body mass g", title = "Categorical")
+
+p1 + p2 
+```
+
 
 ---
 # We want the parameters $\beta$
@@ -453,9 +482,10 @@ Instead of changing the order of the levels of the predictor variable to
 compare all groups against each other, use a post-hoc multiple comparisons test
 
 ```{r, results = 'hide'}
-library(multcomp)
+#multcomp package is badly behaved - it loads plyr package which has lots of conflicts with dplyr
+# Solution - use conflicted package or multcomp::glht
 
-mc <- glht(mod2, linfct = mcp(species="Tukey"),
+mc <- multcomp::glht(mod2, linfct = multcomp::mcp(species="Tukey"),
            data = penguins)
 summary(mc)
 ```
@@ -492,7 +522,7 @@ autoplot(mod) # can also use plot(mod)
 
 
 ---
-## Residial vs fitted
+## Residual vs fitted
 
 .pull-left[
 Check for
@@ -609,7 +639,7 @@ $$y = \beta_0+\beta_1x$$
 
 ```{r}
 coef(mod)
-x <- 20
+x <- 5000
 coef(mod)[1] +coef(mod)[2] * x
 ```
 ]
@@ -639,7 +669,7 @@ predict(object = mod)
 ## Predict with new data
 
 ```{r}
-nd <- tibble(body_mass_g = c(15, 20))
+nd <- tibble(body_mass_g = c(5000, 7000))
 predict(mod, newdata = nd)
 ```
 
@@ -663,14 +693,12 @@ predict(mod, newdata = nd, interval = "confidence", level = 0.95)
 
 Often easier to use `broom::augment()`
 
-```{r augment}
+```{r augment, fig.height = 5}
 augment(mod, interval = "confidence") |> 
   ggplot(aes(x = body_mass_g, y = bill_length_mm)) +
   geom_point() +
   geom_ribbon(aes(ymin = .lower, ymax = .upper), alpha = .3)+
-  geom_line(aes(y = .fitted)) +
-  NULL
-
+  geom_line(aes(y = .fitted))
 ```
 
 
@@ -680,13 +708,10 @@ augment(mod, interval = "confidence") |>
 Where will a new observation probably be
 
 
-```{r prediction-interval}
+```{r prediction-interval, fig.height = 5}
 augment(mod, interval = "prediction") |> 
   ggplot(aes(x = body_mass_g, y = bill_length_mm)) +
   geom_point() +
   geom_ribbon(aes(ymin = .lower, ymax = .upper), alpha = .3)+
-  geom_line(aes(y = .fitted)) +
-  NULL
-
-
+  geom_line(aes(y = .fitted))
 ```
