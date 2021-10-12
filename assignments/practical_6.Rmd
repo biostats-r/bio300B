@@ -1,0 +1,59 @@
+---
+title: "Datalab 6 - linear regression"
+author: "Richard Telford"
+date: "10/12/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Please work in an R markdown document
+
+## Correlations
+
+- With the Penguins dataset, find the Pearson correlation bill length and bill depth for Gentoo penguins.
+- Find the confidence intervals of this correlation. Is it significant?
+- Calculate r^2^. How much of the variation in the data is explained by the correlation.
+
+
+## Continuous predictors
+
+We want to test how bill depth varies with body mass in Chinstrap penguins
+
+- make a suitable plot to show the raw data
+- fit a suitable model to the data
+- interpret the model coefficients
+- is the model statistically significant
+- Examine the diagnostic plots. Is everything OK?
+- Predict, with uncertainty, the mean bill length for Chinstraps with a mass of 3000 and 5000 g
+- Add the regression line, with the confidence interval, to the plot.
+
+
+## Categorical predictors
+
+We want to test whether Adelie penguins differ in body mass between islands.
+
+- Make a suitable plot to show the raw data
+- Fit a suitable model to the data
+- Interpret the model coefficients
+- Is the model statistically significant?
+- Include the predicted mass with confidence interval on the plot
+- Do a post-hoc test to test for differences between pairs of islands (in real analysis only do this if overall model is significant) (Hint - use `multcomp` package but DO NOT use `library(multcomp)` - it also loads `plyr` and causes conflicts)
+- plot the result of the post-hoc test and interpret the results
+
+## Exploring diagnostic plots
+
+Use the `influence_leverage_app()` from biostats.tutorials package (you will need to reinstall it) to explore how the diagnostic plots look with a outlier, influential observation, or observation with high leverage.
+
+Open the app and move the red point. Diagnostic plot on the left shows model without the red point, plot on the right includes the red point.
+
+Try to:
+
+- Make the R2 as high as possible
+- Make the R2 as low as possible
+
+And look at the different diagnostic plots
+
+
