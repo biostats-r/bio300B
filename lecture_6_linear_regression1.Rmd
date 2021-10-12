@@ -1,0 +1,692 @@
+---
+title: "Linear Regression 1"
+subtitle: "Bio300B Lecture 2"
+author: "Richard J. Telford (Richard.Telford@uib.no)"
+institute: "Institutt for biovitenskap, UiB"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+<style type="text/css">
+.remark-slide-content {
+    font-size: 24px;
+    padding: 1em 4em 1em 4em;
+}
+</style>
+
+```{r setup, echo=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, error = TRUE)
+library("tidyverse")
+library("patchwork")
+library(broom)
+library(glue)
+library(multcomp)
+theme_set(theme_bw(base_size = 18))
+data(penguins, package = "palmerpenguins")
+options(dplyr.print_min = 2, dplyr.print_max = 3, digits = 4)
+```
+
+```{r xaringanExtra-clipboard, echo=FALSE}
+xaringanExtra::use_clipboard()
+```
+
+```{r share-again, echo = FALSE}
+xaringanExtra::use_share_again()
+xaringanExtra::use_scribble()
+```
+
+
+
+# Bivariate descriptive statistics
+
+.pull-left[
+Measures of association
+  - covariance
+  - correlation
+]
+.pull-right[
+Use with
+- two continuous variables
+- paired data
+- unclear direction of causality
+]
+```{r corr, fig.width = 5, fig.height = 5, echo = FALSE}
+gentoo <- penguins |> 
+  filter(species == "Gentoo") |> 
+  drop_na(bill_length_mm)
+g1 <- ggplot(gentoo, aes(x = body_mass_g, y = bill_length_mm)) +
+  geom_point() +
+  labs(x = "Bill length mm", y = "Bill depth mm")
+g1 
+```
+
+---
+## Covariance
+
+Association between two variables
+
+$S_{xy} = \frac{\Sigma (x_i - \mu_x)(y_i - \mu_y)}{n - 1}$
+
+$S_{xy} = S_{yx}$
+
+- \-inf, 0, +inf
+- \+ = positive association
+- \- = negative association
+- `cov()`
+
+---
+## Correlation
+
+Pearson coefficient of correlation
+
+Standardised association
+
+- $S_{xy}$ - covariance of x and y
+- $S_x^2$ - variance of x
+- $S_y^2$ - variance of y
+
+$r_{xy} = \frac{S_{xy}}{\sqrt{S_x^2S_y^2}}$
+
+- \-1, 0, +1
+- \+ = positive association
+- \- = negative association
+
+$r_{xy} = r_{yx}$
+
+---
+## Correlations in R
+
+```{r cor}
+cor(penguins$bill_length_mm,
+    penguins$body_mass_g, 
+    use = "pairwise.complete")
+```
+
+```{r cor-mat}
+penguins |> 
+  select(bill_length_mm:body_mass_g) |> 
+cor(use = "complete.obs")
+```
+
+---
+## $R^2$
+
+Coefficient of determination 
+
+$$R^2 = r^2$$
+
+- 0 - 1
+- $R^2$ = 0.5, 50% of variation in data explained
+---
+## Testing a Correlation
+
+```{r cor-test}
+cor.test(penguins$bill_length_mm,
+    penguins$body_mass_g, 
+    use = "pairwise.complete")
+```
+
+Not robust to outliers
+
+ - Non-parametric correlation (Spearman Rank, Kendall Tau)
+ - Bootstrap estimation of confidence interval
+
+---
+# Least squares regression
+
+- Describe the relationship between the response variable y and the predictor variable x
+$$y = β_0 + β_1x$$
+- Estimate model coefficients with uncertainty
+- Test if terms in the model are significant
+- Check the method's assumptions
+- View the model diagnostics
+- Make predictions with confidence intervals
+
+---
+# We want the parameters $\beta$
+
+$$y_i = \beta_0 + \beta_1x_i + \epsilon_i  $$
+
+- $y$ = continuous response
+- $x$ = continuous or categorical predictor
+- $i = 1, ..., n$ observations
+- $(xi, yi)$ observation pairs
+- $ε_i$ = residual at $i$
+- $β_0$ = mean, intercept
+- $β_1$ = effect, slope
+
+Residuals are actual - predicted
+
+Criteria
+
+- $\epsilon \sim N(0, \sigma)$ 
+- $y \sim N(\mu, \sigma)$
+
+---
+
+Use when
+
+- Response variable is continuous
+- Predictor variable(s) are continuous or categorical
+- Observations are independent
+
++ Other assumptions are met
+
+- Direction of causality is clear
+- Want to make predictions
+- Want effect size as slope or differences between groups
+
+
+---
+# Correlation or linear model
+
+Study to find relationship between foraminifera test composition and temperature
+
+1) Experiment to with individual forams in tanks at different temperatures.
+
+- Variables test Mg concentration, tank temperature
+- Variables Test Mg concentration, test Ba concentration 
+
+2) Observational study of forams collected from the ocean.
+
+- Variables test Mg concentration, Ocean temperature
+- Variables Ocean temperature, ocean Mg concentration
+- Variables test Mg concentration, foram species
+
+---
+# Estimating $\beta$
+
+.pull_left[
+Choose $\beta$ that minimise the sum of squares of residuals
+
+$$\sum_{i = 1}^{n}\epsilon_i^2 =   \sum_{i = 1}^{n}(y_i - (\beta_0 + \beta_1x_i))^2$$
+
+]
+
+.pull_right[
+```{r slope-anim, echo = FALSE, fig.height = 5, fig.width = 5, cache = TRUE}
+gentoo <- penguins |> filter(species == "Gentoo")
+library(gganimate)
+
+betas <- tibble(b_0 = c(seq(41, 56, 3),  rep(47, 11)), 
+                b1 = c(rep(0, 7), seq(-0.01, 0.01, 0.0025), 0.00409), 
+                b0 = b_0 - b1 * mean(gentoo$body_mass_g, na.rm = TRUE)) |> 
+  mutate(n = 1:n()) |> 
+  rowwise() |> 
+  mutate(ss = sum((gentoo$bill_length_mm - (b0 + b1 * gentoo$body_mass_g))^2, na.rm = TRUE),
+         ss = round(ss))
+
+ggplot(gentoo, aes(x = body_mass_g, y = bill_length_mm)) +
+   geom_point() +
+   geom_abline(aes(intercept = b0, slope = b1), colour = "red", data = betas) + 
+  transition_states(n) +
+  labs(title = paste0("Sum squares: {betas %>% filter(n == closest_state) %>% pull(ss)} ")) +
+  ease_aes('linear')
+  
+  
+```
+]
+
+---
+## Calculating $\beta$
+
+
+$$\beta_1 = \frac{s_{xy}}{s_x^2}$$
+ Covariance of xy / variance of x
+ 
+$$\beta_0 = mean(y) - \beta_1 mean(x)$$
+
+
+---
+# Fitting a least-squares model in R
+
+```{r}
+gentoo <- penguins |> filter(species == "Gentoo")
+
+mod <- lm(bill_length_mm ~ body_mass_g, data = gentoo)
+mod
+```
+
+---
+## Summary
+
+```{r}
+summary(mod)
+```
+
+
+---
+# Variance partitioning
+
+```{r, echo = FALSE}
+ss_plot <- function(data, x, y){
+  data <- data |> drop_na(.data[[x]], .data[[y]])
+  mod <- lm(as.formula(glue("{y} ~ {x}")), data = data)
+  res <- augment(mod) |> 
+    mutate(
+      total = mean(.data[[y]]), 
+  )
+  reg <- tibble(
+    what = c("Residual", "Regression", "Total", "Regression"), 
+    intercept = c(rep(coef(mod)[1], 2), rep(mean(data[[y]]), 2)),
+    slope = c(rep(coef(mod)[2], 2), 0, 0)) |> 
+    mutate(what = factor(what, levels = c("Regression", "Residual", "Total")), 
+           what = fct_rev(what))
+  
+  
+  res2 <- bind_rows(
+    Total = res |> 
+      mutate(y = .data[[y]], yend = total),
+    Residual = res |> 
+      mutate(y = .data[[y]], yend = .fitted),
+    Regression = res |> 
+      mutate(y = .fitted, yend = total),
+    .id = "what"
+  ) |> 
+    mutate(what = factor(what, levels = c("Regression", "Residual", "Total")), 
+           what = fct_rev(what))
+
+  
+res2 |> 
+  ggplot(aes(x = .data[[x]], y = .data[[y]])) +
+    geom_point() +
+    geom_segment(
+      aes(x = .data[[x]],
+          xend = .data[[x]],
+          y = y,
+          yend = yend, 
+          colour = what),
+      show.legend = FALSE) +
+  geom_abline(data = reg, aes(intercept = intercept, slope = slope)) +
+     facet_wrap(~ what, ncol = 1)
+
+  
+}
+
+sum_sq_plot <- penguins |> filter(species == "Gentoo") |> 
+  drop_na(bill_length_mm, body_mass_g) |> 
+  ss_plot( x = "body_mass_g", y = "bill_length_mm")
+```
+.pull-left[
+
+**Total sum of squares** $SS_{total}$
+
+Squared differences of observation from mean
+
+**Residual sum of squares** $SS_{residual}$
+
+Squared differences of observation from regression line
+
+**Regression sum of squares** $SS_{regression}$
+
+Squared differences of regression line from mean
+]
+.pull-right[
+```{r ss-plot, echo=FALSE, fig.height = 8, fig.width=5.5}
+sum_sq_plot
+```
+]
+
+---
+# $R^2$
+
+
+Coefficient of determination 
+
+Coefficient of multiple correlation
+
+  $$R^2 = 1 - \frac{SS_{residual}}{SS_{total}}$$
+ 
+ - 0 - 1
+ - $R^2$ = 0.5  -- 50% of variation in data explained
+ - Always increases with more predictors
+ 
+ - Adjusted $R^2$ corrects for number of parameters
+ - Can be negative
+ 
+---
+## Anova
+
+$$F = \frac{SS_{regression}/df_{regression}}{SS_{residual}/df_{residual}}$$
+
+```{r}
+car::Anova(mod)
+```
+
+---
+# The F distribution
+
+
+```{r F, echo = FALSE, fig.height = 4, fig.width=5}
+tibble(x = seq(0.1, 10, length = 1000), 
+       y = df(x, df1 = 1, df2 = df.residual(mod)), 
+       fill = x >= qf(0.95, df1 = 1, df2 = 340, lower.tail = TRUE)) |> 
+  ggplot(aes(x = x, y = y, fill = fill)) +
+  geom_area(show.legend = FALSE) +
+  scale_fill_manual(values = c(`FALSE` = "grey60", `TRUE` = scales::muted("red"))) +
+  labs(x = "F", y = "Density")
+#pf(q = 19.9, df1 = 1, df2 = 340) 
+
+```
+
+---
+# Categorical predictors
+
+Does penguin body mass depend on species?
+
+Predictor = species (categorical)
+
+Response = body mass (continuous)
+
+Hypotheses 
+
+$$H_0: \mu_{Adelie} = \mu{Chinstrap} = \mu{Gentoo}$$
+$H_A$ At least two of the means differ
+
+---
+```{r species-plot}
+ggplot(penguins, aes(x = species, y = body_mass_g, fill = species)) +
+  geom_violin(show.legend = FALSE) +
+  scale_fill_brewer(palette = "Set1")
+```
+
+---
+## Fitting the model
+
+```{r}
+mod2 <- lm(body_mass_g ~ species, data = penguins)
+mod2
+```
+
+---
+## Anova
+
+```{r}
+car::Anova(mod2)
+```
+
+At least two groups differ
+
+---
+## Summary
+
+```{r}
+summary(mod2)
+```
+
+---
+Summary shows difference between 
+
+- Adelie and Chinstrap
+- Adelie and Gentoo
+
+Not between 
+
+ - Chinstrap and Adelie
+
+---
+## Forcing the reference level
+
+Very useful when you have a control
+
+```{r}
+penguins2 <- penguins |> 
+  mutate(species = factor(species, levels = c("Gentoo", "Adelie", "Chinstrap")))
+
+mod3 <- lm(body_mass_g ~ species, data = penguins2)
+```
+
+---
+```{r}
+broom::tidy(mod3)
+```
+
+---
+# Multiple comparisons
+
+Instead of changing the order of the levels of the predictor variable to 
+compare all groups against each other, use a post-hoc multiple comparisons test
+
+```{r, results = 'hide'}
+library(multcomp)
+
+mc <- glht(mod2, linfct = mcp(species="Tukey"),
+           data = penguins)
+summary(mc)
+```
+
+---
+```{r, echo=FALSE}
+summary(mc)
+```
+
+---
+```{r multicomp}
+plot(mc)
+```
+
+
+---
+# Assumtions of Least Squares
+
+1. The relationship between the response and the predictors is ~linear.
+2. The residuals have a mean of zero.
+3. The residuals have constant variance (not heteroscedastic).
+4. The residuals are independent (uncorrelated).
+5. The residuals are normally distributed.
+
+Violation of assumptions cannot be detected using the t or F statistics or R<sup>2</sup>
+
+---
+# Diagnostic plots
+
+```{r all-diagnostics, fig.height = 6, fig.width = 7}
+library(ggfortify)
+autoplot(mod) # can also use plot(mod)
+```
+
+
+---
+## Residial vs fitted
+
+.pull-left[
+Check for
+
+- Outliers
+- Variations in the mean residual
+
+Want flat line
+]
+
+.pull-right[
+```{r diagnostic-1, fig.height = 6, fig.width=8}
+autoplot(mod, which = 1)
+```
+]
+
+---
+## Quantile-quantile plot
+
+.pull-left[
+QQ plots compare two
+samples to determine if they are from the same distribution.
+
+
+Check for
+
+- Non-normal distribution of the residuals
+
+Points will lie on straight line if normally distributed
+]
+
+.pull-right[
+
+```{r diagnostic-2, fig.height = 6, fig.width=8}
+autoplot(mod, which = 2)
+```
+]
+
+---
+## Scale-location plot
+
+.pull-left[
+Square root of the absolute standardised residuals 
+
+Check for
+
+- Unequal variance
+= Heteroscedasticity
+
+Want flat line
+]
+
+.pull-right[
+
+```{r diagnostic-3, fig.height = 6, fig.width=8}
+autoplot(mod, which = 3)
+```
+]
+
+---
+## Cook's distance
+
+.pull-left[
+Influence of individual points on the fitted values
+
+– how much do fitted values change when observation _i_ removed
+
+Points with a D > 4/n merit examination
+]
+
+.pull-right[
+
+```{r diagnostic-4, fig.height = 6, fig.width=8}
+autoplot(mod, which = 4)
+```
+]
+
+---
+## Residuals vs leverage
+
+.pull-left[
+Plot of standardised residuals against leverage, with contours of Cooks distance
+
+Observations with extreme leverage should be checked]
+
+.pull-right[
+
+```{r diagnostic-5, fig.height = 6, fig.width=8}
+autoplot(mod, which = 5)
+```
+]
+
+---
+## Cook's distance vs leverage
+
+.pull-left[
+Influence vs leverage with contours of standardised residuals
+
+Check extreme observations
+]
+
+.pull-right[
+
+```{r diagnostic-6, fig.height = 6, fig.width=8}
+autoplot(mod, which = 6)
+```
+]
+
+---
+# Predictions
+
+.pull-left[
+$$y = \beta_0+\beta_1x$$
+
+```{r}
+coef(mod)
+x <- 20
+coef(mod)[1] +coef(mod)[2] * x
+```
+]
+
+.pull-right[
+
+```{r pred-plot, echo = FALSE}
+
+
+ggplot(gentoo, aes(x = body_mass_g, y = bill_length_mm)) +
+  geom_point() +
+  geom_abline(intercept = coef(mod)[1], slope = coef(mod)[2], colour = scales::muted("red")) +
+  geom_vline(xintercept = x, linetype = "dashed") +
+  geom_hline(yintercept = coef(mod)[1] +coef(mod)[2] * x, linetype = "dashed")
+
+```
+]
+
+---
+## Predict
+
+```{r}
+predict(object = mod)
+```
+
+---
+## Predict with new data
+
+```{r}
+nd <- tibble(body_mass_g = c(15, 20))
+predict(mod, newdata = nd)
+```
+
+---
+## Predictions with standard errors
+
+Uncertainty of the mean
+
+```{r}
+predict(mod, newdata = nd, se.fit = TRUE)
+```
+
+---
+## Predictions with confidence interval
+
+```{r}
+predict(mod, newdata = nd, interval = "confidence", level = 0.95)
+```
+
+---
+
+Often easier to use `broom::augment()`
+
+```{r augment}
+augment(mod, interval = "confidence") |> 
+  ggplot(aes(x = body_mass_g, y = bill_length_mm)) +
+  geom_point() +
+  geom_ribbon(aes(ymin = .lower, ymax = .upper), alpha = .3)+
+  geom_line(aes(y = .fitted)) +
+  NULL
+
+```
+
+
+---
+## Predictions interval
+
+Where will a new observation probably be
+
+
+```{r prediction-interval}
+augment(mod, interval = "prediction") |> 
+  ggplot(aes(x = body_mass_g, y = bill_length_mm)) +
+  geom_point() +
+  geom_ribbon(aes(ymin = .lower, ymax = .upper), alpha = .3)+
+  geom_line(aes(y = .fitted)) +
+  NULL
+
+
+```
