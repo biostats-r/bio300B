@@ -20,7 +20,7 @@ Please work in an R markdown document
 
 ## Continuous predictors
 
-We want to test how bill depth varies with body mass in Chinstrap penguins
+We want to test how bill length varies with body mass in Chinstrap penguins
 
 - make a suitable plot to show the raw data
 - fit a suitable model to the data
