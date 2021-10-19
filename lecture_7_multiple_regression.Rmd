@@ -1,0 +1,466 @@
+---
+title: "Multiple Regression"
+subtitle: "Bio300B Lecture 6"
+author: "Richard J. Telford (Richard.Telford@uib.no)"
+institute: "Institutt for biovitenskap, UiB"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+<style type="text/css">
+.remark-slide-content {
+    font-size: 24px;
+    padding: 1em 4em 1em 4em;
+}
+</style>
+
+```{r setup, echo=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, error = TRUE)
+library("tidyverse")
+library("patchwork")
+library(broom)
+library(glue)
+theme_set(theme_bw(base_size = 18))
+data(penguins, package = "palmerpenguins")
+options(dplyr.print_min = 5, dplyr.print_max = 5, digits = 4)
+```
+
+```{r xaringanExtra-clipboard, echo=FALSE}
+xaringanExtra::use_clipboard()
+```
+
+```{r share-again, echo = FALSE}
+xaringanExtra::use_share_again()
+xaringanExtra::use_scribble()
+```
+
+- Types of models
+- Interactions
+- Model selection
+  - Exploratory data analysis
+  - Anova for hypothesis testing
+- Multi-colinearity
+
+---
+# Adding more variables
+
+```{r}
+# Two way anova - two categorical predictors
+mod_anova2 <- lm(bill_length_mm ~ sex + species, data = penguins)
+
+# ancova - one categorical one continuous predictor
+mod_ancova <- lm(bill_length_mm ~ sex + flipper_length_mm, data = penguins)
+
+# Multiple regression - two continuios
+mod_mult <- lm(bill_length_mm ~ sex + flipper_length_mm, data = penguins)
+```
+
+---
+
+```{r}
+summary(mod_anova2)
+```
+
+---
+
+```{r}
+summary(mod_ancova)
+```
+
+---
+
+```{r}
+summary(mod_mult)
+```
+
+
+---
+# Different formula
+
+```{r diff-models-reg, fig.height=8, echo = FALSE, fig.width  = 10}
+adelie <- penguins |> 
+  filter(species == "Adelie")
+
+base_plot <- ggplot(adelie, aes(x = flipper_length_mm, y = bill_length_mm)) +
+  geom_point(colour = "orange") +
+  labs(x = "Flipper length mm", y = "Bill length mm")
+
+# intercept only
+mod0 <- lm(bill_length_mm ~ 1, data = adelie)
+
+# slope
+mod_slope <- lm(bill_length_mm ~ flipper_length_mm, data = adelie)
+
+# categorical predictor
+mod_cat <- lm(bill_length_mm ~ sex, data = adelie)
+
+# ancova
+mod_ancova <- lm(bill_length_mm ~ sex + flipper_length_mm, data = adelie)
+
+# interaction
+mod_interact <- lm(bill_length_mm ~ sex * flipper_length_mm, data = adelie)
+
+
+preds <- bind_rows(
+  "y ~ 1" = adelie |> select(-sex) |> mutate(.fitted = coef(mod0[1])),
+  "y ~ x" =  augment(mod_slope),
+  "y ~ z" =  left_join(adelie |> drop_na(sex, flipper_length_mm, bill_length_mm), augment(mod_cat)), 
+  "y ~ x + z" = augment(mod_ancova),
+  "y ~ x * z" = augment(mod_interact), 
+  .id = "model") |> 
+  left_join(tribble(~model, ~type,
+                      "y ~ 1", "Intercept only",
+  "y ~ x", "Continuous predictor",
+  "y ~ z", "Categorical predictor", 
+  "y ~ x + z", "Continuous and categorical predictors",
+  "y ~ x * z", "Interaction")) |> 
+  mutate(model = factor(model, levels = c("y ~ 1", "y ~ x", "y ~ z", "y ~ x + z", "y ~ x * z")),
+         type = factor(type, levels = c("Intercept only", "Continuous predictor", "Categorical predictor", "Continuous and categorical predictors", "Interaction")))
+
+base_plot +
+  geom_line(data = preds, aes(y = .fitted, colour = sex), size = 1.5) +
+  facet_wrap(~ type + model) +
+  scale_color_brewer(palette = "Set1", na.value = "grey30") +
+  theme(legend.position = c(5/6, 1/4))
+
+```
+
+---
+
+```{r diff-models-anova, fig.height=8, echo = FALSE, fig.width  = 10}
+library(ggbeeswarm)
+
+
+base_plot <- ggplot(penguins |> drop_na(sex, bill_length_mm), aes(x = "Penguin", y = flipper_length_mm)) +
+geom_violin() +
+ geom_quasirandom(alpha = 0.3, dodge.width = 1) +
+  labs(x = "Species", y = "Flipper length mm") +
+  scale_color_brewer(palette = "Set1") +
+  theme(axis.title.x = element_blank())
+
+# intercept only
+mod0 <- lm(flipper_length_mm ~ 1, data = penguins)
+
+# anova
+mod_anova <- lm(flipper_length_mm ~ species, data = penguins)
+
+# 2 way anova
+mod_anova2 <- lm(flipper_length_mm ~ species + sex, data = penguins)
+
+# 2 way anova with interaction
+mod_interaction <- lm(flipper_length_mm ~ species * sex, data = penguins)
+
+
+
+p1 <- base_plot +
+  geom_pointrange(
+    aes(y = .fitted, ymax = .upper, ymin = .lower), 
+    data = augment(mod0, interval = "confidence") |> slice(1),
+    colour = "red",
+    size = 1.1) +
+  ggtitle("y ~ 1", subtitle = "Intercept only")
+
+
+
+p2 <- base_plot +
+  aes(x = species) +
+  geom_pointrange(
+    aes(y = .fitted, ymax = .upper, ymin = .lower), 
+    data = augment(mod_anova, interval = "confidence", newdata = distinct(penguins, species)),
+    colour = "red",
+    size = 1.1) +
+  ggtitle("y ~ x", subtitle = "Anova") 
+
+
+p3 <- base_plot +
+  aes(x = species, colour = sex) +
+  geom_pointrange(
+    aes(y = .fitted, ymax = .upper, ymin = .lower, colour = sex), 
+    data = augment(mod_anova2, interval = "confidence", newdata = distinct(penguins, species, sex) |> drop_na(sex)),
+    position = position_dodge(width = 1),
+    size = 1.1) +
+  ggtitle("y ~ x + z", subtitle = "Two-way anova")
+
+
+p4 <- base_plot +
+  aes(x = species, colour = sex) +
+  geom_pointrange(
+    aes(y = .fitted, ymax = .upper, ymin = .lower, colour = sex), 
+    data = augment(mod_interaction, interval = "confidence", newdata = distinct(penguins, species, sex) |> drop_na(sex)), 
+    position = position_dodge(width = 1),
+    size = 1.1) +
+  ggtitle("y ~ x * z", subtitle = "Interaction")
+
+
+p1 + p2 +p3 + p4 & theme(legend.position = "none")
+
+```
+
+---
+# What is an interaction
+
+Effect of one predictor depends on value of another
+
+```{r interaction, fig.width = 8, fig.height = 6, echo = FALSE}
+
+p1 <- crossing(species = c("A", "B"), sex = c("F", "M")) |> 
+  mutate(mean = if_else(species == "A", 0.9, 2.1),
+         mean = if_else(sex == "F", mean, mean + 1)) |> 
+  ggplot(aes(x = species, y = mean, ymin = mean -0.5, ymax = mean + 0.5, colour = sex)) +
+  geom_pointrange(position = position_dodge(width = .5)) +
+  labs(y = "Value", title = "Interaction", x = "Predictor 1", colour = "Predictor 2")
+
+p2 <- crossing(species = c("A", "B"), sex = c("F", "M")) |> 
+  mutate(mean = if_else(species == "A", 0.9, 2.1),
+         mean = if_else(sex == "F", mean, mean + 1), 
+         mean = if_else(species == "B" & sex == "M", mean + 0.5, mean)) |> 
+  ggplot(aes(x = species, y = mean, ymin = mean -0.5, ymax = mean + 0.5, colour = sex)) +
+  geom_pointrange(position = position_dodge(width = .5)) +
+  labs(y = "Value", title = "Interaction", x = "Predictor 1", colour = "Predictor 2")
+
+p1 + p2 + plot_layout(guides = "collect")
+```
+
+---
+```{r}
+mod <- lm(flipper_length_mm ~ species * sex, data = penguins)
+summary(mod)
+```
+ 
+
+
+---
+# Interaction between continuous and categorical predictors
+
+```{r cont-int, echo = FALSE, fig.width = 10, fig.height= 6}
+
+tribble(~ type, ~ predictor, ~ intercept, ~ slope,
+       "No interaction", "A" , 10, 5, 
+       "No interaction", "B", 12, 5,
+       "Interaction - steeper", "A", 10, 5,
+       "Interaction - steeper", "B", 12, 8,
+       "Interaction - shallower", "A", 10, 5,
+       "Interaction - shallower", "B", 12, 3,
+) |> 
+  crossing(continuous = 1:100) |> 
+  mutate(value = continuous * slope/50 + intercept,
+         type = factor(type), 
+         type = fct_rev(type)) |> 
+  ggplot(aes(x = continuous, y = value, colour = predictor)) +
+  geom_line() +
+  facet_wrap(~type) +
+  labs(x = "Continuous Predictor", colour = "Categorical\npredictor", y = "Response")
+
+```
+
+---
+
+```{r}
+mod_interact <- lm(bill_length_mm ~ sex * flipper_length_mm, data = adelie)
+summary(mod_interact)
+```
+
+
+
+---
+# Interaction between two continuous predictors
+
+```{r cont-cont, echo = FALSE, fig.width = 8, fig.height = 6}
+crossing(A = 1:100, B = 1:100, type = c("Interaction", "No interaction")) |> 
+  mutate(type = factor(type), 
+         type = fct_rev(type), 
+         response = if_else(type == "Interaction",( A * 7 + B * 5 + A*B * 2)/10, A * 7 + B * 5)) |> 
+  ggplot(aes(x = A, y = B, z = response)) +
+  geom_contour_filled() +
+  facet_wrap(~ type) +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  labs(x = "Predictor A", y = "Predictor B", fill = "Response")
+```
+
+---
+
+```{r}
+mod <- lm(flipper_length_mm ~ body_mass_g * bill_length_mm, data = adelie)
+summary(mod)
+```
+
+---
+# Power needed for interactions
+
+- Main effect = ybar1 - ybar2
+- Interaction = (ybar1 - ybar2) - (ybar3 - ybar4)
+
+```{r, power-int, echo = FALSE}
+p2
+```
+
+---
+
+```{r}
+set.seed(42)
+sigma = 10
+n <- 1000
+random <- tibble(x = sample(c("A", "B"), n, replace = TRUE), 
+       z = sample(factor(1:2), n, replace = TRUE), 
+       y = rnorm(n, mean = 0, sd = sigma))
+
+lm(y ~ x*z, data = random) |> tidy()
+```
+
+---
+# Formula for interactions
+
+y ~ x + z + x:z
+
+y ~ x * z
+
+y ~ (x + z)^2
+
+Use y ~ x + I(x^2) to get a quadratic. Or y ~ poly(x, 2)
+
+---
+
+```{r}
+mod1 <- lm(flipper_length_mm ~ species + sex + species:sex, data = penguins)
+mod2 <- lm(flipper_length_mm ~ species * sex, data = penguins)
+mod3 <- lm(flipper_length_mm ~ (species + sex)^2, data = penguins)
+
+coef(mod1)
+coef(mod2)
+coef(mod3)
+```
+
+---
+# Model Selection
+
+You want to the best model!
+
+The best model for what?
+
+- Exploratory data analysis
+- Inference (hypothesis testing)
+- Predictions
+
+.footnote[
+Tredennick et al 2021 A practical guide to selecting models for exploration, inference, and prediction in ecology Ecology. [https://doi.org/10.1002/ecy.3336]( https://doi.org/10.1002/ecy.3336) ]
+
+---
+# Exploratory analysis
+
+- Consider all plausible models
+- P-values **not** meaningful
+- High type I error rate
+- Suggest hypotheses for hypothesis testing **with independent data**
+
+The more biology you include in the model 
+
+---
+# Automatic model selection
+
+Last resort - many problems and biases
+
+Forward selection
+
+Backwards selection
+
+All possible models
+
+---
+
+```{r}
+library(MuMIn)
+library(conflicted)
+conflict_prefer("filter", "dplyr")
+conflict_prefer("select", "dplyr")
+
+penguins2 <- penguins |> drop_na() |> select(-year)
+full <- lm(body_mass_g ~ ., data = penguins2, na.action = "na.fail")
+```
+
+---
+# AIC
+
+AIC Akaike information criterion $2k - 2 \times log(likelihood)$  
+	(_k_ the number of parameters)
+	
+Measure of how well the model fit the data
+
+
+Penalised for model complexity
+
+
+AICc correction for small sample sizes
+
+AIC weights - probability model is best of those tested
+
+---
+
+```{r}
+dredge(full)
+```
+
+---
+# car::Anova vs anova
+
+
+```{r}
+mod2 <- lm(body_mass_g ~ species + sex, data = penguins)
+mod3 <- lm(body_mass_g ~ sex + species, data = penguins)
+```
+
+- anova - tests terms sequentially
+- car::Anova - marginal test
+
+---
+
+```{r}
+anova(mod2)
+anova(mod3)
+```
+
+---
+```{r}
+car::Anova(mod2)
+car::Anova(mod3)
+```
+
+
+---
+# Inference
+
+Test small number of _a priori_ hypothesis.
+
+Use anova() to compare nested models
+
+H<sub>0</sub> there is no interaction between sex and species for predicting flipper length
+
+```{r}
+mod1 <- lm(body_mass_g ~ species + sex, data = penguins)
+mod2 <- lm(body_mass_g ~ species * sex, data = penguins)
+anova(mod1, mod2)
+```
+
+---
+# Multicollinearity
+
+- Two or more predictor variables in a 
+multiple regression model are highly 
+correlated. Example: pH and 
+calcium
+- Coefficient estimates may change 
+erratically in response to small 
+changes in the model or the data.
+
+- Solve by having lots of data
+
+
+
+
+
+
