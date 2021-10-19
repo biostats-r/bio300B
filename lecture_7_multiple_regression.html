@@ -51,7 +51,7 @@ class: center, middle, inverse, title-slide
 - Model selection
   - Exploratory data analysis
   - Anova for hypothesis testing
-- Multi-colinearity
+- Multi-collinearity
 
 ---
 # Adding more variables
@@ -64,8 +64,8 @@ mod_anova2 &lt;- lm(bill_length_mm ~ sex + species, data = penguins)
 # ancova - one categorical one continuous predictor
 mod_ancova &lt;- lm(bill_length_mm ~ sex + flipper_length_mm, data = penguins)
 
-# Multiple regression - two continuios
-mod_mult &lt;- lm(bill_length_mm ~ sex + flipper_length_mm, data = penguins)
+# Multiple regression - two continuous
+mod_mult &lt;- lm(bill_length_mm ~ body_mass_g + flipper_length_mm, data = penguins)
 ```
 
 ---
@@ -139,24 +139,25 @@ summary(mod_mult)
 ```
 ## 
 ## Call:
-## lm(formula = bill_length_mm ~ sex + flipper_length_mm, data = penguins)
+## lm(formula = bill_length_mm ~ body_mass_g + flipper_length_mm, 
+##     data = penguins)
 ## 
 ## Residuals:
 ##    Min     1Q Median     3Q    Max 
-## -9.720 -2.812 -0.812  2.021 19.764 
+## -8.806 -2.590 -0.705  1.991 18.829 
 ## 
 ## Coefficients:
-##                   Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)        -4.4669     3.2364   -1.38     0.17    
-## sexmale             2.0727     0.4568    4.54    8e-06 ***
-## flipper_length_mm   0.2359     0.0163   14.46   &lt;2e-16 ***
+##                    Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)       -3.436694   4.580553   -0.75     0.45    
+## body_mass_g        0.000662   0.000567    1.17     0.24    
+## flipper_length_mm  0.221865   0.032348    6.86  3.3e-11 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 4.03 on 330 degrees of freedom
-##   (11 observations deleted due to missingness)
-## Multiple R-squared:  0.46,	Adjusted R-squared:  0.457 
-## F-statistic:  141 on 2 and 330 DF,  p-value: &lt;2e-16
+## Residual standard error: 4.12 on 339 degrees of freedom
+##   (2 observations deleted due to missingness)
+## Multiple R-squared:  0.433,	Adjusted R-squared:  0.43 
+## F-statistic:  129 on 2 and 339 DF,  p-value: &lt;2e-16
 ```
 
 

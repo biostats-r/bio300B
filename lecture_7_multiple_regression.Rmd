@@ -44,7 +44,7 @@ xaringanExtra::use_scribble()
 - Model selection
   - Exploratory data analysis
   - Anova for hypothesis testing
-- Multi-colinearity
+- Multi-collinearity
 
 ---
 # Adding more variables
@@ -56,8 +56,8 @@ mod_anova2 <- lm(bill_length_mm ~ sex + species, data = penguins)
 # ancova - one categorical one continuous predictor
 mod_ancova <- lm(bill_length_mm ~ sex + flipper_length_mm, data = penguins)
 
-# Multiple regression - two continuios
-mod_mult <- lm(bill_length_mm ~ sex + flipper_length_mm, data = penguins)
+# Multiple regression - two continuous
+mod_mult <- lm(bill_length_mm ~ body_mass_g + flipper_length_mm, data = penguins)
 ```
 
 ---
@@ -213,7 +213,7 @@ p1 <- crossing(species = c("A", "B"), sex = c("F", "M")) |>
          mean = if_else(sex == "F", mean, mean + 1)) |> 
   ggplot(aes(x = species, y = mean, ymin = mean -0.5, ymax = mean + 0.5, colour = sex)) +
   geom_pointrange(position = position_dodge(width = .5)) +
-  labs(y = "Value", title = "Interaction", x = "Predictor 1", colour = "Predictor 2")
+  labs(y = "Value", title = "No Interaction", x = "Predictor 1", colour = "Predictor 2")
 
 p2 <- crossing(species = c("A", "B"), sex = c("F", "M")) |> 
   mutate(mean = if_else(species == "A", 0.9, 2.1),
