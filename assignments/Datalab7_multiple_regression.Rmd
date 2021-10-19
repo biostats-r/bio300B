@@ -1,0 +1,37 @@
+---
+title: 'Datalab 6: Multiple regression'
+author: "Richard Telford"
+date: "10/19/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In an R markdown document
+
+# Task 1 2-way anova
+
+- With the penguins data, fit models to predict body mass from species and sex with and without an interaction.
+- Interpret the model coefficients.
+- Using only the coefficients, what is the expected mass of male and female Gentoos with each model.
+- Examine the models' diagnostic plots
+- Test if the interaction improves the model.
+
+# Task 2 ancova
+
+- With the Gentoo data, fit models to predict bill length from flipper length and sex with and without an interaction.
+- Interpret the model coefficients.
+- Using only the coefficients, what is the expected mass of male and female Gentoos with flipper length 100 mm with each model.
+- Examine the models' diagnostic plots
+- Plot the raw data and the models, including confidence intervals.
+- Test if the interaction improves the model.
+
+# Task 3
+
+- Use the MuMIn package to find the "best" model for predicting body mass of Adelie penguins.
+- Is there a clear best model, or several good models?
+
+
+
