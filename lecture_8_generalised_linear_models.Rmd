@@ -1,0 +1,580 @@
+---
+title: "Generalised Linear Models"
+subtitle: "Bio300B Lecture 8"
+author: "Richard J. Telford (Richard.Telford@uib.no)"
+institute: "Institutt for biovitenskap, UiB"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+<style type="text/css">
+.remark-slide-content {
+    font-size: 24px;
+    padding: 1em 4em 1em 4em;
+}
+</style>
+
+```{r setup, echo=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, error = TRUE)
+library("tidyverse")
+library("patchwork")
+library(broom)
+library(glue)
+library(gganimate)
+theme_set(theme_bw(base_size = 18))
+data(penguins, package = "palmerpenguins")
+#options(dplyr.print_min = 2, dplyr.print_max = 3, digits = 4)
+```
+
+```{r xaringanExtra-clipboard, echo=FALSE}
+xaringanExtra::use_clipboard()
+```
+
+```{r share-again, echo = FALSE}
+xaringanExtra::use_share_again()
+xaringanExtra::use_scribble()
+```
+
+# Assumptions of Least Squares
+
+1. The relationship between the response and the predictors is ~linear.
+2. The residuals have a mean of zero.
+3. The residuals have constant variance (not heteroscedastic).
+4. The residuals are independent (uncorrelated).
+5. **The residuals are normally distributed.**
+
+---
+# Generalised linear models
+
+- Allow non-normal residual distributions (Poisson, binomial, etc)
+- Coefficients found with **maximum likelihood**
+
+---
+
+# Least squares
+
+Choose $\beta$ that minimise the sum of squares of residuals
+
+$$\sum_{i = 1}^{n}\epsilon_i^2 =   \sum_{i = 1}^{n}(y_i - (\beta_0 + \beta_1x_i))^2$$
+
+
+```{r, echo = FALSE}
+ss_plot <- function(data, x, y){
+  data <- data |> drop_na(.data[[x]], .data[[y]])
+  mod <- lm(as.formula(glue("{y} ~ {x}")), data = data)
+  res <- augment(mod) |> 
+    mutate(
+      total = mean(.data[[y]]), 
+  )
+  reg <- tibble(
+    what = c("Residual", "Regression", "Total", "Regression"), 
+    intercept = c(rep(coef(mod)[1], 2), rep(mean(data[[y]]), 2)),
+    slope = c(rep(coef(mod)[2], 2), 0, 0)) |> 
+    mutate(what = factor(what, levels = c("Regression", "Residual", "Total")), 
+           what = fct_rev(what))
+  
+    Residual <- res |> 
+      mutate(y = .data[[y]], yend = .fitted, what = "Residual") |> 
+      mutate(what = factor(what, levels = c("Regression", "Residual", "Total")), 
+           what = fct_rev(what))
+
+  
+Residual |> 
+  ggplot(aes(x = .data[[x]], y = .data[[y]])) +
+    geom_point() +
+    geom_segment(
+      aes(x = .data[[x]],
+          xend = .data[[x]],
+          y = y,
+          yend = yend, 
+          colour = what),
+      show.legend = FALSE) +
+  geom_abline(data = reg |> slice(1), aes(intercept = intercept, slope = slope)) 
+
+  
+}
+
+chinstrap <- penguins |> filter(species == "Chinstrap") |> 
+  drop_na(bill_length_mm, body_mass_g) 
+
+sum_sq_plot <- chinstrap |> 
+  ss_plot( x = "body_mass_g", y = "bill_length_mm")
+```
+.pull-left[
+```{r ss-plot, echo=FALSE, fig.height = 5, fig.width=5.5}
+sum_sq_plot +
+  labs(x = "Body mass g", y = "Bill length mm")
+```
+]
+
+.pull-right[
+Assumes residuals have normal distribution
+]
+
+---
+# Likelihood
+
+How likely are the data given the model? 
+
+– choose coefficients to maximise likelihood 
+- works with any distribution
+
+---
+# Likelihood with a normal distribution: 
+
+$$\mathcal{L}(\mu,\sigma|y) = \frac{1}{\sigma \sqrt {2\pi } }e^{-\frac{(x - \mu)^2} {{2\sigma ^2 }}}$$
+
+```{r, fig.height = 5, fig.width = 9, echo=FALSE}
+mod <- lm(bill_length_mm ~ body_mass_g, data = chinstrap)
+
+body_mass_g = 4150
+mu <- predict(mod, newdata = tibble(body_mass_g = body_mass_g))
+sigma <- sqrt(sum(resid(mod) ^ 2) / mod$df.residual)
+
+seg_v <- chinstrap %>% 
+  filter(body_mass_g == !!body_mass_g) |> 
+  select(bill_length_mm) |> 
+  mutate(y0 = 0, y =  dnorm(bill_length_mm, mean = mu, sd = sigma), 
+         colour = if_else(bill_length_mm < mu, "darkviolet", "green4"))
+
+seg_h <- chinstrap %>% 
+  filter(body_mass_g == !!body_mass_g) |> 
+  select(bill_length_mm) |> 
+  mutate(y =  dnorm(bill_length_mm, mean = mu, sd = sigma), mu = mu, 
+         colour = if_else(bill_length_mm < mu, "darkviolet", "green4")) 
+
+
+p_like <- tibble(x = seq(mu - 7, mu + 7, .01), y = dnorm(x, mean = mu, sd = sigma)) %>% 
+  ggplot(aes(x, y)) + 
+  geom_line() + 
+  geom_vline(xintercept = mu, colour = scales::muted("red")) +
+  geom_segment(data = seg_v, aes(x = bill_length_mm, xend = bill_length_mm, y = y0, yend = y, colour = I(colour)), linetype = "dashed") +
+  geom_segment(data = seg_h, aes(x = bill_length_mm, xend = mu, y = y, yend = y, colour = I(colour)), linetype = "dashed") +
+   labs(subtitle =glue::glue("Body mass = {body_mass_g} g"), y = "Likelihood", x = "Bill length mm")
+  
+
+p_data <- ggplot(chinstrap, aes(x = body_mass_g, y = bill_length_mm)) +
+  geom_abline(intercept = coef(mod)[1], slope = coef(mod)[2], colour = scales::muted("red")) +
+  geom_vline(xintercept = body_mass_g, linetype = "dashed", alpha = 0.5) +
+  geom_point(aes(colour = I(case_when(
+    body_mass_g == !!body_mass_g & bill_length_mm > mu ~ "green4", 
+    body_mass_g == !!body_mass_g & bill_length_mm < mu ~ "darkviolet", 
+    TRUE ~ "grey60"))), size = 3) +
+  labs(x = "Body mass g", y = "Bill length mm")
+  
+  p_data +
+  p_like 
+```
+
+---
+# Maximum Likelihood of the model
+
+Find the likelihood for each observation & combine them
+
+Product of the likelihoods fails
+
+$$\prod_{i =1}^n\mathcal{L}(\mu,\sigma|y) \approx0$$
+
+Use the log-likelihood
+
+$$\mathcal{l}(\mu,\sigma|y) = log(\mathcal{L}(\mu,\sigma|y))$$
+
+Find the sum of the log-likelihoods 
+
+$$\sum_{i = 1}^n{(\mathcal{l}(\mu,\sigma|y))} = {log}(\prod_{i = 1}^n{\mathcal{L}(\mu,\sigma|y)})$$
+
+Choose coefficients that give maximum log-likelihood
+
+---
+# Using maximum likelihood in R
+
+```{r}
+gentoo <- penguins |> filter(species == "Adelie") |> drop_na(bill_length_mm)
+mod_ls <- lm(bill_length_mm ~ island, data = gentoo)
+mod_ml <- glm(bill_length_mm ~ island, data = gentoo)
+
+mod_ls |> broom::tidy()
+mod_ml |> broom::tidy()
+```
+
+
+---
+
+```{r}
+anova(mod_ls)
+anova(mod_ml, test = "F")
+```
+
+---
+# Deviance
+
+Analogous to Sum of Squares in a linear model
+
+Smaller residual deviance is better
+
+- $\mathcal{L}_M$ maximum likelihood
+- $\mathcal{L}_S$ likelihood of saturated model
+
+$$deviance = -2(log(\mathcal{L}_M) - log(\mathcal{L}_S))$$
+
+---
+# Generalised linear models
+
+<font color = "red">Link function</font> and <font color = "blue">Linear predictor</font>
+
+$$\color{red}{{g(E(\mu_i))}} = \color{blue}{ \beta_0 + \beta_1x_i}$$
+- Link function transforms the expected value
+
+
+<font color = "purple">Variance function</font>
+
+$$\color{purple}{var(Y_i) = \phi V(\mu_i)}$$
+
+- describes how the variance depends on the mean; dispersion parameter $\phi$ is a constant
+
+---
+# Distributions & links
+
+## Normal (Gaussian)
+
+ - y continuous
+ - All values $-\infty +\infty$
+ - $\mu = E(y_i) = β_0 + β_1x_i$
+ - $var(y) = σ^2$
+ 
+---
+## Poisson
+
+ - Discrete
+ - Counts
+ - $log(\mu) = β_0 + β_1x_i$
+ - $var(y) = \mu$
+ 
+```{r poisson-anim, cache = TRUE, fig.height=5.5, fig.width=6, echo = FALSE}
+crossing(
+  mean = 1:30,
+  count = 0:40) |>
+  mutate(density = dpois(x = count, lambda = mean)) |>
+  ggplot(aes(x = count, y = density)) +
+  geom_col() +
+  transition_states(mean, wrap = FALSE, state_length = 0) +
+  labs(title = "Mean = {closest_state} Variance = {closest_state}",
+       x = "Count",
+       y = "Density") +
+  ease_aes('cubic-in-out')
+```
+ 
+
+---
+## Binomial
+
+ - Success/failure, one or many trials
+ - $log(\frac{\mu}{1 - \mu}) = β_0 + β_1x_i$
+ - $var(y) = n\mu(1 - μ)$
+
+```{r binom-anim, cache = TRUE, fig.height=5.5, fig.width=6, echo = FALSE}
+l <- 10
+binom_data <- crossing(
+  tibble(prob = c(seq(0.5, 1, length = l+1), seq(1, 0, length = 2 * l+1), seq(0, .5, length = l+1))) |> mutate(n = 1:n()),
+  count = 0:20,
+  size = c(1, 5, 20)) |>
+  filter(count <= size) |>
+  mutate(density = dbinom(x = count, prob = prob, size = size),
+         size = glue::glue("{size} trial{ifelse(size > 1, 's', '')}"),
+         size = factor(size, levels = c("1 trial", "5 trials", "20 trials")))
+
+
+binom_data |>
+  ggplot(aes(x = count, y = density)) +
+  geom_col() +
+  scale_x_continuous(breaks = 0:20, expand = c(0.02, 0)) +
+  facet_wrap(~size, ncol = 1, scales = "free_x") +
+  transition_states(n) +
+  labs(title = paste0("Probability of success: {binom_data |> filter(n == closest_state) |> slice(1) |> pull(prob) |> round(2)}"),
+       x = "Number of successes",
+       y = "Density") +
+  ease_aes('linear')
+```
+
+---
+# Poisson example
+
+Species richness on Mt Gonga grasslands
+.pull-left[
+```{r, echo = FALSE}
+library(readxl)
+library(ggbeeswarm)
+biomass_file <- "data/biomass2015.xls"
+gonga <- excel_sheets(biomass_file) |> 
+  map_dfr(~read_excel(biomass_file, sheet = .x)) |> 
+  mutate(site = factor(site, levels = c("H", "A", "M", "L")))|> 
+  mutate(elevation = case_when(site == "H" ~ 4100,
+                               site == "A" ~ 3850,
+                               site == "M" ~ 3500,
+                               site == "L" ~ 3000))
+
+gonga_rich <- gonga |> 
+  group_by(site, plot, elevation) |> 
+  summarise(richness = n_distinct(species), .groups = "drop") 
+
+knitr::kable(gonga_rich |> slice(1:10))
+```
+]
+.pull-right[
+```{r gonga-rich-plot, fig.height = 5, fig.width=5, echo = FALSE}
+base <- ggplot(gonga_rich, aes(x = elevation, y = richness)) +
+  geom_quasirandom(aes(colour = site), show.legend = FALSE) +
+  scale_colour_viridis_d(end = 0.9) +
+  labs(x = "Elevation m", y = "Species richness")
+base
+```
+]
+---
+
+```{r}
+mod_g <- glm(richness ~ elevation, family = poisson, data = gonga_rich)
+summary(mod_g)
+```
+
+---
+
+```{r}
+anova(mod_g, test = "Chi")
+```
+
+---
+## Predictions
+
+Predictions by default on the linear predictor scale
+
+```{r}
+nd <- tibble(elevation = seq(3000, 4100, by = 100))
+predict(mod_g, newdata = nd)
+```
+Can predict on response scale with `type` argument
+
+```{r}
+predict(mod_g, newdata = nd, type = "response")
+```
+
+Or use `exp()`
+
+---
+
+```{r poisson-link-response, echo = FALSE, fig.width = 8}
+link <- base + aes(y = log(richness)) +
+  geom_line(aes(y = .fitted), 
+            data = augment(mod_g, newdata = nd, type.predict = "link"), 
+            colour = "black") +
+  labs(title = "Link scale")
+  
+response <- base +
+  geom_line(aes(y = .fitted), 
+            data = augment(mod_g, newdata = nd, type.predict = "response")) +
+  labs(title = "Response scale")
+
+link + response
+```
+
+---
+## Predictions with uncertainty
+
+Need to do calculations on link scale
+
+```{r}
+augment(mod_g, newdata = nd, se_fit = TRUE, type.predict = "link")
+```
+
+---
+
+```{r}
+preds <- augment(mod_g, newdata = nd, se_fit = TRUE, type.predict = "link") |> 
+  mutate(.upper = exp(.fitted + 1.96 * .se.fit), 
+         .lower = exp(.fitted - 1.96 * .se.fit),
+         .fitted = exp(.fitted))
+preds
+```
+
+---
+
+```{r poisson-ci, echo = FALSE}
+base + 
+  geom_ribbon(data = preds, aes(ymax = .upper, y = .fitted, ymin = .lower), alpha = 0.3) +
+  geom_line(data = preds, aes(y = .fitted))
+
+```
+
+
+---
+# Binomial example
+
+Presence/absence of _Tabellaria binalis_ in European lakes along a pH gradient
+
+```{r}
+data(SWAP, package= "rioja")
+swap_data <- bind_cols(pH = SWAP$pH, SWAP$spec) |> 
+  mutate(TA003A = sign(TA003A)) |> 
+  select(pH, TA003A)
+
+swap_data
+```
+
+---
+
+```{r gonga-p-a-plot}
+ggplot(swap_data, aes(x = pH, y = TA003A)) +
+  geom_jitter(height = 0.1, width = 0, alpha = 0.5)
+```
+
+---
+# Fitting the model
+
+```{r}
+mod_swap <- glm(TA003A ~ pH, data = swap_data, family = binomial)
+summary(mod_swap)
+```
+
+---
+# Predictions
+
+```{r}
+preds_swap <- augment(mod_swap, type.predict = "link", se_fit = TRUE) |> 
+  mutate(
+    fitted = plogis(.fitted), 
+    lower = plogis(.fitted + .se.fit * 1.96),
+    upper = plogis(.fitted - .se.fit * 1.96),
+  )
+preds_swap
+```
+
+
+---
+
+```{r smo_glm_manual, echo = FALSE}
+ggplot(swap_data, aes(x = pH, y = sign(TA003A))) + # sign converts data to presence absence
+  geom_jitter(width = 0, height = 0.1) +
+  geom_ribbon(aes(ymax = upper, ymin = lower, y = NULL),
+              data = preds_swap, alpha = 0.3) +
+  geom_line(aes(y = fitted),
+              data = preds_swap) +
+  scale_y_continuous(breaks = c(0, 1)) +
+  labs(y = expression(italic(Tabellaria~binalis))) 
+```
+
+---
+# Binomial with multiple trials
+
+
+Tobacco budworm vs pesticide dose
+
+```{r}
+## example from Venables and Ripley (2002, pp. 190-2.)
+budworm <- tibble(
+  ldose = rep(0:5, 2), #log dose
+  n = 20,
+  numdead = c(1, 4, 9, 13, 18, 20, 0, 2, 6, 10, 12, 16),
+  propdead = numdead/n,
+  sex = factor(rep(c("M", "F"), c(6, 6)))
+  )
+
+budworm
+```
+
+---
+
+```{r}
+# two column response number successes, number failures
+budworm.lg <- glm(cbind(numdead, numalive = 20 - numdead) ~ sex*ldose,
+                  data = budworm,
+                  family = binomial)
+
+# response is proportion successes, weights argument gives total
+budworm.lg <- glm(propdead ~ sex*ldose,
+                  data = budworm,
+                  family = binomial,
+                  weights = n)
+```
+
+---
+
+```{r}
+summary(budworm.lg)
+```
+
+---
+
+```{r}
+car::Anova(budworm.lg)
+```
+
+---
+
+```{r budworm-plot}
+ggplot(budworm, aes(x = 2^ldose, y = propdead, colour = sex)) +
+  geom_point() +
+  scale_x_log10() +
+  geom_line(aes(y = .fitted), 
+            data = augment(budworm.lg, newdata = crossing(
+              ldose = seq(0, 5, 0.1),
+              sex = factor(c("M", "F"))),
+   type.predict = "response")) +
+  labs(x = "Dose", y = "Probability")
+  
+```
+
+---
+# Underdispersion and overdispersion
+
+Poisson and binomial have fixed relationship between mean and variance
+
+- Poisson: $var(y) = \mu$
+- Binomial: $var(y) = n\mu(1 - μ)$
+
+Models can have less/more dispersion than expected
+
+- Poisson
+- Binomial when n trials > 1
+
+Overdispersion increases risk of type I error
+
+ - rejection of $H_0$ when it is true
+ - false positive
+
+---
+## Checking for overdispersion
+
+```{r}
+anova(mod_g)
+```
+
+If residual deviance / residual df $\approx$ 1 then OK
+
+If not, then model under or over dispersed
+
+---
+## Fixes for overdispersion
+
+1) Include relevant missing predictors in model
+
+2) Use quasilikelihood models
+
+- poission -> quasipoisson
+- binomial -> quasibinomial
+
+Adds scale parameter to variance function
+
+Same coefficients, but tests adjusted
+
+```{r eval = FALSE}
+mod_q <- glm(richness ~ elevation, data = gonga_rich,
+             family = quasipoisson)
+anova(mod_q, test = "F")
+```
+
+
+3) Choose another distribution
