@@ -1,0 +1,209 @@
+---
+title: "Datalab 6 - linear regression"
+author: "Richard Telford"
+date: "10/12/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(broom)
+library(ggfortify)
+data(penguins, package = "palmerpenguins")
+theme_set(theme_bw())
+```
+
+Please work in an R markdown document
+
+## Correlations
+
+- With the Penguins dataset, find the Pearson correlation bill length and bill depth for Gentoo penguins.
+
+```{r}
+gentoo <- penguins |> 
+  filter(species == "Gentoo")
+
+cor(gentoo$bill_length_mm, gentoo$bill_depth_mm, use = "complete.obs")
+
+#OR
+penguins |> 
+  filter(species == "Gentoo") |> 
+  drop_na(bill_length_mm, bill_depth_mm) |> 
+  summarise(corr = cor(bill_length_mm, bill_depth_mm))
+```
+
+
+- Find the confidence intervals of this correlation. Is it significant?
+
+```{r}
+ct <- cor.test(gentoo$bill_length_mm, gentoo$bill_depth_mm, use = "complete.obs")
+ct
+# extracting components with broom
+glance(ct) |> select(starts_with("conf"))
+
+# or without
+ct$p.value < 0.05
+```
+
+
+- Calculate r^2^. How much of the variation in the data is explained by the correlation.
+
+```{r}
+corr <- cor(gentoo$bill_length_mm, gentoo$bill_depth_mm, use = "complete.obs")
+corr^2
+corr^2 * 100 # %
+
+```
+
+
+
+## Continuous predictors
+
+We want to test how bill length varies with body mass in Chinstrap penguins
+
+- make a suitable plot to show the raw data
+
+```{r bill-length-mass-plot}
+chinstrap <- penguins |> 
+  filter(species == "Chinstrap")
+
+ggplot(chinstrap, aes(x = body_mass_g, y = bill_length_mm)) +
+  geom_point() +
+  labs(x = "Body mass g", y = "Bill length mm")
+```
+
+
+- fit a suitable model to the data
+
+```{r}
+mod <- lm(bill_length_mm ~ body_mass_g, data = chinstrap)
+mod
+```
+
+- interpret the model coefficients
+
+For every extra gram body mass, bill length increases by `r coef(mod)[2]` mm.
+
+- is the model statistically significant
+
+```{r}
+av <- car::Anova(mod)
+av
+av$`Pr(>F)`[1] < 0.05
+```
+
+- Examine the diagnostic plots. Is everything OK?
+
+```{r diagnostics, fig.height = 8}
+autoplot(mod, which = 1:6) # looks good
+```
+
+
+- Predict, with uncertainty, the mean bill length for Chinstraps with a mass of 3000 and 5000 g
+
+```{r}
+nd <- tibble(body_mass_g = c(3000, 5000))
+augment(mod, newdata = nd, se_fit = TRUE, interval = "confidence")
+
+```
+
+- Add the regression line, with the confidence interval, to the plot.
+
+```{r}
+augment(mod, interval = "confidence") |> 
+  ggplot(aes(x = body_mass_g, y = bill_length_mm)) +
+  geom_point() +
+  geom_ribbon(aes(ymin = .lower, ymax = .upper), alpha = 0.3) +
+  geom_line(aes(y = .fitted)) +
+  
+  labs(x = "Body mass g", y = "Bill length mm")
+```
+
+
+
+## Categorical predictors
+
+We want to test whether Adelie penguins differ in body mass between islands.
+
+- Make a suitable plot to show the raw data
+
+```{r adelie-raw-plot}
+library(ggbeeswarm)
+adelie <- penguins |> filter(species == "Adelie")
+
+
+island_mass_plot <- ggplot(adelie, aes(x = island, y = body_mass_g)) +
+  geom_violin() +
+  geom_quasirandom() + # like geom_sina but more evenly spaced
+  labs(x = "Island", y = "Body mass g")
+island_mass_plot
+```
+
+
+- Fit a suitable model to the data
+
+```{r}
+mod2 <- lm(body_mass_g ~ island, data = adelie)
+```
+
+
+- Interpret the model coefficients
+
+```{r}
+coef(mod2) 
+coef(mod2)[1] # mean mass on Bisco Island
+coef(mod2)[2] # difference in mass between Bisco and Dream
+coef(mod2)[3] # difference in mass between Bisco and Torgersen 
+
+```
+
+
+- Is the model statistically significant?
+
+```{r}
+av2 <- car::Anova(mod2)
+av2
+av2$`Pr(>F)`[1] < 0.05
+```
+
+
+- Include the predicted mass with confidence interval on the plot
+
+```{r}
+nd <- distinct(adelie, island)
+pred_mass <- augment(mod2, newdata = nd, interval = "confidence")
+
+island_mass_plot +
+  geom_pointrange(aes(y = .fitted, ymin = .lower, ymax = .upper), data = pred_mass, colour = "red", size = 1.5)
+  
+```
+
+
+- Do a post-hoc test to test for differences between pairs of islands (in real analysis only do this if overall model is significant) (Hint - use `multcomp` package but DO NOT use `library(multcomp)` - it also loads `plyr` and causes conflicts)
+- plot the result of the post-hoc test and interpret the results
+
+```{r multcomp-plot}
+
+mc <- multcomp::glht(model = mod2, linfct = multcomp::mcp(island = "Tukey"))
+mc
+
+plot(mc)
+```
+
+
+
+## Exploring diagnostic plots
+
+Use the `influence_leverage_app()` from biostats.tutorials package (you will need to reinstall it) to explore how the diagnostic plots look with a outlier, influential observation, or observation with high leverage.
+
+Open the app and move the red point. Diagnostic plot on the left shows model without the red point, plot on the right includes the red point.
+
+Try to:
+
+- Make the R2 as high as possible
+- Make the R2 as low as possible
+
+And look at the different diagnostic plots
+
+

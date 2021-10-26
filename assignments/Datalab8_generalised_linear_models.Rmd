@@ -1,0 +1,51 @@
+---
+title: 'Datalab 8: Generalised linear models'
+author: "Richard Telford"
+date: "10/26/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Part 1
+
+Relationship between Southern Ocean diatom richness and sea surface temperature.
+
+Data, Esper and Geronde (2014; https://doi.org/10.1016/j.palaeo.2014.08.008), give diatom assemblage composition from surface samples across the Southern Ocean. 
+Column diatoms [#] shows the total number of diatoms observed.
+Temperature data are not given (could be extracted from an atlas with latitude/longitude), so we will use latitute as a proxy for temperature.
+
+## Download and import data
+
+- Download data as tab-delimited test from https://doi.pangaea.de/10.1594/PANGAEA.828674
+- Import the data into R
+
+## Process data
+- Find the species richness (i.e. number of columns with diatom percent with abundance > 0) (hint: either use pivot_longer() and group_by() and summarise(), or select() and rowSums())
+
+## plot and model data
+
+- plot richness against latitude
+- fit an appropriate model to find the relationship between richness and latitude
+- plot the fitted values from the model with the raw data. Is the model a good fit. do you need to add extra terms?
+- interpret the model coefficients
+
+# Part 2
+
+Find the relationship of the presence-absence of _F. cylindrus_  with latitude in the data from above.
+
+- plot the data
+- fit an appropriate model including a quadratic term (hint: poly())
+- add the fitted model, with uncertainties, to the plot
+
+# Part 3
+
+Find the relationship between the relative abundance of  _F. cylindrus_  with latitude
+
+- plot the data
+- fit an appropriate model including a quadratic term (hint: every diatom either is, or is not _F. cylindrus_)
+- is there evidence of overdispersion?
+- adjust the model if necessary
+- add the fitted model, with uncertainties, to the plot
