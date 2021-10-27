@@ -502,7 +502,7 @@ plot(mc)
 
 
 ---
-# Assumtions of Least Squares
+# Assumptions of Least Squares
 
 1. The relationship between the response and the predictors is ~linear.
 2. The residuals have a mean of zero.
