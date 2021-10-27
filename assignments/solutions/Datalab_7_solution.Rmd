@@ -1,0 +1,197 @@
+---
+title: 'Datalab 7: Multiple regression'
+author: "Richard Telford"
+date: "10/19/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#load packages
+library(tidyverse)
+library(broom) 
+library(ggfortify)
+
+# theme defaults
+theme_set(theme_bw())
+
+# load data
+data(penguins, package = "palmerpenguins")
+```
+
+In an R markdown document
+
+# Task 1 2-way anova
+
+- With the penguins data, fit models to predict body mass from species and sex with and without an interaction.
+
+```{r}
+mod1 <- lm(body_mass_g ~ sex + species, data = penguins)
+mod2 <- lm(body_mass_g ~ sex * species, data = penguins) # * to make the interaction
+# OR
+#mod2 <- lm(body_mass_g ~ sex + species + sex:species, data = penguins) # explicitly write out interaction - more typing
+```
+
+
+- Interpret the model coefficients.
+
+```{r}
+tidy(mod1) # or use summary(mod1) or just coef
+# mean Adelie female body mass
+# difference between male and female body mass
+# difference between chinstrap and adelie
+# difference between gentoo and adelie
+
+tidy(mod2)
+# mean Adelie female body mass
+# difference between male and female adelie body mas
+# difference between chinstrap and adelie females
+# difference between gentoo and adelie females
+# excess mass of chinstrap males relative to adelie
+# excess mass of gentoo relative to adelie
+```
+
+
+- Using only the coefficients, what is the expected mass of male and female Gentoos with each model.
+
+```{r}
+# no interaction female
+coef(mod1)["(Intercept)"] + coef(mod1)["speciesGentoo"]
+# no interaction male
+coef(mod1)["(Intercept)"] + coef(mod1)["sexmale"] + coef(mod1)["speciesGentoo"]
+
+
+# interaction female
+coef(mod2)["(Intercept)"] + coef(mod2)["speciesGentoo"]
+# interaction male
+coef(mod2)["(Intercept)"] + coef(mod2)["sexmale"] + coef(mod2)["speciesGentoo"] + coef(mod2)["sexmale:speciesGentoo"]
+
+# check
+nd <- tibble(sex = c("female", "male"), species = "Gentoo")
+augment(mod1, newdata = nd)
+
+augment(mod2, newdata = nd)
+
+```
+
+- Examine the models' diagnostic plots
+
+```{r}
+autoplot(mod1)
+autoplot(mod2)
+# look fine
+```
+
+
+- Test if the interaction improves the model.
+```{r}
+anova(mod1, mod2) # p < 0.05
+```
+
+
+
+# Task 2 ancova
+
+- With the Gentoo data, fit models to predict bill length from flipper length and sex with and without an interaction.
+
+```{r}
+# filter Gentoo data
+gentoo <- penguins |> filter(species == "Gentoo")
+
+
+# model without interation
+mod3 <- lm(bill_length_mm ~ flipper_length_mm + sex, data = gentoo)
+#model with interaction
+mod4 <- lm(bill_length_mm ~ flipper_length_mm * sex, data = gentoo)
+ 
+```
+
+- Interpret the model coefficients.
+```{r}
+tidy(mod3)
+# bill length for females when flipper length = 0
+# slope - 1 mm extra flipper length gives 0.2 mm extra bill length
+# offset for males
+
+tidy(mod4)
+# bill length for females when flipper length = 0
+# slope for females - 1 mm extra flipper length gives 0.1 mm extra bill length
+# offset for males at flipper length = 0
+# difference in slope for males 0.14 mm/mm steeper
+
+```
+
+
+
+- Using only the coefficients, what is the expected mass of male and female Gentoos with flipper length 100 mm with each model.
+
+```{r}
+# no interaction
+#female
+coef(mod3)["(Intercept)"] + coef(mod3)["flipper_length_mm"] * 100
+#male
+coef(mod3)["(Intercept)"] + coef(mod3)["flipper_length_mm"] * 100 + coef(mod3)["sexmale"]
+
+# interaction
+#female
+coef(mod4)["(Intercept)"] + coef(mod4)["flipper_length_mm"] * 100
+#male
+coef(mod4)["(Intercept)"] + coef(mod4)["flipper_length_mm"] * 100 + coef(mod4)["sexmale"] + coef(mod4)["flipper_length_mm:sexmale"] * 100
+
+
+#check
+nd <- tibble(sex = c("female", "male"), flipper_length_mm = 100)
+augment(mod3, newdata = nd)
+augment(mod4, newdata = nd)
+```
+
+
+
+- Examine the models' diagnostic plots
+
+```{r}
+autoplot(mod3)
+autoplot(mod4)
+```
+
+- Plot the raw data and the models, including confidence intervals.
+
+```{r}
+augment(mod3, interval = "confidence") |> 
+  ggplot(aes(x = flipper_length_mm, y = bill_length_mm, colour = sex)) +
+  geom_point() +
+  geom_ribbon(aes(ymax = .upper, ymin = .lower, group = sex), colour = NA, alpha = 0.3) +
+  geom_line(aes(y = .fitted))
+
+augment(mod4, interval = "confidence") |> 
+  ggplot(aes(x = flipper_length_mm, y = bill_length_mm, colour = sex)) +
+  geom_point() +
+  geom_ribbon(aes(ymax = .upper, ymin = .lower, group = sex), colour = NA, alpha = 0.3) +
+  geom_line(aes(y = .fitted))
+```
+
+
+
+- Test if the interaction improves the model.
+
+```{r}
+anova(mod3, mod4) # p > 0.05 - not significantly better
+```
+
+
+# Task 3
+
+- Use the MuMIn package to find the "best" model for predicting body mass of Adelie penguins.
+- Is there a clear best model, or several good models?
+
+```{r}
+adelie <- penguins |> filter(species == "Adelie") |> 
+  drop_na() |> #remove all NA values
+  select(-species)# now only one species, so cannot use as a predictor
+mod5 <- lm(body_mass_g ~ ., data = adelie, na.action = na.fail)
+library(MuMIn)
+dredge(mod5)
+```
+
+
