@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Generalised Linear Models</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)" />
+    <meta name="date" content="2021-11-02" />
+    <script src="libs/header-attrs-2.10/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <script src="libs/clipboard-2.0.6/clipboard.min.js"></script>
+    <link href="libs/xaringanExtra-clipboard-0.2.6/xaringanExtra-clipboard.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-clipboard-0.2.6/xaringanExtra-clipboard.js"></script>
+    <script>window.xaringanExtraClipboard(null, {"button":"Copy Code","success":"Copied!","error":"Press Ctrl+C to Copy"})</script>
+    <link href="libs/shareon-1.4.1/shareon.min.css" rel="stylesheet" />
+    <script src="libs/shareon-1.4.1/shareon.min.js"></script>
+    <link href="libs/xaringanExtra-shareagain-0.2.6/shareagain.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-shareagain-0.2.6/shareagain.js"></script>
+    <script src="libs/fabric-4.3.1/fabric.min.js"></script>
+    <link href="libs/xaringanExtra-scribble-0.0.1/scribble.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-scribble-0.0.1/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30,"palette":[]}) })</script>
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Generalised Linear Models
+## Bio300B Lecture 8
+### Richard J. Telford (<a href="mailto:Richard.Telford@uib.no" class="email">Richard.Telford@uib.no</a>)
+### Institutt for biovitenskap, UiB
+### 02 November 2021
+
+---
+
+&lt;style type="text/css"&gt;
+.remark-slide-content {
+    font-size: 24px;
+    padding: 1em 4em 1em 4em;
+}
+&lt;/style&gt;
+
+
+
+
+
+
+
+# Assumptions of Least Squares
+
+1. The relationship between the response and the predictors is ~linear.
+2. The residuals have a mean of zero.
+3. The residuals have constant variance (not heteroscedastic).
+4. **The residuals are independent (uncorrelated).**
+5. The residuals are normally distributed.
+
+- Spatial/temporal/phylogenetic autocorrelation
+- Clustered/hierarchical data
+
+---
+class: inverse
+background-image: url("figures/46695412244_66616e8523_c.jpg")
+background-position: center
+background-size: contain
+# Clustered data
+
+Observations not independent
+
+- clustered data
+- repeat measurements
+
+Ignoring it causes pseudoreplication
+
+
+
+.footnote[[WorldFish](https://www.flickr.com/photos/theworldfishcenter/46695412244)]
+
+
+---
+# Two tanks - bad design
+
+![](lecture_9_mixed_effect_models_files/figure-html/two-tanks-design-1.png)&lt;!-- --&gt;
+
+---
+## Two tanks - bad models
+
+
+```r
+mod_bad &lt;- lm(Mass_g ~ condition, data = demo)
+mod_bad2 &lt;- lm(Mass_g ~ tank, data = demo)
+
+mod_bad
+```
+
+```
+## 
+## Call:
+## lm(formula = Mass_g ~ condition, data = demo)
+## 
+## Coefficients:
+##   (Intercept)  conditiontest  
+##        1147.6         -105.1
+```
+
+```r
+mod_bad2
+```
+
+```
+## 
+## Call:
+## lm(formula = Mass_g ~ tank, data = demo)
+## 
+## Coefficients:
+## (Intercept)       tankt2  
+##      1147.6       -105.1
+```
+
+---
+# Better design - replicate tanks
+
+![](lecture_9_mixed_effect_models_files/figure-html/many-tanks-design-1.png)&lt;!-- --&gt;
+
+---
+## Better design, bit better model
+
+
+```r
+mod_bit &lt;- lm(Mass_g ~ condition + tank, data = demo2)
+summary(mod_bit)
+```
+
+```
+## 
+## Call:
+## lm(formula = Mass_g ~ condition + tank, data = demo2)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -270.11  -59.70   20.80   71.17  224.67 
+## 
+## Coefficients: (1 not defined because of singularities)
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    1202.37      33.38  36.021  &lt; 2e-16 ***
+## conditiontest   -68.44      47.21  -1.450 0.151439    
+## tankt2         -118.07      47.21  -2.501 0.014654 *  
+## tankt3         -195.25      47.21  -4.136 9.44e-05 ***
+## tankt4           33.35      47.21   0.707 0.482102    
+## tankt5         -178.79      47.21  -3.788 0.000313 ***
+## tankt6          -49.47      47.21  -1.048 0.298128    
+## tankt7          -96.71      47.21  -2.049 0.044128 *  
+## tankt8              NA         NA      NA       NA    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 105.6 on 72 degrees of freedom
+## Multiple R-squared:  0.3187,	Adjusted R-squared:  0.2525 
+## F-statistic: 4.812 on 7 and 72 DF,  p-value: 0.0001745
+```
+
+---
+# Fixed effect and random effects
+
+## &lt;font color = "red"&gt;Fixed effect&lt;/font&gt; effect model
+
+`$$y_i = \color{red}{\beta_0} + \color{red}{\beta_1}x_i + \color{red}{\beta_2}tank_i  +\color{blue}{ \epsilon_i}$$`
+
+Not interested in effect of tank 
+
+Use a &lt;font color = "blue"&gt;Random effect&lt;/font&gt; 
+
+Assumes observed tanks from a population of possible tanks
+
+## Mixed effect model
+ 
+`$$y_{ij} = \color{red}{\beta_0} +\color{blue}{b_{0i}}+ \color{red}{\beta_1}x_i +\color{blue}{ \epsilon_{ij}}$$`
+---
+## Random effects
+
+Residuals from a normal distribution `\(\color{blue}{ \epsilon_{ij}} \sim N(0, \sigma)\)`
+Random effects from a normal distribution `\(\color{blue}{b_{0i}} \sim N(0, \sigma)\)`
+
+![](lecture_9_mixed_effect_models_files/figure-html/control-1.png)&lt;!-- --&gt;
+
+---
+# Fitting a mixed effect model
+
+
+```r
+library(lme4)
+mod1 &lt;- lmer(Mass_g ~ condition + (1|tank), data = demo2)
+```
+
+---
+
+
+```r
+summary(mod1)
+```
+
+```
+## Linear mixed model fit by REML ['lmerMod']
+## Formula: Mass_g ~ condition + (1 | tank)
+##    Data: demo2
+## 
+## REML criterion at convergence: 965.8
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -2.6916 -0.5419  0.1989  0.6274  2.2428 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev.
+##  tank     (Intercept)  5059     71.13  
+##  Residual             11142    105.56  
+## Number of obs: 80, groups:  tank, 8
+## 
+## Fixed effects:
+##               Estimate Std. Error t value
+## (Intercept)    1084.68      39.28  27.611
+## conditiontest    15.70      55.56   0.283
+## 
+## Correlation of Fixed Effects:
+##             (Intr)
+## conditintst -0.707
+```
+
+
+---
+
+
+```r
+library(lmerTest)
+mod1a &lt;- lmer(Mass_g ~ condition + (1|tank), data = demo2)
+summary(mod1a)
+```
+
+```
+## Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+## lmerModLmerTest]
+## Formula: Mass_g ~ condition + (1 | tank)
+##    Data: demo2
+## 
+## REML criterion at convergence: 965.8
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -2.6916 -0.5419  0.1989  0.6274  2.2428 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev.
+##  tank     (Intercept)  5059     71.13  
+##  Residual             11142    105.56  
+## Number of obs: 80, groups:  tank, 8
+## 
+## Fixed effects:
+##               Estimate Std. Error      df t value Pr(&gt;|t|)    
+## (Intercept)    1084.68      39.28    6.00  27.611 1.49e-07 ***
+## conditiontest    15.70      55.56    6.00   0.283    0.787    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Correlation of Fixed Effects:
+##             (Intr)
+## conditintst -0.707
+```
+
+---
+# Alternative package
+
+
+```r
+library(nlme)
+mod2 &lt;- lme(Mass_g ~ condition, data = demo2, random =  ~ 1|tank)
+summary(mod2)
+```
+
+```
+## Linear mixed-effects model fit by REML
+##   Data: demo2 
+##        AIC      BIC    logLik
+##   973.8449 983.2717 -482.9225
+## 
+## Random effects:
+##  Formula: ~1 | tank
+##         (Intercept) Residual
+## StdDev:    71.12618  105.555
+## 
+## Fixed effects:  Mass_g ~ condition 
+##                   Value Std.Error DF   t-value p-value
+## (Intercept)   1084.6791  39.28460 72 27.610796   0.000
+## conditiontest   15.7008  55.55682  6  0.282608   0.787
+##  Correlation: 
+##               (Intr)
+## conditiontest -0.707
+## 
+## Standardized Within-Group Residuals:
+##        Min         Q1        Med         Q3        Max 
+## -2.6916143 -0.5418500  0.1988656  0.6273686  2.2428518 
+## 
+## Number of Observations: 80
+## Number of Groups: 8
+```
+
+
+---
+# Fixed or random effects
+
+Fixed effects factors:
+
+- Informative factor levels with regard to the hypothesis
+- Effect of each level interesting
+- The levels are deliberately arranged by the experimenter/observer
+- Increasing sample size does not increase the number of levels 
+
+Random effects factors:
+
+- Uninformative factor levels with regard to the hypothesis
+- Effect of each level uninteresting
+- Increasing sample size often increases the number of levels
+- Part of a population of possible levels
+
+---
+"one modeler’s random effect is another modeler’s fixed effect."
+
+"Are there enough levels of the factor in the data on which to base an estimate of the variance of the population of effects? No, means fixed effects."
+
+.footnote[Bolker B (2021) [GLMM FAQ](http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html)]
+
+---
+# Fixed or random effects?
+
+- snake id number
+- vaccinated or not
+- species
+- light level
+- litter of puppies
+- site
+
+
+---
+# Outer and inner variables
+
+.pull-left[
+![](lecture_9_mixed_effect_models_files/figure-html/inner-outer-1.png)&lt;!-- --&gt;
+]
+
+.pull-right[
+- which design is more powerful?
+- which design is practical
+]
+---
+
+
+```r
+mod3 &lt;- lmer(Mass_g ~ condition + (1|tank), data = demo3)
+summary(mod3)
+```
+
+```
+## Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+## lmerModLmerTest]
+## Formula: Mass_g ~ condition + (1 | tank)
+##    Data: demo3
+## 
+## REML criterion at convergence: 975.8
+## 
+## Scaled residuals: 
+##      Min       1Q   Median       3Q      Max 
+## -2.72095 -0.58452  0.09483  0.55007  1.95600 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev.
+##  tank     (Intercept)  6371     79.82  
+##  Residual             12253    110.69  
+## Number of obs: 80, groups:  tank, 8
+## 
+## Fixed effects:
+##               Estimate Std. Error       df t value Pr(&gt;|t|)    
+## (Intercept)   1037.398     33.207    9.416  31.240 7.87e-11 ***
+## conditiontest  110.263     24.752   71.000   4.455 3.06e-05 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Correlation of Fixed Effects:
+##             (Intr)
+## conditintst -0.373
+```
+
+---
+# Continuous inner predictor
+
+
+```r
+data("sleepstudy", package = "lme4")
+
+ggplot(sleepstudy, aes(x = Days, y = Reaction, colour = Subject)) +
+  geom_point() +
+  labs(x = "Days of sleep deprivation", y = "Average reaction time (ms)")
+```
+
+![](lecture_9_mixed_effect_models_files/figure-html/sleepstudy-1.png)&lt;!-- --&gt;
+
+---
+# Random intercept
+
+
+
+```r
+fm1 &lt;- lmer(Reaction ~ Days + (1|Subject), sleepstudy, subset=Days&gt;=2)
+
+summary(fm1)
+```
+
+```
+## Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+## lmerModLmerTest]
+## Formula: Reaction ~ Days + (1 | Subject)
+##    Data: sleepstudy
+##  Subset: Days &gt;= 2
+## 
+## REML criterion at convergence: 1430
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -3.6261 -0.4450  0.0474  0.5199  4.1378 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev.
+##  Subject  (Intercept) 1746.9   41.80   
+##  Residual              913.1   30.22   
+## Number of obs: 144, groups:  Subject, 18
+## 
+## Fixed effects:
+##             Estimate Std. Error      df t value Pr(&gt;|t|)    
+## (Intercept)  245.097     11.829  30.617   20.72   &lt;2e-16 ***
+## Days          11.435      1.099 125.000   10.40   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Correlation of Fixed Effects:
+##      (Intr)
+## Days -0.511
+```
+
+---
+
+
+```r
+library(broom.mixed)
+augment(fm1) |&gt; 
+  ggplot(aes(x = Days, y = Reaction, colour = Subject)) +
+  geom_point() +
+  geom_line(aes(y = .fitted)) +
+  geom_line(aes(y = .fixed), colour = "black", size = 1.5) +
+  theme(legend.position = "none")
+```
+
+![](lecture_9_mixed_effect_models_files/figure-html/random-intercept-plot-1.png)&lt;!-- --&gt;
+
+
+
+---
+# Random slope
+
+
+
+```r
+fm2 &lt;- lmer(Reaction ~ Days + (Days|Subject), sleepstudy, subset=Days&gt;=2)
+
+summary(fm2)
+```
+
+```
+## Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+## lmerModLmerTest]
+## Formula: Reaction ~ Days + (Days | Subject)
+##    Data: sleepstudy
+##  Subset: Days &gt;= 2
+## 
+## REML criterion at convergence: 1404.1
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -4.0157 -0.3541  0.0069  0.4681  5.0732 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev. Corr 
+##  Subject  (Intercept) 992.69   31.507        
+##           Days         45.77    6.766   -0.25
+##  Residual             651.59   25.526        
+## Number of obs: 144, groups:  Subject, 18
+## 
+## Fixed effects:
+##             Estimate Std. Error      df t value Pr(&gt;|t|)    
+## (Intercept)  245.097      9.260  16.999  26.468 2.95e-15 ***
+## Days          11.435      1.845  17.001   6.197 9.74e-06 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Correlation of Fixed Effects:
+##      (Intr)
+## Days -0.454
+```
+
+---
+
+![](lecture_9_mixed_effect_models_files/figure-html/random-slope-plot-1.png)&lt;!-- --&gt;
+
+
+---
+# Comparing models
+
+
+```r
+anova(fm1, fm2)
+```
+
+```
+## refitting model(s) with ML (instead of REML)
+```
+
+```
+## Data: sleepstudy
+## Subset: Days &gt;= 2
+## Models:
+## fm1: Reaction ~ Days + (1 | Subject)
+## fm2: Reaction ~ Days + (Days | Subject)
+##     npar    AIC    BIC  logLik deviance  Chisq Df Pr(&gt;Chisq)    
+## fm1    4 1446.5 1458.4 -719.25   1438.5                         
+## fm2    6 1425.2 1443.0 -706.58   1413.2 25.332  2  3.156e-06 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+---
+# Model diagnostics
+
+See ?plot.merMod
+
+
+```r
+fm1F &lt;- augment(fm1)
+## standardized residuals versus fitted values
+ggplot(fm1F, aes(.fitted, .resid)) + 
+  geom_point(colour="blue") +
+  geom_hline(yintercept=0)
+```
+
+![](lecture_9_mixed_effect_models_files/figure-html/diag1-1.png)&lt;!-- --&gt;
+
+---
+
+
+```r
+## box-plots of residuals by Subject
+ggplot(fm1F, aes(Subject,.resid)) + 
+  geom_boxplot() + 
+  coord_flip()
+```
+
+![](lecture_9_mixed_effect_models_files/figure-html/diag2-1.png)&lt;!-- --&gt;
+
+---
+
+
+```r
+ggplot(fm1F, aes(.fitted, Reaction)) + 
+  geom_point(colour="blue") +
+    facet_wrap(~Subject) +
+  geom_abline(intercept=0,slope=1)
+```
+
+![](lecture_9_mixed_effect_models_files/figure-html/diag3-1.png)&lt;!-- --&gt;
+
+---
+
+
+```r
+#qq plot of residuals
+library(lattice)
+qqmath(fm1)
+```
+
+![](lecture_9_mixed_effect_models_files/figure-html/diag4-1.png)&lt;!-- --&gt;
+
+---
+
+
+```r
+#qq plot of random effects
+qqmath(ranef(fm1))
+```
+
+```
+## $Subject
+```
+
+![](lecture_9_mixed_effect_models_files/figure-html/diag5-1.png)&lt;!-- --&gt;
+
+
+---
+# Crossed random effects
+
+Two random effects
+
+Eggs from birds nests (first random effect - lay_nest) moved to
+other nests (second random effect - hatch_nest)
+
+
+```r
+lmer(mass ~ treatment + (1|lay_nest) + (1|hatch_nest), data = data)
+```
+
+---
+# Nested random effects
+
+Hierarchical random effects
+
+- Plot nested in site
+- sample nested in fish nested in tank
+- species nested in family
+
+
+```r
+lmer(mass ~ treatment + (1|site/plot), data = data)
+```
+
+---
+# Beyond linear mixed effect models
+
+Generalised linear mixed effect models
+
+ - poisson
+ - binomial
+ 
+Fit with `glmer()`
+
+Autocorrelated data 
+
+- repeat measurements
+- fit with `nlme::lme()`
+
+---
+# Bayesian hierarchial models
+
+Mixed effect models can be hard to fit
+
+- convergence problems
+
+Bayesian model can help
+
+Different statistical philosophy
+
+- rstan
+- nimble
+
+Use prior information (or uninformative priors)
+
+
+---
+# Resources
+
+Bolker B (2021) [GLMM FAQ](http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html)
+
+Harrison et al (2018) [A brief introduction to mixed effects modelling and multi-model inference in ecology](https://peerj.com/articles/4794/)
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

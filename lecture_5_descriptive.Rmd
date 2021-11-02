@@ -603,7 +603,7 @@ Confidence intervals are more interpretable
 
 Type 1 error - Null hypothesis is incorrectly rejected - false positive
 
-Type 2 error - Null hypothesis is incorrectly - false negative
+Type 2 error - Null hypothesis is incorrectly accepted - false negative
 
 ---
 ## One sided Z-test 
