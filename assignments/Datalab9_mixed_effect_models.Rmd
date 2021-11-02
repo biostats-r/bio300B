@@ -1,0 +1,43 @@
+---
+title: "Datalab 9: Mixed effect models"
+author: "Richard Telford"
+date: "11/2/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Do your analyses in an R markdown document
+
+We will examine the `sleepstudy` data from the `lme4` package.
+Data show reaction time (ms) of different subjects on after sleep deprivations.
+
+load the data.
+
+What is the predictor, the response and the random effect for these data?
+
+Day 0-1 were training days and should be removed.
+
+Make a publication ready plot of the data.
+
+Is predictor an inner or outer variable?
+
+Fit an appropriate model to the data to give an random intercept.
+
+Examine the output and interpret the coefficients.
+
+Compare the results with a model that incorrectly ignores the repeat measurement design.
+
+Add the fitted values for each subject and the overall fixed effects to the plot.
+
+Examine the model's diagnostic plots.
+
+Make a new model with a random slope and intercept.
+
+Test if this model is better than the model with just a random intercept.
+
+Plot the results.
+
+Examine the diagnostic plots of the new model.
