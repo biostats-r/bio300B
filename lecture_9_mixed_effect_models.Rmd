@@ -1,6 +1,6 @@
 ---
-title: "Generalised Linear Models"
-subtitle: "Bio300B Lecture 8"
+title: "Mixed effect Models"
+subtitle: "Bio300B Lecture 9"
 author: "Richard J. Telford (Richard.Telford@uib.no)"
 institute: "Institutt for biovitenskap, UiB"
 date: "`r format(Sys.Date(), '%d %B %Y')`"
