@@ -1,0 +1,251 @@
+---
+title: 'Datalab 8: Generalised linear models'
+author: "Richard Telford"
+date: "10/26/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+library(broom)
+
+```
+
+# Part 1
+
+Relationship between Southern Ocean diatom richness and sea surface temperature.
+
+Data, Esper and Geronde (2014; https://doi.org/10.1016/j.palaeo.2014.08.008), give diatom assemblage composition from surface samples across the Southern Ocean. 
+Column diatoms [#] shows the total number of diatoms observed.
+Temperature data are not given (could be extracted from an atlas with latitude/longitude), so we will use latitute as a proxy for temperature.
+
+## Download and import data
+
+- Download data as tab-delimited test from https://doi.pangaea.de/10.1594/PANGAEA.828674
+- Import the data into R
+
+```{r import-data}
+# here() find the file relative to the project root
+esper <- read_delim(file = here("data/Esper-Gersonde_2014.tab"), skip = 155, delim = "\t") |> 
+  janitor::clean_names()#tidy column names
+```
+
+
+
+## Process data
+- Find the species richness (i.e. number of columns with diatom percent with abundance > 0) (hint: either use pivot_longer() and group_by() and summarise(), or select() and rowSums())
+
+```{r richness}
+esper_richness <- esper |> 
+  pivot_longer(cols = matches("percent"), names_to = "taxa", values_to = "percent") |> # could also cols = a_actinochilus_percent:diatoms_indet_percent (should probably remove diatoms_indet_percent is it not a real species)
+  filter(percent > 0) |> # this will fail if any sites have no diatoms. In that case use summarise(n = sum(percent > 0))
+  group_by(event, latitude) |> 
+  summarise(n = n())
+```
+
+
+
+## plot and model data
+
+- plot richness against latitude
+
+```{r richness-plot}
+ggplot(esper_richness, aes(x = latitude, y = n)) +
+  geom_point() + 
+  labs(x = "Latitude °" , y = "Species richness")
+```
+
+
+- fit an appropriate model to find the relationship between richness and latitude
+
+```{r richness-mod}
+# count data - try a poisson
+mod_richness <- glm(n ~ latitude, data = esper_richness, family = poisson)
+mod_richness
+```
+
+- plot the fitted values from the model with the raw data. Is the model a good fit. Do you need to add extra terms?
+
+```{r plot-with-fitted}
+augment(mod_richness, type.predict = "response") |> 
+  ggplot(aes(x = latitude, y = n)) +
+  geom_point() +
+  geom_line(aes(y = .fitted))
+
+# to get confidence interval
+augment(mod_richness, se_fit = TRUE, type.predict = "link") |> 
+  mutate(fitted = exp(.fitted), 
+         upper = exp(.fitted + 1.96 * .se.fit), 
+         lower = exp(.fitted - 1.96 * .se.fit)) |> 
+  ggplot(aes(x = latitude, y = n)) +
+  geom_point() +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.3) +
+  geom_line(aes(y = fitted))
+```
+Model appear to fit the data well. Does not appear to need a quadratic over this section of latitude (but probably decreases at high northern latitudes)
+
+Residual deviance < residual df - no evidence of over-dispersion
+
+- interpret the model coefficients
+
+```{r coef-richness}
+coef(mod_richness)[1] # log richness when latitude = 0
+coef(mod_richness)[2] # positive slope in link space - proportional change in response space
+```
+```{r}
+cr <- coef(mod_richness)
+#link space - change of 1 degree
+(cr[1] + cr[2] * -60) - (cr[1] + cr[2] * -61)
+
+#reponse space - change of 1 degree
+exp(cr[1] + cr[2] * -60) / exp(cr[1] + cr[2] * -61) -1
+```
+
+
+# Part 2
+
+Find the relationship of the presence-absence of _F. cylindrus_  with latitude in the data from above.
+
+```{r f-cylindrus-data}
+f_cylindrus_df <- esper |> 
+  mutate(f_cylindrus = sign(f_cylindrus_percent))
+```
+
+
+- plot the data
+
+```{r f-cylindrus-plot}
+set.seed(1)
+p_fc <- ggplot(f_cylindrus_df, aes(x = latitude, y = f_cylindrus)) +
+  geom_jitter(width = 0, height = 0.1)
+
+p_fc
+```
+
+
+- fit an appropriate model including a quadratic term (hint: poly())
+
+```{r fc-mod}
+mod_fc <- glm(f_cylindrus ~ latitude, data = f_cylindrus_df, family = binomial)
+mod_fc  
+```
+
+- add the fitted model, with uncertainties, to the plot
+
+```{r fc-plot2}
+set.seed(1)
+augment(mod_fc, se_fit = TRUE) |> 
+  mutate(fitted = plogis(.fitted), 
+         upper = plogis(.fitted + 1.96 * .se.fit), 
+         lower = plogis(.fitted - 1.96 * .se.fit)) |> 
+  ggplot(aes(x = latitude, y = f_cylindrus)) +
+  geom_jitter(width = 0, height = 0.1) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.3) +
+  geom_line(aes(y = fitted)) 
+```
+
+
+
+# Part 3
+
+Find the relationship between the relative abundance of  _F. cylindrus_  with latitude
+
+- plot the data
+
+```{r ra-plot}
+# need proportion data rather than percent
+
+f_cylindrus_df <- f_cylindrus_df |> 
+  mutate(f_cylindrus_prop = f_cylindrus_percent/100 )
+
+ggplot(f_cylindrus_df, aes(x = latitude, y = f_cylindrus_prop)) +
+  geom_point()
+
+```
+
+- fit an appropriate model including a quadratic term (hint: every diatom either is, or is not _F. cylindrus_)
+
+```{r}
+# can fit with proportion and weights
+mod_ra <- glm(f_cylindrus_prop ~ latitude, 
+              data = f_cylindrus_df,
+              family = binomial,
+              weights = diatoms_number)
+
+# warning message because of rounding errors 
+f_cylindrus_df |> 
+  filter(f_cylindrus > 0) |> 
+  mutate(fc = f_cylindrus_prop * diatoms_number) |> 
+  select(f_cylindrus_prop, fc, diatoms_number) # non-integers
+
+# can also fit model with 2 column response: successes and failures
+f_cylindrus_df <- f_cylindrus_df |> 
+   mutate(fc = f_cylindrus_prop * diatoms_number, 
+          fc = round(fc), # round to integer
+          not_fc = diatoms_number - fc)
+
+mod_ra2 <- glm(cbind(fc, not_fc) ~ latitude, 
+              data = f_cylindrus_df,
+              family = binomial)
+
+#result is same (small differences because of fixing the rounding errors)
+tidy(mod_ra)
+tidy(mod_ra2)
+
+# second method does not play well with augment()
+
+```
+
+- is there evidence of overdispersion?
+
+```{r}
+anova(mod_ra) # residual deviance >> residual df
+```
+
+- adjust the model if necessary
+
+```{r}
+mod_ra_quasi <- glm(f_cylindrus_prop ~ latitude, 
+              data = f_cylindrus_df,
+              family = quasibinomial,# change to quasibinomial to allow for overdispersion
+              weights = diatoms_number)
+
+
+tidy(mod_ra_quasi) # coefficients are the same
+```
+
+
+- add the fitted model, with uncertainties, to the plot
+
+```{r}
+# binomial model
+augment(mod_ra, se_fit = TRUE) |> 
+  mutate(fitted = plogis(.fitted), 
+         upper = plogis(.fitted + 1.96 * .se.fit), 
+         lower = plogis(.fitted - 1.96 * .se.fit)) |> 
+  ggplot(aes(x = latitude, y = f_cylindrus_prop)) +
+  geom_point() +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.3) +
+  geom_line(aes(y = fitted)) 
+
+# with quasibinomial
+# line on above plot not smooth because bending too much in region with few data points for predictions. Solve by making predictions for new data on regular grid
+
+nd <- tibble(latitude = seq(min(esper$latitude), max(esper$latitude), length.out = 200))
+
+preds <- augment(mod_ra_quasi, se_fit = TRUE, newdata = nd) |> 
+  mutate(fitted = plogis(.fitted), 
+         upper = plogis(.fitted + 1.96 * .se.fit), 
+         lower = plogis(.fitted - 1.96 * .se.fit)) 
+
+ggplot(f_cylindrus_df, aes(x = latitude, y = f_cylindrus_prop)) +
+  geom_point() +
+  geom_ribbon(aes(ymin = lower, ymax = upper, y  = NULL), data = preds, alpha = 0.3) +
+  geom_line(aes(y = fitted), data = preds) 
+
+# wider ( & more realistic) confidence interval
+# much smoother curve
+```
+
