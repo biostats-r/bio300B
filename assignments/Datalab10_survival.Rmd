@@ -11,7 +11,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 You have done an experiment where you have tested how the castrating bacterium
 _Pasteuria ramosa_ affects survival of its crustacean host Daphnia magna.
-Use the data below and follow the example from the lecture to
+
+Download the data from https://raw.githubusercontent.com/biostats-r/bio300B/master/data/daphnia_survival.csv
+and import them.
+
+Using the example in the lecture as a guide
 
 - Create a survival plot
 - Test the hypothesis:
