@@ -1,0 +1,19 @@
+---
+title: "Datalab 10"
+author: "Richard Telford"
+date: "11/9/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+You have done an experiment where you have tested how the castrating bacterium
+_Pasteuria ramosa_ affects survival of its crustacean host Daphnia magna.
+Use the data below and follow the example from the lecture to
+
+- Create a survival plot
+- Test the hypothesis:
+H0: Daphnia magna infected by Pasteuria ramosa has the same survival as uninfected individuals.
+- Use the model to calculate the expected mean age at death for the two groups (infected and uninfected)
