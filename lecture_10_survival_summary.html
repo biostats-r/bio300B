@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Survival analysis and Summary</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)" />
+    <meta name="date" content="2021-11-09" />
+    <script src="libs/header-attrs-2.10/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <script src="libs/clipboard-2.0.6/clipboard.min.js"></script>
+    <link href="libs/xaringanExtra-clipboard-0.2.6/xaringanExtra-clipboard.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-clipboard-0.2.6/xaringanExtra-clipboard.js"></script>
+    <script>window.xaringanExtraClipboard(null, {"button":"Copy Code","success":"Copied!","error":"Press Ctrl+C to Copy"})</script>
+    <link href="libs/shareon-1.4.1/shareon.min.css" rel="stylesheet" />
+    <script src="libs/shareon-1.4.1/shareon.min.js"></script>
+    <link href="libs/xaringanExtra-shareagain-0.2.6/shareagain.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-shareagain-0.2.6/shareagain.js"></script>
+    <script src="libs/fabric-4.3.1/fabric.min.js"></script>
+    <link href="libs/xaringanExtra-scribble-0.0.1/scribble.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-scribble-0.0.1/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30,"palette":[]}) })</script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"efb247d805f548a6b24866282b27d3e5","expires":1}</script>
+    <script src="libs/himalaya-1.1.0/himalaya.js"></script>
+    <script src="libs/js-cookie-3.0.0/js.cookie.js"></script>
+    <link href="libs/editable-0.2.6/editable.css" rel="stylesheet" />
+    <script src="libs/editable-0.2.6/editable.js"></script>
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Survival analysis and Summary
+## Bio300B Lecture 10
+### Richard J. Telford (<a href="mailto:Richard.Telford@uib.no" class="email">Richard.Telford@uib.no</a>)
+### Institutt for biovitenskap, UiB
+### 09 November 2021
+
+---
+
+&lt;style type="text/css"&gt;
+.remark-slide-content {
+    font-size: 24px;
+    padding: 1em 4em 1em 4em;
+}
+&lt;/style&gt;
+
+
+
+
+
+
+
+# Survival analysis
+
+How long (or far) until an event happens
+
+- How long before a seed germinates
+- How long before a patient dies after diagnosis
+- How many jumps can a horse clear at a racecourse
+
+Data are typically right censored.
+
+`survival` package
+
+---
+## Survival data
+
+Response data 
+
+- time
+- status (0/1, TRUE/FALSE)
+
+
+```r
+library(survival)
+data(lung)
+lung |&gt; slice(1:10)
+```
+
+```
+##    inst time status age sex ph.ecog ph.karno pat.karno meal.cal wt.loss
+## 1     3  306      2  74   1       1       90       100     1175      NA
+## 2     3  455      2  68   1       0       90        90     1225      15
+## 3     3 1010      1  56   1       0       90        90       NA      15
+## 4     5  210      2  57   1       1       90        60     1150      11
+## 5     1  883      2  60   1       0      100        90       NA       0
+## 6    12 1022      1  74   1       1       50        80      513       0
+## 7     7  310      2  68   2       2       70        60      384      10
+## 8    11  361      2  71   2       2       60        80      538       1
+## 9     1  218      2  53   1       1       70        80      825      16
+## 10    7  166      2  61   1       2       70        70      271      34
+```
+
+---
+## Survival response
+
++ indicates censored data
+
+
+```r
+Surv(lung$time, lung$status)
+```
+
+
+```
+##  [1]  306   455  1010+  210   883  1022+  310   361   218   166   170   654 
+## [13]  728    71   567   144   613   707    61    88   301    81   624   371 
+## [25]  394   520   574   118   390    12
+```
+
+---
+## Fitting a model
+
+
+
+```r
+lung &lt;- lung |&gt; 
+  mutate(sex = factor(sex, levels = 1:2, labels = c("male", "female")))
+mod_surv &lt;- survfit(Surv(time, status) ~ sex, data = lung)
+
+mod_surv
+```
+
+```
+## Call: survfit(formula = Surv(time, status) ~ sex, data = lung)
+## 
+##              n events median 0.95LCL 0.95UCL
+## sex=male   138    112    270     212     310
+## sex=female  90     53    426     348     550
+```
+
+---
+## plotting a model
+
+- Kaplan-Meier curve
+- '+' mark censored data
+
+
+```r
+library(ggfortify)
+autoplot(mod_surv)
+```
+
+![](lecture_10_survival_summary_files/figure-html/survival-plot-1.png)&lt;!-- --&gt;
+
+---
+## Testing a model
+
+ - logrank (Mantel-Cox) test 
+
+
+```r
+mod_diff &lt;- survdiff(Surv(time, status) ~ sex, data = lung)
+mod_diff
+```
+
+```
+## Call:
+## survdiff(formula = Surv(time, status) ~ sex, data = lung)
+## 
+##              N Observed Expected (O-E)^2/E (O-E)^2/V
+## sex=male   138      112     91.6      4.55      10.3
+## sex=female  90       53     73.4      5.68      10.3
+## 
+##  Chisq= 10.3  on 1 degrees of freedom, p= 0.001
+```
+
+---
+# Survivorship curve
+
+Shape of the survival curve
+
+
+&lt;img src="figures/Survivorship_Curves.jpg" width="1067" height="60%" /&gt;
+
+
+
+---
+# Hazard: The instantaneous risk of death
+
+
+```r
+m_ll &lt;- survreg(Surv(time, status) ~ age + sex, 
+                data = lung,
+                dist = "loglogistic")
+summary(m_ll)
+```
+
+```
+## 
+## Call:
+## survreg(formula = Surv(time, status) ~ age + sex, data = lung, 
+##     dist = "loglogistic")
+##                Value Std. Error     z       p
+## (Intercept)  6.39982    0.49256 12.99 &lt; 2e-16
+## age         -0.01401    0.00771 -1.82 0.06946
+## sexfemale    0.47751    0.14036  3.40 0.00067
+## Log(scale)  -0.56991    0.06543 -8.71 &lt; 2e-16
+## 
+## Scale= 0.566 
+## 
+## Log logistic distribution
+## Loglik(model)= -1152.9   Loglik(intercept only)= -1160.9
+## 	Chisq= 16.07 on 2 degrees of freedom, p= 0.00032 
+## Number of Newton-Raphson Iterations: 4 
+## n= 228
+```
+
+---
+
+Exponentiated coefficients show relative increase or decrease in the expected survival times when a covariate is increased one step while others are fixed:
+
+
+```r
+exp(coef(m_ll))
+```
+
+```
+## (Intercept)         age   sexfemale 
+## 601.7394821   0.9860925   1.6120541
+```
+
+Expected survival time decreases by 1.4 % (i.e. multiply by 0.986) for each additional year of age
+
+The expected survival time for females is 61.2 % higher than for males (multiply by 1.612).
+
+
+---
+
+scale 
+
+
+```r
+m_ll$scale
+```
+
+```
+## [1] 0.5655786
+```
+
+
+The scale parameter &lt; 1, indicates that slope of the
+hazard decreases with time -  Type III
+
+
+---
+# Summary
+
+## Most important things
+
+1. Designing an experiment
+1. R tips and tricks
+1. Entering data into a spreadsheet
+1. Importing data
+1. Cleaning data
+1. Data visualisation
+1. Using R markdown
+1. Choosing a model type
+1. Interpreting model output
+
+
+
+---
+## Designing an experiment
+
+.can-edit[
+- 
+]
+
+---
+## R tips and tricks
+
+.can-edit[
+- 
+]
+
+---
+## Entering data into a spreadsheet
+
+.can-edit[
+- 
+]
+
+
+---
+## Importing data
+
+.can-edit[
+- 
+]
+
+
+---
+## Cleaning data
+
+
+.can-edit[
+- 
+]
+
+---
+## Data visualisation
+
+.can-edit[
+- 
+]
+
+---
+## Using R markdown
+
+.can-edit[
+- 
+]
+
+---
+## Choosing a model
+
+.can-edit[
+- 
+]
+
+---
+## Interpreting model output
+
+.can-edit[
+- 
+]
+
+---
+# Method choice - 2 key questions
+
+Are the data clustered/grouped?
+
+What is the distribution of the residuals?
+
+(also other types of model - survival etc)
+
+---
+## Clustered data
+
+Mixed effect models
+
+- Normal distribution:  linear mixed effect models
+- Binomial/poisson: generalised linear mixed effect models
+
+---
+## Independent data, normal distribution
+
+Linear models - ordinary least squares
+
+- t-tests
+ - two sample t-test
+ - one sample t-test
+ - paired t-test
+- lm
+
+
+
+
+---
+## Independent data, non-normal distribution
+
+generalised linear models 
+
+- glm
+
+Binomial &amp; Poisson distributions
+
+---
+## Interpreting model output
+
+
+
+```r
+data(penguins, package = "palmerpenguins")
+mod &lt;- lm(bill_length_mm ~ sex * species, data = penguins)
+summary(mod)
+```
+
+```
+## 
+## Call:
+## lm(formula = bill_length_mm ~ sex * species, data = penguins)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -5.7904 -1.3735 -0.0638  1.2096 11.4265 
+## 
+## Coefficients:
+##                          Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)               37.2575     0.2710 137.473  &lt; 2e-16 ***
+## sexmale                    3.1329     0.3833   8.174 6.64e-15 ***
+## speciesChinstrap           9.3160     0.4808  19.377  &lt; 2e-16 ***
+## speciesGentoo              8.3063     0.4073  20.393  &lt; 2e-16 ***
+## sexmale:speciesChinstrap   1.3877     0.6799   2.041   0.0421 *  
+## sexmale:speciesGentoo      0.7771     0.5721   1.358   0.1753    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 2.316 on 327 degrees of freedom
+##   (11 observations deleted due to missingness)
+## Multiple R-squared:  0.8234,	Adjusted R-squared:  0.8207 
+## F-statistic:   305 on 5 and 327 DF,  p-value: &lt; 2.2e-16
+```
+
+---
+# More statistics at BIO
+
+Bio302 - more regression methods
+
+Bio303 - multivatiate methods
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
