@@ -4,7 +4,7 @@
     <title>Linear Regression 1</title>
     <meta charset="utf-8" />
     <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)" />
-    <meta name="date" content="2021-10-12" />
+    <meta name="date" content="2021-11-10" />
     <script src="libs/header-attrs-2.10/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
@@ -29,7 +29,7 @@ class: center, middle, inverse, title-slide
 ## Bio300B Lecture 6
 ### Richard J. Telford (<a href="mailto:Richard.Telford@uib.no" class="email">Richard.Telford@uib.no</a>)
 ### Institutt for biovitenskap, UiB
-### 12 October 2021
+### 10 November 2021
 
 ---
 
@@ -557,14 +557,16 @@ summary(mc)
 ---
 
 ```r
+oldpar &lt;- par(mar = c(5.1, 8.1, 4.1, 2.1))# set baseplot margins 
 plot(mc)
+par(oldpar) # revert margin size
 ```
 
 ![](lecture_6_linear_regression1_files/figure-html/multicomp-1.png)&lt;!-- --&gt;
 
 
 ---
-# Assumtions of Least Squares
+# Assumptions of Least Squares
 
 1. The relationship between the response and the predictors is ~linear.
 2. The residuals have a mean of zero.

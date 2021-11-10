@@ -496,8 +496,10 @@ summary(mc)
 ```
 
 ---
-```{r multicomp}
+```{r multicomp, fig.show='hold'}
+oldpar <- par(mar = c(5.1, 8.1, 4.1, 2.1))# set baseplot margins 
 plot(mc)
+par(oldpar) # revert margin size
 ```
 
 
