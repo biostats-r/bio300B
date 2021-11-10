@@ -19,7 +19,7 @@ Relationship between Southern Ocean diatom richness and sea surface temperature.
 
 Data, Esper and Geronde (2014; https://doi.org/10.1016/j.palaeo.2014.08.008), give diatom assemblage composition from surface samples across the Southern Ocean. 
 Column diatoms [#] shows the total number of diatoms observed.
-Temperature data are not given (could be extracted from an atlas with latitude/longitude), so we will use latitute as a proxy for temperature.
+Temperature data are not given (could be extracted from an atlas with latitude/longitude), so we will use latitude as a proxy for temperature.
 
 ## Download and import data
 
