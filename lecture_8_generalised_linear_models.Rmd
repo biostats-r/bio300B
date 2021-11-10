@@ -129,7 +129,7 @@ How likely is the model given the data?
 
 $$\mathcal{L}(\mu,\sigma|y) = \frac{1}{\sigma \sqrt {2\pi } }e^{-\frac{(x - \mu)^2} {{2\sigma ^2 }}}$$
 
-```{r, fig.height = 5, fig.width = 9, echo=FALSE}
+```{r likelihood-plot, fig.height = 5, fig.width = 9, echo=FALSE}
 mod <- lm(bill_length_mm ~ body_mass_g, data = chinstrap)
 
 body_mass_g = 4150
