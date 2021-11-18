@@ -1,0 +1,229 @@
+---
+title: "Datalab 9: Mixed effect models"
+author: "Richard Telford"
+date: "11/2/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+Do your analyses in an R markdown document
+
+We will examine the `sleepstudy` data from the `lme4` package.
+Data show reaction time (ms) of different subjects on after sleep deprivations.
+
+load the data.
+
+```{r load-data}
+library(lme4)
+library(lmerTest) # to get approximate p-values
+head(sleepstudy)
+```
+
+
+What is the predictor, the response and the random effect for these data?
+
+- predictor = Days
+- response = Reaction
+- random effect = Subject
+
+Day 0-1 were training days and should be removed.
+
+```{r}
+# remove training days
+sleepstudy <- sleepstudy |> 
+  filter(Days > 1)
+```
+
+
+
+Make a publication ready plot of the data.
+
+```{r raw-data-plot}
+# set default theme
+theme_set(theme_bw())
+ggplot(sleepstudy, aes(x = Days, y = Reaction, colour = Subject)) +
+  geom_point(show.legend = FALSE) + # turn off legend
+  #better x-axis breaks
+  scale_x_continuous(breaks = 2:9) +
+  labs(y = "Reaction time (ms)")
+  
+```
+
+
+
+Is predictor an inner or outer variable?
+
+- inner variable. Each subject has range of predictor values.
+
+Fit an appropriate model to the data to give an random intercept.
+
+```{r}
+mod1 <- lmer(Reaction ~ Days + (1|Subject), data = sleepstudy)
+```
+
+
+Examine the output and interpret the coefficients.
+
+```{r}
+summary(mod1)
+```
+
+- subject variance > residual variance = differences between subjects larger than variability within subjects
+- intercept reaction time when x = 0
+- Days - slope. Change in reaction time per day of sleep deprivation
+
+Compare the results with a model that incorrectly ignores the repeat measurement design.
+
+```{r}
+#ignore random effects - use lm
+mod_bad <- lm(Reaction ~ Days, data = sleepstudy)
+summary(mod_bad)
+```
+ - coefficients are same (would be different if design was not balanced)
+ - error on effect are LARGER
+ - model treats all variability as residual error. Does not know about Subjects.
+
+Add the fitted values for each subject and the overall fixed effects to the plot.
+
+```{r random-intercept-plot}
+library(broom.mixed)
+augment(mod1) |> 
+  ggplot(aes(x = Days, y = Reaction, colour = Subject)) +
+  geom_point() +
+  geom_line(aes(y = .fitted)) +
+  geom_line(aes(y = .fixed), colour = "black", size = 1.5) +
+  theme(legend.position = "none") +
+  labs(y = "Reaction time (ms)")
+
+```
+
+
+Examine the model's diagnostic plots.
+
+```{r diag1}
+a_mod1 <- augment(mod1)
+## standardized residuals versus fitted values
+ggplot(a_mod1, aes(.fitted, .resid)) + 
+  geom_point(colour="blue") +
+  geom_hline(yintercept=0) +
+  geom_smooth()
+```
+
+- mean residual not 0
+- variance of residuals not constant
+
+```{r diag2}
+## box-plots of residuals by Subject
+ggplot(a_mod1, aes(Subject,.resid)) + 
+  geom_boxplot() + 
+  geom_hline(yintercept = 0, colour = "red", linetype = "dashed") +
+  coord_flip()
+```
+
+- some suubjects have much larger variance than others, some outliers. Things to keep an eye on.
+
+```{r diag3}
+ggplot(a_mod1, aes(.fitted, Reaction)) + 
+  geom_point(colour="blue") +
+    facet_wrap(~Subject) +
+  geom_abline(intercept=0,slope=1)
+```
+
+
+```{r diag4}
+#qq plot of residuals
+library(lattice)
+qqmath(mod1)
+```
+
+- some deviation from normality
+
+```{r diag5}
+#qq plot of random effects
+qqmath(ranef(mod1))
+```
+
+
+Make a new model with a random slope and intercept.
+
+```{r}
+mod2 <- lmer(Reaction ~ Days + (Days|Subject), data = sleepstudy)
+summary(mod2)
+```
+
+- Coefficients are the same
+- residuals and intercept variance much smaller
+
+Test if this model is better than the model with just a random intercept.
+
+```{r}
+anova(mod1, mod2)
+```
+strong evidence that random slope model is better. Often recommended to fit an random slope model if you have an inner variable (but sometimes the model gets too complex and fails to converge properly, so you might have to resort to a random intercept model)
+
+Plot the results.
+
+```{r}
+augment(mod2) |> 
+  ggplot(aes(x = Days, y = Reaction, colour = Subject)) +
+  geom_point() +
+  geom_line(aes(y = .fitted)) +
+  geom_line(aes(y = .fixed), colour = "black", size = 1.5) +
+  theme(legend.position = "none") +
+  labs(y = "Reaction time (ms)")
+```
+
+
+Examine the diagnostic plots of the new model.
+
+
+```{r diag1-2}
+a_mod2 <- augment(mod2)
+## standardized residuals versus fitted values
+ggplot(a_mod2, aes(.fitted, .resid)) + 
+  geom_point(colour="blue") +
+  geom_hline(yintercept=0) +
+  geom_smooth()
+```
+
+- mean residual 0
+- variance of residuals more constant
+- some outliers
+
+```{r diag2-2}
+## box-plots of residuals by Subject
+ggplot(a_mod2, aes(Subject,.resid)) + 
+  geom_boxplot() + 
+  coord_flip()
+```
+
+- variances maybe more equal than before
+- some outliers
+
+```{r diag3-2}
+ggplot(a_mod2, aes(.fitted, Reaction)) + 
+  geom_point(colour="blue") +
+    facet_wrap(~Subject) +
+  geom_abline(intercept=0,slope=1)
+```
+ - generally better fits than before
+
+```{r diag4-2}
+#qq plot of residuals
+library(lattice)
+qqmath(mod2)
+```
+
+- some deviation from normality - mainly due to three outliers
+
+```{r diag5-2}
+#qq plot of random effects
+qqmath(ranef(mod2))
+```
+ - two panels as two random effects
+ - plot has been flipped so standard normal quantiles now the y-axis
+ - seem to be a straight line through the subjects - normal distribution
