@@ -1,0 +1,98 @@
+---
+title: "Datalab 10"
+author: "Richard Telford"
+date: "11/9/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(survival)
+library(ggfortify) # for autoplot
+```
+
+You have done an experiment where you have tested how the castrating bacterium
+_Pasteuria ramosa_ affects survival of its crustacean host Daphnia magna.
+
+Download the data from https://raw.githubusercontent.com/biostats-r/bio300B/master/data/daphnia_survival.csv
+and import them.
+
+```{r import}
+daphnia <- read_delim(file=here::here("data/daphnia_survival.csv"), delim = ",", skip = 9)
+daphnia
+```
+
+
+Using the example in the lecture as a guide
+
+- Create a survival plot
+
+```{r surv-plot}
+daphnia_fit <- survfit(Surv(Day.of.death, Dead) ~ Group, data = daphnia)
+
+daphnia_fit
+
+autoplot(daphnia_fit) + labs(x = "Day", y = "Percent survival")
+
+```
+
+
+- Test the hypothesis:
+H0: Daphnia magna infected by Pasteuria ramosa has the same survival as uninfected individuals.
+
+
+Could do a non-parametric test. Fewer assumptions than parametric tests, but less informative
+
+```{r}
+#logrank test
+survdiff(Surv(Day.of.death, Dead) ~ Group, data = daphnia)
+```
+- strong evidence of a difference. 
+- Cannot use this function to make predictions. Could get median survival time from survfit output above
+
+
+-Or we can use a parametric test - survreg(). This requires us to choose a distribution. weibull and loglogistic are popular distributions
+
+```{r}
+daphnia_weibull <- survreg(Surv(Day.of.death, Dead) ~ Group,
+          dist = 'weibull',
+          data = daphnia)
+
+daphnia_loglogistic <- survreg(Surv(Day.of.death, Dead) ~ Group,
+          dist = 'loglogistic',
+          data = daphnia)
+
+# model comparison with AIC
+AIC(daphnia_weibull, daphnia_loglogistic) 
+# Weibull model has lower AIC
+```
+```{r}
+daphnia_weibull
+
+anova(daphnia_weibull)
+
+daphnia_loglogistic
+```
+
+
+- Use the model to calculate the expected mean age at death for the two groups (infected and uninfected)
+
+```{r}
+nd <- tibble(Group = c("Infected", "Uninfected"))
+predict(daphnia_weibull, newdata = nd)
+#or use 
+broom::augment(daphnia_loglogistic, newdata = nd)
+# results sensitive to distribution assumed
+```
+There is also the semi-parametric Cox proportional Hazard model
+
+
+```{r cox}
+daphnia_cox <- coxph(Surv(Day.of.death, Dead) ~ Group, data = daphnia)
+daphnia_cox
+
+
+```
+
