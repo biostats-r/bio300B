@@ -49,7 +49,7 @@ tidy(mod2)
 # difference between chinstrap and adelie females
 # difference between gentoo and adelie females
 # excess mass of chinstrap males relative to adelie
-# excess mass of gentoo relative to adelie
+# excess mass of gentoo males relative to adelie
 ```
 
 
