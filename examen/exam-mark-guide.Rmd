@@ -1,0 +1,372 @@
+---
+title: "Bio300B exam mark guide Høst 2021"
+author: "Richard Telford"
+date: "12/12/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This is a model answer, with comments on common problems. In parts this goes beyond what I was expecting.
+
+## 1 Data entry 
+
+```{r data-entry-fig, echo = FALSE}
+knitr::include_graphics("Screenshot from 2021-11-21 14-05-01.png")
+```
+
+
+> You see a friend starting to enter data into an excel file (.xslx). Make some suggestions as to what they should change to make the data easier to import into R and analyse.
+
+I wanted five of more of these 
+
+- use csv rather than xslx format
+- remove row 5 (move units to column names e.g. mass_g)
+- split date/weather into separate columns
+- remove colouring (maybe make new column to indicate this information)
+- use YYYY-MM-DD format for dates
+- validate data - one of the masses is 10 x the others
+
+Secondary issues given less weight
+
+- use consistent date format (all are M-DD-YYY, only differ in separator, so `lubridate::mdy` would read without issue)
+- Consistent capitalisation - valid point, but not the most critical
+
+Common answers given little or no weight
+
+- remove meta data at top of file (metadata at top of file is very common and trivial to ignore with `skip` argument). It might be useful to put some of the metadata into another column.
+- use consistent number of decimal places (this is simply a display issue - would be automatically fixed on import anyway - and typing unnecessary zeros is extra work)
+  
+## Distributions 
+
+>You are investigating bird nests. What distribution would you expect the following to have:
+
+>Number of eggs in the nest
+
+Poisson (count data, quasipoisson if over-dispersed)
+
+>Proportion of eggs that hatch
+
+Binomial (proportion data, quasibinomial if over-dispersed)
+
+>Thickness of the egg shell
+
+Normal/Gaussian
+
+One mark for each correct answer
+
+## Hoverfly 
+
+> A researcher collects hoverflies for an experiment on an insecticide. The first 30 hoverflies caught are allocated to the control treatment, the next 30 are allocated to a treatment with a low dose of insecticide, and the final 30 to a treatment with a high dose of insecticide.
+
+> Is this a good experimental design. How could it be improved.
+
+Not a good design.
+
+Key issue is lack of randomisation. Either collect all and then randomly allocate to treatment, or do this in batches if more convenient.
+(Could also include more levels to get a dose response curve.)
+
+## Fish 
+
+>You are reviewing a manuscript that tests whether food A or food B gives larger fish. There are four tanks, two given each food type, each with 100 fish.
+
+>The authors have used a t-test, with each the mass of each fish as the response. The result is highly significant (p < 0.001).
+
+>Do you recommend that the editor accepts the manuscript for publication? Why? What recommendation do you give the authors?
+
+Do not recommend for publication.
+
+Clustered data (each tank is a cluster).Clustering violates assumption that observations are independent. Clustering needs to be considered, either by including tank as a fixed effect or in a mixed effect model. With current data mixed effect model is not possible as not enough tanks to estimate random effect variance. Current data may be unsalvagable.
+Should repeat the experiment with more tanks, perhaps with fewer fish in each to keep the cost similar, so that a mixed effect model can be used, or keep the fish individually if possible.
+
+Some answers suggested that the experiment needed a control group - not clear what this would be. No food? 
+
+That the p-value is very low is not a reason for publication. First, the p-value might be low because the assumptions of the model are violated. Second, null results are interesting (if there is enough power, and there is a theoretical reason to effect an effect)   
+
+# Seeds 
+
+>A student collects seeds and records how long they take to germinate under different treatments. What type of statistical analysis should they run? Why?
+
+Survival analysis. Time to failure data - possibly censored if some seeds have not germinated at end of experiment.
+
+## Trees 
+
+>In a data set of tree sizes, the Pearson correlation between girth and height is 0.52.
+
+>Calculate the r2.
+
+0.52^2 = `r 0.52^2` 
+
+>What percentage of the variance in the girth data is explained by height?
+
+0.52^2 * 100 = `r 0.52^2 * 100` %
+
+## Guppies 
+
+Data from Reddon et al (2018) Wild and laboratory exposure to cues of predation risk increases relative brain mass in male guppies. Functional Ecology 32: 1847 – 1856 https://doi.org/10.1111/1365-2435.13128
+
+>A researcher studies the effect of the presence of predators on the log brain mass of male and female guppies.
+
+>This is the summary of a linear model using both predictors and an interaction.
+
+> mod <- lm(log_brain ~ sex * predators, data = guppy)  
+>  summary(mod)
+
+>Call:  
+lm(formula = log_brain ~ sex * predators, data = guppy)
+
+>Residuals:  
+      Min        1Q    Median        3Q       Max  
+-0.273333 -0.069213  0.005864  0.067242  0.273335
+
+>Coefficients:
+                      Estimate Std. Error t value Pr(>|t|)     
+(Intercept)           0.795634   0.031670  25.123  < 2e-16 ***  
+sexmale              -0.346210   0.038548  -8.981 2.86e-13 ***  
+predatorsYes          0.008659   0.045712   0.189   0.8503      
+sexmale:predatorsYes  0.113680   0.056260   2.021   0.0471 *    
+---  
+Signif. codes:  0 ‘*\*\*’ 0.001 ‘\*\*’ 0.01 ‘\*’ 0.05 ‘.’ 0.1 ‘ ’ 1  
+
+>Residual standard error: 0.1142 on 70 degrees of freedom  
+Multiple R-squared:  0.6406,    Adjusted R-squared:  0.6252  
+F-statistic: 41.59 on 3 and 70 DF,  p-value: 1.518e-15  
+
+>What is an interaction in a linear model?
+
+When the effect of one predictor depends on the value of another
+
+>Describe what each of the coefficients in this model means
+
+- intercept - log brain mass of female guppies without predators
+- sexmale - mean difference between males and females without predators
+- predatorYes - mean difference between females with predators and without
+- sexmale:predatorsYes - excess log mass of male guppy brains with predators
+
+>What is the predicted log-mass of a female guppy without predators?
+
+0.795634
+
+>What is the predicted log-mass of a female guppy with predators?
+
+0.795634 + 0.008659 = `r 0.795634 + 0.008659`
+
+>What is the predicted log-mass of a male guppy without predators?
+
+0.795634 - 0.346210 = `r 0.795634 - 0.346210`
+
+>What is the predicted log-mass of a male guppy with predators?
+
+0.795634 - 0.346210 + 0.008659 + 0.113680 = `r 0.795634 - 0.346210 + 0.008659 + 0.113680`
+
+## Mice 
+
+>A scientist is designing an experiment to examine mouse behaviour. They are considering blinding their experiment. What does this mean, and why is it a good idea?
+
+Blinding prevents the scientist from knowing which mouse is allocated to which treatment until the experiment has finished (perhaps not until after data analysis).
+This prevents unconscious bias affecting the result. Especially important for behaviour studies as scoring behaviour is often subjective.
+
+Some answers thought that the mice should be blind to which treatment they are in, but unlike human subjects, mice don't have a concept of an experiment (except in Hitch-hiker's Guide to the Galaxy), Nor do the mice need to be literally blinded.
+
+Copying text directly of Wikipedia is a bad idea.
+
+# Bees
+
+Data from MacInnis and Forrest (2020) https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.b01m4dr
+See MacInnis and Forrest (2019) https://besjournals.onlinelibrary.wiley.com/doi/10.1111/1365-2664.13344 for the original paper.
+
+## Introduction 
+
+>What is the response variable?
+
+Strawberry mass
+
+>What type of distribution could we assume for the residuals?
+
+Normal/Gaussian
+
+> What is the null hypothesis?
+
+mass of strawberry does not depend on bee type
+
+> What type of model could we use?
+
+ordinary least squares - linear model - lm
+
+## Data analysis 
+
+Several answers were missing this section.
+
+```{r, echo = FALSE, results='hide'}
+library(tidyverse)
+```
+
+
+> Download the strawberry dataset.
+
+```{r import, message = FALSE}
+straw <- read_delim("strawberry.csv") # file from inspera had additional numbers
+```
+
+> These are the variables of interest:
+
+>    BeeType - Bee type:
+        HB = Honey Bee,
+        WB = Wild bee,
+        MIX = Wild and honey bees
+    StrawbMass - Strawberry mass
+
+>We are ignoring the other variables.
+
+
+>In an R markdown document  
+
+>    Find the mean and standard deviation of strawberry mass for each bee type.
+
+```{r mean-sd}
+straw |> 
+  group_by(BeeType) |> 
+  summarise(
+    mean_mass = mean(StrawbMass), 
+    sd_mass = sd(StrawbMass))
+```
+
+Other code that correctly calculated means and standard deviations received full credit.
+
+
+>    Fit a appropriate model and test if bee type affects strawberry mass. Interpret the result.
+
+```{r model}
+mod <- lm(StrawbMass ~ BeeType, data = straw)
+
+anova(mod) # Strong evidence that bee type affects strawberry mass
+
+broom::tidy(mod) # summary is also fine
+
+# Strawberries pollinated by wild bees are 5.3 g heavier than those pollinated by honey bees. Mixed bees give intermediate strawberries, but no evidence they are different from honey bees.
+
+```
+_Strawberries pollinated by wild bees are 5.3 +/- 1 g heavier than those pollinated by honey bees. Mixed bees give intermediate mass strawberries, but not significantly heavier than from honey bees._
+
+Even better to give mean and upper and lower confidence interval. Either calculate by hand as mean +/- 1.96 * standard error or use `confint()`.
+
+Some answers argued that the mix bee strawberries were smallest. Not correct, they are slightly (but not significantly) larger than the honey bee strawberries
+
+
+To test whether mixed and wild bees are different, need to do a post hoc test. This was not necessary to get full marks.
+
+Running the analysis twice, once with HB as the reference (first) level and once with WB as the reference level is not appropriate.
+
+
+Interpretation of the results essential for full marks.
+
+>    Examine the diagnostic plots. Include any diagnostic plot that show problems and briefly explain what the problems are.
+
+```{r diagnostics}
+library(ggfortify)
+#autoplot(mod, 1:6)
+autoplot(mod, which = 2)# qqplot - deviations from straight line - points are flat in lower-left corner. Indicates non-normal residuals, especially at low end. Probably due to 0 mass strawberries. No negative mass strawberries - normal distribution truncated at zero. Perhaps should use another distribution.
+# Also possible outliers in some of the other plots, but this might reflects the non-normality of the data.
+# Because the predictor is categorical, it is expected that the residual vs fitted plot will only have data at a few locations on the x-axis. This is not a problem.
+```
+
+>    Make a publication-ready plot showing the relationship between the response and predictor. Include both the raw data and the predicted value with uncertainty.
+
+```{r fig}
+library(ggbeeswarm)
+nd <- straw |> distinct(BeeType)
+preds <- broom::augment(mod, newdata = nd, interval = "confidence")
+
+ggplot(straw, aes(x = BeeType, y = StrawbMass, fill = BeeType)) +
+  geom_violin(alpha = 0.3) +
+  geom_quasirandom() +
+  geom_pointrange(aes(ymin = .lower, ymax = .upper, y = .fitted), data = preds, colour = "red", size = 1.3) +
+  labs(x = "Bee type", y = "Strawberry mass, g") +
+  scale_x_discrete(labels = c("Honey", "Mixed", "Wild")) +
+  theme_bw() +
+  theme(legend.position = "none") # good to remove unnessary legend - or it is clutter
+```
+
+ - boxplot/plain violin OK
+ - colour not necessary (grey might be better for a paper, colour in a presentation)
+ - must show prediction & uncertainty
+ - units of data were unclear, so no penalty for omitting units.
+ 
+ 
+
+>Please upload the html file generated by the R markdown.
+
+Full marks were possible with either html or Rmd file
+
+## Power 
+
+>You are interested in repeating this experiment in Norway.
+
+>You want to test if wild bees and honey bees give the different sized strawberries (you are not interested in mixed bees).
+
+
+>What is statistical power?
+
+The probability of rejecting the null hypothesis given that the null hypothesis is false.
+
+
+>What are the consequences of low statistical power?
+
+- low probability of rejecting the null hypothesis
+- if the null hypothesis is rejected, the effect size is exaggerated
+- the estimated effect size is very uncertain
+
+Low power does not increase the type 1 error rate.
+
+
+
+>What is a power test and why should you run one before starting your experiment?
+
+Power test calculate how many observations are required to detect a given effect size with a specified type 1 error rate (typically 0.05) and power (typically 0.8).
+
+Power tests are useful as experiment with too little power are likely to suffer the problems discussed above. Experiment with large amount of power may cost more than necessary. This is particularly important for animal experiment because of ethical considerations.
+
+## 12 Power test 
+
+>In a R markdown document,
+
+>Find the number of replicates required to have a statistical power of 0.8 at the p = 0.05 significance level, assuming that the standard deviation of strawberry mass is 7 g, and you aim to detect a difference of 3 g.
+ 
+```{r power-test}
+straw_delta_mass <- 3
+straw_sd <- 7
+
+power <- pwr::pwr.t.test(d = straw_delta_mass/straw_sd, sig.level = 0.05, power = 0.8)
+power
+```
+ `r ceiling(power$n)` replicates in each treatment needed.
+ 
+- some answers rounded n down (or didn't round) It should be rounded up - otherwise the power will be < 0.8. I ignored this.
+- some answers rounded effect size. I ignored rounding to 2 decimal places.
+- some answers used `pwr.anova.test`. It is possible to use this function, but the effect size is expressed differently (and the help file is not very helpful - `power.anova.test` has a better help file and a different way to express effect size).
+
+```{r}
+pwr::pwr.anova.test(
+  k = 2, 
+  f = sqrt(var(c(0, straw_delta_mass)) * 1/2)/straw_sd, 
+  sig.level = 0.05, 
+  power = 0.8)
+# f has variance * 1/2 as it wants population variance rather than sample variance. Sample variance has denominator k-1, pop variance has denominator k
+
+
+# or power.anova.test with a different setup
+power.anova.test(
+  groups = 2,
+  between.var = var(c(0, straw_delta_mass)),
+  within.var = straw_sd ^ 2,
+  sig.level = 0.05,
+  power = 0.8
+)
+
+```
+
+---
+
+Some answers had poor spelling and or grammar. I didn't deduct marks for this, but strongly recommend using a spell checker.
