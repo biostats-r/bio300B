@@ -1,0 +1,271 @@
+---
+title: Bio300B Logistics 2022
+subtitle: Biostatistics
+author: Richard J. Telford (Richard.Telford@uib.no)
+institute: Institutt for biovitenskap, UiB
+date: today
+date-format: "D MMMM YYYY"
+format: 
+  revealjs:
+    theme: [default, css/custom.scss]
+---
+
+# People
+
+## Who I am?
+
+```{r}
+#| label: packages
+#| echo: false
+#| include: false
+library(fontawesome)
+```
+
+:::: {.columns}
+
+::: {.column}
+```{r}
+knitr::include_graphics("figures/telford2_2_1.jpg")
+```
+email: [richard.telford\@uib.no](mailto:richard.telford@uib.no)
+:::
+
+::: {.column}
+
+-   Palaeoecologist/ecologist with numerical interests
+
+-   R user since 2002
+
+-   Interested in
+
+    -   Reconstructing environmental change
+    -   Effect of climate change on ecosystems
+    -   Reproducibility in science
+
+:::
+
+::::
+
+
+
+
+## Teaching Assistants
+
+:::: {.columns}
+
+::: {.column}
+#### Mary Shelley
+
+```{r}
+knitr::include_graphics("figures/IMG_20220828_161138555_HDR2.jpg")
+```
+
+#### Favourite language
+
+Shell scripts
+:::
+
+::: {.column}
+#### Percy "Byssus" Shelley
+
+```{r}
+knitr::include_graphics("figures/IMG_20220828_161152319_HDR2.jpg")
+```
+
+#### Favourite language
+
+Perl
+:::
+
+::::
+
+## Students
+
+89 Students
+
+::: {.notes}
+
+- R users
+- RStudio
+
+:::
+
+# When & Where
+
+## Lectures
+
+-   Start 29^th^ August
+-   Mondays 1415 - 1600
+-   Høyteknologisenteret, Stort auditorium
+
+Will be recorded when clashes with other courses
+
+- Bio325 (26^th^ Sept / 3^rd^ Oct)
+- ???
+
+::: {.notes}
+
+- Any other courses? When?
+
+:::
+
+## Printing Lecture notes
+
+Slides made with quarto & revealjs
+
+- Toggle into Print View using the E key (or using the Navigation Menu)
+-  Open the browser's print dialogue (<kbd>Ctrl</kbd> + <kbd>p</kbd>) / (Mac <kbd>Cmd</kbd> + <kbd>p</kbd>)).
+-  Change the Destination setting to Save as PDF.
+- Change the Layout to Landscape.
+- Change the Margins to None.
+- Enable the Background graphics option.
+- Click Save 🎉
+
+
+## Data labs
+
+4 Groups per week
+
+|         |                       |                         |
+|---------|-----------------------|-------------------------|
+| Group 1 | Wednesday 1415 - 1600 | Konf.rom D (VilVite) \* |
+| Group 2 | Thursday 1415 - 1600  | Konf.rom A (VilVite)    |
+| Group 3 | Thursday 1415 - 1600  | Konf.rom B (VilVite)    |
+| Group 4 | Friday 0815 - 1000    | K3 + K4 (Bio Blokk B)   |
+
+\* Room changes occasionally for group 1
+
+Please sign up for **one** group
+
+Possible to change group **if** space available
+
+::: {.notes}
+
+- 2 hour practicals
+- need to prepare
+
+:::
+
+## Assessment
+
+Portfolio assessment
+
+- submissions on different aspects of the course
+- extra work for PhD on heisemner
+
+More details soon
+
+# What
+
+## Course contents
+
+- Using R with RStudio
+- Importing and manipulating data with tidyverse
+- Data visualisation with ggplot2
+- Executable documents with quarto
+- Experimental design & Power analysis
+- Linear regression
+- Generalised linear regression
+- Mixed effect models
+- Survival analysis
+
+## Software requirements
+
+-   R version \>= 4.2
+-   RStudio version \>= 2022.07
+-   quarto
+
+For installation & configuration instructions see [Chapter 1](https://biostats-r.github.io/biostats/workingInR/0010_Getting_Started_with_RStudio.html) of the Working in R coursebook
+
+## R packages
+
+-    tidyverse (for data manipulation and plotting)
+-    remotes (for installing packages from GitHub)
+-    usethis  (for setting up some course material)
+-    here (for helping load file)
+-    gt (for making tables)
+-    quarto (for making reproducible documents)
+
+See [Chapter 5](https://biostats-r.github.io/biostats/workingInR/0013_packages.html) of the Working in R coursebook
+
+(more packages will be needed later in the course)
+
+# Resources
+
+## Biostats products
+
+[Enough R to write a thesis](https://biostats-r.github.io/biostats/)
+
+```{r}
+knitr::include_url("https://biostats-r.github.io/biostats/")
+```
+
+-   R books 
+-   Interactive tutorials & apps
+
+## Found a mistake / got a suggestion?
+
+Make an issue on github
+
+- [Books](https://github.com/biostats-r/biostats/issues) 
+- [Interactive tutorials & apps](https://github.com/biostats-r/biostats.tutorials/issues)
+- [Lecture notes](https://github.com/biostats-r/bio300B/issues)
+
+## Reading
+
+:::: {.columns}
+
+::: {.column width="30%"}
+#### [R for Data Science](https://r4ds.had.co.nz/)
+
+```{r}
+knitr::include_graphics("figures/r4ds-cover.png")
+```
+
+:::
+
+::: {.column width="30%"}
+#### [Fundamentals of Data Visualization](https://clauswilke.com/dataviz/)
+
+```{r}
+knitr::include_graphics("figures/fdv-cover.png")
+```
+
+:::
+
+::: {.column width="30%"}
+#### [Introduction to Modern Statistics](https://openintro-ims.netlify.app/)
+
+```{r}
+knitr::include_graphics("figures/IMS1_front_cover.png")
+```
+
+:::
+
+::::
+
+
+
+# More `r fa("r-project", fill = "steelblue")` & biostatistics
+
+## Bio courses
+
+-   BIO303 Ordination and Gradient Analysis
+    -   Autumn semester
+-   Bio302 Biostatisics II
+    -   Spring semester
+
+## Rklubben
+
+“The first rule about R club is you talk about R.”
+
+- Come and help fix someone else's R problems
+- And get help yourself
+
+Fridays 1400-1600 in Tunet (4^th^ floor Bio A)
+
+Zoom possible on request
+
+## Any questions?
+
+???
