@@ -12,7 +12,7 @@ format:
 
 # People
 
-## Who I am?
+## Who am I?
 
 ```{r}
 #| label: packages
@@ -46,8 +46,11 @@ email: [richard.telford\@uib.no](mailto:richard.telford@uib.no)
 
 ::::
 
+::: {.notes}
 
+Hopefully department will find some other TA
 
+:::
 
 ## Teaching Assistants
 
@@ -154,6 +157,18 @@ Portfolio assessment
 - extra work for PhD on heisemner
 
 More details soon
+
+::: {.notes}
+
+Hours:
+
+5 Credit course
+
+125 hours
+
+~ 12 hours per week
+
+:::
 
 # What
 

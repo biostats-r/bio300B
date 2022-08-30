@@ -8,3 +8,11 @@ $body-bg: $theme-darkblue;
 $body-color: $theme-white;
 $link-color: $theme-blue;
 $presentation-heading-color: lighten($theme-blue, 15%);
+
+
+/*-- scss:rules --*/
+
+aside {
+  float: right !important;
+  margin: 0 1.5%;
+}
