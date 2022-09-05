@@ -1,0 +1,598 @@
+---
+title: Using R
+subtitle: Bio300B Lecture 2
+author: Richard J. Telford (Richard.Telford@uib.no)
+institute: Institutt for biovitenskap, UiB
+date: today
+date-format: "D MMMM YYYY"
+format: 
+  revealjs:
+    theme: [default, css/custom.scss]
+execute: 
+  echo: true
+  warning: false
+  error: true
+---
+
+# Basics of R
+
+## R as a calculator
+
+```{r}
+#| output-location: fragment
+6 * 7
+
+(2 + 5) * 8
+```
+
+## Assigning
+
+Assign object to a name
+
+```{r}
+#| output-location: fragment
+x <- 6 * 7
+x
+x ^ 2
+```
+
+Forgetting to assign is a very common error
+
+## Functions
+
+Brackets
+
+Arguments separated by comma
+
+```{r}
+rnorm(n = 4, mean = 2, sd = 2)
+```
+
+Don't include an argument - uses default
+
+Don't need to name arguments if in correct order
+
+## Vectors
+
+All elements must be the same type
+
+Atomic vectors
+
+```{r}
+c(TRUE, FALSE, TRUE)    # logical
+c(1L, 5L, 19L)          # integer
+c(3.14, 1, 1.9e2)       # double
+c("cat", "dog", "fish") # character
+```
+
+## Coercion
+
+Automatic coercion
+
+```{r}
+#| output-location: fragment
+x <- c(1, "dog")
+mode(x)
+x
+```
+
+::: fragment
+Deliberate coercion
+
+```{r}
+as.numeric(x)
+```
+:::
+
+------------------------------------------------------------------------
+
+Predict the outcome of
+
+```{r}
+#| output-location: fragment
+c(1, FALSE)
+```
+
+::: fragment
+```{r}
+#| output-location: fragment
+c("a", 1)
+```
+:::
+
+::: fragment
+```{r}
+#| output-location: fragment
+c(TRUE, 1L)
+```
+:::
+
+## Subsetting a vector
+
+```{r}
+x <- c(5, 1, 4, 7)
+x[2]       # extract single element
+x[c(1, 3)] # extract multiple elements
+x[-2]      # remove elements
+x[x > 5]   # logical test
+```
+
+------------------------------------------------------------------------
+
+Extract from
+
+```{r}
+x <- c(1, 10, 3, 5, 7)
+```
+
+-   first element
+-   last element
+-   second and third element
+-   everything but the second and third element
+-   element with a value less than 5
+
+## Matricies
+
+2 dimensional
+
+All elements same type
+
+```{r}
+m <- matrix(1:9, nrow = 3)
+m
+```
+
+Arrays can have 3+ dimensions
+
+## Subsetting a matrix
+
+```{r}
+m
+```
+
+`[row_indices, column_indices]`
+
+```{r}
+#| output-location: fragment
+m[1:2, 2]
+```
+
+## Lists
+
+Each element of a list can be a different type
+
+```{r}
+lst <- list(
+  1:5,
+  "b",
+  c(TRUE, FALSE)
+)
+
+str(lst)
+
+lst
+```
+
+::: notes
+Lists are very important
+:::
+
+## Subsetting a list
+
+```{r}
+x <- list(1:3, "a", 4:6)
+```
+
+```{r, echo = FALSE}
+knitr::include_graphics("figures/train.png")
+```
+
+Can make a smaller list, or extract contents of a carriage
+
+```{r, echo = FALSE}
+knitr::include_graphics("figures/train-single.png")
+```
+
+------------------------------------------------------------------------
+
+```{r}
+x
+
+x[1]   # list with one element
+x[1:2] # list with first two elements
+x[[1]] # content of first element
+```
+
+## Named lists
+
+```{r}
+x <- list(a = 1:3, b = "a", c = 4:6)
+x
+```
+
+Extract vector "a"
+
+```{r}
+x$a
+```
+
+## Data frames and tibbles
+
+rectangular data structure - 2-dimensions
+
+columns can have different type of object
+
+special type of list where all vectors have same length
+
+Tibbles are better behaved version of data.frame
+
+```{r}
+library(tibble) # part of tidyverse
+df2 <- tibble(x = 1:3, y = letters[1:3])
+df2
+```
+
+------------------------------------------------------------------------
+
+Data.frames have row and column names
+
+```{r}
+names(df2)
+rownames(df2) # not supported by tibbles - use a column instead
+```
+
+## Subsetting a tibble
+
+With square brackets
+
+```{r}
+df2[1, 2]
+```
+
+With column names
+
+```{r}
+df2$y
+```
+
+Which method is safer?
+
+Can also use `dplyr` package.
+
+## Control flow
+
+`if` statements for choice
+
+```{r eval = FALSE}
+if (logical_condition) {
+  # run this code if logical_condition is true
+} else {
+  # run this code if logical_condition is false
+}
+```
+
+`else` is optional
+
+use `ifelse()` or `dplyr::case_when()` for vectorised if
+
+## Boolean logic
+
+logical conditions can be combined
+
+```{r}
+animal <- "cat"
+number <- 3
+```
+
+`&&` AND - TRUE if both TRUE `||` OR - TRUE if either TRUE `!` NOT - TRUE if FALSE (or use `!=`)
+
+```{r}
+animal == "cat" && number == 7
+animal == "cat" || number == 7
+!animal == "cat" || number == 7
+!(animal == "cat" || number == 7)
+```
+
+## loops
+
+Often don't need an explicit loop - R is vectorised
+
+```{r}
+a <- c(5, 1, 4, 6)
+b <- c(1, 7, 3, 4)
+a + b
+```
+
+## `for` loops
+
+`for` loops iterate over elements of a vector
+
+```{r eval = FALSE}
+for (element in vector){
+  # run code here
+}
+
+```
+
+::: fragment
+```{r}
+for (i in 1:3) {
+  print(i)
+}
+```
+:::
+
+## `for` pitfalls
+
+Need to pre-allocate space or slow
+
+```{r}
+n <- 10
+result <- numeric(10)
+for (i in 1:n) {
+  result[i] <- rnorm(1)
+}
+```
+
+Rarely need a loop - `purrr::map()`, `apply()` generally cleaner
+
+## Better iteration with \`map\`
+
+```{r}
+library(purrr) # part of tidyverse
+lst <- list(a = 1:3, b = c(4, 7), c = 5:9)
+map(lst, mean)
+
+map_dbl(lst, mean) # returns vector of doubles
+```
+
+`apply` for iterating over rows/columns of a matrix
+
+# Style
+
+## Code is communication
+
+-   With your computer
+
+-   With your collaborators
+
+> "Your closest collaborator is you six months ago but you don't reply to email."
+
+-   With reviewers/examiners
+
+Need understandable code
+
+Goodstylemakescodeeasiertoread
+
+## Tidy code
+
+<blockquote class="twitter-tweet" data-lang="en" width="550">
+
+<p lang="en" dir="ltr">
+
+The only way to write good code is to write tons of shitty code first.
+Feeling shame about bad code stops you from getting to good code
+
+</p>
+
+--- Hadley Wickham (@hadleywickham) <a href="https://twitter.com/hadleywickham/status/589068687669243905">17 April 2015</a>
+
+</blockquote>
+
+```{=html}
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+```
+-   Makes code easier to read
+-   Makes code easier to debug
+
+Make your own style - but be consistent
+
+[Tidyverse style guide](https://style.tidyverse.org/)
+
+## Naming Things
+
+> "There are only two hard things in Computer Science: cache invalidation and naming things."
+
+> --- Phil Karlton
+
+-   Names can contain letter numbers "\_" and "."
+-   Names must begin with a letter or "."
+-   Avoid using names of existing functions - confusing
+-   Make names concise yet meaningful
+-   Reserved words include TRUE, for, if
+
+## Which of these are valid names in R {.smaller}
+
+-   min_height
+-   max.height
+-   \_age
+-   .mass
+-   MaxLength
+-   min-length
+-   FALSE
+-   true
+-   2widths
+-   celsius2kelvin
+-   plot
+-   T
+
+## Names can be too long {background-image="figures/Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch_stationbord.jpeg" background-color="black"}
+
+::: aside
+[By Rob Koster - Own work, CC BY-SA 3.0](https://commons.wikimedia.org/w/index.php?curid=25230696)
+:::
+
+::: notes
+"The church of St. Mary of the pool of the white hazels near to the fierce whirlpool and the church of St. Tysilio of the red cave"
+:::
+
+## Or too short
+
+::: r-fit-text
+no
+:::
+
+::: notes
+Common in old FORTRAN code - save memory with short names exceptions
+
+-   counter in a for loop
+-   main object in a function
+:::
+
+## Naming convensions
+
+| camelCase 🐫      | UpperCamelCase    | snake_case          |
+|-------------------|-------------------|---------------------|
+| billLengthMM      | BillLengthMM      | bill_length_mm      |
+| bergenWeather2022 | BergenWeather2022 | bergen_weather_2022 |
+| dryMassG          | DryMassG          | dry_mass_g          |
+| makeWeatherPlot   | MakeWeatherPlot   | make_weather_plot   |
+
+## White-space is free!
+
+Place spaces
+
+-   around infix operators (`|>`, `+`, `-`, `<-`, )
+-   around `=` in function calls
+-   after commas not before
+
+### Good
+
+```{r, eval = FALSE}
+gentoo <- filter(penguins, species == "Gentoo", body_mass_g >= 300)
+```
+
+### Bad
+
+```{r, eval = FALSE}
+gentoo<-filter(penguins,species=="Gentoo",body_mass_g>=300)
+```
+
+## Split long commands over multiple lines
+
+```{r, eval = FALSE}
+penguins |> 
+  group_by(species) |> 
+  summarise(
+    max_mass = max(body_mass_g),
+    mean_bill_length = mean(bill_length_mm),
+   .groups = "drop"
+  )
+```
+
+::: notes
+Aim for a maximum line length of 80 characters
+:::
+
+## Indentation makes code more readable
+
+### Good
+
+```{r, eval = FALSE}
+positive <- function(x) {
+  if (is.null(dim(x))) {
+    x[x > 0]
+  } else{
+    x[, colSums(x) > 0, drop  = FALSE]
+  }
+}
+```
+
+### Bad
+
+```{r, eval = FALSE}
+positive <- function(x){
+if(is.null(dim(x)))
+{x[x >0]} 
+else{
+x[, colSums(x) > 0, drop  = FALSE]
+}}
+```
+
+## Stylers & lintr
+
+Use `styler` package to edit code to meet style guide.
+
+Use `lintr` package for static code analysis, including style check
+
+::: notes
+Demo Need dev version of styler for quarto files.
+`remotes::install_github("r-lib/styler")`
+:::
+
+## Comments
+
+Use \# to start comments.
+
+Help you and others to understand what you did
+
+Comments should explain the why, not the what.
+
+Try to make code self-documenting with descriptive object names
+
+Use comments for navigation
+
+```{r, eval = FALSE}
+#### Load data ####
+...
+
+#### Plot data ####
+...
+```
+
+## No magic numbers
+
+```{r}
+x <- c(1, 5, 6, 3, 6)
+mean(x)
+x[x > 4.2]
+```
+::: fragment
+```{r}
+x <- c(1, 5, 6, 3, 6)
+x_mean <- mean(x)
+x[x > x_mean]
+```
+:::
+
+## Split analyses over multiple files
+
+Long scripts become difficult to navigate
+
+Fix by moving parts of the code into different files
+
+For example:
+
+-   data import code to "loadData.R"
+-   functions to "functions.R"
+
+Import with
+
+```{r, eval = FALSE}
+source("loadData.R")
+source("functions.R")
+```
+
+## Don't repeat yourself
+
+Repeated code is hard to maintain
+
+Make repeated code into functions.
+
+```{r, eval = FALSE}
+my_fun <- function(arg1) {arg1 ^ 2}
+my_fun(7)
+```
+
+Single place to maintain
+
+## Encapsulate code
+
+```{r, eval = FALSE}
+make_figure_one <- function() {
+  ggplot(penguins, aes(x = bill_length_mm)) +
+    geom_histogram()
+}
+
+make_figure_one()
+```
