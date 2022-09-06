@@ -1,56 +1,60 @@
 ---
-title: "Data manipulation"
-subtitle: "Bio300B Lecture 2"
-author: "Richard J. Telford (Richard.Telford@uib.no)"
-institute: "Institutt for biovitenskap, UiB"
-date: "`r format(Sys.Date(), '%d %B %Y')`"
-output:
-  xaringan::moon_reader:
-    lib_dir: libs
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
+title: Data manipulation
+subtitle: Bio300B Lecture 3
+author: Richard J. Telford (Richard.Telford@uib.no)
+institute: Institutt for biovitenskap, UiB
+date: today
+date-format: "D MMMM YYYY"
+format: 
+  revealjs:
+    theme: [default, css/custom.scss]
+execute: 
+  echo: true
+  warning: false
+  error: true
 ---
-<style type="text/css">
-.remark-slide-content {
-    font-size: 24px;
-    padding: 1em 4em 1em 4em;
-}
-</style>
+
+
+## Data cleaning
+
+<!-- <style type="text/css"> -->
+<!-- .remark-slide-content { -->
+<!--     font-size: 24px; -->
+<!--     padding: 1em 4em 1em 4em; -->
+<!-- } -->
+<!-- </style> -->
 
 ```{r setup, echo=FALSE, message=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, error = TRUE)
 library("tidyverse")
 data(penguins, package = "palmerpenguins")
 options(dplyr.print_min = 2, dplyr.print_max = 3)
 ```
 
-```{r xaringanExtra-clipboard, echo=FALSE}
-xaringanExtra::use_clipboard()
-```
+:::: {.columns}
 
-```{r share-again, echo = FALSE}
-xaringanExtra::use_share_again()
-```
-
-# Data cleaning
-
+::: {.column width="50%"}
 - Critical
 - Time consuming 
 - Do in code for reproducibility
 - Often not taught
+:::
 
+::: {.column width="50%"}
 ```{r, echo = FALSE, fig.cap="Figure from [towards_AI](https://twitter.com/towards_AI/status/1332567246011555840?s=20)", fig.alt = "Meme showing cute puppy representing data used in tutorials and a weird dog representing data in the wild."}
 knitr::include_graphics("figures/wild_data.jpg")
 ```
+:::
+
+::::
 
 
----
-# Tidy data
 
-    Happy families are all alike; every 
-    unhappy family is unhappy in its own way    Tolstoy 
+
+
+
+## Tidy data
+
+"Happy families are all alike; every unhappy family is unhappy in its own way"    Tolstoy 
     
 - Every column is a variable.
 - Every row is an observation.
@@ -60,18 +64,20 @@ knitr::include_graphics("figures/wild_data.jpg")
 knitr::include_graphics("figures/tidy1.png")
 ```
 
-.footnote[[Wickham (2014) Tidy data](https://vita.had.co.nz/papers/tidy-data.pdf)]
+::: aside
+[Wickham (2014) Tidy data](https://vita.had.co.nz/papers/tidy-data.pdf)
+:::
 
----
-# Untidy data
+
+## Untidy data
 
 ``` {r tidy, echo=FALSE, message=FALSE}
 table2 <- read_delim(file = "data/nottidy.csv", delim = ";")
 knitr::kable(table2 |> select(1:5))
 ```
 
----
-# The heart of your analysis pipeline
+
+## The heart of your analysis pipeline
 
 ```{r tidy-heart, echo = FALSE, fig.alt = "Diagram showing tidy data at the heart of data analysis"}
 library(DiagrammeR)
@@ -87,7 +93,7 @@ grViz("
       node [shape = egg, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = 'Palatino']
 
       b [label = 'Tidy data', shape = box]
-      c [label = 'Clean and tidy data', shape = box]
+      c [label = 'Clean & tidy data', shape = box]
 
       d [label = 'Analysis']
       e [label = 'Visualisation']
@@ -100,8 +106,7 @@ grViz("
 
 
 
----
-# Pipes
+## Pipes
 
 Analysis:
 
@@ -119,6 +124,7 @@ summarise(
 ```
 
 ---
+
 Second solution
 
 ```{r}
@@ -140,7 +146,8 @@ p_3 <- summarise(p_2,
 ```
 
 ---
-## pipe solution
+
+### pipe solution
 
 ```{r}
 p <- penguins |> 
@@ -156,8 +163,8 @@ Pipe puts result of left hand side into first available argument on right hand s
 - |> native R pipe (R >= 4.1)
 - `%>%` `magrittr` pipe
 
----
-# Reshaping data
+
+## Reshaping data
 
 Long data vs wide data
 
@@ -184,7 +191,7 @@ Wide data
 mites # part of vegan::mite
 ```
 
----
+
 ## pivot_longer()
 
 ```{r}
@@ -195,7 +202,7 @@ mites_long <- mites |>
 mites_long
 ```
 
----
+
 ## pivot_wider()
 
 ```{r}
@@ -208,8 +215,8 @@ mites_wide
 options(dplyr.print_min = 2, dplyr.print_max = 3)
 ```
 
----
-# Key dplyr functions
+
+## Key dplyr functions
 
 - `select()`
 - `filter()`
@@ -217,8 +224,8 @@ options(dplyr.print_min = 2, dplyr.print_max = 3)
 - `summarise()`
 - `group_by()`
 
----
-# Selecting columns  
+
+## Selecting columns  
 `dplyr::select()`
 
 ```{r}
@@ -232,7 +239,7 @@ penguins |>
   select(-bill_length_mm, -bill_depth_mm)
 ```
 
----
+
 ## Selecting adjacent columns
 
 ```{r}
@@ -246,7 +253,7 @@ penguins |>
 ```
 
 
----
+
 ## Select helpers
 
 `ends_with()`
@@ -258,8 +265,8 @@ penguins |>
 - `contains()`
 - `matches()` regular expressions
 
----
-# Filtering rows 
+
+## Filtering rows 
 `dplyr::filter()`
 
 ```{r}
@@ -273,7 +280,7 @@ One or more logical statements
 - `<`
 - `!=`
 
----
+
 ## near()
 
 Problem:
@@ -293,7 +300,7 @@ Solution:
 near(sqrt(2) ^ 2, 2)
 ```
 
----
+
 ## `%in%`
 
 Problem
@@ -312,7 +319,7 @@ penguins |>
   filter(species %in% c("Gentoo", "Chinstrap"))
 ```
 
----
+
 ## `between()`
 
 Problem
@@ -329,7 +336,6 @@ penguins |>
   filter(between(body_mass_g, left = 2000, right = 3000))
 ```
 
----
 ## Partial string matches
 
 Problem
@@ -345,8 +351,8 @@ penguins |>
 
 Regular expressions for more powerful matching.
 
----
-# Mutating columns with mutate()
+
+## Mutating columns with mutate()
 
 Make a new column or change an existing column
 
@@ -358,15 +364,15 @@ penguins |> mutate(
   )
 ```
 
----
+
 ## Useful functions for mutate
 
 - mutate character columns with `stringr`, `glue`
 - mutate factor columns with `forcats`
 - mutate dates with `lubridate`
 
----
-# Summarising data with summarise
+
+## Summarising data with summarise
 
 ```{r}
 penguins |> 
@@ -383,8 +389,8 @@ Useful functions
 - spread `sd()`
 - number `n()` `n_distinct()`
 
----
-# Grouping data
+
+## Grouping data
 
 ```{r}
 penguins |> 
@@ -394,8 +400,7 @@ penguins |>
 Mutate and summarise now work per group
 
 
----
-# Mutating grouped data
+## Mutating grouped data
 
 Analysis per group
 
@@ -407,8 +412,8 @@ penguins |>
 ```
 
 
----
-# Summarising grouped data
+
+## Summarising grouped data
 
 Summary per group
 
@@ -423,8 +428,7 @@ penguins |>
 ```
 
 
----
-# Counting rows
+## Counting rows
 
 ```{r}
 penguins |> 
@@ -435,8 +439,7 @@ penguins |>
   summarise(n = n(), .groups = "drop")
 ```
 
----
-# Mutating joins
+## Mutating joins
 
 Merge two tibbles
 
@@ -444,7 +447,7 @@ Merge two tibbles
 knitr::include_graphics("figures/left-join.gif")
 ```
 
----
+
 ## left_join()
 
 .pull-left[
@@ -467,8 +470,8 @@ band_members %>%
 
 ]
 
----
-# Filtering joins
+
+## Filtering joins
 
 ```{r}
 #semi join
@@ -481,162 +484,16 @@ band_members %>%
 ```
 
 
----
-# Tidy code
 
-<blockquote class="twitter-tweet" data-lang="en" width = "550"><p lang="en" dir="ltr">The only way to write good code is to write tons of shitty code first. Feeling shame about bad code stops you from getting to good code</p>&mdash; Hadley Wickham (@hadleywickham) <a href="https://twitter.com/hadleywickham/status/589068687669243905">17 April 2015</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
----
-# Why?
+## Further reading
 
- - Makes code easier to read
- - Makes code easier to debug
 
-Make your own style - but be consistent
+Wickham and Grolemund (2017) [_R for Data Science_](https://r4ds.had.co.nz/)
 
----
-# Naming Things
+Wickham, H. [_Advanced R_](https://adv-r.hadley.nz/index.html)
 
->    “There are only two hard things in Computer Science: cache invalidation and naming things.”
-
->    — Phil Karlton
-
- - Names can contain letter numbers "_"" and "."
- - Names must begin with a letter or "."
- - Avoid using names of existing functions - confusing
- - Make names concise yet meaningful
- - Reserved words include TRUE, for, if
-
----
-# White-space is free! 
-
-Place spaces
-
-- around infix operators (`|>`, `+`, `-`, `<-`, ) 
-- around `=` in function calls
-- after commas not before
-- but `1:10` and `dplyr::select()`
-
-### Good
-```{r, eval = FALSE}
-average <- mean(feet / 12 + inches, na.rm = TRUE)
-```
-### Bad
-```{r, eval = FALSE}
-average<-mean(feet/12+inches,na.rm=TRUE)
-```
-
----
-# Split long commands over multiple lines
-
-```{r, eval = FALSE}
-penguins |> 
-  group_by(species) |> 
-  summarise(
-    max_mass = max(body_mass_g),
-    mean_bill_length = mean(bill_length_mm),
-   .groups = "drop"
-  )
-```
-
----
-# Indentation makes code more readable
-
-### Good
-```{r, eval = FALSE}
-positive <- function(x) {
-  if (is.null(dim(x))) {
-    x[x > 0]
-  } else{
-    x[, colSums(x) > 0, drop  = FALSE]
-  }
-}
-```
-
-### Bad
-```{r, eval = FALSE}
-positive <- function(x){
-if(is.null(dim(x)))
-{x[x >0]} 
-else{
-x[, colSums(x) > 0, drop  = FALSE]
-}}
-```
-
----
-# Assignment
-
-Use <-, not =, for assignment.
-
-### Good
-```{r, eval = FALSE}
-x <- 5
-```
-### Bad
-```{r, eval = FALSE}
-x = 5
-```
-
----
-# Comments
-
-Use # to start comments.
-
-Help you and others to understand what you did
-
-Comments should explain the why, not the what.
-
-Use comments for navigation
-```{r, eval = FALSE}
-#### Load data ####
-...
-#### Plot data ####
-...
-```
-
----
-# Split analyses over multiple files
-
-Long scripts become difficult to navigate
-
-Fix by moving parts of the code into different files
-
-For example: 
-
- - data import code to "loadData.R"
- - functions to "functions.R"
-
-Import with  
-```{r, eval = FALSE}
-source("loadData.R")
-source("functions.R")
-```
-
----
-# Don't repeat yourself
-
-Repeated code is hard to maintain
-
-Make repeated code into functions.
-
-```{r, eval = FALSE}
-my_fun <- function(arg1) {arg1 ^ 2}
-my_fun(7)
-```
-Single place to maintain
-
----
-# Further reading
-
-.pull-left[
-Wickham and Grolemund (2017) [R for Data Science](https://r4ds.had.co.nz/)
-
-Wickham, H. Style Guide _Advanced R_
-[http://adv-r.had.co.nz/Style.html](http://adv-r.had.co.nz/Style.html)
-]
-.pull-right[
 ```{r, echo = FALSE, fig.alt = "Front page of the R for Data Science book with a kākāpō."}
-knitr::include_graphics("figures/r4ds.png")
+knitr::include_graphics("figures/r4ds-cover.png")
 ```
-]
+
