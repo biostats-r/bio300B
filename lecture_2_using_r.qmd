@@ -293,6 +293,28 @@ animal == "cat" || number == 7
 !(animal == "cat" || number == 7)
 ```
 
+## Vectorised Boolean logic
+
+`&&` and `||` return a single TRUE/FALSE
+
+Useful for `if` statements
+
+
+`&` and `|` return a vector of TRUE/FALSE
+
+Useful with `ifelse()` or `dplyr::case_when()` 
+
+```{r}
+a <- 1:10
+b <- rep(c("cat", "dog"), 5)
+
+a > 5 && b == "dog" # gives warning
+a > 5 & b == "dog"
+```
+
+
+
+
 ## loops
 
 Often don't need an explicit loop - R is vectorised
