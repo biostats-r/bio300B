@@ -1,0 +1,37 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Bio300b Biostatistikk",
+    "section": "",
+    "text": "These pages host the lecture notes and other resources for Bio300b Biostatistikk, a 5 ETCS credit course at the University of Bergen."
+  },
+  {
+    "objectID": "materials.html",
+    "href": "materials.html",
+    "title": "Resources",
+    "section": "",
+    "text": "The Biostats book series “Enough R to write a thesis” includes:\n\nLearn how to import, manipulate and visualise data. After an introduction to R, this book has a tidyverse flavour, showing how to manipulate data with dplyr and make publishable plots with ggplot2. It includes lots of exercises to hone your skills.\n\nLearn how to write executable reproducible documents (for anything from a course assignment to a thesis or manuscript) in quarto: no more copy-paste nightmares. Quarto is the successor to R markdown."
+  },
+  {
+    "objectID": "materials.html#biostats-apps-and-tutorials",
+    "href": "materials.html#biostats-apps-and-tutorials",
+    "title": "Resources",
+    "section": "Biostats apps and tutorials",
+    "text": "Biostats apps and tutorials\nWe have developed interactive learnr tutorials for\n\nnaming objects\ndates and times\nmathematical notation on plots\n\nand shiny apps to explore some statistical concepts.\nThese can be installed from biostats apps and learnr tutorials with\n\n# install.packages(remotes) # if you don't have remotes already\nremotes::install_github(\"biostats-r/biostats.tutorials\")"
+  },
+  {
+    "objectID": "lectures.html#lecture-1-data-lifecycle",
+    "href": "lectures.html#lecture-1-data-lifecycle",
+    "title": "Lecture Slides",
+    "section": "Lecture 1: Data lifecycle",
+    "text": "Lecture 1: Data lifecycle"
+  },
+  {
+    "objectID": "lectures.html#lecture-2-using-r",
+    "href": "lectures.html#lecture-2-using-r",
+    "title": "Lecture Slides",
+    "section": "Lecture 2: Using R",
+    "text": "Lecture 2: Using R"
+  }
+]

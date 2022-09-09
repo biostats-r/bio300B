@@ -1,0 +1,11 @@
+project:
+  output-dir: docs
+  render:
+    - bio300b_logistics.qmd
+    - lecture_1_data_lifecycle.qmd
+    - lecture_2_using_r.qmd
+execute:
+  freeze: auto
+
+
+

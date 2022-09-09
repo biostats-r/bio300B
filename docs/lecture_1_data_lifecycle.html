@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.0.37">
 
   <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)">
-  <meta name="dcterms.date" content="2022-08-29">
+  <meta name="dcterms.date" content="2022-09-09">
   <title>Data lifecycle</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -392,7 +392,7 @@
   <p class="subtitle">Bio300B Lecture 1</p>
   <p class="author">Richard J. Telford (Richard.Telford@uib.no)</p>
   <p class="institute">Institutt for biovitenskap, UiB</p>
-  <p class="date">29 August 2022</p>
+  <p class="date">9 September 2022</p>
 </section>
 
 <section id="why-do-biologists-need-statistics-anyway" class="slide level2">
@@ -424,8 +424,8 @@
 <h2>Data life-cycle</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div id="htmlwidget-f0f43d3e79e72cfc2356" style="width:960px;height:500px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-f0f43d3e79e72cfc2356">{"x":{"diagram":"\n      digraph circo {\n\n      graph [layout = dot,  rankdir = TB]\n\n      node [shape = egg, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = \"Palatino\"]\n      a [label = \"Design\"]\n      b [label = \"Gather\", fillcolor = grey]\n      b2 [label = \"Enter\"]\n      b3 [label = \"Import\"]\n\n      d [label = \"Clean\"]\n      e [label = \"Visualise\"]\n      f [label = \"Analyse\"]\n      g [label = \"Communicate\"]\n      h [label = \"Archive\", fillcolor = grey]\n      i [label = \"Death\", shape = diamond, fillcolor = grey]\n      j [label = \"Find & Reuse\", fillcolor = grey]\n\n      a->b->b2->b3->d->e->f->e\n      e->g->h\n      f->g->i\n      e->d\n      f->d\n      d->f\n      h->j->b3 [style=dashed, color=darkgrey, fontsize = 18, fixedsize = FALSE, fontname = \"Palatino\"]\n      subgraph {\n        rank = same; a; b; b2\n      }\n      subgraph {\n        rank = same; e; f;\n      }\n\n      subgraph {\n        rank = same; j; b3;\n      }\n\n      }\n     ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-adac8da9b42ce2fdeb60" style="width:960px;height:500px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-adac8da9b42ce2fdeb60">{"x":{"diagram":"\n      digraph circo {\n\n      graph [layout = dot,  rankdir = TB]\n\n      node [shape = egg, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = \"Palatino\"]\n      a [label = \"Design\"]\n      b [label = \"Gather\", fillcolor = grey]\n      b2 [label = \"Enter\"]\n      b3 [label = \"Import\"]\n\n      d [label = \"Clean\"]\n      e [label = \"Visualise\"]\n      f [label = \"Analyse\"]\n      g [label = \"Communicate\"]\n      h [label = \"Archive\", fillcolor = grey]\n      i [label = \"Death\", shape = diamond, fillcolor = grey]\n      j [label = \"Find & Reuse\", fillcolor = grey]\n\n      a->b->b2->b3->d->e->f->e\n      e->g->h\n      f->g->i\n      e->d\n      f->d\n      d->f\n      h->j->b3 [style=dashed, color=darkgrey, fontsize = 18, fixedsize = FALSE, fontname = \"Palatino\"]\n      subgraph {\n        rank = same; a; b; b2\n      }\n      subgraph {\n        rank = same; e; f;\n      }\n\n      subgraph {\n        rank = same; j; b3;\n      }\n\n      }\n     ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </section>
