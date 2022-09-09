@@ -1,0 +1,33 @@
+---
+title: Resources
+---
+
+## Biostats books
+
+The Biostats book series ["Enough R to write a thesis"](https://biostats-r.github.io/biostats/) includes:
+
+### [Working in R](https://biostats-r.github.io/biostats/workingInR/)
+
+Learn how to import, manipulate and visualise data. After an introduction to R, this book has a tidyverse flavour, showing how to manipulate data with dplyr and make publishable plots with ggplot2. It includes lots of exercises to hone your skills.
+
+### [Enough markdown to write a thesis](https://biostats-r.github.io/biostats/quarto/)
+
+Learn how to write executable reproducible documents (for anything from a course assignment to a thesis or manuscript) in quarto: no more copy-paste nightmares. Quarto is the successor to R markdown.
+
+## Biostats apps and tutorials
+
+We have developed interactive learnr tutorials for
+
+-   naming objects
+-   dates and times
+-   mathematical notation on plots
+    
+and shiny apps to explore some statistical concepts.
+
+These can be installed from [biostats apps and learnr tutorials](https://github.com/biostats-r/biostats.tutorials) with
+
+```{r eval = FALSE}
+# install.packages(remotes) # if you don't have remotes already
+remotes::install_github("biostats-r/biostats.tutorials")
+```
+

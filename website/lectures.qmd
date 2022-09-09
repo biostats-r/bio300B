@@ -1,0 +1,9 @@
+---
+title: Lecture Slides
+---
+
+## [Bio300b logistics](bio300b_logistics.html)
+
+## [Lecture 1: Data lifecycle](lecture_1_data_lifecycle.html)
+
+## [Lecture 2: Using R](lecture_2_using_r.html)

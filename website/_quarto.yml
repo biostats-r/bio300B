@@ -1,0 +1,40 @@
+project:
+  type: website
+  output-dir: ../docs
+
+execute:
+  freeze: auto
+
+website:
+  title: "Bio302 - Biostatistikk"
+  sidebar:
+    background: primary
+    pinned: true
+    align: center
+    tools:
+      - icon: github
+        href: https://github.com/biostats-r/bio300B
+        text: GitHub
+    style: docked
+    contents:
+      - href: index.qmd
+        text: Home
+      - href: lectures.qmd
+        text: Lectures
+      - href: materials.qmd
+        text: Resources
+      - href: https://github.com/biostats-r/bio300B/discussions
+        text: Forum
+
+format:
+  html:
+    code-tools:
+      source: true
+      toggle: false
+      caption: none
+    highlight-style: a11y
+    theme:
+      light: [zephyr, ../css/light.scss]
+      dark: [zephyr, ../css/dark.scss, ../css/light.scss]
+    code-link: true
+

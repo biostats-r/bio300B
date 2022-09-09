@@ -1,0 +1,5 @@
+---
+title: Bio300b Biostatistikk
+---
+
+These pages host the lecture notes and other resources for [Bio300b Biostatistikk](https://www.uib.no/en/course/BIO300B), a 5 ETCS credit course at the University of Bergen.
