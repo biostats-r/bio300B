@@ -11,27 +11,111 @@
     "href": "materials.html",
     "title": "Resources",
     "section": "",
-    "text": "The Biostats book series “Enough R to write a thesis” includes:\n\nLearn how to import, manipulate and visualise data. After an introduction to R, this book has a tidyverse flavour, showing how to manipulate data with dplyr and make publishable plots with ggplot2. It includes lots of exercises to hone your skills.\n\nLearn how to write executable reproducible documents (for anything from a course assignment to a thesis or manuscript) in quarto: no more copy-paste nightmares. Quarto is the successor to R markdown."
+    "text": "The biostats team have written a series of books  (“Enough R to write a thesis”), apps, and tutorials that we will use in Bio300B"
+  },
+  {
+    "objectID": "materials.html#biostats-books",
+    "href": "materials.html#biostats-books",
+    "title": "Resources",
+    "section": "Biostats Books",
+    "text": "Biostats Books\nThe Biostats books emphasis reproducible research.\n\nWorking in R\n\n\n\n\n\n\n\n\n\n\n\nLearn how to import, manipulate and visualise data with our working in R book. After an introduction to R, this book has a tidyverse flavour, showing how to manipulate data with dplyr and make publishable plots with ggplot2. It includes lots of exercises to hone your skills.\n\n\n\nReproducible documents with R\n\n\n\n\n\n\n\n\n\n\n\nLearn how to write reproducible documents (anything from a course assignment to a thesis or manuscript) in quarto: no more copy-paste nightmares. Quarto is the successor to R markdown."
   },
   {
     "objectID": "materials.html#biostats-apps-and-tutorials",
     "href": "materials.html#biostats-apps-and-tutorials",
     "title": "Resources",
     "section": "Biostats apps and tutorials",
-    "text": "Biostats apps and tutorials\nWe have developed interactive learnr tutorials for\n\nnaming objects\ndates and times\nmathematical notation on plots\n\nand shiny apps to explore some statistical concepts.\nThese can be installed from biostats apps and learnr tutorials with\n\n# install.packages(remotes) # if you don't have remotes already\nremotes::install_github(\"biostats-r/biostats.tutorials\")"
+    "text": "Biostats apps and tutorials\nWe have developed interactive learnr tutorials for\n\nnaming objects\ndates and times\nmathematical notation on plots\n\nand shiny apps to explore some statistical concepts.\nThese can be installed from biostats apps and learnr tutorials with\n\n# install remotes if you don't have it already\n# install.packages(\"remotes\")\nremotes::install_github(\"biostats-r/biostats.tutorials\")"
+  },
+  {
+    "objectID": "lectures.html",
+    "href": "lectures.html",
+    "title": "Lecture Slides",
+    "section": "",
+    "text": "Shortcut keys for quarto presentations:\nAll links open the lecture notes in a new browser tab."
+  },
+  {
+    "objectID": "lectures.html#bio300b-logistics",
+    "href": "lectures.html#bio300b-logistics",
+    "title": "Lecture Slides",
+    "section": "Bio300b logistics",
+    "text": "Bio300b logistics\nThe who, what, where and when of Bio300b"
   },
   {
     "objectID": "lectures.html#lecture-1-data-lifecycle",
     "href": "lectures.html#lecture-1-data-lifecycle",
     "title": "Lecture Slides",
     "section": "Lecture 1: Data lifecycle",
-    "text": "Lecture 1: Data lifecycle"
+    "text": "Lecture 1: Data lifecycle\nFollowing data from birth, trying to avoid data death in the data lifecycle."
   },
   {
     "objectID": "lectures.html#lecture-2-using-r",
     "href": "lectures.html#lecture-2-using-r",
     "title": "Lecture Slides",
     "section": "Lecture 2: Using R",
-    "text": "Lecture 2: Using R"
+    "text": "Lecture 2: Using R\nAn introduction to using R."
+  },
+  {
+    "objectID": "lectures.html#lecture-3-data-manipulation",
+    "href": "lectures.html#lecture-3-data-manipulation",
+    "title": "Lecture Slides",
+    "section": "Lecture 3: Data manipulation",
+    "text": "Lecture 3: Data manipulation\nUsing the tidyverse to load, tidy and process data."
+  },
+  {
+    "objectID": "lectures.html#lecture-4-data-visualisation",
+    "href": "lectures.html#lecture-4-data-visualisation",
+    "title": "Lecture Slides",
+    "section": "Lecture 4: Data visualisation",
+    "text": "Lecture 4: Data visualisation"
+  },
+  {
+    "objectID": "lectures.html#lecture-5-experimental-design",
+    "href": "lectures.html#lecture-5-experimental-design",
+    "title": "Lecture Slides",
+    "section": "Lecture 5: Experimental design",
+    "text": "Lecture 5: Experimental design"
+  },
+  {
+    "objectID": "lectures.html#lecture-6-descriptive-statistics",
+    "href": "lectures.html#lecture-6-descriptive-statistics",
+    "title": "Lecture Slides",
+    "section": "Lecture 6: Descriptive statistics",
+    "text": "Lecture 6: Descriptive statistics"
+  },
+  {
+    "objectID": "lectures.html#lecture-7-linear-regression",
+    "href": "lectures.html#lecture-7-linear-regression",
+    "title": "Lecture Slides",
+    "section": "Lecture 7: Linear regression",
+    "text": "Lecture 7: Linear regression"
+  },
+  {
+    "objectID": "lectures.html#lecture-8-multiple-linear-regression",
+    "href": "lectures.html#lecture-8-multiple-linear-regression",
+    "title": "Lecture Slides",
+    "section": "Lecture 8: Multiple linear regression",
+    "text": "Lecture 8: Multiple linear regression"
+  },
+  {
+    "objectID": "lectures.html#lecture-9-generalised-linear-models",
+    "href": "lectures.html#lecture-9-generalised-linear-models",
+    "title": "Lecture Slides",
+    "section": "Lecture 9: Generalised linear models",
+    "text": "Lecture 9: Generalised linear models"
+  },
+  {
+    "objectID": "lectures.html#lecture-10-mixed-effect-models",
+    "href": "lectures.html#lecture-10-mixed-effect-models",
+    "title": "Lecture Slides",
+    "section": "Lecture 10: Mixed effect models",
+    "text": "Lecture 10: Mixed effect models"
+  },
+  {
+    "objectID": "lectures.html#lecture-11-survival-analysis",
+    "href": "lectures.html#lecture-11-survival-analysis",
+    "title": "Lecture Slides",
+    "section": "Lecture 11: Survival Analysis",
+    "text": "Lecture 11: Survival Analysis"
   }
 ]

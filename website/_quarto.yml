@@ -7,8 +7,9 @@ execute:
 
 website:
   title: "Bio302 - Biostatistikk"
+  favicon: figures/favicon.png
   sidebar:
-    background: primary
+    background: light
     pinned: true
     align: center
     tools:

@@ -2,32 +2,84 @@
 title: Resources
 ---
 
-## Biostats books
 
-The Biostats book series ["Enough R to write a thesis"](https://biostats-r.github.io/biostats/) includes:
+```{r}
+#| echo: false
+r_logo <- fontawesome::fa(name = "r-project", fill = "steelblue")
+```
 
-### [Working in R](https://biostats-r.github.io/biostats/workingInR/)
 
-Learn how to import, manipulate and visualise data. After an introduction to R, this book has a tidyverse flavour, showing how to manipulate data with dplyr and make publishable plots with ggplot2. It includes lots of exercises to hone your skills.
 
-### [Enough markdown to write a thesis](https://biostats-r.github.io/biostats/quarto/)
+The biostats team have written a series of books  `r r_logo` (["Enough R to write a thesis"](https://biostats-r.github.io/biostats/)), apps, and tutorials that we will use in Bio300B
 
-Learn how to write executable reproducible documents (for anything from a course assignment to a thesis or manuscript) in quarto: no more copy-paste nightmares. Quarto is the successor to R markdown.
+
+
+## Biostats Books
+
+The Biostats books emphasis reproducible research.
+
+```{=html}
+<style>
+a.book:link { color:#eeaa2c; text-decoration:none; font-weight:normal; }
+a.book:visited { color: #eeaa2c; text-decoration:none; font-weight:normal; }
+a.book:hover { color: #eeaa2c; text-decoration:underline; font-weight:normal; }
+a.book:active { color: #eeaa2c; text-decoration:none; font-weight:normal; }
+</style>
+```
+### <a class = "book" href = "workingInR/index.html">Working in R</a> 
+
+::: {layout="[[25,75]]"}
+```{r}
+#| label: working-in-r
+#| fig-link: workingInR/index.html
+#| echo: false
+#| fig-alt: "Working in R logo"
+#| out-width: 300px
+#| out.extra: 'style="float:left; padding:5px"'
+knitr::include_graphics("figures/working.jpg")
+```
+
+Learn how to import, manipulate and visualise data with our [working in R](workingInR/index.html) book.
+After an introduction to R, this book has a tidyverse flavour, showing how to manipulate data with `dplyr` and make publishable plots with `ggplot2`.
+It includes lots of exercises to hone your skills.
+:::
+
+
+### <a class = "book" href = "quarto/index.html">Reproducible documents with R</a> 
+
+::: {layout="[[25,75]]"}
+```{r}
+#| label: markdown
+#| fig-link: quarto/index.html
+#| echo: false
+#| fig-alt: "Quarto markdown logo"
+#| out-width: 300px
+#| out.extra: 'style="float:left; padding:5px"'
+knitr::include_graphics("figures/quarto.png")
+```
+
+Learn how to write reproducible documents (anything from a course assignment to a thesis or manuscript) in [quarto](quarto/index.html): no more copy-paste nightmares.
+Quarto is the successor to R markdown.
+:::
 
 ## Biostats apps and tutorials
 
-We have developed interactive learnr tutorials for
+We have developed interactive `learnr` tutorials for
 
 -   naming objects
 -   dates and times
 -   mathematical notation on plots
-    
+
 and shiny apps to explore some statistical concepts.
 
-These can be installed from [biostats apps and learnr tutorials](https://github.com/biostats-r/biostats.tutorials) with
+These can be installed from [biostats apps and `learnr` tutorials](https://github.com/biostats-r/biostats.tutorials) with
 
 ```{r eval = FALSE}
-# install.packages(remotes) # if you don't have remotes already
+# install remotes if you don't have it already
+# install.packages("remotes")
 remotes::install_github("biostats-r/biostats.tutorials")
 ```
+
+
+
 

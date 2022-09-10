@@ -2,8 +2,56 @@
 title: Lecture Slides
 ---
 
-## [Bio300b logistics](bio300b_logistics.html)
+Shortcut keys for quarto presentations:
 
-## [Lecture 1: Data lifecycle](lecture_1_data_lifecycle.html)
+- <kbd>→</kbd> - next slide
+- <kbd>o</kbd> - slide overview
+- <kbd>s</kbd> - see the speaker notes
+- <kbd>e</kbd> - make print friendly - then <kbd>ctrl</kbd> + <kbd>p</kbd> to print
+- <kbd>?</kbd> - help
 
-## [Lecture 2: Using R](lecture_2_using_r.html)
+All links open the lecture notes in a new browser tab.
+
+## Bio300b logistics
+
+The [who, what, where and when](bio300b_logistics.html){target="_blank"} of Bio300b
+
+## Lecture 1: Data lifecycle
+
+Following data from birth, trying to avoid data death in the [data lifecycle](lecture_1_data_lifecycle.html){target="_blank"}.
+
+## Lecture 2: Using R
+
+An introduction to [using R](lecture_2_using_r.html){target="_blank"}.
+
+
+## Lecture 3: Data manipulation
+
+Using the tidyverse to load, tidy and process data.
+
+
+## Lecture 4: Data visualisation
+
+
+## Lecture 5: Experimental design
+
+
+## Lecture 6: Descriptive statistics
+
+
+## Lecture 7: Linear regression
+
+
+## Lecture 8: Multiple linear regression
+
+
+## Lecture 9: Generalised linear models
+
+
+## Lecture 10: Mixed effect models
+
+
+## Lecture 11: Survival Analysis
+
+
+
