@@ -27,7 +27,7 @@ An introduction to [using R](lecture_2_using_r.html){target="_blank"}.
 
 ## Lecture 3: Data manipulation
 
-Using the tidyverse to load, tidy and process data.
+Using the [tidyverse to load, tidy and process data](lecture_3_data_manipulation.html).
 
 
 ## Lecture 4: Data visualisation
