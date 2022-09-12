@@ -40,6 +40,82 @@ Figure from [towards_AI](https://twitter.com/towards_AI/status/13325672460115558
 - Often not taught
 :::
 
+## Penguins
+
+
+```{r}
+#| echo: false
+knitr::include_graphics("figures/penguins_logo.png")
+```
+```{r}
+library(palmerpenguins)
+penguins
+```
+
+::: notes
+
+palmerpenguins: Palmer Archipelago (Antarctica) Penguin Data
+
+Size measurements for adult foraging Adélie, Chinstrap, and Gentoo penguins observed on islands in the Palmer Archipelago, Antarctica. 
+
+:::
+
+## Pipes
+
+Analysis:
+
+ - With penguins data
+ - Drop rows with NA sex
+ - find mean bill length per species per sex
+
+First solution
+
+```{r}
+summarise(
+  group_by(drop_na(penguins, sex), species, sex), 
+  bill_length_mean = mean(bill_length_mm),
+  .groups = "drop")
+```
+
+---
+
+Second solution
+
+```{r}
+p <- drop_na(penguins, sex)
+p <- group_by(p, species, sex)
+p <- summarise(p,
+         bill_length_mean = mean(bill_length_mm),
+        .groups = "drop")
+```
+
+Third solution
+
+```{r}
+p_1 <- drop_na(penguins, sex)
+p_2 <- group_by(p_1, species, sex)
+p_3 <- summarise(p_2,
+         bill_length_mean = mean(bill_length_mm),
+        .groups = "drop")
+```
+
+---
+
+### pipe solution
+
+```{r}
+p <- penguins |> 
+  drop_na(sex) |> 
+  group_by(species, sex) |> 
+  summarise(
+    bill_length_mean = mean(bill_length_mm),
+    .groups = "drop")
+```
+
+Pipe puts result of left hand side into first available argument on right hand side
+
+- |> native R pipe (R >= 4.1)
+- `%>%` `magrittr` pipe
 
 
 
@@ -103,65 +179,6 @@ grViz("
       }
      ", height = 500)
 ```
-
-
-
-## Pipes
-
-Analysis:
-
- - With penguins data
- - Drop rows with NA sex
- - find mean bill length per species per sex
-
-First solution
-
-```{r}
-summarise(
-  group_by(drop_na(penguins, sex), species, sex), 
-  bill_length_mean = mean(bill_length_mm),
-  .groups = "drop")
-```
-
----
-
-Second solution
-
-```{r}
-p <- drop_na(penguins, sex)
-p <- group_by(p, species, sex)
-p <- summarise(p,
-         bill_length_mean = mean(bill_length_mm),
-        .groups = "drop")
-```
-
-Third solution
-
-```{r}
-p_1 <- drop_na(penguins, sex)
-p_2 <- group_by(p_1, species, sex)
-p_3 <- summarise(p_2,
-         bill_length_mean = mean(bill_length_mm),
-        .groups = "drop")
-```
-
----
-
-### pipe solution
-
-```{r}
-p <- penguins |> 
-  drop_na(sex) |> 
-  group_by(species, sex) |> 
-  summarise(
-    bill_length_mean = mean(bill_length_mm),
-    .groups = "drop")
-```
-
-Pipe puts result of left hand side into first available argument on right hand side
-
-- |> native R pipe (R >= 4.1)
-- `%>%` `magrittr` pipe
 
 
 ## Reshaping data
@@ -267,6 +284,19 @@ penguins |>
 - `matches()` regular expressions
 
 
+## Your turn
+
+```{r}
+names(penguins)
+```
+How would you make a data frame with 
+
+- just species and island 
+- without year
+- with species and the length measurements
+
+
+
 ## Filtering rows 
 `dplyr::filter()`
 
@@ -281,6 +311,9 @@ One or more logical statements
 - `<`
 - `!=`
 
+::: notes
+separate statements with commas
+:::
 
 ## near()
 
@@ -301,6 +334,11 @@ Solution:
 near(sqrt(2) ^ 2, 2)
 ```
 
+::: notes
+
+data stored as doubles - finite precision
+
+:::
 
 ## `%in%`
 
@@ -351,6 +389,20 @@ penguins |>
 ```
 
 Regular expressions for more powerful matching.
+
+## How would you
+
+```{r}
+penguins
+```
+
+Get a data frame with
+
+- Male Gentoo penguins
+- Penguins with a mass > 1000 g
+- Pengins from Dream or Biscoe Island
+
+
 
 
 ## Mutating columns with mutate()

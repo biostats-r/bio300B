@@ -4,6 +4,7 @@ project:
     - bio300b_logistics.qmd
     - lecture_1_data_lifecycle.qmd
     - lecture_2_using_r.qmd
+    - lecture_3_data_manipulation.qmd
 execute:
   freeze: auto
 
