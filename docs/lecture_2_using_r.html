@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.0.37">
 
   <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)">
-  <meta name="dcterms.date" content="2022-09-09">
+  <meta name="dcterms.date" content="2022-09-12">
   <title>Using R</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -388,7 +388,7 @@
   <p class="subtitle">Bio300B Lecture 2</p>
   <p class="author">Richard J. Telford (Richard.Telford@uib.no)</p>
   <p class="institute">Institutt for biovitenskap, UiB</p>
-  <p class="date">9 September 2022</p>
+  <p class="date">12 September 2022</p>
 </section>
 
 <section>
@@ -436,7 +436,7 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">4</span>, <span class="at">mean =</span> <span class="dv">2</span>, <span class="at">sd =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 2.429867 1.272242 1.576122 2.189266</code></pre>
+<pre><code>[1] 2.109792 2.344002 1.994715 2.361584</code></pre>
 </div>
 </div>
 <p>Don’t include an argument - uses default</p>
@@ -785,7 +785,11 @@ $c
 <div class="sourceCode cell-code" id="cb74"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1"></a>animal <span class="ot">&lt;-</span> <span class="st">"cat"</span></span>
 <span id="cb74-2"><a href="#cb74-2"></a>number <span class="ot">&lt;-</span> <span class="dv">3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><code>&amp;&amp;</code> AND - TRUE if both TRUE <code>||</code> OR - TRUE if either TRUE <code>!</code> NOT - TRUE if FALSE (or use <code>!=</code>)</p>
+<ul>
+<li><code>&amp;&amp;</code> AND - TRUE if both TRUE</li>
+<li><code>||</code> OR - TRUE if either TRUE</li>
+<li><code>!</code> NOT - TRUE if FALSE (or use <code>!=</code>)</li>
+</ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb75"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1"></a>animal <span class="sc">==</span> <span class="st">"cat"</span> <span class="sc">&amp;&amp;</span> number <span class="sc">==</span> <span class="dv">7</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">

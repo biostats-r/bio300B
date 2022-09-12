@@ -284,7 +284,9 @@ animal <- "cat"
 number <- 3
 ```
 
-`&&` AND - TRUE if both TRUE `||` OR - TRUE if either TRUE `!` NOT - TRUE if FALSE (or use `!=`)
+- `&&` AND - TRUE if both TRUE
+- `||` OR - TRUE if either TRUE 
+- `!` NOT - TRUE if FALSE (or use `!=`)
 
 ```{r}
 animal == "cat" && number == 7
