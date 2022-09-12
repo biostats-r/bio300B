@@ -17,45 +17,45 @@ execute:
 
 ## Data cleaning
 
-<!-- <style type="text/css"> -->
-<!-- .remark-slide-content { -->
-<!--     font-size: 24px; -->
-<!--     padding: 1em 4em 1em 4em; -->
-<!-- } -->
-<!-- </style> -->
-
 ```{r setup, echo=FALSE, message=FALSE}
 library("tidyverse")
 data(penguins, package = "palmerpenguins")
 options(dplyr.print_min = 2, dplyr.print_max = 3)
 ```
 
-:::: {.columns}
+```{r, echo = FALSE, fig.alt = "Meme showing cute puppy representing data used in tutorials and a weird dog representing data in the wild.", out.width= "85%"}
+knitr::include_graphics("figures/wild_data.jpg")
+```
 
-::: {.column width="50%"}
+::: aside
+Figure from [towards_AI](https://twitter.com/towards_AI/status/1332567246011555840?s=20)
+:::
+
+
+::: notes
+
 - Critical
 - Time consuming 
 - Do in code for reproducibility
 - Often not taught
 :::
 
-::: {.column width="50%"}
-```{r, echo = FALSE, fig.cap="Figure from [towards_AI](https://twitter.com/towards_AI/status/1332567246011555840?s=20)", fig.alt = "Meme showing cute puppy representing data used in tutorials and a weird dog representing data in the wild."}
-knitr::include_graphics("figures/wild_data.jpg")
-```
-:::
-
-::::
-
-
-
 
 
 
 ## Tidy data
 
-"Happy families are all alike; every unhappy family is unhappy in its own way"    Tolstoy 
-    
+>"Happy families are all alike; every unhappy family is unhappy in its own way"
+> Tolstoy 
+  
+Tidy data
+
+- easy to work with
+- use standard tools to manipulate, visualise and analyse
+- can reuse code from other projects
+
+## What are tidy data
+
 - Every column is a variable.
 - Every row is an observation.
 - Every cell is a single value.
@@ -92,8 +92,8 @@ grViz("
       
       node [shape = egg, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = 'Palatino']
 
-      b [label = 'Tidy data', shape = box]
-      c [label = 'Clean & tidy data', shape = box]
+      b [label = 'Tidy data', shape = box, width = 1.5]
+      c [label = 'Clean & tidy data', shape = box, width = 2.5]
 
       d [label = 'Analysis']
       e [label = 'Visualisation']
@@ -191,6 +191,7 @@ Wide data
 mites # part of vegan::mite
 ```
 
+Wide format data needed for ordinations and related methods used in Bio303
 
 ## pivot_longer()
 
@@ -427,6 +428,21 @@ penguins |>
   )
 ```
 
+---
+
+`NA` - Not available - missing data
+
+`NA` are contagious: what is `5 + NA`?
+
+```{r}
+penguins |> 
+  group_by(species) |> 
+  summarise(
+    max_mass = max(body_mass_g, na.rm = TRUE),
+    mean_bill_length = mean(bill_length_mm, na.rm = TRUE),
+   .groups = "drop"
+  )
+```
 
 ## Counting rows
 
@@ -450,17 +466,26 @@ knitr::include_graphics("figures/left-join.gif")
 
 ## left_join()
 
-.pull-left[
+:::: {.columns}
+
+::: {.column width="50%"}
 ```{r}
 band_members
 band_instruments
 ```
-]
+:::
 
-.pull_right[
+::: {.column width="50%"}
 ```{r}
 band_members %>% 
   left_join(band_instruments, by = "name")
+```
+
+
+:::
+
+```{r}
+
 ```
 
 ## Other joins
@@ -468,7 +493,7 @@ band_members %>%
 - `inner_join()`
 - `full_join()`
 
-]
+
 
 
 ## Filtering joins
