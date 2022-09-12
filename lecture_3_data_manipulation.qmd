@@ -210,7 +210,9 @@ mites # part of vegan::mite
 
 Wide format data needed for ordinations and related methods used in Bio303
 
-## pivot_longer()
+## Making longer data
+
+`tidyr::pivot_longer()`
 
 ```{r}
 mites_long <- mites |> 
@@ -221,7 +223,9 @@ mites_long
 ```
 
 
-## pivot_wider()
+## Making wider data
+
+`tidyr::pivot_wider()`
 
 ```{r}
 mites_wide <- mites_long |> 
@@ -241,6 +245,8 @@ options(dplyr.print_min = 2, dplyr.print_max = 3)
 - `mutate()`
 - `summarise()`
 - `group_by()`
+
+Normally load `dplyr` with `library(tidyverse)`
 
 
 ## Selecting columns  
@@ -297,7 +303,7 @@ How would you make a data frame with
 
 
 
-## Filtering rows 
+## Filtering rows {.scrollable}
 `dplyr::filter()`
 
 ```{r}
@@ -523,22 +529,25 @@ knitr::include_graphics("figures/left-join.gif")
 ::: {.column width="50%"}
 ```{r}
 band_members
-band_instruments
 ```
 :::
 
 ::: {.column width="50%"}
+
+```{r}
+band_instruments
+```
+
+:::
+::::
 ```{r}
 band_members %>% 
   left_join(band_instruments, by = "name")
 ```
 
 
-:::
 
-```{r}
 
-```
 
 ## Other joins
 

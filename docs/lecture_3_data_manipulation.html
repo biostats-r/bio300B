@@ -636,8 +636,8 @@
 <h2>The heart of your analysis pipeline</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div id="htmlwidget-6419f966daacdbd78e05" style="width:960px;height:500px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-6419f966daacdbd78e05">{"x":{"diagram":"\n      digraph circo {\n      \n      graph [layout = dot,  rankdir = TB]\n      node [shape = circle, fontsize = 18, style = filled, fillcolor =  orange, fixedsize = FALSE, fontname = \"Palatino\", label = \"\"]\n      a1 [shape = circle, fillcolor = purple]\n      a2 [shape = doubleoctagon, fillcolor = darkgreen]\n      a3 [shape = star]\n      \n      node [shape = egg, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = \"Palatino\"]\n\n      b [label = \"Tidy data\", shape = box, width = 1.5]\n      c [label = \"Clean & tidy data\", shape = box, width = 2.5]\n\n      d [label = \"Analysis\"]\n      e [label = \"Visualisation\"]\n      \n      {a1, a2, a3}->b->c->{d, e}\n\n      }\n     ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-5082182bc04edbf9d451" style="width:960px;height:500px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-5082182bc04edbf9d451">{"x":{"diagram":"\n      digraph circo {\n      \n      graph [layout = dot,  rankdir = TB]\n      node [shape = circle, fontsize = 18, style = filled, fillcolor =  orange, fixedsize = FALSE, fontname = \"Palatino\", label = \"\"]\n      a1 [shape = circle, fillcolor = purple]\n      a2 [shape = doubleoctagon, fillcolor = darkgreen]\n      a3 [shape = star]\n      \n      node [shape = egg, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = \"Palatino\"]\n\n      b [label = \"Tidy data\", shape = box, width = 1.5]\n      c [label = \"Clean & tidy data\", shape = box, width = 2.5]\n\n      d [label = \"Analysis\"]\n      e [label = \"Visualisation\"]\n      \n      {a1, a2, a3}->b->c->{d, e}\n\n      }\n     ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </section>
@@ -665,8 +665,9 @@
 </div>
 <p>Wide format data needed for ordinations and related methods used in Bio303</p>
 </section>
-<section id="pivot_longer" class="slide level2">
-<h2>pivot_longer()</h2>
+<section id="making-longer-data" class="slide level2">
+<h2>Making longer data</h2>
+<p><code>tidyr::pivot_longer()</code></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>mites_long <span class="ot">&lt;-</span> mites <span class="sc">|&gt;</span> </span>
 <span id="cb10-2"><a href="#cb10-2"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> Brachy<span class="sc">:</span>RARD, </span>
@@ -691,8 +692,9 @@
 </div>
 </div>
 </section>
-<section id="pivot_wider" class="slide level2">
-<h2>pivot_wider()</h2>
+<section id="making-wider-data" class="slide level2">
+<h2>Making wider data</h2>
+<p><code>tidyr::pivot_wider()</code></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>mites_wide <span class="ot">&lt;-</span> mites_long <span class="sc">|&gt;</span> </span>
 <span id="cb12-2"><a href="#cb12-2"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> <span class="st">"taxon"</span>, </span>
@@ -722,6 +724,7 @@
 <li><code>summarise()</code></li>
 <li><code>group_by()</code></li>
 </ul>
+<p>Normally load <code>dplyr</code> with <code>library(tidyverse)</code></p>
 </section>
 <section id="selecting-columns" class="slide level2">
 <h2>Selecting columns</h2>
@@ -816,7 +819,7 @@
 <li>with species and the length measurements</li>
 </ul>
 </section>
-<section id="filtering-rows" class="slide level2">
+<section id="filtering-rows" class="slide level2 scrollable">
 <h2>Filtering rows</h2>
 <p><code>dplyr::filter()</code></p>
 <div class="cell">
@@ -1151,7 +1154,7 @@
 <img data-src="figures/left-join.gif" alt="Animation showing how left_join merges two data frames by a common variable." class="r-stretch"></section>
 <section id="left_join" class="slide level2">
 <h2>left_join()</h2>
-<p>:::: {.columns}</p>
+<div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb62"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1"></a>band_members</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1163,6 +1166,9 @@
 2 John  Beatles
 3 Paul  Beatles</code></pre>
 </div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb64"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1"></a>band_instruments</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 2
@@ -1174,7 +1180,7 @@
 </div>
 </div>
 </div>
-<div class="column" style="width:50%;">
+</div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb66"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1"></a>band_members <span class="sc">%&gt;%</span> </span>
 <span id="cb66-2"><a href="#cb66-2"></a>  <span class="fu">left_join</span>(band_instruments, <span class="at">by =</span> <span class="st">"name"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1186,10 +1192,6 @@
 2 John  Beatles guitar
 3 Paul  Beatles bass  </code></pre>
 </div>
-</div>
-</div>
-<div class="cell">
-
 </div>
 </section>
 <section id="other-joins" class="slide level2">
