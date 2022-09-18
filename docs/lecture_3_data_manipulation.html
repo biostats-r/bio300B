@@ -7,10 +7,10 @@
 <link href="lecture_3_data_manipulation_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="lecture_3_data_manipulation_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="lecture_3_data_manipulation_files/libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.0.37">
+  <meta name="generator" content="quarto-1.1.189">
 
   <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)">
-  <meta name="dcterms.date" content="2022-09-12">
+  <meta name="dcterms.date" content="2022-09-18">
   <title>Data manipulation</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -20,10 +20,15 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -392,7 +397,7 @@
   <p class="subtitle">Bio300B Lecture 3</p>
   <p class="author">Richard J. Telford (Richard.Telford@uib.no)</p>
   <p class="institute">Institutt for biovitenskap, UiB</p>
-  <p class="date">12 September 2022</p>
+  <p class="date">18 September 2022</p>
 </section>
 
 <section id="data-cleaning" class="slide level2">
@@ -402,7 +407,7 @@
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<p><img data-src="figures/wild_data.jpg" alt="Meme showing cute puppy representing data used in tutorials and a weird dog representing data in the wild." style="width:85.0%"></p>
+<p><img data-src="figures/wild_data.jpg" style="width:85.0%" alt="Meme showing cute puppy representing data used in tutorials and a weird dog representing data in the wild."></p>
 </div>
 </div>
 
@@ -429,12 +434,8 @@
 </div></aside></section>
 <section id="penguins" class="slide level2">
 <h2>Penguins</h2>
-<div class="cell">
-<div class="cell-output-display">
-<p><img data-src="figures/penguins_logo.png" width="120"></p>
-</div>
-</div>
-<div class="cell">
+
+<img data-src="figures/penguins_logo.png" width="120" class="r-stretch"><div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(palmerpenguins)</span>
 <span id="cb1-2"><a href="#cb1-2"></a>penguins</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -542,7 +543,7 @@
 </ul>
 <div class="cell">
 <div class="cell-output-display">
-<p><img data-src="figures/tidy1.png" alt="Representation of tidy data, showing variables in columns, observations in rows, and single values in each cell. Source: R for Data Science" style="width:100.0%"></p>
+<p><img data-src="figures/tidy1.png" style="width:100.0%" alt="Representation of tidy data, showing variables in columns, observations in rows, and single values in each cell. Source: R for Data Science"></p>
 </div>
 </div>
 
@@ -636,8 +637,8 @@
 <h2>The heart of your analysis pipeline</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div id="htmlwidget-5082182bc04edbf9d451" style="width:960px;height:500px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-5082182bc04edbf9d451">{"x":{"diagram":"\n      digraph circo {\n      \n      graph [layout = dot,  rankdir = TB]\n      node [shape = circle, fontsize = 18, style = filled, fillcolor =  orange, fixedsize = FALSE, fontname = \"Palatino\", label = \"\"]\n      a1 [shape = circle, fillcolor = purple]\n      a2 [shape = doubleoctagon, fillcolor = darkgreen]\n      a3 [shape = star]\n      \n      node [shape = egg, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = \"Palatino\"]\n\n      b [label = \"Tidy data\", shape = box, width = 1.5]\n      c [label = \"Clean & tidy data\", shape = box, width = 2.5]\n\n      d [label = \"Analysis\"]\n      e [label = \"Visualisation\"]\n      \n      {a1, a2, a3}->b->c->{d, e}\n\n      }\n     ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-cca7bd13fa5203044d61" style="width:960px;height:500px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-cca7bd13fa5203044d61">{"x":{"diagram":"\n      digraph circo {\n      \n      graph [layout = dot,  rankdir = TB]\n      node [shape = circle, fontsize = 18, style = filled, fillcolor =  orange, fixedsize = FALSE, fontname = \"Palatino\", label = \"\"]\n      a1 [shape = circle, fillcolor = purple]\n      a2 [shape = doubleoctagon, fillcolor = darkgreen]\n      a3 [shape = star]\n      \n      node [shape = egg, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = \"Palatino\"]\n\n      b [label = \"Tidy data\", shape = box, width = 1.5]\n      c [label = \"Clean & tidy data\", shape = box, width = 2.5]\n\n      d [label = \"Analysis\"]\n      e [label = \"Visualisation\"]\n      \n      {a1, a2, a3}->b->c->{d, e}\n\n      }\n     ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </section>
@@ -1555,7 +1556,8 @@
       for (var i=0; i<noterefs.length; i++) {
         const ref = noterefs[i];
         tippyHover(ref, function() {
-          let href = ref.getAttribute('href');
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
           try { href = new URL(href).hash; } catch {}
           const id = href.replace(/^#\/?/, "");
           const note = window.document.getElementById(id);
