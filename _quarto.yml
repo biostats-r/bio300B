@@ -5,6 +5,7 @@ project:
     - lecture_1_data_lifecycle.qmd
     - lecture_2_using_r.qmd
     - lecture_3_data_manipulation.qmd
+    - lecture_4_data_visualisation.qmd
 execute:
   freeze: auto
 

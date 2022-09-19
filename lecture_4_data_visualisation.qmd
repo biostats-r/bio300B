@@ -14,6 +14,8 @@ execute:
   error: true
 ---
 
+## Data visualisation
+
 ```{r setup, echo=FALSE, message=FALSE}
 library("tidyverse")
 data(penguins, package = "palmerpenguins")
@@ -21,9 +23,6 @@ options(dplyr.print_min = 2, dplyr.print_max = 3)
 theme_set(theme_grey(base_size = 18))
 library(patchwork)
 ```
-
-
-## Data visualisation
 
 - A picture is worth a thousand words
 - Tell a story with figures
@@ -64,13 +63,21 @@ plot
 
 ## Data 
 
-Tibble or data frame with all data to be plotted.
+Tibble or data frame with data to be plotted.
 
 Tidy data
 
 Can process data within `ggplot` but usually best to do it before
 
 Can add data to the whole plot or to individual geoms
+
+```{r}
+penguin_summary <- penguins |> group_by(species) |> summarise(body_mass_g = mean(body_mass_g, na.rm = TRUE), bill_length_mm = mean(bill_length_mm, na.rm = TRUE) )
+ggplot(penguins, aes(x = body_mass_g, y = bill_length_mm, colour = species)) +
+  geom_point() +
+  geom_text(aes(label = species), data = penguin_summary, colour = "black")
+```
+
 
 ## Aesthetics
 
@@ -88,22 +95,28 @@ Common aesthetics
 
 ## Setting vs mapping
 
-.pull-left[
+:::: {.columns}
+
+::: {.column width="50%"}
 ### Mapping in aes()
 ```{r mapping, fig.height = 3, fig.width=4}
-ggplot(penguins, aes(x = flipper_length_mm, 
+ggplot(penguins, 
+       aes(x = flipper_length_mm, 
            fill = "blue")) +
 geom_histogram()
 ```
-]
+:::
 
-.pull-right[
+::: {.column width="50%"}
 ### Setting in the geom
 ```{r setting, fig.height = 3, fig.width=3}
-ggplot(penguins, aes(x = flipper_length_mm)) +
+ggplot(penguins, 
+       aes(x = flipper_length_mm)) +
 geom_histogram(fill = "blue")
 ```
-]
+:::
+
+::::
 
 ## geoms
 
@@ -133,10 +146,12 @@ hist + dens
 
 ## Geoms to show many distributions
 
-```{r boxplots-etc}
+```{r}
+#| label: boxplots-etc
+#| 
 base <- ggplot(penguins, aes(x = species, y = flipper_length_mm))
 
-p_prange <- base + stat_summary(fun.data = mean_sdl)
+p_prange <- base + stat_summary(fun = "mean", geom = "col")
 p_box <- base + geom_boxplot(aes(fill = species))
 p_vio <- base + geom_violin(aes(fill = species))
 p_jit <- base + geom_jitter(aes(colour = species))
@@ -148,7 +163,7 @@ p_quasi <- base + geom_quasirandom(aes(colour = species))
 ---
 
 ```{r boxplots-etc-plot, echo=FALSE, fig.width=9}
-p_prange + labs(title= "geom_pointrange()") + 
+p_prange + labs(title= "geom_col()") + 
 p_box + labs(title = "geom_boxplot()") +
   p_vio + labs(title = "geom_violin()") +
   p_jit + labs(title = "geom_jitter()") +
@@ -157,6 +172,15 @@ p_box + labs(title = "geom_boxplot()") +
   labs(y = "Flipper length") &
   theme(axis.title.x = element_blank(), legend.position = "none")
 ```
+
+## geoms for scatterplots
+
+```{r}
+ggplot(penguins, aes(x = body_mass_g,  y = bill_length_mm, colour = species)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
 
 ## Scales
 
@@ -195,7 +219,16 @@ Split data into separate panels.
 plot + facet_wrap(facets = vars(species))
 ```
 
-Also `facet_grid()` for two dimensional arrays of subplots
+
+---
+
+`facet_grid()` for two dimensional arrays of subplots
+
+```{r facet-grid, fig.height = 5}
+plot + facet_grid(rows = vars(species),
+                  cols = vars(island)
+                  )
+```
 
 ## Themes
 
@@ -219,6 +252,11 @@ Can also change individual elements
 plot + theme(legend.position = "top")
 ```
 
+## Removing elements
+
+```{r theme3, fig.height=5}
+plot + theme(panel.grid = element_blank())
+```
 
 ## Colour & fills
 
@@ -230,6 +268,9 @@ colour <- ggplot(penguins, aes(x = species, y = flipper_length_mm, colour = spec
   geom_boxplot()
 
 colour + labs(title = "colour = species") + fill + labs(title = "fill = species") & theme(legend.position = "none")
+
+as <- ggplot(penguins, aes(x = species,  y = flipper_length_mm, fill = species, colour = after_scale(colorspace::darken(fill, amount = 0.4)))) +
+  geom_boxplot()
 ```
 
 ## Colour deficient vision
@@ -253,6 +294,23 @@ colorBlindness::cvdPlot(den)
 knitr::include_graphics("figures/jpe12646-fig-0003-m.webp")
 ```
 
+##
+
+```{r echo = FALSE}
+n <- 100
+rainb <- rainbow(n = n)
+
+rb <- ggplot(data = NULL, aes(x = 1:n, y = 1, fill = I(rainb))) +
+  geom_tile() +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  theme(axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank())
+
+
+colorBlindness::cvdPlot(rb)
+```
 
 
 ## Better colour scale
@@ -305,6 +363,28 @@ ggplot(penguins, aes(x = body_mass_g, y = flipper_length_mm)) +
   scale_colour_viridis_c()
 ```
 
-<!-- --- -->
-<!-- # Redundant encoding -->
+## Highlight
 
+```{r highlight, message = FALSE}
+ggplot(penguins, aes(x = body_mass_g, y = flipper_length_mm)) +
+  geom_point(colour = "red") +
+  gghighlight::gghighlight(species == "Chinstrap")
+```
+
+## Redundant encoding 
+
+```{r}
+ggplot(penguins, 
+       aes(x = body_mass_g,
+           y = flipper_length_mm,
+           colour = species,
+           shape = species)) +
+  geom_point() 
+```
+
+## Avoiding legends
+
+```{r direct-labels, fig.height=5}
+library(directlabels)
+direct.label(plot) 
+```
