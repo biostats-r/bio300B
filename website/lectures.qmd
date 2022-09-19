@@ -32,6 +32,7 @@ Using the [tidyverse to load, tidy and process data](lecture_3_data_manipulation
 
 ## Lecture 4: Data visualisation
 
+Using [`ggplot2`](lecture_4_data_visualisation.html) to make beautiful figures.
 
 ## Lecture 5: Experimental design
 

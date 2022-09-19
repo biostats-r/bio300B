@@ -28,7 +28,8 @@ library(patchwork)
 - Tell a story with figures
 - Avoid common mistakes
 
-
+> "reflect the data, tell a story, and look professional"
+> Wilke
 
 ## ggplot2
 
@@ -172,6 +173,18 @@ p_box + labs(title = "geom_boxplot()") +
   labs(y = "Flipper length") &
   theme(axis.title.x = element_blank(), legend.position = "none")
 ```
+
+## Boxplots can mislead
+
+```{r datasaurus}
+p <- datasauRus::box_plots |> 
+  pivot_longer(everything()) |> 
+  ggplot(aes(x = name, y = value))
+
+p + geom_boxplot() +
+p + geom_violin()
+```
+
 
 ## geoms for scatterplots
 
@@ -388,3 +401,11 @@ ggplot(penguins,
 library(directlabels)
 direct.label(plot) 
 ```
+
+## Summary
+
+- You can plot anything you can imagine
+- Whole ecosystem of packages to help
+- [\#tidytuesday](https://www.r-bloggers.com/2021/12/a-year-of-tidytuesday/) for inspiration
+
+
