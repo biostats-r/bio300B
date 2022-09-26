@@ -6,6 +6,7 @@ project:
     - lecture_2_using_r.qmd
     - lecture_3_data_manipulation.qmd
     - lecture_4_data_visualisation.qmd
+    - lecture_5_experimental_design.qmd
 execute:
   freeze: auto
 

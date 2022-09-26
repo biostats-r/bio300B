@@ -36,6 +36,7 @@ Using [`ggplot2`](lecture_4_data_visualisation.html) to make beautiful figures.
 
 ## Lecture 5: Experimental design
 
+[Experimental design](lecture_5_experimental_design.html)
 
 ## Lecture 6: Descriptive statistics
 
