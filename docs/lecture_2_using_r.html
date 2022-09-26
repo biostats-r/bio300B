@@ -7,10 +7,10 @@
 <link href="lecture_2_using_r_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="lecture_2_using_r_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="lecture_2_using_r_files/libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.0.37">
+  <meta name="generator" content="quarto-1.1.189">
 
   <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)">
-  <meta name="dcterms.date" content="2022-09-12">
+  <meta name="dcterms.date" content="2022-09-26">
   <title>Using R</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -20,10 +20,15 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -388,7 +393,7 @@
   <p class="subtitle">Bio300B Lecture 2</p>
   <p class="author">Richard J. Telford (Richard.Telford@uib.no)</p>
   <p class="institute">Institutt for biovitenskap, UiB</p>
-  <p class="date">12 September 2022</p>
+  <p class="date">26 September 2022</p>
 </section>
 
 <section>
@@ -1524,7 +1529,8 @@ $c
       for (var i=0; i<noterefs.length; i++) {
         const ref = noterefs[i];
         tippyHover(ref, function() {
-          let href = ref.getAttribute('href');
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
           try { href = new URL(href).hash; } catch {}
           const id = href.replace(/^#\/?/, "");
           const note = window.document.getElementById(id);
