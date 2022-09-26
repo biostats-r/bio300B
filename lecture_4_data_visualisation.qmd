@@ -93,6 +93,7 @@ Common aesthetics
 - fill, colour
 - shape
 - linetype
+- group
 
 ## Setting vs mapping
 
@@ -130,6 +131,8 @@ Important geoms
 - `geom_boxplot()`
 - `geom_histogram()`
 - `geom_smooth()`
+- `geom_line()`
+- `geom_text()`
 
 Many geoms, some in extra packages
 
