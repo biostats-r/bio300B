@@ -3,67 +3,111 @@ title: "Assignment 1 feedback"
 subtitle: "Bio300B"
 author: "Richard J. Telford (Richard.Telford@uib.no)"
 institute: "Institutt for biovitenskap, UiB"
-date: "`r format(Sys.Date(), '%d %B %Y')`"
-output:
-  xaringan::moon_reader:
-    lib_dir: libs
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
+date: today
+output: html
 ---
 
+## Assignment 1 model answer
 
-```{r setup, include=FALSE, echo =  TRUE}
+load packages
 
-```
-
-```{r, message = FALSE}
+```{r}
+#| label: load-packages
+#| message: false
 #activate the package
 library(tidyverse)
+```
 
+- only tidyverse required.
+- can load readr, dplyr, tidyr separately instead by little or no advantage to that.
+
+```{r}
+#| label: load-data
+#| message: false
+ 
 #import file into object
-biomass <- read_delim(file = "data/biomass2015_H.csv",     
-                    delim = ",")
+biomass <- read_delim(file = "data/biomass2015_H.csv")
+```
 
+
+- Must use relative path (not absolute) to the file.
+- Best to use `readr` functions such as `read_delim` rather than base R functions such as `read.table`.
+- Can remove or process data in the import step but unnecessary.
+
+Data has multiple height columns (H1:H10). 
+In tidy data, each variable has a column (not 10 columns). 
+Can pivot the data so all height data in one column.
+
+It is very difficult to do the analysis correctly without tidying the data.
+
+```{r}
+#| label: tidy
 #tidy data
 biomass_long <- biomass |>
   pivot_longer(cols = H1:H10, 
                names_to = "height", 
                values_to = "value",
                values_drop_na = TRUE)
+```
 
+The `values_drop_na` argument drops the `NA` height values.
+This is more efficient than dealing with them later. 
+
+Alternatively 
+
+```{r}
+#| label: alternative-tidy
+# alternative tidy data
+biomass_long <- biomass |>
+  pivot_longer(cols = H1:H10, 
+               names_to = "height", 
+               values_to = "value") |> 
+  drop_na(value)
+
+# or
+biomass_long <- biomass |>
+  pivot_longer(cols = H1:H10, 
+               names_to = "height", 
+               values_to = "value") |> 
+  filter(!is.na(value))
+
+```
+
+- don't use `drop_na()` without a column name or it will drop any row with an NA in any column, which can remove lots of good data.
+
+```{r}
 #mean height with 10 or more observations
+min_no_measurements <- 10
 biomass_mean_height <- biomass_long |>                     
   group_by(species) |> 
-  filter(n() >= 10) |> 
+  filter(n() >= min_no_measurements) |> 
   summarise(mean_height = mean(value)) |> 
   arrange(desc(mean_height))
 ```
----
+
+- can also use `mutate(n = n())` or `add_count()` followed by `filter(n >= min_no_measurements)`
+
+Also possible to use `count()` to get the number of observations and then `left_join()` to join this to the summarised data. 
+This works but is much slower and more effort.
+
+Making a vector of the names of taxa to be dropped is not reproducible.
+
 # Result
 
 ```{r, message = FALSE, echo = FALSE}
 biomass_mean_height
 ```
 
+The tallest species is `r biomass_mean_height$species[1]` with a mean height of `r round(biomass_mean_height$mean_height[1], 2)` cm.
 
----
-# Downloading the data
+- need to use inline R code for reproducibility
 
-In browser "file" > "save as" or with
-
-```{r, eval = FALSE}
-download.file(url =  "https://raw.githubusercontent.com/biostats-r/biostats/main/WorkingInR/data/biomass2015_H.csv", 
-              destfile = "data/biomass2015_H.csv")
-```
-
----
+# more comments
 
 # Importing the data
 
 ```{r, eval = FALSE}
-biomass <- read_delim(file = "data/biomass2015_H.csv", delim = ",") # best
+biomass <- read_delim(file = "data/biomass2015_H.csv") # best
 
 read.delim() # not ideal
 # Use Rstudio projects with relative paths
@@ -72,9 +116,10 @@ read_csv("my drive/Biostatistics/datalab 2/biomass2015_H.csv") # bad idea
 file.choose() # very bad idea - need to find the file every time
 ```
  
----
-# pivot longer
 
+# need to pivot longer
+
+This will fail badly - any row with H10 missing will be deleted - lots of data lost.
 ```{r}
 # very hard to do without pivot longer
 biomass %>%
@@ -84,7 +129,7 @@ biomass %>%
 ```
 
  
----
+
 # Removing the NA
 
 Must be done in or after pivot_longer()
@@ -102,36 +147,12 @@ biomass %>%
   summarise(n = n())
 ```
 
----
-##  values_drop_na
-```{r}
 
 
-mb <- microbenchmark::microbenchmark(
-  IN =  biomass |>
-  pivot_longer(cols = H1:H10, 
-               names_to = "height", 
-               values_to = "value",
-               values_drop_na = TRUE),
- AFTER = biomass |>
-  pivot_longer(cols = H1:H10, 
-               names_to = "height", 
-               values_to = "value") |> 
-  drop_na(value)
-)
-
-mb
-```
-
----
-```{r, message = FALSE}
-autoplot(mb)
-```
 
 
----
+
 # filter fun
-
 
 ```{r, eval=FALSE}
 Biomass_long |> drop_na(value) # easiest - best
@@ -145,7 +166,7 @@ Biomass_long |> na.omit() # dangerous
 ```
 
 
----
+
 # dropping rare taxa
 
 `n()`
@@ -163,14 +184,10 @@ biomass_long |>
   group_by(species) |>  
   filter(n() < 10)
 
-# with summarise (very hard)
-biomass_long |> 
-  group_by(species) |>  
-  summarise(n = n()) |>  
-  filter(n< 10)
 ```
 
----
+
+Non-reproducible 
 
 ```{r}
 #gjsnitt høyde til de med mer enn 10 
@@ -188,11 +205,14 @@ summarise(group_by(biomass_long, species),
   filter(species != ("Rhodiola bupleuroides"))
 ```
 
----
+
 # select()?
 
+Unnecessary to use select to remove columns as summarise will remove excess columns anyway.
+Removing them before the pivot_longer is no faster (but more memory efficient) than removing them afterwards.
+
 ```{r}
-mb <- microbenchmark::microbenchmark(
+mb <- bench::mark(
   BEFORE =  biomass |> 
   select(species, H1:H10) |> 
   pivot_longer(cols = H1:H10, 
@@ -202,7 +222,8 @@ mb <- microbenchmark::microbenchmark(
   pivot_longer(cols = H1:H10, 
                names_to = "height", 
                values_to = "value") |> 
-  select(species, value)
+  select(species, value), 
+  check = FALSE
 )
 
 mb
@@ -211,13 +232,12 @@ mb
 
 
 
----
+
 # comments
 
 - long comments at ends of lines are difficult to read.
 - Put long comments on line before code
 
----
 # weeds
 
 Remove unused code
@@ -232,24 +252,8 @@ view(height_all_long)
 
 ```
 
----
-# Missing code
-
-include all code necessary to reproduce result
-
-- library()
-- import code
 
 
----
-# pipes
-
-new line after every pipe.
-
-```{r, eval = FALSE}
-# Difficult to read without pipes
-summarise(group_by(biomass, species), mean = mean(height, na.rm = TRUE))
-```
 
 
 
