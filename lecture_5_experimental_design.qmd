@@ -81,6 +81,36 @@ https://www.tylervigen.com/spurious-correlations]
 [Seedclim](https://audhalbritter.com/seedclim-large-scale-climate-change-experiment-in-the-western-norwegian-fjords/)
 :::
 
+## Bad controls
+
+After rotenone treatment have started, you want to test how the benthic fauna
+of a river is affected by the treatment.
+
+```{r}
+knitr::include_graphics("figures/design-bad-control.png")
+```
+
+## Conditioned samples
+
+H~0~ : The parasite _Schistocephalus solidus_ does not affect food
+intake of three-spined sticklebacks.
+
+Design: You collect infected and uninfected fish from the
+field and compare their food intake in the laboratory.
+
+```{r}
+knitr::include_graphics("figures/design-conditioned.png")
+```
+
+
+## Replication
+
+One treatment and one control measurement not enough
+
+- Random variability
+- Need replication
+- Power analysis to estimate how many replicates needed
+
 
 ## Randomisation
 
@@ -93,7 +123,7 @@ Is an experiment with 100 treatment subjects and 10 control subjects valid?
 
 What about 57 treatment subjects and 53 control subjects?
 
-Why might you get an unbalanced design
+Why might you get an unbalanced design?
 
 
 
@@ -112,6 +142,19 @@ Can each fish be treated as an independent observation in your analysis?
 :::
 
 
+## Confounding factors
+
+You have a hypothesis that age of a fish
+should affect parasite resistance because  host age affects the immune
+system. But, size of a fish varies with
+age. Size may also affect the immune system. Thus, size may be a
+confounding factor in the experiment.
+
+```{r}
+knitr::include_graphics("figures/design-age-size.png")
+```
+
+
 ## Blinding
 
 - Two videos: pigs bred for social breeding value, controls
@@ -128,3 +171,44 @@ knitr::include_graphics("figures/happy_pigs.jpg")
 ::: aside
 [Tuyttens et al (2014)](https://doi.org/10.1016/j.anbehav.2014.02.007)
 :::
+
+## Examples
+
+Are there any problems
+with the following study
+designs?
+
+## Study 1
+
+You want to test growth of salmon depending
+on three different food types. 
+You have three aquaria with
+several fish and give one food type to each aquarium.
+
+```{r}
+knitr::include_graphics("figures/design-aquaria.png")
+```
+
+## Study 2
+
+You want to test if a virus enlarges the
+liver cells of infected salmon.
+You measure 60 cells, 30 from a fish you have infected and 30 from an uninfected fish, respectively.
+
+```{r}
+knitr::include_graphics("figures/design-liver.png")
+```
+
+## Study 3
+
+You have a _D. pulex_ population in an
+aquarium and use these animals for an experiment.
+You place the
+daphnia individually in 70 ml jars, first the ones you will
+use as a treatment group, and then the control group.
+Then, you randomly place control and treatment jars in a climate chamber.
+
+```{r}
+knitr::include_graphics("figures/design-daphnia.png")
+```
+
