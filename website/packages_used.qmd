@@ -1,0 +1,82 @@
+---
+title: "Bio300b packages"
+author: "Richard Telford"
+date: today
+format: html
+---
+
+Annotated list of packages used in Bio300B, showing how we have used the package in this course (some of the packages have functionality we have not explored).
+
+- Packages marked (tv) are installed when `tidyverse` is installed
+- Packages marked (TV) are installed when `tidyverse` is installed and loaded into memory when `library(tidyverse)` is run.
+- Packages marked (gh) are available from github
+
+
+
+
+## General
+
+- Base R packages, `base`, `stats`, `utils` etc 
+- `tidyverse` meta package that loads `tidyr`, `dplyr`, `ggplot2` etc.
+
+## data
+
+- `palmerpenguins` penguins
+
+## help
+
+- `introverse` Resources for learning R and tidyverse (gh)
+
+## Data manipulation
+
+- `tibble` improved data frames (TV)
+- `readr` importing data (TV)
+- `janitor` cleaning data
+- `tidyr`  tidying data (TV)
+- `dplyr`  manipulating data in data.frames/tibbles (TV)
+- `lubridate` manipulating dates (tv)
+
+# Modelling
+
+- `pwr` power tests
+- `car` type II anova
+- `lme4` mixed effect models
+- `lmerTest` forces lme4 models to give approximate p-values
+- `nlme` alternative package for fitting mixed effect models
+- `broom` convenient predictions etc from lm, glm etc models (tv)
+- `broom.mixed` convenient predictions etc from mixed effect models
+- `MuMIn` dredging data to find the best model in exploratory analyses
+- `multcomp` multiple comparisons
+
+## Visualisation
+
+- `ggplot2` data visualisation (TV)
+- `ggbeeswarm` ggplot geoms for violin-plot shaped jitter
+- `gghighlight` highlight points and lines in ggplot
+- `ggfortify` lm model diagnostics
+- `GGally` pairs plot
+- `patchwork` combine plots
+- `colorBlindness` simulate colour-blindness
+
+### Maps
+
+- `rnaturalearth` map data
+- `ggOceanMap` ocean map data
+- `ggmap` make a map with tiles
+- `terra` import and process raster data
+- `sf` import, process and plot geospatial data
+- `ggspatial` help plot and annotate geospatial data
+
+## Communication
+
+- `quarto` dynamic, executable, reproducible documents with markdown
+- `knitr` helper functions for quarto documents
+- `english` numbers as words
+- `gt` publication ready tables
+
+## Reproducibility
+
+- `conflicted` settle conflicts between packages
+- `here` finding your project root for importing/exporting files
+- `remotes` install packages from github
+- `usethis` help set-up R and RStudio

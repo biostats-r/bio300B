@@ -24,6 +24,8 @@ website:
         text: Lectures
       - href: materials.qmd
         text: Resources
+      - href: packages_used.qmd
+        text: Packages used
       - href: https://github.com/biostats-r/bio300B/discussions
         text: Forum
 
