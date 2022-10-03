@@ -81,7 +81,7 @@
     "href": "lectures.html#lecture-6-descriptive-statistics",
     "title": "Lecture Slides",
     "section": "Lecture 6: Descriptive statistics",
-    "text": "Lecture 6: Descriptive statistics"
+    "text": "Lecture 6: Descriptive statistics\nDescriptive statistics"
   },
   {
     "objectID": "lectures.html#lecture-7-linear-regression",
@@ -117,5 +117,61 @@
     "title": "Lecture Slides",
     "section": "Lecture 11: Survival Analysis",
     "text": "Lecture 11: Survival Analysis"
+  },
+  {
+    "objectID": "packages_used.html",
+    "href": "packages_used.html",
+    "title": "Bio300b packages",
+    "section": "",
+    "text": "Annotated list of packages used in Bio300B, showing how we have used the package in this course (some of the packages have functionality we have not explored)."
+  },
+  {
+    "objectID": "packages_used.html#general",
+    "href": "packages_used.html#general",
+    "title": "Bio300b packages",
+    "section": "General",
+    "text": "General\n\nBase R packages, base, stats, utils etc\ntidyverse meta package that loads tidyr, dplyr, ggplot2 etc."
+  },
+  {
+    "objectID": "packages_used.html#data",
+    "href": "packages_used.html#data",
+    "title": "Bio300b packages",
+    "section": "data",
+    "text": "data\n\npalmerpenguins penguins"
+  },
+  {
+    "objectID": "packages_used.html#help",
+    "href": "packages_used.html#help",
+    "title": "Bio300b packages",
+    "section": "help",
+    "text": "help\n\nintroverse Resources for learning R and tidyverse (gh)"
+  },
+  {
+    "objectID": "packages_used.html#data-manipulation",
+    "href": "packages_used.html#data-manipulation",
+    "title": "Bio300b packages",
+    "section": "Data manipulation",
+    "text": "Data manipulation\n\ntibble improved data frames (TV)\nreadr importing data (TV)\njanitor cleaning data\ntidyr tidying data (TV)\ndplyr manipulating data in data.frames/tibbles (TV)\nlubridate manipulating dates (tv)"
+  },
+  {
+    "objectID": "packages_used.html#visualisation",
+    "href": "packages_used.html#visualisation",
+    "title": "Bio300b packages",
+    "section": "Visualisation",
+    "text": "Visualisation\n\nggplot2 data visualisation (TV)\nggbeeswarm ggplot geoms for violin-plot shaped jitter\ngghighlight highlight points and lines in ggplot\nggfortify lm model diagnostics\nGGally pairs plot\npatchwork combine plots\ncolorBlindness simulate colour-blindness\n\n\nMaps\n\nrnaturalearth map data\nggOceanMap ocean map data\nggmap make a map with tiles\nterra import and process raster data\nsf import, process and plot geospatial data\nggspatial help plot and annotate geospatial data"
+  },
+  {
+    "objectID": "packages_used.html#communication",
+    "href": "packages_used.html#communication",
+    "title": "Bio300b packages",
+    "section": "Communication",
+    "text": "Communication\n\nquarto dynamic, executable, reproducible documents with markdown\nknitr helper functions for quarto documents\nenglish numbers as words\ngt publication ready tables"
+  },
+  {
+    "objectID": "packages_used.html#reproducibility",
+    "href": "packages_used.html#reproducibility",
+    "title": "Bio300b packages",
+    "section": "Reproducibility",
+    "text": "Reproducibility\n\nconflicted settle conflicts between packages\nhere finding your project root for importing/exporting files\nremotes install packages from github\nusethis help set-up R and RStudio"
   }
 ]

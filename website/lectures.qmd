@@ -40,6 +40,7 @@ Using [`ggplot2`](lecture_4_data_visualisation.html) to make beautiful figures.
 
 ## Lecture 6: Descriptive statistics
 
+[Descriptive statistics](lecture_6_descriptive.html)
 
 ## Lecture 7: Linear regression
 

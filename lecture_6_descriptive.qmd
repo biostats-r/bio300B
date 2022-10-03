@@ -3,38 +3,26 @@ title: "Descriptive statistics and Introduction to statistical inference"
 subtitle: "Bio300B Lecture 4"
 author: "Richard J. Telford (Richard.Telford@uib.no)"
 institute: "Institutt for biovitenskap, UiB"
-date: "`r format(Sys.Date(), '%d %B %Y')`"
-output:
-  xaringan::moon_reader:
-  lib_dir: libs
-nature:
-  highlightStyle: github
-highlightLines: true
-countIncrementalSlides: false
+date: today
+date-format: "D MMMM YYYY"
+format: 
+  revealjs:
+    theme: [default, css/custom.scss]
+execute: 
+  echo: false
+  warning: false
+  error: true
 ---
-  
-  <style type="text/css">
-  .remark-slide-content {
-    font-size: 24px;
-    padding: 1em 4em 1em 4em;
-  }
-</style>
-  
+
+## Describing a distribution
+
 ```{r setup, echo=FALSE, message=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, error = TRUE, message = FALSE)
 library("tidyverse")
 library("gganimate")
 data(penguins, package = "palmerpenguins")
 theme_set(theme_bw(base_size = 18))
 library(patchwork)
 ```
-
-```{r share-again}
-xaringanExtra::use_share_again()
-xaringanExtra::use_clipboard()
-```
-
-# Describing a distribution
 
 ```{r a-dist}
 p_dist <- penguins |> 
@@ -46,8 +34,7 @@ p_dist <- penguins |>
 p_dist
 ```
 
----
-# Midpoint
+## Midpoint
 
 ```{r midpoint, fig.width = 9, fig.height = 5}
 mid <- penguins |> 
@@ -63,10 +50,10 @@ p_dist +
   
 ```
 
----
 ## Mean
 
-.pull-left[
+::: columns
+::: {.column width="50%"}
 ```{r mean, fig.width = 4.5, fig.height = 4.5}
 
 p_dist + 
@@ -76,15 +63,17 @@ p_dist +
         legend.title = element_blank())
   
 ```
-]
-.pull-right[
-$$\overline{x} = \frac{\sum_{i=1}^n x_i}{n}$$ 
-- Sum of all observations divided by number of observations
-- Centre of gravity of the data
-- `mean()`
-]
+:::
 
----
+::: {.column width="50%"}
+$$\overline{x} = \frac{\sum_{i=1}^n x_i}{n}$$
+
+-   Sum of all observations divided by number of observations
+-   Centre of gravity of the data
+-   `mean()`
+:::
+:::
+
 ## Median
 
 ```{r median-anim, cache = TRUE}
@@ -115,17 +104,18 @@ median_anim <-  bind_rows(
   
 animate(width = 500, height = 300, median_anim)
 ```
-- Sort from minimum to maximum
-- Observation in the middle is the median
-- `median()`
 
----
+-   Sort from minimum to maximum
+-   Observation in the middle is the median
+-   `median()`
+
 ## Mean vs Median
 
 ```{r biomass-import, include=FALSE}
 biomass <- read_delim("data/biomass2015_H.csv", delim = ",") |> 
   mutate(production = as.numeric(production))
 ```
+
 ```{r biomass-plot}
 biomass_plot <- ggplot(biomass, aes(x = production)) +
   geom_histogram(boundary = 0) +
@@ -133,9 +123,7 @@ biomass_plot <- ggplot(biomass, aes(x = production)) +
 biomass_plot
 ```
 
----
 ## Mean vs Median
-
 
 ```{r biomass-plot2}
 mid_biomass <- biomass |> 
@@ -151,7 +139,6 @@ biomass_plot +
     legend.title = element_blank())
 ```
 
----
 ## Calculating Mean and Median in R
 
 ```{r mean-median, echo=TRUE}
@@ -162,8 +149,9 @@ mean(vec)
 median(vec)
 ```
 
----
-Use `na.rm = TRUE` to remove missing values. 
+------------------------------------------------------------------------
+
+Use `na.rm = TRUE` to remove missing values.
 
 ```{r mean-median-NA, echo=TRUE}
 vec <- c(56.7, 57.2, 62.7, 56.4, 60.8, NA)
@@ -173,7 +161,7 @@ mean(vec)
 mean(vec, na.rm = TRUE)
 ```
 
----
+------------------------------------------------------------------------
 
 ```{r mean-median2, echo=TRUE}
 # median of a column
@@ -188,9 +176,7 @@ penguins |>
   summarise(med = median(bill_length_mm, na.rm = TRUE))
 ```
 
-
----
-# Spread
+## Spread
 
 ```{r spread, fig.width = 9, fig.height = 5}
 max_min <- penguins |> 
@@ -221,11 +207,10 @@ geom_segment(
         legend.title = element_blank())
 ```
 
----
 ## Minimum, maximum and range
 
-- `min()`
-- `max()`
+-   `min()`
+-   `max()`
 
 Range is difference between smallest and largest.
 
@@ -241,39 +226,31 @@ min(penguins$bill_length_mm, na.rm = TRUE)
 diff(range(penguins$bill_length_mm, na.rm = TRUE))
 ```
 
-
----
 ## Variance
 
-  
-The average squared distance around the mean
+The average squared distance around the mean `var()`
 
 ### Population variance
 
-$$\sigma^2 = \frac{\sum_{i=1}^n (x_i - \mu)^2}{n}$$
-Where $\mu$ is the population mean.
+$$\sigma^2 = \frac{\sum_{i=1}^n (x_i - \mu)^2}{n}$$ Where $\mu$ is the population mean.
 
 ### Sample variance
 
-$$s^2 = \frac{\sum_{i=1}^n (x_i - \overline{x})^2}{n-1}$$
-Where $\overline{x}$ is the sample mean.  
-`var()`
+$$s^2 = \frac{\sum_{i=1}^n (x_i - \overline{x})^2}{n-1}$$ Where $\overline{x}$ is the sample mean.\
 
----
+
+
 ## Standard deviation
 
+::: columns
+::: {.column width="50%"}
+Square root of the variance $$s = \sqrt{s^2}$$ $$s  = \sqrt{\frac{\sum_{i=1}^n (x_i - \overline{x})^2}{n-1}}$$ Same units as variable
 
+`sqrt(var())`\
+`sd()`
+:::
 
-.pull-left[Square root of the variance 
-$$s = \sqrt{s^2}$$
-$$s  = \sqrt{\frac{\sum_{i=1}^n (x_i - \overline{x})^2}{n-1}}$$
-Same units as variable
-
-`sqrt(var())`  
-`sd()`  
-
-]
-.pull_right[
+::: {.column width="50%"}
 ```{r sd, fig.height = 4, fig.width = 4}
 bind_rows(
   `5` = tibble(x = 10:70, y = dnorm(x, mean = 40, sd = 5)),
@@ -287,9 +264,11 @@ ggplot(aes(x = x, y = y, fill = sd)) +
   theme(legend.position = c(0.99, 0.99),
         legend.justification = c(1, 1))
 ```
-]
+:::
+:::
 
----
+------------------------------------------------------------------------
+
 ```{r}
   tibble(x = 5:75, y = dnorm(x, mean = 40, sd = 10), sd = 10) |> 
 ggplot(aes(x = x, y = y, fill = factor(sd))) +
@@ -306,39 +285,40 @@ ggplot(aes(x = x, y = y, fill = factor(sd))) +
         legend.justification = c(1, 1))
 ```
 
----
 # Higher moments
 
 ## Skew
 
-.pull-left[
+::: columns
+::: {.column width="50%"}
 ```{r biomassplot-again, fig.height = 5, fig.width = 5}
 biomass_plot
 ```
-]
-.pull-right[
-Right skew  
-positive skew 
-`e1071::skewness()`
-]
+:::
 
----
+::: {.column width="50%"}
+Right skew\
+positive skew `e1071::skewness()`
+:::
+:::
+
 ## Kurtosis
 
 ```{r kurtosis, fig.height = 5, fig.width = 5}
-tibble(x = seq(-7, 7, length = 100), 
-       y = dt(x, df = 2)) |> 
+crossing(x = seq(-7, 7, length = 100), 
+         df = c(1)) |> 
+  mutate(y = dt(x, df = df)) |> 
   ggplot(aes(x = x, y = y)) +
-  geom_area()
+  geom_area(fill = "grey") +
+  geom_line(data = tibble(x = seq(-7, 7, length = 100), y = dnorm(x, sd = 1)), colour = "black") +
+  labs(colour = "df", y = "Density")
 ```
-
 
 heavy tails
 
 `e1071::kurtosis()`
 
----
-# Making inferences about the population
+## Making inferences about the population
 
 Sample: `r penguins |> filter(species == "Gentoo") |> drop_na(bill_length_mm) |> nrow()` Gentoo penguins
 
@@ -346,8 +326,7 @@ Population: All Gentoo penguins in the Palmer Archipelago.
 
 What can we infer about the population from the sample?
 
----
-# Uncertainty in the mean
+## Uncertainty in the mean
 
 ```{r mean-uncertainty}
 dat <- tibble(x = rnorm(1e6, mean = 100, sd = 10))
@@ -379,6 +358,7 @@ p3 <- ggplot(means, aes(x = mean)) +
   geom_vline(xintercept = 100, colour = "red", linetype = "dashed")
 
 ```
+
 ```{r pop, fig.height = 5}
 p1
 ```
@@ -387,7 +367,8 @@ Population of 1,000,000 indviduals
 
 Large (100 individuals) or small (20 individuals) samples
 
----
+------------------------------------------------------------------------
+
 Histograms of samples
 
 ```{r samples, cache=TRUE, fig.width = 6, fig.height = 3}
@@ -400,18 +381,15 @@ Histogram of sample means
 p3
 ```
 
----
-# Standard error of the mean
+## Standard error of the mean
 
 Standard deviation divided by square root of number of observations
 
-$$SE = \frac{s}{\sqrt{n}}$$
-Large n - small SE - reliable estimate of mean 
+$$SE = \frac{s}{\sqrt{n}}$$ Large n - small SE - reliable estimate of mean
 
-Small n - large SE - less reliable estimate of mean 
+Small n - large SE - less reliable estimate of mean
 
----
-# Confidence interval
+## Confidence interval
 
 If experiment repeated many times, confidence level represents the proportion of confidence intervals that contain the true value of the unknown population parameter.
 
@@ -421,12 +399,11 @@ Easily misunderstood.
 
 (Bayesian credibility intervals are much more intuitive)
 
----
 ## Confidence interval of the mean
 
 95% confidence interval
 
-Mean $\pm$ 1.96 * SE
+Mean $\pm$ 1.96 \* SE
 
 Why 1.96?
 
@@ -441,11 +418,12 @@ tibble(x = seq(-3, 3, length = 1000),
   scale_x_continuous(breaks = c(-1.96, 0, 1.96))
 ```
 
-Grey area is 95% of the normal distribution 
+Grey area is 95% of the normal distribution
 
 ---
 
 Estimated means with 95% confidence interval for different sample sizes
+
 ```{r}
 dat2 |> filter(run < 50) |> 
   ggplot(aes(x = run, y = x)) +
@@ -456,51 +434,37 @@ dat2 |> filter(run < 50) |>
   labs(y = "value")
 ```
 
----
-# Choosing a statistical test
+## Choosing a statistical test
 
-1) What is the hypothesis?  
-2) What is the underlying distribution of your response variable?  
-3) What type of the predictor(s)?  
-4) What type of observational or experimental design do you have?
+1)  What is the hypothesis?\
+2)  What is the underlying distribution of your response variable?\
+3)  What type of the predictor(s)?\
+4)  What type of observational or experimental design do you have?
 
----
 ## The hypothesis
 
 The statistical hypothesis needs to match your scientific hypothesis
 
-Hypothesis example:  
-H<sub>0</sub>: The bill length (mm) of Gentoo penguins does not depend on
-sex.
+Hypothesis example:\
+H<sub>0</sub>: The bill length of Gentoo penguins does not depend on sex.
 
----
 ## The predictors
 
-- Categorical (sex, species)
-- Continuous (body mass)
-- both (with > 1 predictor)
+-   Categorical (sex, species)
+-   Continuous (body mass)
+-   both (with \> 1 predictor)
 
-Need to know so we can
-code predictor variables and
-interpret the output of our
-models.
+Need to know so we can code predictor variables and interpret the output of our models.
 
----
 ## The response
 
-- Continuous (bill length)
-- count (number of penguins)
-- binary (sex, survived/died)
-- proportion (8 out of 10)
+-   Continuous (bill length)
+-   count (number of penguins)
+-   binary (sex, survived/died)
+-   proportion (8 out of 10)
 
+Statistical model families (lm, lme, glm etc.) differ in assumptions about the underlying distribution of the response variable.
 
-Statistical model
-families (lm, lme, glm etc.)
-differ in assumptions about
-the underlying distribution
-of the response variable.
-
----
 ## Gaussian (Normal) distribution
 
 Often assumed for continuous distributions, body mass, egg shell thickness
@@ -508,7 +472,7 @@ Often assumed for continuous distributions, body mass, egg shell thickness
 ```{r, fig.height = 5}
 p1
 ```
----
+
 ## Poisson distribution
 
 Count data
@@ -527,31 +491,26 @@ bind_rows(
   facet_wrap(~lambda)
 ```
 
----
-# Experimental design
+## Experimental design
 
-- Independent observations?
-- time series?
-- clustered design?
+-   Independent observations?
+-   time series?
+-   clustered design?
 
 ```{r tank, out.width="50%"}
 knitr::include_graphics("figures/46695412244_66616e8523_c.jpg")
 ```
 
----
-## Key 
+## Key
 
-- Independent observations
-   - Continuous response = linear models (`lm()`, `t.test()`)
-   - Count/binary/proportion = generalised linear models (`glm()`)
+-   Independent observations
+    -   Continuous response = linear models (`lm()`, `t.test()`)
+    -   Count/binary/proportion = generalised linear models (`glm()`)
+-   Clustered observations
+    -   Continuous response = linear mixed effect models (`lme()`, `lmer()`)
+    -   Count/binary/proportion = generalised linear mixed effect models (`glmer()`)
 
-
-- Clustered observations
-   - Continuous response = linear mixed effect models (`lme()`, `lmer()`)
-   - Count/binary/proportion = generalised linear mixed effect models (`glmer()`)
-   
----
-# A t-test
+## A t-test
 
 Compare means
 
@@ -567,7 +526,6 @@ ggplot(aes(x = bill_length_mm, fill = sex)) +
   facet_wrap(~sex, nrow = 1)
 ```
 
----
 ## t-test in R
 
 ```{r echo = TRUE}
@@ -579,34 +537,65 @@ mod1 <- t.test(bill_length_mm ~ sex, data = gentoo)
 ```
 
 ---
+
 ```{r}
 mod1
 ```
 
----
-# P values
+## P values
 
 Often misinterpreted
- 
- - Not a measure of effect size or practical significance
- - Not the probability that hypothesis is true
- - Strongly affected by sample size
 
-_If there were actually no effect (if the true difference between means were zero) then the probability of observing a value for the difference equal to, or greater than, that actually observed would be p=0.05._
+-   Not a measure of effect size or practical significance
+-   Not the probability that hypothesis is true
+-   Strongly affected by sample size
+
+*If there were actually no effect (if the true difference between means were zero) then the probability of observing a value for the difference equal to, or greater than, that actually observed would be p=0.05.*
 
 Many assumptions
 
 Confidence intervals are more interpretable
 
----
-# Type 1 and type 2 errors
+## Type 1 and type 2 errors
 
-Type 1 error - Null hypothesis is incorrectly rejected - false positive
 
-Type 2 error - Null hypothesis is incorrectly accepted - false negative
+```{r}
+library(gt)
+correct <- scales::muted("green")
+error <- "orange"
+tibble(`Null hypothesis is` = c("Rejected", "Not rejected"), 
+      True = c("Type I error<br>False positive", "Correct decision<br>True negative"),
+      False = c("Correct decision<br>True positive", "Type II error<br>False negative")) |> 
+  gt::gt() |> 
+    tab_style(
+      style = cell_fill(color = correct),
+      locations = cells_body(
+      columns = c(True), 
+      rows = str_detect(True, "Correct")
+  )) |> 
+      tab_style(
+      style = cell_fill(color = correct),
+      locations = cells_body(
+      columns = c(False), 
+      rows = str_detect(False, "Correct")
+  )) |> 
+      tab_style(
+      style = cell_fill(color = error),
+      locations = cells_body(
+      columns = c(True), 
+      rows = !str_detect(True, "Correct")
+  )) |> 
+      tab_style(
+      style = cell_fill(color = error),
+      locations = cells_body(
+      columns = c(False), 
+      rows = !str_detect(False, "Correct")
+  )) |> 
+   fmt_markdown(columns = everything())
+```
 
----
-## One sided Z-test 
+
+## One sided Z-test
 
 ```{r TP-FP, echo = FALSE}
 library(tidyverse)
@@ -635,29 +624,24 @@ ggplot(H, mapping = aes(x = x, y = y, fill = what)) +
   labs(x = "x", y = "Density", linetype = "", fill = "")
 ```
 
-
----
 ## The need for power
 
 With little power:
 
-- May not be able to reject H<sub>0</sub> when it is false
-- Exaggerate effect size
+-   May not be able to reject H<sub>0</sub> when it is false
+-   Exaggerate effect size
 
 Lots of power
 
-- Probably can reject  H<sub>0</sub>
-    when it is false
--  More precise estimates of effect size
+-   Probably can reject H<sub>0</sub> when it is false
+-   More precise estimates of effect size
 -   More expensive
 
 Need to do power analysis before experiment.
 
-
----
 ## Components of a power analysis
 
--  Effect size
+-   Effect size
 -   Type I error rate (significance level - conventionally set to 0.05)
 -   Type II error rate (conventionally aim for 0.8)
 -   Number of observations
@@ -666,19 +650,16 @@ Can solve for any of these
 
 Typically want to know how many observations needed.
 
-
----
 ## Analytic power analysis
 
 Some power tests in base R.
 
- - `power.t.test`
- - `power.anova.test`
- - `power.prop.test`
+-   `power.t.test`
+-   `power.anova.test`
+-   `power.prop.test`
 
 More in `pwr` package
 
----
 ## Power t test
 
 ```{r pwr, echo = TRUE}
@@ -689,15 +670,16 @@ pow
 
 Effect size is Cohen's d $d = \frac{\mu_1 - \mu_2}{\sigma}$
 
----
+------------------------------------------------------------------------
 
 ```{r pwr-plot, echo}
 plot(pow)
 ```
 
----
-- Power test should be done before experimental work to determine sample size
-- Analytical and simulation approaches are possible
-- Key challenge is estimating effect size
-  - existing estimates are likely biased
-  - minimum interesting effect size
+------------------------------------------------------------------------
+
+-   Power test should be done before experimental work to determine sample size
+-   Analytical and simulation approaches are possible
+-   Key challenge is estimating effect size
+    -   existing estimates are likely biased
+    -   minimum interesting effect size
