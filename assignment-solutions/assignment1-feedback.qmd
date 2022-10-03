@@ -9,13 +9,17 @@ output: html
 
 ## Assignment 1 model answer
 
-load packages
+Note: please set `message: false` to reduce the amount of noise produced.
+
+Don't have any `install.packages()` or similar in the document (unless commented out) - these will try to run each time you render the document. 
+At best, they will make the rendering much slower, but will likely cause errors.
 
 ```{r}
 #| label: load-packages
 #| message: false
 #activate the package
 library(tidyverse)
+library(here)
 ```
 
 - only tidyverse required.
@@ -26,13 +30,13 @@ library(tidyverse)
 #| message: false
  
 #import file into object
-biomass <- read_delim(file = "data/biomass2015_H.csv")
+biomass <- read_delim(file = here("data/biomass2015_H.csv"))
 ```
 
 
 - Must use relative path (not absolute) to the file.
 - Best to use `readr` functions such as `read_delim` rather than base R functions such as `read.table`.
-- Can remove or process data in the import step but unnecessary.
+- Can remove columns or process data in the import step but unnecessary.
 
 Data has multiple height columns (H1:H10). 
 In tidy data, each variable has a column (not 10 columns). 
@@ -44,7 +48,7 @@ It is very difficult to do the analysis correctly without tidying the data.
 #| label: tidy
 #tidy data
 biomass_long <- biomass |>
-  pivot_longer(cols = H1:H10, 
+  pivot_longer(cols = H1:H10, # from column H1 to column H10
                names_to = "height", 
                values_to = "value",
                values_drop_na = TRUE)
@@ -73,7 +77,7 @@ biomass_long <- biomass |>
 
 ```
 
-- don't use `drop_na()` without a column name or it will drop any row with an NA in any column, which can remove lots of good data.
+- don't use `drop_na()` without a column name or it will drop any row with an NA in *any* column, which can remove lots of good data.
 
 ```{r}
 #mean height with 10 or more observations
@@ -123,7 +127,7 @@ This will fail badly - any row with H10 missing will be deleted - lots of data l
 ```{r}
 # very hard to do without pivot longer
 biomass %>%
-  drop_na(H1:H10) %>% 
+  drop_na(H1:H10) %>% # drops too much data - FAIL
   group_by(species) %>% 
   summarise(mean_value = mean(H1:H10))
 ```
@@ -136,7 +140,7 @@ Must be done in or after pivot_longer()
 
 ```{r}
 biomass %>%   
-  drop_na(H1:H10) %>%      #Remove all NA values
+  drop_na(H1:H10) %>%      #Removes rows with NA in H1:H10 all NA values
   pivot_longer(cols = H1:H10, names_to = "Height", values_to = "value") |> 
   summarise(n = n())
 ```
@@ -147,7 +151,7 @@ biomass %>%
   summarise(n = n())
 ```
 
-
+500 more observations!
 
 
 
@@ -177,7 +181,7 @@ or `add_count()` AFTER `group_by()`
 biomass_long |> 
   group_by(species) |>  
   mutate(n = n()) |>  
-  filter(n< 10)
+  filter(n < 10)
 
 # one step
 biomass_long |> 
@@ -240,15 +244,14 @@ mb
 
 # weeds
 
-Remove unused code
+Remove unused code. Might be useful when developing code, but should be removed from the final product as it does not do anything useful at that stage. 
 
 ```{r, eval = FALSE}
 # All the height column which have 10 readings (removed all NA)
 View(height_all)
 names(height_all)
 str(height_all)
-height_all_long <- height_all |> pivot_longer(cols = H1:H10, names_to = "heights", values_to = "height")
-view(height_all_long)
+
 
 ```
 

@@ -1,0 +1,80 @@
+---
+title: "Assignment2-feedback"
+format: html
+editor: visual
+---
+
+
+## load packages
+
+Note: please set `message: false` to reduce the amount of noise produced.
+
+Don't have any `install.packages()` or similar in the document - these will try to run each time you render the document. 
+At best, they will make the rendering much slower, but will likely cause errors.
+
+```{r}
+#| label: load-packages
+#| message: false
+library(tidyverse)
+library(lubridate)
+```
+
+## Load data
+
+```{r}
+#| label: load-data
+#| mesage: false
+#| results: hide
+#| warning: false
+weather_data <- read_csv2(
+  file = "data/bergen_weather.csv",
+  na = c("", "NA", "-")
+) |>
+  janitor::clean_names() |>
+  mutate(
+    date = my(tid_norsk_normaltid),
+    month = month(date, label = TRUE, abbr = FALSE)
+  ) |>
+  drop_na(month) |>
+  drop_na(nedbor_mnd)
+```
+
+## plots
+
+```{r}
+#| label: fig-1
+library(ggbeeswarm)
+weather_plot <- ggplot(data = weather_data, mapping = aes(x = month, y = homogenisert_middeltemperatur_mnd)) +
+  geom_quasirandom(aes(colour = nedbor_mnd)) +
+  scale_color_viridis_c() +
+  labs(x = "Month", y = "Temperature (°C)", colour = "Precipitation (mm)") +
+  scale_x_discrete(guide = guide_axis(n.dodge = 2))
+weather_plot
+
+```
+
+```{r}
+weather_plot <- ggplot(weather_data, aes(
+  x = homogenisert_middeltemperatur_mnd,
+  y = nedbor_mnd, group = month
+)) +
+  geom_point(colour = "cornflowerblue", alpha = 0.4) +
+  geom_smooth(method = "lm", colour = "dodgerblue4") +
+  labs(x = "Temperature (°C)", y = "Precipitation (mm)") +
+  facet_wrap(facets = vars(month)) +
+  theme_bw()
+
+
+weather_plot
+```
+
+scales = "free"
+
+
+```{r}
+ggplot(data = weather_data, mapping = aes(x = homogenisert_middeltemperatur_mnd, y = nedbor_mnd, colour = month)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Temperature (°C)", y = "Precipitation (mm)", colour = "Month") +
+  theme_bw()
+```
