@@ -1,13 +1,8 @@
 ---
-title: "Practical 5"
-author: "Richard Telford"
-date: "9/28/2021"
-output: html_document
+title: "datalab"
+date: today
+format: html
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 Do all the exercises in R markdown.
 
@@ -18,7 +13,7 @@ With the penguin data
 -  calculate the minimum, maximum and range of bill lengths for Gentoo penguins
 - calculate the mean and median body mass for each species
 - calculate the variance and the standard deviation of body mass for each species.
-- Calculate the standard error of the mean for the body mass of each species.
+- Calculate the standard error of the mean for the body mass of each species. (You do not need any extra packages for this)
 - Calculate the 95% confidence interval for the mean body mass.
 
 ## We want to test the hypothesis that bill length is sex dependent in Adelie penguins.
@@ -41,7 +36,7 @@ We want to test whether fertiliser A is better than fertiliser B gives a higher 
 
 - hint: `pwr` package
 
-Also explore this graphically with simulations using `biostats.tutorials::power_lm_app()` **You will need to install the biostats.tutorial package again** 
+Also explore this graphically with simulations using `biostats.tutorials::power_lm_app()`
 
 For the exercise below, decide from the description of the hypothesis and data what type of analysis would be appropriate. 
 
