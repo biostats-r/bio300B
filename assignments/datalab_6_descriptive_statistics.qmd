@@ -1,19 +1,19 @@
 ---
-title: "Datalab: descriptive statistics"
+title: "Datalab 6: descriptive statistics"
 date: today
 format: html
 ---
 
-Do all the exercises in R markdown.
+Do all the exercises in quarto.
 
 ## Describing penguins
 
-With the penguin data
+With the penguins data from the `palmerpenguins` package
 
 -  calculate the minimum, maximum and range of bill lengths for Gentoo penguins
 - calculate the mean and median body mass for each species
 - calculate the variance and the standard deviation of body mass for each species.
-- Calculate the standard error of the mean for the body mass of each species. (You do not need any extra packages for this)
+- Calculate the standard error of the mean for the body mass of each species (You do not need any extra packages for this)
 - Calculate the 95% confidence interval for the mean body mass.
 
 ## We want to test the hypothesis that bill length is sex dependent in Adelie penguins.
@@ -30,17 +30,23 @@ We want to test whether fertiliser A is better than fertiliser B gives a higher 
 - A typical tomato plant yields 1 kg of tomatoes (sd = 0.2 kg)
 - A change of yield of 0.1 kg would be interesting
 
-- Design an experiment to test this hypotheis
+- Design an experiment to test this hypothesis
 - How many replicates do we need to have an 80% probability of detecting an effect of 0.1kg at p = 0.05 
+- make a plot of how power changes with sample size
 - If we want stronger evidence (p = 0.01), how many replicates do we need.
+
 
 - hint: `pwr` package
 
+
+
 Also explore this graphically with simulations using `biostats.tutorials::power_lm_app()`
 
-For the exercise below, decide from the description of the hypothesis and data what type of analysis would be appropriate. 
+
 
 ## Exercise 3.
+
+For the exercise below, decide from the description of the hypothesis and data what type of analysis would be appropriate. 
 
 You have a dataset that is about size of bilberry leaves depending on light level in the area they have 
 been growing. Each observation (leaf) is assumed to be independent of the others, i.e. there are no 
