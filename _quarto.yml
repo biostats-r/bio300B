@@ -8,6 +8,7 @@ project:
     - lecture_4_data_visualisation.qmd
     - lecture_5_experimental_design.qmd
     - lecture_6_descriptive.qmd
+    - lecture_7_linear_regression1.qmd
 execute:
   freeze: auto
 

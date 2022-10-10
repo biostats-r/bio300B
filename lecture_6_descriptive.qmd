@@ -1,6 +1,6 @@
 ---
 title: "Descriptive statistics and Introduction to statistical inference"
-subtitle: "Bio300B Lecture 4"
+subtitle: "Bio300B Lecture 6"
 author: "Richard J. Telford (Richard.Telford@uib.no)"
 institute: "Institutt for biovitenskap, UiB"
 date: today
