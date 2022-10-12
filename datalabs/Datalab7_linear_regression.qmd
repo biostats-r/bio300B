@@ -1,22 +1,25 @@
 ---
-title: "Datalab 6 - linear regression"
-author: "Richard Telford"
-date: "10/12/2021"
-output: html_document
+title: "Datalab 7 - linear regression"
+date: today
+format: html
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
-Please work in an R markdown document
+Please work in an quarto document
 
 ## Correlations
 
-- With the Penguins dataset, find the Pearson correlation bill length and bill depth for Gentoo penguins.
+- With the Penguins dataset, find the Pearson correlation for bill length and bill depth for Gentoo penguins.
 - Find the confidence intervals of this correlation. Is it significant?
 - Calculate r^2^. How much of the variation in the data is explained by the correlation.
 
+- Find the correlation between bill length and bill depth for
+    - each species separately 
+    - all species combinded
+- Make a figure to explain the apparent conflict between these results
+
+
+This is [Simpson's paradox](https://en.wikipedia.org/wiki/Simpson%27s_paradox).
 
 ## Continuous predictors
 
@@ -45,7 +48,7 @@ We want to test whether Adelie penguins differ in body mass between islands.
 
 ## Exploring diagnostic plots
 
-Use the `influence_leverage_app()` from biostats.tutorials package (you will need to reinstall it) to explore how the diagnostic plots look with a outlier, influential observation, or observation with high leverage.
+Use the `influence_leverage_app()` from biostats.tutorials package to explore how the diagnostic plots look with a outlier, influential observation, or observation with high leverage.
 
 Open the app and move the red point. Diagnostic plot on the left shows model without the red point, plot on the right includes the red point.
 
