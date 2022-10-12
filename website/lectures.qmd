@@ -44,6 +44,7 @@ Using [`ggplot2`](lecture_4_data_visualisation.html) to make beautiful figures.
 
 ## Lecture 7: Linear regression
 
+[Correlations and linear regression](lecture_7_linear_regression1.html) with continuous and categorical predictors
 
 ## Lecture 8: Multiple linear regression
 

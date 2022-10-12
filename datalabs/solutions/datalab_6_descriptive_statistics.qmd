@@ -1,36 +1,41 @@
 ---
-title: "Practical 5"
-author: "Richard Telford"
-date: "9/28/2021"
-output: html_document
+title: "Datalab 6: descriptive statistics - solution"
+date: today
+format: html
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-
-#activate packages - best done in setup chunk to avoid startup messages being printed
+```{r}
+#| label: setup
+#| message: false
+#activate packages - best done at top of script
 library(tidyverse)
 # load data  - or use library(palmerpenguins)
 data(penguins, package = "palmerpenguins")
 
 # set default theme
 theme_set(theme_bw())
+
+# set default number of digits
+options(digits = 2)
 ```
 
-Do all the exercises in R markdown.
+Do all the exercises quarto.
 
 ## Describing penguins
 
-With the penguin data
+With the penguins data from the `palmerpenguins` package
 
 -  calculate the minimum, maximum and range of bill lengths for Gentoo penguins
 
-```{r gentoo-min}
+```{r}
+#| label: gentoo-min
 gentoo <- penguins |> 
   filter(species == "Gentoo")
 
+#base R
 min(gentoo$bill_length_mm, na.rm= TRUE)
-# OR
+
+# tidyverse style
 gentoo |> 
   drop_na(bill_length_mm) |> 
   summarise(
@@ -69,7 +74,8 @@ penguins |>
 
 - Calculate the standard error of the mean for the body mass of each species.
 
-```{r se-mass}
+```{r}
+#| label: se-mass
 penguins |> 
   drop_na(body_mass_g) |>
   group_by(species) |> 
@@ -78,13 +84,14 @@ penguins |>
     n = n(),
     se_mass = sd_mass/sqrt(n)
   )
-
+# if there are NA in the data, cannot use n() as it finds number of rows, not number of valid entries. Would need something like sum(!is.na(body_mass_g))
 
 ```
 
 - Calculate the 95% confidence interval for the mean body mass.
 
-```{r ci-mass}
+```{r}
+#| label: ci-mass
 penguins |> 
   drop_na(body_mass_g) |>
   group_by(species) |> 
@@ -96,7 +103,6 @@ penguins |>
     lower_ci = mean_mass - 1.96 * se_mass
   )
 
-
 ```
 
 ## We want to test the hypothesis that bill length is sex dependent in Adelie penguins.
@@ -106,28 +112,45 @@ penguins |>
 - Choose a suitable statistical test and run it. 
 - Interpret the output.
 
-```{r adelie}
+```{r}
+#| label: adelie
 adelie <- penguins |> 
   filter(species == "Adelie") |> 
   drop_na(sex, bill_length_mm)
 ```
 
-```{r adelie-plot}
+```{r}
+#| label: fig-adelie-plot
 
 adelie |> 
-  ggplot(aes(x = sex, y = bill_length_mm, fill = sex)) +
-  geom_violin(draw_quantiles = 0.5, show.legend = FALSE) +
-  scale_fill_viridis_d() +
-  labs(x = "Sex", y = "Bill length mm")
-  
-  
+  ggplot(aes(x = sex, 
+             y = bill_length_mm, 
+             colour = sex, 
+             fill = after_scale(colorspace::lighten(colour, 0.8)))) +
+  geom_violin(draw_quantiles = 0.5) +
+  ggbeeswarm::geom_quasirandom() +
+  scale_colour_brewer(palette = "Set1") +
+  labs(x = "Sex", y = "Bill length (mm)") +
+  scale_x_discrete(labels = str_to_title) + # capitalise x axis text
+  theme(legend.position = "none")
+
+# Colour & fill not necessary for a ms, but nice in a presentation.  
 ```
 
-```{r adelie-t-test}
-t.test(bill_length_mm ~ sex, data = adelie)
+```{r}
+#| label: adelie-t-test
+adelie_summary <- adelie |> 
+  group_by(sex) |> 
+  drop_na(bill_length_mm) |> 
+  summarise(m = mean(bill_length_mm), 
+            sd = sd(bill_length_mm), 
+            n = n())
+mod <- t.test(bill_length_mm ~ sex, data = adelie)
+mod
 ```
 
-
+Male Adelie (n = `r adelie_summary |> filter(sex == "male") |> pull(n)`) have longer (mean = `r mod$estimate["mean in group male"]`, sd = `r adelie_summary |> filter(sex == "male") |> pull(sd)`) bills, than female Adelie (n = `r adelie_summary |> filter(sex == "female") |> pull(n)`, mean = `r mod$estimate["mean in group female"]`, sd = `r adelie_summary |> filter(sex == "female") |> pull(sd)`).
+This difference is significant t(`r mod$parameter`) = `r mod$statistic`, p = `r format.pval(mod$p.value, eps = 0.001)`.
 
 ## Power test
 
@@ -138,6 +161,7 @@ We want to test whether fertiliser A is better than fertiliser B gives a higher 
 
 - Design an experiment to test this hypotheis
 - How many replicates do we need to have an 80% probability of detecting an effect of 0.1kg at p = 0.05 
+- make a plot of how power changes with sample size
 - If we want stronger evidence (p = 0.01), how many replicates do we need.
 
 - hint: `pwr` package
@@ -156,11 +180,11 @@ plot(tomato_power)
 ```
 
 
-Also explore this graphically with simulations using `biostats.tutorials::power_lm_app()` **You will need to install the biostats.tutorial package again** 
-
-For the exercise below, decide from the description of the hypothesis and data what type of analysis would be appropriate. 
+Also explore this graphically with simulations using `biostats.tutorials::power_lm_app()`.
 
 ## Exercise 3.
+
+For the exercise below, decide from the description of the hypothesis and data what type of analysis would be appropriate.
 
 You have a dataset that is about size of bilberry leaves depending on light level in the area they have 
 been growing. Each observation (leaf) is assumed to be independent of the others, i.e. there are no 
