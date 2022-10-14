@@ -5,7 +5,9 @@ date: "11/9/2021"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r}
+#| label: setup
+#| include: false
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
@@ -19,7 +21,8 @@ _Pasteuria ramosa_ affects survival of its crustacean host Daphnia magna.
 Download the data from https://raw.githubusercontent.com/biostats-r/bio300B/master/data/daphnia_survival.csv
 and import them.
 
-```{r import}
+```{r}
+#| label: import
 daphnia <- read_delim(file=here::here("data/daphnia_survival.csv"), delim = ",", skip = 9)
 daphnia
 ```
@@ -29,7 +32,8 @@ Using the example in the lecture as a guide
 
 - Create a survival plot
 
-```{r surv-plot}
+```{r}
+#| label: surv-plot
 daphnia_fit <- survfit(Surv(Day.of.death, Dead) ~ Group, data = daphnia)
 
 daphnia_fit
@@ -89,7 +93,8 @@ broom::augment(daphnia_loglogistic, newdata = nd)
 There is also the semi-parametric Cox proportional Hazard model
 
 
-```{r cox}
+```{r}
+#| label: cox
 daphnia_cox <- coxph(Surv(Day.of.death, Dead) ~ Group, data = daphnia)
 daphnia_cox
 

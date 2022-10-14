@@ -5,7 +5,9 @@ date: "11/2/2021"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r}
+#| label: setup
+#| include: false
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
@@ -17,7 +19,8 @@ Data show reaction time (ms) of different subjects on after sleep deprivations.
 
 load the data.
 
-```{r load-data}
+```{r}
+#| label: load-data
 library(lme4)
 library(lmerTest) # to get approximate p-values
 head(sleepstudy)
@@ -42,7 +45,8 @@ sleepstudy <- sleepstudy |>
 
 Make a publication ready plot of the data.
 
-```{r raw-data-plot}
+```{r}
+#| label: raw-data-plot
 # set default theme
 theme_set(theme_bw())
 ggplot(sleepstudy, aes(x = Days, y = Reaction, colour = Subject)) +
@@ -89,7 +93,8 @@ summary(mod_bad)
 
 Add the fitted values for each subject and the overall fixed effects to the plot.
 
-```{r random-intercept-plot}
+```{r}
+#| label: random-intercept-plot
 library(broom.mixed)
 augment(mod1) |> 
   ggplot(aes(x = Days, y = Reaction, colour = Subject)) +
@@ -104,7 +109,8 @@ augment(mod1) |>
 
 Examine the model's diagnostic plots.
 
-```{r diag1}
+```{r}
+#| label: diag1
 a_mod1 <- augment(mod1)
 ## standardized residuals versus fitted values
 ggplot(a_mod1, aes(.fitted, .resid)) + 
@@ -116,7 +122,8 @@ ggplot(a_mod1, aes(.fitted, .resid)) +
 - mean residual not 0
 - variance of residuals not constant
 
-```{r diag2}
+```{r}
+#| label: diag2
 ## box-plots of residuals by Subject
 ggplot(a_mod1, aes(Subject,.resid)) + 
   geom_boxplot() + 
@@ -126,7 +133,8 @@ ggplot(a_mod1, aes(Subject,.resid)) +
 
 - some suubjects have much larger variance than others, some outliers. Things to keep an eye on.
 
-```{r diag3}
+```{r}
+#| label: diag3
 ggplot(a_mod1, aes(.fitted, Reaction)) + 
   geom_point(colour="blue") +
     facet_wrap(~Subject) +
@@ -134,7 +142,8 @@ ggplot(a_mod1, aes(.fitted, Reaction)) +
 ```
 
 
-```{r diag4}
+```{r}
+#| label: diag4
 #qq plot of residuals
 library(lattice)
 qqmath(mod1)
@@ -142,7 +151,8 @@ qqmath(mod1)
 
 - some deviation from normality
 
-```{r diag5}
+```{r}
+#| label: diag5
 #qq plot of random effects
 qqmath(ranef(mod1))
 ```
@@ -181,7 +191,8 @@ augment(mod2) |>
 Examine the diagnostic plots of the new model.
 
 
-```{r diag1-2}
+```{r}
+#| label: diag1-2
 a_mod2 <- augment(mod2)
 ## standardized residuals versus fitted values
 ggplot(a_mod2, aes(.fitted, .resid)) + 
@@ -194,7 +205,8 @@ ggplot(a_mod2, aes(.fitted, .resid)) +
 - variance of residuals more constant
 - some outliers
 
-```{r diag2-2}
+```{r}
+#| label: diag2-2
 ## box-plots of residuals by Subject
 ggplot(a_mod2, aes(Subject,.resid)) + 
   geom_boxplot() + 
@@ -204,7 +216,8 @@ ggplot(a_mod2, aes(Subject,.resid)) +
 - variances maybe more equal than before
 - some outliers
 
-```{r diag3-2}
+```{r}
+#| label: diag3-2
 ggplot(a_mod2, aes(.fitted, Reaction)) + 
   geom_point(colour="blue") +
     facet_wrap(~Subject) +
@@ -212,7 +225,8 @@ ggplot(a_mod2, aes(.fitted, Reaction)) +
 ```
  - generally better fits than before
 
-```{r diag4-2}
+```{r}
+#| label: diag4-2
 #qq plot of residuals
 library(lattice)
 qqmath(mod2)
@@ -220,7 +234,8 @@ qqmath(mod2)
 
 - some deviation from normality - mainly due to three outliers
 
-```{r diag5-2}
+```{r}
+#| label: diag5-2
 #qq plot of random effects
 qqmath(ranef(mod2))
 ```

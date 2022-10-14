@@ -5,7 +5,9 @@ date: "10/26/2021"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r}
+#| label: setup
+#| include: false
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(here)
@@ -26,7 +28,8 @@ Temperature data are not given (could be extracted from an atlas with latitude/l
 - Download data as tab-delimited test from https://doi.pangaea.de/10.1594/PANGAEA.828674
 - Import the data into R
 
-```{r import-data}
+```{r}
+#| label: import-data
 # here() find the file relative to the project root
 esper <- read_delim(file = here("data/Esper-Gersonde_2014.tab"), skip = 155, delim = "\t") |> 
   janitor::clean_names()#tidy column names
@@ -37,7 +40,8 @@ esper <- read_delim(file = here("data/Esper-Gersonde_2014.tab"), skip = 155, del
 ## Process data
 - Find the species richness (i.e. number of columns with diatom percent with abundance > 0) (hint: either use pivot_longer() and group_by() and summarise(), or select() and rowSums())
 
-```{r richness}
+```{r}
+#| label: richness
 esper_richness <- esper |> 
   pivot_longer(cols = matches("percent"), names_to = "taxa", values_to = "percent") |> # could also cols = a_actinochilus_percent:diatoms_indet_percent (should probably remove diatoms_indet_percent is it not a real species)
   filter(percent > 0) |> # this will fail if any sites have no diatoms. In that case use summarise(n = sum(percent > 0))
@@ -51,7 +55,8 @@ esper_richness <- esper |>
 
 - plot richness against latitude
 
-```{r richness-plot}
+```{r}
+#| label: richness-plot
 ggplot(esper_richness, aes(x = latitude, y = n)) +
   geom_point() + 
   labs(x = "Latitude °" , y = "Species richness")
@@ -60,7 +65,8 @@ ggplot(esper_richness, aes(x = latitude, y = n)) +
 
 - fit an appropriate model to find the relationship between richness and latitude
 
-```{r richness-mod}
+```{r}
+#| label: richness-mod
 # count data - try a poisson
 mod_richness <- glm(n ~ latitude, data = esper_richness, family = poisson)
 mod_richness
@@ -68,7 +74,8 @@ mod_richness
 
 - plot the fitted values from the model with the raw data. Is the model a good fit. Do you need to add extra terms?
 
-```{r plot-with-fitted}
+```{r}
+#| label: plot-with-fitted
 augment(mod_richness, type.predict = "response") |> 
   ggplot(aes(x = latitude, y = n)) +
   geom_point() +
@@ -90,7 +97,8 @@ Residual deviance < residual df - no evidence of over-dispersion
 
 - interpret the model coefficients
 
-```{r coef-richness}
+```{r}
+#| label: coef-richness
 coef(mod_richness)[1] # log richness when latitude = 0
 coef(mod_richness)[2] # positive slope in link space - proportional change in response space
 ```
@@ -108,7 +116,8 @@ exp(cr[1] + cr[2] * -60) / exp(cr[1] + cr[2] * -61) -1
 
 Find the relationship of the presence-absence of _F. cylindrus_  with latitude in the data from above.
 
-```{r f-cylindrus-data}
+```{r}
+#| label: f-cylindrus-data
 f_cylindrus_df <- esper |> 
   mutate(f_cylindrus = sign(f_cylindrus_percent))
 ```
@@ -116,7 +125,8 @@ f_cylindrus_df <- esper |>
 
 - plot the data
 
-```{r f-cylindrus-plot}
+```{r}
+#| label: f-cylindrus-plot
 set.seed(1)
 p_fc <- ggplot(f_cylindrus_df, aes(x = latitude, y = f_cylindrus)) +
   geom_jitter(width = 0, height = 0.1)
@@ -127,14 +137,16 @@ p_fc
 
 - fit an appropriate model including a quadratic term (hint: poly())
 
-```{r fc-mod}
+```{r}
+#| label: fc-mod
 mod_fc <- glm(f_cylindrus ~ latitude, data = f_cylindrus_df, family = binomial)
 mod_fc  
 ```
 
 - add the fitted model, with uncertainties, to the plot
 
-```{r fc-plot2}
+```{r}
+#| label: fc-plot2
 set.seed(1)
 augment(mod_fc, se_fit = TRUE) |> 
   mutate(fitted = plogis(.fitted), 
@@ -154,7 +166,8 @@ Find the relationship between the relative abundance of  _F. cylindrus_  with la
 
 - plot the data
 
-```{r ra-plot}
+```{r}
+#| label: ra-plot
 # need proportion data rather than percent
 
 f_cylindrus_df <- f_cylindrus_df |> 
