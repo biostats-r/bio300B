@@ -15,7 +15,7 @@ Please work in an quarto document
 
 - Find the correlation between bill length and bill depth for
     - each species separately 
-    - all species combinded
+    - all species combined
 - Make a figure to explain the apparent conflict between these results
 
 
