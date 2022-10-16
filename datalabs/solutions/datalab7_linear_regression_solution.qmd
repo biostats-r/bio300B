@@ -1,14 +1,12 @@
 ---
-title: "Datalab 6 - linear regression"
-author: "Richard Telford"
-date: "10/12/2021"
-output: html_document
+title: "Datalab 7 - linear regression - solution"
+date: today
+format: html
 ---
 
 ```{r}
 #| label: setup
 #| include: false
-knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(broom)
 library(ggfortify)
@@ -16,7 +14,7 @@ data(penguins, package = "palmerpenguins")
 theme_set(theme_bw())
 ```
 
-Please work in an R markdown document
+Please work in an quarto document
 
 ## Correlations
 
@@ -59,6 +57,40 @@ corr^2 * 100 # %
 ```
 
 
+- Find the correlation between bill length and bill depth for
+- each species separately 
+    
+```{r}
+penguins |> 
+  group_by(species) |> 
+  drop_na(bill_length_mm, bill_depth_mm) |> 
+  summarise(corr = cor(bill_length_mm, bill_depth_mm))
+# all positive
+```
+
+    - all species combined
+    
+```{r}
+cor(penguins$bill_length_mm, penguins$bill_depth_mm, use = "complete.obs")
+# negative
+```
+
+- Make a figure to explain the apparent conflict between these results
+
+```{r}
+#| message: false
+#| warning: false
+
+ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = lm) +
+  geom_smooth(aes(group = 1, colour = "All species"), method = "lm") +
+  scale_color_brewer(palette = "Set1", limits = c("All species", "Adelie", "Chinstrap", "Gentoo")) +
+  labs(x = "Bill length (mm)", y = "Bill depth (mm)")
+  
+```
+
+This is [Simpson's paradox](https://en.wikipedia.org/wiki/Simpson%27s_paradox).
 
 ## Continuous predictors
 
@@ -121,7 +153,6 @@ augment(mod, interval = "confidence") |>
   geom_point() +
   geom_ribbon(aes(ymin = .lower, ymax = .upper), alpha = 0.3) +
   geom_line(aes(y = .fitted)) +
-  
   labs(x = "Body mass g", y = "Bill length mm")
 ```
 
@@ -141,7 +172,7 @@ adelie <- penguins |> filter(species == "Adelie")
 
 island_mass_plot <- ggplot(adelie, aes(x = island, y = body_mass_g)) +
   geom_violin() +
-  geom_quasirandom() + # like geom_sina but more evenly spaced
+  geom_quasirandom() + 
   labs(x = "Island", y = "Body mass g")
 island_mass_plot
 ```
@@ -202,7 +233,7 @@ plot(mc)
 
 ## Exploring diagnostic plots
 
-Use the `influence_leverage_app()` from biostats.tutorials package (you will need to reinstall it) to explore how the diagnostic plots look with a outlier, influential observation, or observation with high leverage.
+Use the `influence_leverage_app()` from biostats.tutorials package to explore how the diagnostic plots look with a outlier, influential observation, or observation with high leverage.
 
 Open the app and move the red point. Diagnostic plot on the left shows model without the red point, plot on the right includes the red point.
 
