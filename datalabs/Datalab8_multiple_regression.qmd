@@ -1,19 +1,16 @@
 ---
-title: 'Datalab 6: Multiple regression'
-author: "Richard Telford"
-date: "10/19/2021"
-output: html_document
+title: 'Datalab 8: Multiple regression'
+date: today
+format: html
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
-In an R markdown document
+In an quarto document
 
 # Task 1 2-way anova
 
 - With the penguins data, fit models to predict body mass from species and sex with and without an interaction.
+
 - Interpret the model coefficients.
 - Using only the coefficients, what is the expected mass of male and female Gentoos with each model.
 - Examine the models' diagnostic plots
