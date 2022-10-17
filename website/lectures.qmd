@@ -48,6 +48,7 @@ Using [`ggplot2`](lecture_4_data_visualisation.html) to make beautiful figures.
 
 ## Lecture 8: Multiple linear regression
 
+For models with more than one predictor, you need [multiple regression](lecture_8_multiple_regression.html)
 
 ## Lecture 9: Generalised linear models
 

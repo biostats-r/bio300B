@@ -9,6 +9,7 @@ project:
     - lecture_5_experimental_design.qmd
     - lecture_6_descriptive.qmd
     - lecture_7_linear_regression1.qmd
+    - lecture_8_multiple_regression.qmd
 execute:
   freeze: auto
 
