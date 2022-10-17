@@ -1,0 +1,263 @@
+---
+title: "Assignment 3"
+format: 
+  html:
+    self-contained: true
+editor: visual
+---
+
+```{r}
+#| label: load-packages
+#| message: false
+library(tidyverse)
+library(readxl)
+library(ggspatial)
+library(ggOceanMaps)
+library(here)
+
+```
+
+Open data in Excel to inspect it.
+
+-   First line gives units (`skip`)
+
+-   First column has notes after the data, could remove with `nmax` or ignore and remove with `drop_na` later
+
+-   missing values coded as NA (also n.d. for not detected (almost zero) but not in columns of interest.
+
+-   degree signs on some coordinates
+
+```{r}
+#| label: load-data
+orca_contam <- read_excel(
+  path = here("data/etc5064-sup-0002-supplementary_dataset.xlsx"), 
+  sheet = "Sheet1", 
+  skip = 1,
+  na = c("", "NA") # treat blank cells and "NA" as NA  
+) |> 
+  janitor::clean_names() |> 
+  drop_na(lat) # drops rows containing notes
+```
+
+If you don't fix the `na` argument during import, you need to make hbb column numeric later.
+
+Need to remove degree signs and convert to lat/long to numeric.
+Can do this one at a time, but here I use `across()` to process both columns at once.
+
+```{r}
+#| label: clean-data
+orca_contam <- orca_contam |> 
+  mutate(
+    across(c(lat, long), .fns = str_remove, pattern = "°"),
+    across(c(lat, long), .fns = as.numeric)) |> 
+  filter(tissue == "Blubber")
+```
+
+Some computers didn't show the ° symbol, but instead a unicode symbol.
+This is probably because R guessed the encoding wrong.
+It should be possible to fix the encoding (see https://stat545.com/character-encoding.html), but can also `str_remove(lat, "\u00b0")` to remove the code, or `str_sub()` to truncate the number of characters at 8 or 9, removing the problematic character.
+
+Making a map.
+Can use either `rnaturalearth` or `ggOceanMaps` for the basemap.
+`ggmap` or other map tiles possible but makes colour picking harder and the map a bit cluttered.
+
+Here, I have calculated the limits from the data (because I am using the rotate argument, `basemap()` won't calculate them nicely by itself).
+I'm using rotate so that the central meridian is vertical, otherwise Norway leans a lot.
+I've changed the colour of the land and made the points larger than default so they are more visible.
+
+```{r}
+# function to give the map some space around the data
+expand_range <- function(x, expand.factor = 0.1){
+  r <- range(x)
+  dr <- diff(r) * expand.factor
+  r + c(-dr, dr) 
+}
+
+orca_map <- basemap(
+  limits = c(expand_range(orca_contam$long), expand_range(orca_contam$lat)),
+  land.col = "grey80", 
+  rotate = TRUE
+  ) +
+  geom_spatial_point(mapping = aes(x = long, y = lat, colour = hbb), data = orca_contam, size = 3) +
+  labs(colour = "HBB\nng/g") +
+  annotation_scale(location = "tl") +
+  scale_colour_viridis_c(option = "magma", end = 0.9)
+orca_map
+```
+
+Lets add an inset map.
+Here I am being careful to make the red rectangle exactly match the main map.
+This would be much easier with an equirectangular projection (as maps with rnaturalearth have by default).
+
+```{r}
+# want bounding box of map
+# available from attributes()
+attributes(orca_map)
+#can get specific elements with attr()
+orca_bb <- attr(orca_map, "limits")
+
+inset_map <- basemap(limits = c(4, 27, 55.5, 71.5), rotate = TRUE, land.col = "grey80") +
+    geom_spatial_rect(
+      mapping = aes(xmin = orca_bb[1], xmax = orca_bb[2], ymin = orca_bb[3], ymax = orca_bb[4]),
+      data = NULL,
+      fill = "red",
+      alpha = 0.3,
+      crs = attr(orca_map, "proj")) +
+  theme(
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.ticks.y = element_blank(),
+    plot.background = element_rect(fill = "white"),
+    panel.border = element_blank(),
+    plot.margin = margin(1, 1, -2, -2, unit = "pt") # adjusting margins to avoid white space
+  )
+inset_map
+```
+
+```{r}
+library(patchwork)
+orca_map + 
+  inset_element(inset_map, 
+                left = 0.7, 
+                right = 0.99, 
+                top = 0.6, 
+                bottom = 0.01)
+```
+
+Map is OK but two points are overlapping and difficult to see.
+Setting alpha doesn't help much as it just looks like another colour
+
+can use `geom_spatial_label_repel()` (equivalent to `ggrepel::geom_label_repel()`
+
+```{r}
+orca_map +
+  geom_spatial_label_repel(data = orca_contam, mapping = aes(x = long, y = lat, label = round(hbb, 2), fill = hbb, alpha = 0.4), show.legend = FALSE) +
+   scale_fill_viridis_c(option = "magma", end = 0.9)
+```
+
+I don't like that very much.
+Perhaps labels that only popup when you mouse-over would work better.
+
+```{r}
+library(ggiraph)
+
+bm <- basemap(
+  limits = c(expand_range(orca_contam$long), expand_range(orca_contam$lat)),
+  land.col = "grey80", 
+  rotate = TRUE
+  )
+
+# there isn't a geom_spatial_point_interactive, 
+# so we need to transform coordinates to the same as the base map
+transformed_orca <- xy_transform(
+  x = orca_contam$long, 
+  y = orca_contam$lat, 
+  to = attr(bm, "proj")
+  ) |> 
+  bind_cols(orca_contam)
+
+#make map
+orca_map_int <- bm +
+  geom_point_interactive(
+    aes(x = x, y = y, 
+        tooltip = glue::glue("id = {whale_id}\nHBB = {round(hbb, 3)} ng/g"),
+        data_id = whale_id, 
+        colour = hbb), 
+    data = transformed_orca, 
+    size = 3) +
+  labs(colour = "HBB\nng/g") +
+  annotation_scale(location = "tl") +
+  scale_colour_viridis_c(option = "magma", end = 0.9)
+
+# add inset map
+orca_map_int <- orca_map_int + 
+  inset_element(inset_map, 
+                left = 0.7, 
+                right = 0.99, 
+                top = 0.6, 
+                bottom = 0.01)
+
+# make interactive
+girafe(ggobj = orca_map_int, 
+      options = list(
+        opts_sizing(width = 0.8),
+        opts_zoom(max = 5)))
+
+```
+
+Other interactive graphics packages include `plotly` and `leaflets` (maps only).
+
+Interactive graphics only work in html.
+
+## Other points
+
+Sweden exists!
+Norway is not an island.
+If using rnaturalearth can use
+
+```{r}
+library(rnaturalearth)
+
+base <- ne_countries(scale = 10, country = c("Norway"), returnclass = "sf")
+
+ggplot(base) + # bad
+  geom_sf(colour = "grey60") +
+  geom_spatial_point(
+    data = orca_contam, 
+    mapping = aes(x = long, y = lat, colour = hbb),
+    size = 3) +
+  scale_colour_viridis_c(option = "magma", end = 0.9) +
+  coord_sf(xlim = expand_range(orca_contam$long),
+           ylim = expand_range(orca_contam$lat)) +
+  labs(x = "Longitude", y = "Latitude") +
+  annotate("text", x = 21, y = 68.75, label = "?", colour = "red", size = 20) +
+  theme_bw()
+
+base <- ne_countries(scale = 10, country = c("Norway", "Sweden", "Finland"), returnclass = "sf")
+
+ggplot(base) + # better
+  geom_sf(colour = "grey60") +
+  geom_spatial_point(
+    data = orca_contam, 
+    mapping = aes(x = long, y = lat, colour = hbb),
+    size = 3) +
+  scale_colour_viridis_c(option = "magma", end = 0.9) +
+  coord_sf(xlim = expand_range(orca_contam$long),
+           ylim = expand_range(orca_contam$lat)) +
+  labs(x = "Longitude", y = "Latitude") +
+  theme_bw()
+  
+```
+
+If you use labels on the map, e.g. with `ggrepel`, round any numbers to have a reasonable number of digits.
+But don't round the data except when you are going to print it.
+Your `aes()` can look like this
+
+```{r}
+#| eval: false
+aes(x = lat, y = long, label = round(hbb, digits = 2))
+```
+
+If your legend title is very long it takes up space that should be used for the map.
+Either move the legend to below the figure `theme(legend.position = "bottom")` or split onto several lines by inserting `\n`
+
+Using fill aesthetic on points with only a colour.
+
+Be careful with size aesthetic.
+Can work but can lose small points.
+
+Using `select()` with column numbers is almost always a bad idea.
+Code is difficult to understand and breaks if an extra column is added.
+
+Using `slice()` with numbers rather than `filter()` with a logical condition to pick rows is always a bad idea (`slice()` is fine to pick the first row etc)
+
+`mutate()` is your friend if you want to add or modify a column.
+
+Many scripts used `geom_point()` rather than `geom_spatial_point()`.
+This worked because they were using `rnaturalearth` and not changing the map projection (so using an equirectangular projection).
+`geom_spatial_point()` works with projected maps (as `ggOceanMaps` will make).
+Projecting maps can be useful to avoid distortions, especially at high latitudes.
+
+Be careful of cropping the basemap.
+If you do crop to make the sf object smaller, leave a buffer zone so the crop does not show up in the figure.
