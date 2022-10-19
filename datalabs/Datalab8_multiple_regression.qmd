@@ -18,9 +18,9 @@ In an quarto document
 
 # Task 2 ancova
 
-- With the Gentoo data, fit models to predict bill length from flipper length and sex with and without an interaction.
+- With the Gentoo data, fit models to predict bill length from body mass and sex with and without an interaction.
 - Interpret the model coefficients.
-- Using only the coefficients, what is the expected mass of male and female Gentoos with flipper length 100 mm with each model.
+- Using only the coefficients, what is the expected bill length of male and female Gentoos with body mass of 5000 g with each model.
 - Examine the models' diagnostic plots
 - Plot the raw data and the models, including confidence intervals.
 - Test if the interaction improves the model.
