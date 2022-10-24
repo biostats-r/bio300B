@@ -52,6 +52,7 @@ For models with more than one predictor, you need [multiple regression](lecture_
 
 ## Lecture 9: Generalised linear models
 
+Got Poisson or binomial data? Use [Generalised linear models](lecture_9_generalised_linear_models.html)
 
 ## Lecture 10: Mixed effect models
 

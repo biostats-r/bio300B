@@ -3,21 +3,20 @@ title: "Generalised Linear Models"
 subtitle: "Bio300B Lecture 8"
 author: "Richard J. Telford (Richard.Telford@uib.no)"
 institute: "Institutt for biovitenskap, UiB"
-date: "`r format(Sys.Date(), '%d %B %Y')`"
-output:
-  xaringan::moon_reader:
-    lib_dir: libs
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
+date: today
+date-format: "D MMMM YYYY"
+format: 
+  revealjs:
+    theme: [default, css/custom.scss]
+    chalkboard: true
+execute: 
+  echo: true
+  warning: false
+  error: true
 ---
-<style type="text/css">
-.remark-slide-content {
-    font-size: 24px;
-    padding: 1em 4em 1em 4em;
-}
-</style>
+
+
+## Assumptions of Least Squares
 
 ```{r setup, echo=FALSE, message=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, error = TRUE)
@@ -31,16 +30,6 @@ data(penguins, package = "palmerpenguins")
 #options(dplyr.print_min = 2, dplyr.print_max = 3, digits = 4)
 ```
 
-```{r xaringanExtra-clipboard, echo=FALSE}
-xaringanExtra::use_clipboard()
-```
-
-```{r share-again, echo = FALSE}
-xaringanExtra::use_share_again()
-xaringanExtra::use_scribble()
-```
-
-# Assumptions of Least Squares
 
 1. The relationship between the response and the predictors is ~linear.
 2. The residuals have a mean of zero.
@@ -48,15 +37,16 @@ xaringanExtra::use_scribble()
 4. The residuals are independent (uncorrelated).
 5. **The residuals are normally distributed.**
 
----
-# Generalised linear models
+## Generalised linear models
 
-- Allow non-normal residual distributions (Poisson, binomial, etc)
+- Allow non-normal residual distributions
+    - Poisson
+    - Binomial
+    - Gamma
+    - etc
 - Coefficients found with **maximum likelihood**
 
----
-
-# Least squares
+## Least squares
 
 Choose $\beta$ that minimise the sum of squares of residuals
 
@@ -105,27 +95,30 @@ chinstrap <- penguins |> filter(species == "Chinstrap") |>
 sum_sq_plot <- chinstrap |> 
   ss_plot( x = "body_mass_g", y = "bill_length_mm")
 ```
-.pull-left[
-```{r ss-plot, echo=FALSE, fig.height = 5, fig.width=5.5}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{r ss-plot, echo=FALSE, fig.height = 4, fig.width=4.5}
 sum_sq_plot +
   labs(x = "Body mass g", y = "Bill length mm")
 ```
-]
+:::
 
-.pull-right[
+::: {.column width="50%"}
 Assumes residuals have normal distribution
-]
+:::
 
----
-# Likelihood
+::::
+
+## Likelihood
 
 How likely is the model given the data? 
 
-– choose coefficients to maximise likelihood 
+- choose coefficients to maximise likelihood
 - works with any distribution
 
----
-# Likelihood with a normal distribution: 
+## Likelihood with a normal distribution: 
 
 $$\mathcal{L}(\mu,\sigma|y) = \frac{1}{\sigma \sqrt {2\pi } }e^{-\frac{(x - \mu)^2} {{2\sigma ^2 }}}$$
 
@@ -171,18 +164,34 @@ p_data <- ggplot(chinstrap, aes(x = body_mass_g, y = bill_length_mm)) +
   p_like 
 ```
 
----
-# Maximum Likelihood of the model
+## Maximum Likelihood of the model
 
-Find the likelihood for each observation & combine them
+Find likelihood for each observation & combine them
 
-Product of the likelihoods fails
+:::: {.columns}
 
+::: {.column width="50%"}
+Product of likelihoods fails
+:::
+
+::: {.column width="50%"}
 $$\prod_{i =1}^n\mathcal{L}(\mu,\sigma|y) \approx0$$
+:::
 
-Use the log-likelihood
+::::
 
+
+:::: {.columns}
+
+::: {.column width="50%"}
+Use log-likelihood
+:::
+
+::: {.column width="50%"}
 $$\mathcal{l}(\mu,\sigma|y) = log(\mathcal{L}(\mu,\sigma|y))$$
+:::
+
+::::
 
 Find the sum of the log-likelihoods 
 
@@ -190,8 +199,7 @@ $$\sum_{i = 1}^n{(\mathcal{l}(\mu,\sigma|y))} = {log}(\prod_{i = 1}^n{\mathcal{L
 
 Choose coefficients that give maximum log-likelihood
 
----
-# Using maximum likelihood in R
+## Using maximum likelihood in R
 
 ```{r}
 gentoo <- penguins |> filter(species == "Adelie") |> drop_na(bill_length_mm)
@@ -210,8 +218,7 @@ anova(mod_ls)
 anova(mod_ml, test = "F")
 ```
 
----
-# Deviance
+## Deviance
 
 Analogous to Sum of Squares in a linear model
 
@@ -222,8 +229,7 @@ Smaller residual deviance is better
 
 $$deviance = -2(log(\mathcal{L}_M) - log(\mathcal{L}_S))$$
 
----
-# Generalised linear models
+## Generalised linear models
 
 <font color = "red">Link function</font> and <font color = "blue">Linear predictor</font>
 
@@ -237,24 +243,28 @@ $$\color{purple}{var(Y_i) = \phi V(\mu_i)}$$
 
 - describes how the variance depends on the mean; dispersion parameter $\phi$ is a constant
 
----
 # Distributions & links
 
 ## Normal (Gaussian)
 
  - y continuous
  - All values $-\infty +\infty$
- - $\mu = E(y_i) = β_0 + β_1x_i$
- - $var(y) = σ^2$
+ - $\color{red}{\mu} = \color{red}{E(y_i)} = \color{blue}{β_0 + β_1x_i}$
+ - $\color{purple}{var(y)} = \color{purple}{σ^2}$
  
----
+
 ## Poisson
 
+:::: {.columns}
+
+::: {.column width="50%"}
  - Discrete
  - Counts
- - $log(\mu) = β_0 + β_1x_i$
- - $var(y) = \mu$
- 
+ - $\color{red}{log(\mu)} = \color{blue}{β_0 + β_1x_i}$
+ - $\color{purple}{var(y)} = \color{purple}{\mu}$
+:::
+
+::: {.column width="50%"}
 ```{r poisson-anim, cache = TRUE, fig.height=5.5, fig.width=6, echo = FALSE}
 crossing(
   mean = 1:30,
@@ -269,43 +279,21 @@ crossing(
   ease_aes('cubic-in-out')
 ```
  
+:::
 
----
-## Binomial
+::::
 
- - Success/failure, one or many trials
- - $log(\frac{\mu}{1 - \mu}) = β_0 + β_1x_i$
- - $var(y) = n\mu(1 - μ)$
-
-```{r binom-anim, cache = TRUE, fig.height=5.5, fig.width=6, echo = FALSE}
-l <- 10
-binom_data <- crossing(
-  tibble(prob = c(seq(0.5, 1, length = l+1), seq(1, 0, length = 2 * l+1), seq(0, .5, length = l+1))) |> mutate(n = 1:n()),
-  count = 0:20,
-  size = c(1, 5, 20)) |>
-  filter(count <= size) |>
-  mutate(density = dbinom(x = count, prob = prob, size = size),
-         size = glue::glue("{size} trial{ifelse(size > 1, 's', '')}"),
-         size = factor(size, levels = c("1 trial", "5 trials", "20 trials")))
+ 
 
 
-binom_data |>
-  ggplot(aes(x = count, y = density)) +
-  geom_col() +
-  scale_x_continuous(breaks = 0:20, expand = c(0.02, 0)) +
-  facet_wrap(~size, ncol = 1, scales = "free_x") +
-  transition_states(n) +
-  labs(title = paste0("Probability of success: {binom_data |> filter(n == closest_state) |> slice(1) |> pull(prob) |> round(2)}"),
-       x = "Number of successes",
-       y = "Density") +
-  ease_aes('linear')
-```
 
----
-# Poisson example
+## Poisson example
 
 Species richness on Mt Gonga grasslands
-.pull-left[
+
+:::: {.columns}
+
+::: {.column width="50%"}
 ```{r, echo = FALSE}
 library(readxl)
 library(ggbeeswarm)
@@ -322,10 +310,16 @@ gonga_rich <- gonga |>
   group_by(site, plot, elevation) |> 
   summarise(richness = n_distinct(species), .groups = "drop") 
 
-knitr::kable(gonga_rich |> slice(1:10))
+gonga_rich |> 
+  group_by(site) |> 
+  select(-plot) |> 
+  slice(1:2) |> 
+  ungroup() |> 
+  gt::gt()
 ```
-]
-.pull-right[
+:::
+
+::: {.column width="50%"}
 ```{r gonga-rich-plot, fig.height = 5, fig.width=5, echo = FALSE}
 base <- ggplot(gonga_rich, aes(x = elevation, y = richness)) +
   geom_quasirandom(aes(colour = site), show.legend = FALSE) +
@@ -333,7 +327,10 @@ base <- ggplot(gonga_rich, aes(x = elevation, y = richness)) +
   labs(x = "Elevation m", y = "Species richness")
 base
 ```
-]
+:::
+
+::::
+
 ---
 
 ```{r}
@@ -347,7 +344,7 @@ summary(mod_g)
 anova(mod_g, test = "Chi")
 ```
 
----
+
 ## Predictions
 
 Predictions by default on the linear predictor scale
@@ -362,7 +359,7 @@ Can predict on response scale with `type` argument
 predict(mod_g, newdata = nd, type = "response")
 ```
 
-Or use `exp()`
+Or use inverse of <font color = "red">Link function</font> - `exp()` for Poisson
 
 ---
 
@@ -381,7 +378,7 @@ response <- base +
 link + response
 ```
 
----
+
 ## Predictions with uncertainty
 
 Need to do calculations on link scale
@@ -410,8 +407,49 @@ base +
 ```
 
 
----
-# Binomial example
+## Binomial
+
+:::: {.columns}
+
+::: {.column width="50%"}
+ - Success/failure, 
+ - one or many trials
+ - $\color{red}{log(\frac{\mu}{1 - \mu})} = \color{blue}{β_0 + β_1x_i}$
+ - $\color{purple}{var(y)} = \color{purple}{n\mu(1 - μ)}$
+:::
+
+::: {.column width="50%"}
+```{r binom-anim, cache = TRUE, fig.height=7.5, fig.width=6, echo = FALSE}
+l <- 10
+binom_data <- crossing(
+  tibble(prob = c(seq(0.5, 1, length = l+1), seq(1, 0, length = 2 * l+1), seq(0, .5, length = l+1))) |> mutate(n = 1:n()),
+  count = 0:20,
+  size = c(1, 5, 20)) |>
+  filter(count <= size) |>
+  mutate(density = dbinom(x = count, prob = prob, size = size),
+         size = glue::glue("{size} trial{ifelse(size > 1, 's', '')}"),
+         size = factor(size, levels = c("1 trial", "5 trials", "20 trials")))
+
+
+binom_data |>
+  ggplot(aes(x = count, y = density)) +
+  geom_col() +
+  scale_x_continuous(breaks = 0:20, expand = c(0.02, 0)) +
+  facet_wrap(~size, ncol = 1, scales = "free_x") +
+  transition_states(n) +
+  labs(title = paste0("Probability of success: {binom_data |> filter(n == closest_state) |> slice(1) |> pull(prob) |> round(2)}"),
+       x = "Number of successes",
+       y = "Density") +
+  ease_aes('linear')
+```
+
+:::
+
+::::
+
+
+
+## Binomial example
 
 Presence/absence of _Tabellaria binalis_ in European lakes along a pH gradient
 
@@ -424,23 +462,48 @@ swap_data <- bind_cols(pH = SWAP$pH, SWAP$spec) |>
 swap_data
 ```
 
----
+## *Tabellaria binalis* against pH
 
 ```{r gonga-p-a-plot}
 ggplot(swap_data, aes(x = pH, y = TA003A)) +
   geom_jitter(height = 0.1, width = 0, alpha = 0.5)
 ```
 
----
-# Fitting the model
+## log odds - logit
+
+```{r}
+#| label: logodds
+#| fig-height: 7
+#| echo: false
+mod_swap <- glm(TA003A ~ pH, data = swap_data, family = binomial)
+
+preds <- augment(mod_swap, type.predict = "response")
+p <- preds |> 
+  ggplot(aes(x = pH, y = .fitted)) +
+  geom_line()
+
+p1 <- p +
+  ylim(0, 1) +
+  labs(y = "p")
+p2 <- p + aes(y = .fitted/(1-.fitted)) + 
+  labs(y = expression(frac(p, 1-p)))
+p3 <- p + aes(y = log(.fitted/(1-.fitted))) + 
+  labs(y = expression(log(frac(p, 1-p))))
+
+p1/p2/p3 & theme(axis.title.y = element_text(angle = 0))
+```
+
+
+
+
+## Fitting the model
 
 ```{r}
 mod_swap <- glm(TA003A ~ pH, data = swap_data, family = binomial)
 summary(mod_swap)
 ```
 
----
-# Predictions
+## Predictions
 
 ```{r}
 preds_swap <- augment(mod_swap, type.predict = "link", se_fit = TRUE) |> 
@@ -466,8 +529,7 @@ ggplot(swap_data, aes(x = pH, y = sign(TA003A))) + # sign converts data to prese
   labs(y = expression(italic(Tabellaria~binalis))) 
 ```
 
----
-# Binomial with multiple trials
+## Binomial with multiple trials
 
 
 Tobacco budworm vs pesticide dose
@@ -527,13 +589,21 @@ ggplot(budworm, aes(x = 2^ldose, y = propdead, colour = sex)) +
   
 ```
 
----
-# Underdispersion and overdispersion
+## Choice of family for GLM
 
-Poisson and binomial have fixed relationship between mean and variance
+- eggshell thickness in mm
+- number of eggs in nest
+- occurrence of nest predation
+- proportion of eggs that hatch
+- time to hatch in days
 
-- Poisson: $var(y) = \mu$
-- Binomial: $var(y) = n\mu(1 - μ)$
+
+## Underdispersion and overdispersion
+
+Fixed relationship between mean and variance
+
+- Poisson: $\color{purple}{var(y) = \mu}$
+- Binomial: $\color{purple}{var(y) = n\mu(1 - μ)}$
 
 Models can have less/more dispersion than expected
 
@@ -545,7 +615,7 @@ Overdispersion increases risk of type I error
  - rejection of $H_0$ when it is true
  - false positive
 
----
+
 ## Checking for overdispersion
 
 ```{r}
@@ -556,17 +626,64 @@ If residual deviance / residual df $\approx$ 1 then OK
 
 If not, then model under or over dispersed
 
----
+## Mt Gonga cf Poisson distribution
+
+
+```{r}
+#| label: over-disp
+#| echo: false
+hist <- tibble(x = 5:35, y = dpois(x, lambda = 20)) |> 
+  ggplot(aes(x = x, y = y)) + 
+  geom_col(fill = "grey60") +
+  geom_vline(xintercept = 20, colour = scales::muted("red")) +
+  coord_flip() +
+  labs(y = "Density", x = "Richness", title = expression(Poisson~distribution~lambda == 20))
+
+base + ylim(5,35) + ggtitle("Mt. Gonga Species Richness") + hist
+```
+
+
 ## Fixes for overdispersion
 
 1) Include relevant missing predictors in model
 
 2) Use quasilikelihood models
 
-- poission -> quasipoisson
-- binomial -> quasibinomial
+:::: {.columns}
 
-Adds scale parameter to variance function
+::: {.column width="50%"}
+- poission -> quasipoisson
+:::
+
+::: {.column width="50%"}
+- binomial -> quasibinomial
+:::
+
+::::
+
+
+
+Adds scale parameter to variance function $\color{purple}{var(Y) = \phi \mu}$
+
+3) Choose another distribution  
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+- negative binomial
+:::
+
+::: {.column width="50%"}
+- beta-binomial
+:::
+
+::::
+
+
+
+
+## Quasipoisson
 
 Same coefficients, but tests adjusted
 
@@ -575,6 +692,3 @@ mod_q <- glm(richness ~ elevation, data = gonga_rich,
              family = quasipoisson)
 anova(mod_q, test = "F")
 ```
-
-
-3) Choose another distribution
