@@ -1,13 +1,9 @@
 ---
 title: 'Datalab 8: Generalised linear models'
-author: "Richard Telford"
-date: "10/26/2021"
-output: html_document
+date: today
+format: html
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 # Part 1
 
