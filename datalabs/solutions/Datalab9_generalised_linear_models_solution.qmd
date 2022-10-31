@@ -31,7 +31,7 @@ Temperature data are not given (could be extracted from an atlas with latitude/l
 ```{r}
 #| label: import-data
 # here() find the file relative to the project root
-esper <- read_delim(file = here("data/Esper-Gersonde_2014.tab"), skip = 155, delim = "\t") |> 
+esper <- read_delim(file = here("data/Esper-Gersonde_2014.tab"), skip = 155) |> 
   janitor::clean_names()#tidy column names
 ```
 

@@ -31,11 +31,11 @@ data(penguins, package = "palmerpenguins")
 ```
 
 
-1. The relationship between the response and the predictors is ~linear.
+1. Linear relationship between response and predictors.
 2. The residuals have a mean of zero.
 3. The residuals have constant variance (not heteroscedastic).
 4. The residuals are independent (uncorrelated).
-5. **The residuals are normally distributed.**
+5. [**The residuals are normally distributed.**]{style="color: red;"}
 
 ## Generalised linear models
 

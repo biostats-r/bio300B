@@ -56,6 +56,7 @@ Got Poisson or binomial data? Use [Generalised linear models](lecture_9_generali
 
 ## Lecture 10: Mixed effect models
 
+Clustered data? You need to use a [mixed effect model](lecture_10_mixed_effect_models.html).
 
 ## Lecture 11: Survival Analysis
 

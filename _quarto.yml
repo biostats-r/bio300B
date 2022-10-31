@@ -11,6 +11,7 @@ project:
     - lecture_7_linear_regression1.qmd
     - lecture_8_multiple_regression.qmd
     - lecture_9_generalised_linear_models.qmd
+    - lecture_10_mixed_effect_models.qmd
 execute:
   freeze: auto
 

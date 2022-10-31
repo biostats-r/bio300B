@@ -1,26 +1,24 @@
 ---
 title: "Mixed effect Models"
-subtitle: "Bio300B Lecture 9"
+subtitle: "Bio300B Lecture 10"
 author: "Richard J. Telford (Richard.Telford@uib.no)"
 institute: "Institutt for biovitenskap, UiB"
-date: "`r format(Sys.Date(), '%d %B %Y')`"
-output:
-  xaringan::moon_reader:
-    lib_dir: libs
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
+date: today
+date-format: "D MMMM YYYY"
+format: 
+  revealjs:
+    theme: [default, css/custom.scss]
+    chalkboard: true
+execute: 
+  echo: true
+  warning: false
+  error: true
 ---
-<style type="text/css">
-.remark-slide-content {
-    font-size: 24px;
-    padding: 1em 4em 1em 4em;
-}
-</style>
+
+
+## Assumptions of Least Squares 
 
 ```{r setup, echo=FALSE, message=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, error = TRUE)
 library("tidyverse")
 library("patchwork")
 library(broom)
@@ -34,32 +32,17 @@ data(penguins, package = "palmerpenguins")
 #options(dplyr.print_min = 2, dplyr.print_max = 3, digits = 4)
 ```
 
-```{r xaringanExtra-clipboard, echo=FALSE}
-xaringanExtra::use_clipboard()
-```
-
-```{r share-again, echo = FALSE}
-xaringanExtra::use_share_again()
-xaringanExtra::use_scribble()
-```
-
-# Assumptions of Least Squares
-
-1. The relationship between the response and the predictors is ~linear.
+1. Linear relationship between response and predictors.
 2. The residuals have a mean of zero.
 3. The residuals have constant variance (not heteroscedastic).
-4. **The residuals are independent (uncorrelated).**
+4. [**The residuals are independent (uncorrelated).**]{style="color: red;"}
 5. The residuals are normally distributed.
 
 - Spatial/temporal/phylogenetic autocorrelation
 - Clustered/hierarchical data
 
----
-class: inverse
-background-image: url("figures/46695412244_66616e8523_c.jpg")
-background-position: center
-background-size: contain
-# Clustered data
+
+## Clustered data{background-image="figures/46695412244_66616e8523_c.jpg"}
 
 Observations not independent
 
@@ -68,13 +51,11 @@ Observations not independent
 
 Ignoring it causes pseudoreplication
 
+::: aside
+[WorldFish](https://www.flickr.com/photos/theworldfishcenter/46695412244)
+:::
 
-
-.footnote[[WorldFish](https://www.flickr.com/photos/theworldfishcenter/46695412244)]
-
-
----
-# Two tanks - bad design
+## Two tanks - bad design
 
 ```{r two-tanks-design, echo = FALSE}
 #simulate with faux package
@@ -103,7 +84,7 @@ demo |>
   geom_quasirandom(aes(colour = condition))
 ```
 
----
+
 ## Two tanks - bad models
 
 ```{r}
@@ -114,8 +95,7 @@ mod_bad
 mod_bad2
 ```
 
----
-# Better design - replicate tanks
+## Better design - replicate tanks
 
 ```{r many-tanks-design, echo = FALSE}
 set.seed(42)
@@ -135,7 +115,7 @@ outer_plot <- demo2 |>
 outer_plot
 ```
 
----
+
 ## Better design, bit better model
 
 ```{r}
@@ -144,41 +124,47 @@ summary(mod_bit)
 
 ```
 
----
-# Fixed effect and random effects
 
-## <font color = "red">Fixed effect</font> effect model
+## Fixed effect and random effects
+
+### <font color = "red">Fixed effect</font> effect model
 
 $$y_i = \color{red}{\beta_0} + \color{red}{\beta_1}x_i + \color{red}{\beta_2}tank_i  +\color{blue}{ \epsilon_i}$$
 
 Not interested in effect of tank 
 
+### Mixed effect model
+
 Use a <font color = "blue">Random effect</font> 
 
 Assumes observed tanks from a population of possible tanks
-
-## Mixed effect model
  
 $$y_{ij} = \color{red}{\beta_0} +\color{blue}{b_{0i}}+ \color{red}{\beta_1}x_i +\color{blue}{ \epsilon_{ij}}$$
----
+
 ## Random effects
 
-Residuals from a normal distribution $\color{blue}{ \epsilon_{ij}} \sim N(0, \sigma)$
-Random effects from a normal distribution $\color{blue}{b_{0i}} \sim N(0, \sigma)$
+Residuals from a normal distribution $\color{blue}{ \epsilon_{ij}} \sim N(0, \sigma_{ind})$  
+Random effects from a normal distribution $\color{blue}{b_{0i}} \sim N(0, \sigma_{clu})$
 
 ```{r control, echo = FALSE, fig.height = 5}
-demo2 |> 
+p1 <- demo2 |> 
   filter(condition == "control") |> 
   ggplot(aes(x = tank, y = Mass_g)) +
   geom_violin() +
   geom_quasirandom(aes(colour = condition)) +
-  stat_summary(fun = "mean", geom= "point", size = 2)
+  stat_summary(fun = "mean", geom= "point", size = 2) +
+  theme(legend.position = "none")
 
+p2 <- tibble(x = -350:350, y = dnorm(x, mean = 0, sd = u0s_sd)) |> 
+  ggplot(aes(x, y)) +
+  geom_area() +
+  coord_flip() +
+  labs(x = "Mass g", y = "Density")
 
+p1 + p2
 ```
 
----
-# Fitting a mixed effect model
+## Fitting a mixed effect model
 
 ```{r}
 library(lme4)
@@ -200,8 +186,7 @@ mod1a <- lmer(Mass_g ~ condition + (1|tank), data = demo2)
 summary(mod1a)
 ```
 
----
-# Alternative package
+## Alternative package
 
 ```{r, message = FALSE}
 library(nlme)
@@ -210,32 +195,34 @@ summary(mod2)
 ```
 
 
----
-# Fixed or random effects
+## Fixed or random effects{.scrollable}
 
 Fixed effects factors:
 
 - Informative factor levels with regard to the hypothesis
 - Effect of each level interesting
-- The levels are deliberately arranged by the experimenter/observer
-- Increasing sample size does not increase the number of levels 
+- The levels are deliberately chosen by experimenter
+- Increasing sample size doesn't increase number of levels 
 
 Random effects factors:
 
 - Uninformative factor levels with regard to the hypothesis
 - Effect of each level uninteresting
-- Increasing sample size often increases the number of levels
+- Increasing sample size often increases number of levels
 - Part of a population of possible levels
 
 ---
+
 "one modeler’s random effect is another modeler’s fixed effect."
 
 "Are there enough levels of the factor in the data on which to base an estimate of the variance of the population of effects? No, means fixed effects."
 
-.footnote[Bolker B (2021) [GLMM FAQ](http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html)]
+::: aside
+Bolker B (2021) [GLMM FAQ](http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html)
+:::
 
----
-# Fixed or random effects?
+
+## Fixed or random effects?
 
 - snake id number
 - vaccinated or not
@@ -245,11 +232,13 @@ Random effects factors:
 - site
 
 
----
-# Outer and inner variables
+## Outer and inner variables
 
-.pull-left[
-```{r inner-outer, echo = FALSE, fig.height = 7, fig.width=5}
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r inner-outer, echo = FALSE, fig.height = 6.5, fig.width=5}
 set.seed(42)
 demo3 <- add_random(subj = subj_n/2, tank = 8) |> 
   add_within("tank",  condition = c("control", "test")) |> 
@@ -266,12 +255,15 @@ inner_plot <- outer_plot %+% demo3
   plot_layout(guides = "collect") &
   theme(legend.position = "bottom")
 ```
-]
+:::
 
-.pull-right[
+::: {.column width="50%"}
 - which design is more powerful?
 - which design is practical
-]
+:::
+
+::::
+
 ---
 
 ```{r}
@@ -279,23 +271,21 @@ mod3 <- lmer(Mass_g ~ condition + (1|tank), data = demo3)
 summary(mod3)
 ```
 
----
-# Continuous inner predictor
+## Continuous inner predictor
 
-```{r sleepstudy, fig.height = 5}
+```{r sleepstudy, fig.height = 5, echo = 1}
 data("sleepstudy", package = "lme4")
-
-ggplot(sleepstudy, aes(x = Days, y = Reaction, colour = Subject)) +
+sleepstudy |> filter(Days >= 2) |> 
+ggplot(aes(x = Days, y = Reaction, colour = Subject)) +
   geom_point() +
   labs(x = "Days of sleep deprivation", y = "Average reaction time (ms)")
 ```
 
----
-# Random intercept
+## Random intercept
 
 
 ```{r random-intercept}
-fm1 <- lmer(Reaction ~ Days + (1|Subject), sleepstudy, subset=Days>=2)
+fm1 <- lmer(Reaction ~ Days + (1|Subject), sleepstudy, subset = Days>=2)
 
 summary(fm1)
 
@@ -316,12 +306,11 @@ augment(fm1) |>
 
 
 
----
-# Random slope
+## Random slope
 
 
 ```{r random-slope}
-fm2 <- lmer(Reaction ~ Days + (Days|Subject), sleepstudy, subset=Days>=2)
+fm2 <- lmer(Reaction ~ Days + (Days|Subject), sleepstudy, subset = Days>=2)
 
 summary(fm2)
 
@@ -340,31 +329,29 @@ augment(fm2) |>
 ```
 
 
----
-# Comparing models
+## Comparing models
 
 ```{r}
 anova(fm1, fm2)
 ```
 
----
-# Model diagnostics
+## Model diagnostics
 
 See ?plot.merMod
 
 ```{r diag1}
 fm1F <- augment(fm1)
 ## standardized residuals versus fitted values
-ggplot(fm1F, aes(.fitted, .resid)) + 
-  geom_point(colour="blue") +
-  geom_hline(yintercept=0)
+ggplot(fm1F, aes(x = .fitted, y = .resid)) + 
+  geom_point(colour = "blue") +
+  geom_hline(yintercept = 0)
 ```
 
 ---
 
 ```{r diag2}
 ## box-plots of residuals by Subject
-ggplot(fm1F, aes(Subject,.resid)) + 
+ggplot(fm1F, aes(x = Subject, y = .resid)) + 
   geom_boxplot() + 
   coord_flip()
 ```
@@ -372,10 +359,10 @@ ggplot(fm1F, aes(Subject,.resid)) +
 ---
 
 ```{r diag3}
-ggplot(fm1F, aes(.fitted, Reaction)) + 
-  geom_point(colour="blue") +
-    facet_wrap(~Subject) +
-  geom_abline(intercept=0,slope=1)
+ggplot(fm1F, aes(x = .fitted, y = Reaction)) + 
+  geom_point(colour = "blue") +
+    facet_wrap(facets = vars(Subject)) +
+  geom_abline(intercept = 0, slope = 1)
 ```
 
 ---
@@ -394,8 +381,7 @@ qqmath(ranef(fm1))
 ```
 
 
----
-# Crossed random effects
+## Crossed random effects
 
 Two random effects
 
@@ -406,8 +392,7 @@ other nests (second random effect - hatch_nest)
 lmer(mass ~ treatment + (1|lay_nest) + (1|hatch_nest), data = data)
 ```
 
----
-# Nested random effects
+## Nested random effects
 
 Hierarchical random effects
 
@@ -419,8 +404,7 @@ Hierarchical random effects
 lmer(mass ~ treatment + (1|site/plot), data = data)
 ```
 
----
-# Beyond linear mixed effect models
+## Beyond linear mixed effect models
 
 Generalised linear mixed effect models
 
@@ -434,8 +418,7 @@ Autocorrelated data
 - repeat measurements
 - fit with `nlme::lme()`
 
----
-# Bayesian hierarchial models
+## Bayesian hierarchial models
 
 Mixed effect models can be hard to fit
 
@@ -451,8 +434,7 @@ Different statistical philosophy
 Use prior information (or uninformative priors)
 
 
----
-# Resources
+## Resources
 
 Bolker B (2021) [GLMM FAQ](http://bbolker.github.io/mixedmodels-misc/glmmFAQ.html)
 
