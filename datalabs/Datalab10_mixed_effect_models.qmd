@@ -1,15 +1,14 @@
 ---
 title: "Datalab 9: Mixed effect models"
 author: "Richard Telford"
-date: "11/2/2021"
-output: html_document
+format: 
+  html:
+    self-contained: true
+editor: visual
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
-Do your analyses in an R markdown document
+Do your analyses in a quarto document
 
 We will examine the `sleepstudy` data from the `lme4` package.
 Data show reaction time (ms) of different subjects on after sleep deprivations.
