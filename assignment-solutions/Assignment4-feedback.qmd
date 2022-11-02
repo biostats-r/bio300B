@@ -1,0 +1,165 @@
+---
+title: "Assignment 4 feedback"
+format: 
+  html:
+    self-contained: true
+editor: visual
+---
+
+You are interested in how temperature and plant type affect leaf litter decomposition in streams.
+
+Download the data from Zhang et al (2019, <https://doi.org/10.1111/geb.12966>).
+
+Direct link to data:
+
+<https://onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1111%2Fgeb.12966&file=geb12966-sup-0002-AppendixS1.xlsx>
+
+The data you want are in the "All k" sheet.
+The decomposition rate is "k (day-1)"; temperature is "Water Temperature (℃)"  and  plant type is "Plant type"
+
+-   import the data (there may be some special characters in the header row)
+
+```{r}
+#| label: packages
+#| message: false
+library(tidyverse)
+library(here)
+library(broom)
+library(readxl)
+library(gt)
+
+# set default theme
+theme_set(theme_bw())
+```
+
+```{r}
+#| message: false
+decomp <- read_excel(here("data/geb12966-sup-0002-appendixs1.xlsx"), skip = 1) |> 
+  janitor::clean_names() |>
+  drop_na(water_temperature_c)
+```
+
+Some Windows users had a problem with the unicode character "℃" being treated differently by `janitor::clean_names()` depending on whether you were running R in RStudio or when rendering a quarto document.
+One solution to this problem was to replace the "℃" with a "C" You can also use the unicode "\\u2103" instead of "℃" as it is easier to type.
+
+```{r}
+#| message: false
+#| eval: false
+decomp <- read_excel(here("data/geb12966-sup-0002-appendixs1.xlsx"), skip = 1) |> 
+  rename_with(str_replace, pattern = "℃", replacement = "C") |> 
+#  rename_with(str_replace, pattern = "\u2103", replacement = "C") |> 
+  janitor::clean_names() |>
+  drop_na(water_temperature_c)
+```
+
+Code like `rename(temperate = 8)` will also work if you cannot get anything else to work.
+
+You can `select()` the columns you need, but you don't have to.
+If you do, you should do it by column name, not number
+
+-   make a table showing the number of observations, mean, and standard deviation of decomposition rate for each plant type where there are temperature data
+
+```{r}
+#| label: tbl-plant-type-summary
+#| tbl-cap: Decomposition rate, k, for different plant types
+
+decomp |> 
+  group_by(plant_type) |> 
+  summarise(n = n(), 
+            decomp_mean = mean(k_day_1), 
+            decomp_sd = sd(k_day_1)) |> 
+  gt() |> 
+  cols_label(plant_type = "Plant type",
+             decomp_mean = "Mean", 
+             decomp_sd = "Standard deviation") |> 
+  fmt_number(c(decomp_mean, decomp_sd), decimals = 4) |> 
+  gt::tab_spanner(label = html("k day<sup>-1</sup>"), columns = c(decomp_mean, decomp_sd))
+```
+
+-   fit a suitable model and test if an interaction between the predictors is significant
+
+```{r}
+mod1 <- lm(k_day_1 ~ water_temperature_c + plant_type, 
+           data = decomp) # no interaction
+mod2 <- lm(k_day_1 ~ water_temperature_c * plant_type, 
+           data = decomp) # * interaction
+av <- anova(mod1, mod2) # model two is significantly better. Should include interaction
+av
+
+co <- coef(mod2)
+```
+
+-   examine the model diagnostics and comment on any possible problems.
+
+```{r}
+library(ggfortify)
+autoplot(mod2, which = 1) # not flat
+autoplot(mod2, which = 2) # Non-normal
+autoplot(mod2, which = 3) # uneven variance
+autoplot(mod2, which = 4)
+autoplot(mod2, colour = "plant_type", which = 5) # High leverage in some samples - evergreen conifers - very few of these in the dataset.
+```
+
+-   make a publication-quality plot that shows the raw data and the fitted model with uncertainties
+
+```{r}
+augment(mod2, interval = "confidence") |> 
+  ggplot(aes(x = water_temperature_c, y = k_day_1)) +
+  geom_point(aes(colour = plant_type), size = 0.5, alpha  = 0.5) +
+  geom_ribbon(aes(ymin = .lower, ymax = .upper, group = plant_type, fill = plant_type), alpha = 0.4) +
+  geom_line(aes(y = .fitted, colour = plant_type), size = 0.9) +
+  scale_colour_brewer(type = "qual", palette = "Set1") +
+  scale_fill_brewer(type = "qual", palette = "Set1") +
+  labs(x = "Water temperature (°C)", y = expression(k~day^{-1}), colour = "Plant type", fill = "Plant type")
+```
+
+maybe try facets
+
+```{r}
+augment(mod2, interval = "confidence") |> 
+  ggplot(aes(x = water_temperature_c, y = k_day_1)) +
+  geom_point(data = decomp |> select(-plant_type), # background points. remove plant_type column so not faceted
+             colour = "grey80", size = 0.5) + 
+  geom_point(colour = "grey40", size = 0.5) +
+  geom_ribbon(aes(ymin = .lower, ymax = .upper, group = plant_type), alpha = 0.4) +
+  geom_line(aes(y = .fitted), colour = "black", size = 0.9) +
+  scale_x_continuous(expand = c(0.01, 0)) + # reduce space at edge of plot
+  labs(x = "Water temperature (°C)", y = expression(k~day^{-1}), colour = "Plant type", fill = "Plant type") +
+  facet_wrap(facets = vars(plant_type), 
+             nrow = 1, 
+             labeller = labeller(plant_type = str_to_sentence)) +
+  theme(legend.position = "none")
+```
+
+-   Interpret the output (as if this was a result for a thesis or manuscript)
+
+The interaction between plant type and water temperature is significant (p = `r format.pval(av$'Pr(>F)'[2], digits = 2)`).
+The effect of water temperature is greatest for the decomposition of deciduous plants (`r format(co["water_temperature_c"], digits = 2)` $k~day^{-1}°C^{-1}$), and lowest for evergreen plants (`r format( co["water_temperature_c"] + co["water_temperature_c:plant_typeevergreen"], digits = 2)` $k~day^{-1}°C^{-1}$).
+Evergreen conifers have a similar slope to deciduous plants (`r format(co["water_temperature_c"] + co["water_temperature_c:plant_typeevergreen conifer"], digits = 2)` $k~day^{-1}°C^{-1}$)
+
+# What should have been done.
+
+Probably use a different distribution.
+lognormal distribution is one possibility
+
+```{r}
+mod1 <- lm(log(k_day_1) ~ water_temperature_c + plant_type, 
+           data = decomp) # no interaction
+mod2 <- lm(log(k_day_1) ~ water_temperature_c * plant_type, 
+           data = decomp)
+anova(mod1, mod2, test = "F")
+
+plot(mod2)
+```
+
+```{r}
+augment(mod2, interval = "confidence", type.predict = "response") |> 
+  mutate(across(c(`log(k_day_1)`, .fitted, .lower, .upper), .fns = exp)) |> 
+  ggplot(aes(x = water_temperature_c, y = `log(k_day_1)`)) +
+  geom_point(aes(colour = plant_type), size = 0.5, alpha  = 0.5) +
+  geom_ribbon(aes(ymin = .lower, ymax = .upper, group = plant_type, fill = plant_type), alpha = 0.4) +
+  geom_line(aes(y = .fitted, colour = plant_type), size = 0.9) +
+  scale_colour_brewer(type = "qual", palette = "Set1") +
+  scale_fill_brewer(type = "qual", palette = "Set1") +
+  labs(x = "Water temperature (°C)", y = expression(k~day^{-1}), colour = "Plant type", fill = "Plant type")
+```
