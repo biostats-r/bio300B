@@ -1,26 +1,25 @@
 ---
 title: "Survival analysis and Summary"
-subtitle: "Bio300B Lecture 10"
+subtitle: "Bio300B Lecture 11"
 author: "Richard J. Telford (Richard.Telford@uib.no)"
 institute: "Institutt for biovitenskap, UiB"
-date: "`r format(Sys.Date(), '%d %B %Y')`"
-output:
-  xaringan::moon_reader:
-    lib_dir: libs
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
+date: today
+date-format: "D MMMM YYYY"
+format: 
+  revealjs:
+    theme: [default, css/custom.scss]
+    chalkboard: true
+execute: 
+  echo: true
+  warning: false
+  error: true
 ---
-<style type="text/css">
-.remark-slide-content {
-    font-size: 24px;
-    padding: 1em 4em 1em 4em;
-}
-</style>
+
+
+## Survival analysis
+
 
 ```{r setup, echo=FALSE, message=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, error = TRUE)
 library("tidyverse")
 library("patchwork")
 library(broom)
@@ -33,17 +32,6 @@ data(penguins, package = "palmerpenguins")
 #options(dplyr.print_min = 2, dplyr.print_max = 3, digits = 4)
 ```
 
-```{r xaringanExtra-clipboard, echo=FALSE}
-xaringanExtra::use_clipboard()
-```
-
-```{r share-again, echo = FALSE}
-xaringanExtra::use_share_again()
-xaringanExtra::use_scribble()
-```
-
-# Survival analysis
-
 How long (or far) until an event happens
 
 - How long before a seed germinates
@@ -54,7 +42,7 @@ Data are typically right censored.
 
 `survival` package
 
----
+
 ## Survival data
 
 Response data 
@@ -68,7 +56,7 @@ data(lung)
 lung |> slice(1:10)
 ```
 
----
+
 ## Survival response
 
 + indicates censored data
@@ -81,7 +69,7 @@ Surv(lung$time, lung$status)
 Surv(lung$time, lung$status)[1:30]
 ```
 
----
+
 ## Fitting a model
 
 
@@ -94,7 +82,7 @@ mod_surv <- survfit(Surv(time, status) ~ sex, data = lung)
 mod_surv
 ```
 
----
+
 ## plotting a model
 
 - Kaplan-Meier curve
@@ -105,7 +93,7 @@ library(ggfortify)
 autoplot(mod_surv)
 ```
 
----
+
 ## Testing a model
 
  - logrank (Mantel-Cox) test 
@@ -115,8 +103,8 @@ mod_diff <- survdiff(Surv(time, status) ~ sex, data = lung)
 mod_diff
 ```
 
----
-# Survivorship curve
+
+## Survivorship curve
 
 Shape of the survival curve
 
@@ -127,8 +115,8 @@ knitr::include_graphics("figures/Survivorship_Curves.jpg")
 
 
 
----
-# Hazard: The instantaneous risk of death
+
+## Hazard: The instantaneous risk of death
 
 ```{r}
 m_ll <- survreg(Surv(time, status) ~ age + sex, 
@@ -164,8 +152,8 @@ The scale parameter < 1, indicates that slope of the
 hazard decreases with time -  Type III
 
 
----
-# Summary
+
+## Summary
 
 ## Most important things
 
@@ -179,78 +167,52 @@ hazard decreases with time -  Type III
 1. Choosing a model type
 1. Interpreting model output
 
-```{r xaringan-editable, echo=FALSE}
-xaringanExtra::use_editable(expires = 1)
-```
 
----
+
 ## Designing an experiment
 
-.can-edit[
-- 
-]
 
----
+
+
 ## R tips and tricks
 
-.can-edit[
-- 
-]
 
----
+
+
 ## Entering data into a spreadsheet
 
-.can-edit[
-- 
-]
 
 
----
+
+
 ## Importing data
 
-.can-edit[
-- 
-]
 
 
----
+
+
 ## Cleaning data
 
 
-.can-edit[
-- 
-]
 
----
+
 ## Data visualisation
 
-.can-edit[
-- 
-]
 
----
-## Using R markdown
 
-.can-edit[
-- 
-]
 
----
+## Using quarto
+
+
+
 ## Choosing a model
 
-.can-edit[
-- 
-]
 
----
 ## Interpreting model output
 
-.can-edit[
-- 
-]
 
----
-# Method choice - 2 key questions
+
+## Method choice - 2 key questions
 
 Are the data clustered/grouped?
 
@@ -258,7 +220,7 @@ What is the distribution of the residuals?
 
 (also other types of model - survival etc)
 
----
+
 ## Clustered data
 
 Mixed effect models
@@ -266,7 +228,7 @@ Mixed effect models
 - Normal distribution:  linear mixed effect models
 - Binomial/poisson: generalised linear mixed effect models
 
----
+
 ## Independent data, normal distribution
 
 Linear models - ordinary least squares
@@ -280,7 +242,7 @@ Linear models - ordinary least squares
 
 
 
----
+
 ## Independent data, non-normal distribution
 
 generalised linear models 
@@ -289,7 +251,7 @@ generalised linear models
 
 Binomial & Poisson distributions
 
----
+
 ## Interpreting model output
 
 
@@ -299,8 +261,8 @@ mod <- lm(bill_length_mm ~ sex * species, data = penguins)
 summary(mod)
 ```
 
----
-# More statistics at BIO
+
+## More statistics at BIO
 
 Bio302 - more regression methods
 
