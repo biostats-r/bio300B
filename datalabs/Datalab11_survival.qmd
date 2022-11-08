@@ -1,21 +1,14 @@
 ---
-title: "Datalab 10"
-author: "Richard Telford"
-date: "11/9/2021"
-output: html_document
+title: "Datalab 11: survival analysis"
+format: html
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 You have done an experiment where you have tested how the castrating bacterium
-_Pasteuria ramosa_ affects survival of its crustacean host Daphnia magna.
+_Pasteuria ramosa_ affects survival of its crustacean host _Daphnia magna_
 
 Download the data from https://raw.githubusercontent.com/biostats-r/bio300B/master/data/daphnia_survival.csv
 and import them.
-
-Using the example in the lecture as a guide
 
 - Create a survival plot
 - Test the hypothesis:
