@@ -1,5 +1,5 @@
 ---
-title: "Datalab 9: Mixed effect models"
+title: "Datalab 10: Mixed effect models"
 author: "Richard Telford"
 format: 
   html:
