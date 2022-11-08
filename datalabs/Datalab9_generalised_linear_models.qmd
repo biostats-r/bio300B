@@ -1,5 +1,5 @@
 ---
-title: 'Datalab 8: Generalised linear models'
+title: 'Datalab 9: Generalised linear models'
 date: today
 format: html
 ---
