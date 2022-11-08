@@ -1,8 +1,8 @@
 ---
 title: 'Datalab 9: Generalised linear models'
-author: "Richard Telford"
-date: "10/26/2021"
-output: html_document
+format: 
+  html:
+    self-contained: true
 ---
 
 ```{r}
