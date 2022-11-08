@@ -27,38 +27,40 @@ An introduction to [using R](lecture_2_using_r.html){target="_blank"}.
 
 ## Lecture 3: Data manipulation
 
-Using the [tidyverse to load, tidy and process data](lecture_3_data_manipulation.html).
+Using the [tidyverse to load, tidy and process data](lecture_3_data_manipulation.html){target="_blank"}.
 
 
 ## Lecture 4: Data visualisation
 
-Using [`ggplot2`](lecture_4_data_visualisation.html) to make beautiful figures.
+Using [`ggplot2`](lecture_4_data_visualisation.html){target="_blank"} to make beautiful figures.
 
 ## Lecture 5: Experimental design
 
-[Experimental design](lecture_5_experimental_design.html)
+[Experimental design](lecture_5_experimental_design.html){target="_blank"}.
 
 ## Lecture 6: Descriptive statistics
 
-[Descriptive statistics](lecture_6_descriptive.html)
+[Descriptive statistics](lecture_6_descriptive.html){target="_blank"}.
 
 ## Lecture 7: Linear regression
 
-[Correlations and linear regression](lecture_7_linear_regression1.html) with continuous and categorical predictors
+[Correlations and linear regression](lecture_7_linear_regression1.html){target="_blank"} with continuous and categorical predictors.
 
 ## Lecture 8: Multiple linear regression
 
-For models with more than one predictor, you need [multiple regression](lecture_8_multiple_regression.html)
+For models with more than one predictor, you need [multiple regression](lecture_8_multiple_regression.html){target="_blank"}.
 
 ## Lecture 9: Generalised linear models
 
-Got Poisson or binomial data? Use [Generalised linear models](lecture_9_generalised_linear_models.html)
+Got Poisson or binomial data? Use [Generalised linear models](lecture_9_generalised_linear_models.html){target="_blank"}.
 
 ## Lecture 10: Mixed effect models
 
-Clustered data? You need to use a [mixed effect model](lecture_10_mixed_effect_models.html).
+Clustered data? You need to use a [mixed effect model](lecture_10_mixed_effect_models.html){target="_blank"}.
 
 ## Lecture 11: Survival Analysis
+
+Do you data show the time or distance until event happens? Maybe you need [survival analysis](lecture_11_survival_analysis_summary.html){target="_blank"}.
 
 
 
