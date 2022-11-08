@@ -60,7 +60,7 @@ Clustered data? You need to use a [mixed effect model](lecture_10_mixed_effect_m
 
 ## Lecture 11: Survival Analysis
 
-Do you data show the time or distance until event happens? Maybe you need [survival analysis](lecture_11_survival_analysis_summary.html){target="_blank"}.
+Do you data show the time or distance until event happens? Maybe you need [survival analysis](lecture_11_survival_summary.html){target="_blank"}.
 
 
 
