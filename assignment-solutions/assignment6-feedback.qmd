@@ -1,0 +1,134 @@
+---
+title: "Assignment 6: Mixed effect models"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: load-packages
+#| output: false
+library(tidyverse)
+library(here)
+library(lme4)
+library(lmerTest)
+library(broom.mixed)
+library(ggbeeswarm)
+
+# set default theme
+theme_set(theme_bw())
+```
+
+```{r}
+#| label: load-process-data
+#| output: false
+traits <- read_delim(here("data/PFTC4_Svalbard_2018_ITEX_Traits.csv"))
+
+# filter out height data
+trait_height <- traits |> 
+  filter(Trait == "Plant_Height_cm", Taxon == "bistorta vivipara")
+```
+
+```{r}
+#| label: fig-schematic-map
+#| fig-cap: Simulated maps of _Bistorta vivipara_ plants in the plots. Some plots have no _B. viviara_. 
+
+
+treatments <-  traits |>
+  drop_na(Site) |> 
+  distinct(Treatment, Site, PlotID) |> 
+  mutate(plot_number = str_extract(PlotID, "\\d{1,2}"),
+         plot_number = as.numeric(plot_number)) 
+
+trait_height |> 
+  mutate(plot_number = str_extract(PlotID, "\\d{1,2}"),
+         plot_number = as.numeric(plot_number),
+         x = 0.5, 
+         y = 0.5) |> 
+  ggplot(aes(x = x, y = y, size = Value)) +
+    geom_rect(data = treatments,
+              mapping = aes(xmin = -Inf, ymin = -Inf, xmax = Inf, ymax = Inf, fill = Treatment), 
+              inherit.aes = FALSE, alpha = 0.4) +
+  geom_jitter(alpha = 0.6) + # simulate some x/y positions
+  facet_grid(rows =vars(Site), cols =  vars(plot_number)) +
+  scale_fill_manual(values = c(OTC = "pink", CTL = "lightblue")) +
+  labs(x = "Simulated x position", y = "Simulated y position", size = "Height cm" ) +
+  coord_equal() +
+  theme(legend.position = "bottom", 
+        axis.text = element_blank())
+```
+
+```{r}
+#| label: run-analyses
+
+# treatment only
+mod1 <- lmer(Value ~ Treatment  + (1|PlotID) , data = trait_height)
+
+# treatment and site
+mod2 <- lmer(Value ~ Treatment + Site + (1|PlotID) , data = trait_height)
+
+# treatment and site with interaction
+mod3 <- lmer(Value ~ Treatment * Site + (1|PlotID) , data = trait_height)
+
+# test if interaction significant
+aov_interation <- anova(mod2, mod3) # no evidence of interaction
+
+# test if site significant
+aov_site <- anova(mod1, mod2) # no evidence of effect of site/habitat
+
+aov_treatment <- anova(mod1) # weak evidence of effect
+
+summary(mod1)
+```
+
+```{r}
+#| label: diagnostic-plots
+
+
+mod1_aug <- augment(mod1)
+
+# standardized residuals versus fitted values
+ggplot(mod1_aug, aes(x = .fitted, y = .resid)) + 
+  geom_point(colour = "blue") +
+  geom_hline(yintercept = 0) 
+# looks OK
+
+ggplot(mod1_aug, aes(x = PlotID, y = .resid)) + 
+  geom_boxplot() + 
+  coord_flip()
+# fairly varied, but low number of plants per plot so probably expected
+
+library(lattice)
+#qq plot of residuals
+qqmath(mod1) #perfect
+
+#qq plot of random effects
+qqmath(ranef(mod1)) # one somewhat extreme plot
+```
+
+```{r}
+#| label: fig-results
+#| fig-cap: Effect of warming treatment on height of _Bistorta vivipara_.
+augment(mod1) |> 
+  ggplot(aes(x = Treatment, y = Value)) +
+  geom_violin(colour = "grey40") +
+  geom_quasirandom(colour = "grey40") +
+  geom_point(aes(y = .fixed), colour = "black", size = 4) + #make large so obvious
+  labs(x = "Treatment", y = "Height cm") +
+  scale_x_discrete(labels = c(CTL = "Control", OTC = "Open top\nchamber"))
+
+#Could colour/facet by habitat, but not essential
+```
+
+Adding confidence intervals is more complex, but can be done with `bootMer` or the `merTools` package.
+
+## Interpretation
+
+```{r}
+#| label: extract-results
+ci <- confint(mod1)
+ci_treatment <- ci["TreatmentOTC", ] |> signif(digits = 2)
+```
+
+There is no evidence for an effect of habitat on the height of *B. vivipara* (p = `r  format.pval(aov_site$P[2], digits = 2)`).
+
+There is weak evidence for an effect of the warming treatment on the plant height, with taller plants in the OTCs (mean difference `r round(fixef(mod1)["TreatmentOTC"], 2)` cm, 95 % confidence interval `r paste(ci_treatment, collapse = " -- ")` cm, p = `r format.pval(aov_treatment$P, digits = 2)`).
