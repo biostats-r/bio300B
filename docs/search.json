@@ -74,49 +74,49 @@
     "href": "lectures.html#lecture-5-experimental-design",
     "title": "Lecture Slides",
     "section": "Lecture 5: Experimental design",
-    "text": "Lecture 5: Experimental design\nExperimental design"
+    "text": "Lecture 5: Experimental design\nExperimental design."
   },
   {
     "objectID": "lectures.html#lecture-6-descriptive-statistics",
     "href": "lectures.html#lecture-6-descriptive-statistics",
     "title": "Lecture Slides",
     "section": "Lecture 6: Descriptive statistics",
-    "text": "Lecture 6: Descriptive statistics\nDescriptive statistics"
+    "text": "Lecture 6: Descriptive statistics\nDescriptive statistics."
   },
   {
     "objectID": "lectures.html#lecture-7-linear-regression",
     "href": "lectures.html#lecture-7-linear-regression",
     "title": "Lecture Slides",
     "section": "Lecture 7: Linear regression",
-    "text": "Lecture 7: Linear regression\nCorrelations and linear regression with continuous and categorical predictors"
+    "text": "Lecture 7: Linear regression\nCorrelations and linear regression with continuous and categorical predictors."
   },
   {
     "objectID": "lectures.html#lecture-8-multiple-linear-regression",
     "href": "lectures.html#lecture-8-multiple-linear-regression",
     "title": "Lecture Slides",
     "section": "Lecture 8: Multiple linear regression",
-    "text": "Lecture 8: Multiple linear regression\nFor models with more than one predictor, you need multiple regression"
+    "text": "Lecture 8: Multiple linear regression\nFor models with more than one predictor, you need multiple regression."
   },
   {
     "objectID": "lectures.html#lecture-9-generalised-linear-models",
     "href": "lectures.html#lecture-9-generalised-linear-models",
     "title": "Lecture Slides",
     "section": "Lecture 9: Generalised linear models",
-    "text": "Lecture 9: Generalised linear models"
+    "text": "Lecture 9: Generalised linear models\nGot Poisson or binomial data? Use Generalised linear models."
   },
   {
     "objectID": "lectures.html#lecture-10-mixed-effect-models",
     "href": "lectures.html#lecture-10-mixed-effect-models",
     "title": "Lecture Slides",
     "section": "Lecture 10: Mixed effect models",
-    "text": "Lecture 10: Mixed effect models"
+    "text": "Lecture 10: Mixed effect models\nClustered data? You need to use a mixed effect model."
   },
   {
     "objectID": "lectures.html#lecture-11-survival-analysis",
     "href": "lectures.html#lecture-11-survival-analysis",
     "title": "Lecture Slides",
     "section": "Lecture 11: Survival Analysis",
-    "text": "Lecture 11: Survival Analysis"
+    "text": "Lecture 11: Survival Analysis\nDo you data show the time or distance until event happens? Maybe you need survival analysis."
   },
   {
     "objectID": "packages_used.html",

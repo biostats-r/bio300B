@@ -1,5 +1,5 @@
 ---
-title: Bio300B Logistics 2022
+title: Bio300B Logistics 2023
 subtitle: Biostatistics
 author: Richard J. Telford (Richard.Telford@uib.no)
 institute: Institutt for biovitenskap, UiB
@@ -46,45 +46,38 @@ email: [richard.telford\@uib.no](mailto:richard.telford@uib.no)
 
 ::::
 
-::: {.notes}
-
-Hopefully department will find some other TA
-
-:::
 
 ## Teaching Assistants
 
 :::: {.columns}
 
 ::: {.column}
-#### Mary Shelley
+#### Lotta Schultz
 
 ```{r}
-knitr::include_graphics("figures/IMG_20220828_161138555_HDR2.jpg")
+#| out-height: 3.8in
+knitr::include_graphics("https://www.uib.no/sites/w3.uib.no/files/styles/user_thumbnail/public/pictures/picture-405514-1675929953.jpg?itok=ErHSJE4C")
 ```
 
-#### Favourite language
-
-Shell scripts
+Interests in global change ecology, biogeography and conservation biology.
 :::
 
 ::: {.column}
-#### Percy "Byssus" Shelley
+#### Francesco Saltalamacchia 
 
 ```{r}
-knitr::include_graphics("figures/IMG_20220828_161152319_HDR2.jpg")
+#| out-height: 3.8in
+knitr::include_graphics("https://www.uib.no/sites/w3.uib.no/files/styles/user_thumbnail/public/pictures/picture-397770-1614181269.jpg?itok=2noLtn2P")
 ```
 
-#### Favourite language
-
-Perl
+Effects of hypoxia on fish in West Norwegian fjords
 :::
 
 ::::
 
 ## Students
 
-89 Students
+93 Students
 
 ::: {.notes}
 
@@ -97,13 +90,13 @@ Perl
 
 ## Lectures
 
--   Start 29^th^ August
+-   Start 28^th^ August
 -   Mondays 1415 - 1600
 -   Høyteknologisenteret, Stort auditorium
 
 Will be recorded when clashes with other courses
 
-- Bio325 (26^th^ Sept / 3^rd^ Oct)
+- Bio325 (25^th^ Sept / 2^nd^ Oct)
 - ???
 
 ::: {.notes}
@@ -117,7 +110,7 @@ Will be recorded when clashes with other courses
 Slides made with quarto & revealjs
 
 - Toggle into Print View using the E key (or using the Navigation Menu)
--  Open the browser's print dialogue (<kbd>Ctrl</kbd> + <kbd>p</kbd>) / (Mac <kbd>Cmd</kbd> + <kbd>p</kbd>)).
+-  Open the browser's print dialogue ({{< kbd mac=Command-p win=Control-p linux=Ctrl-p >}}).
 -  Change the Destination setting to Save as PDF.
 - Change the Layout to Landscape.
 - Change the Margins to None.
@@ -127,16 +120,13 @@ Slides made with quarto & revealjs
 
 ## Data labs
 
-4 Groups per week
+3 Groups per week
 
 |         |                       |                         |
 |---------|-----------------------|-------------------------|
-| Group 1 | Wednesday 1415 - 1600 | Konf.rom D (VilVite) \* |
-| Group 2 | Thursday 1415 - 1600  | Konf.rom A (VilVite)    |
-| Group 3 | Thursday 1415 - 1600  | Konf.rom B (VilVite)    |
-| Group 4 | Friday 0815 - 1000    | K3 + K4 (Bio Blokk B)   |
-
-\* Room changes occasionally for group 1
+| Group 1 | Tuesday 1215 - 1400   | K1 + K2 (Bio Blokk B)   |
+| Group 2 | Tuesday 1415 - 1600   | K3 + K4 (Bio Blokk B)   |
+| Group 3 | Wednesday 1215 - 1400 | K3 + K4 (Bio Blokk B)   |
 
 Please sign up for **one** group
 
@@ -158,17 +148,18 @@ Portfolio assessment
 
 More details soon
 
-::: {.notes}
 
-Hours:
+
+## Hours
 
 5 Credit course
 
-125 hours
+125--150 hours
 
-~ 12 hours per week
+12 weeks
 
-:::
+\~ 10--12 hours per week
+
 
 # What
 
@@ -186,8 +177,8 @@ Hours:
 
 ## Software requirements
 
--   R version \>= 4.2
--   RStudio version \>= 2022.07
+-   R version \>= 4.3
+-   RStudio version \>= 2023.03.0
 -   quarto
 
 For installation & configuration instructions see [Chapter 1](https://biostats-r.github.io/biostats/workingInR/0010_Getting_Started_with_RStudio.html) of the Working in R coursebook
@@ -231,10 +222,10 @@ Make an issue on github
 :::: {.columns}
 
 ::: {.column width="30%"}
-#### [R for Data Science](https://r4ds.had.co.nz/)
+#### [R for Data Science](https://r4ds.hadley.nz/)
 
 ```{r}
-knitr::include_graphics("figures/r4ds-cover.png")
+knitr::include_graphics("figures/r4ds-cover.jpg")
 ```
 
 :::
