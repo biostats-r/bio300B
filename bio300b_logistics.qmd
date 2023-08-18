@@ -25,6 +25,7 @@ library(fontawesome)
 
 ::: {.column}
 ```{r}
+#| fig-alt: Photograph of Richard Telford with Ulriken in the background
 knitr::include_graphics("figures/telford2_2_1.jpg")
 ```
 email: [richard.telford\@uib.no](mailto:richard.telford@uib.no)
@@ -56,6 +57,7 @@ email: [richard.telford\@uib.no](mailto:richard.telford@uib.no)
 
 ```{r}
 #| out-height: 3.8in
+#| fig-alt: Photograph of Lotta Schultz in the mountains
 knitr::include_graphics("https://www.uib.no/sites/w3.uib.no/files/styles/user_thumbnail/public/pictures/picture-405514-1675929953.jpg?itok=ErHSJE4C")
 ```
 
@@ -67,6 +69,7 @@ Interests in global change ecology, biogeography and conservation biology.
 
 ```{r}
 #| out-height: 3.8in
+#| fig-alt: Photograph of Francesco Saltalamacchia with a fish
 knitr::include_graphics("https://www.uib.no/sites/w3.uib.no/files/styles/user_thumbnail/public/pictures/picture-397770-1614181269.jpg?itok=2noLtn2P")
 ```
 
@@ -144,10 +147,17 @@ Possible to change group **if** space available
 Portfolio assessment
 
 - submissions on different aspects of the course
+  - Six assignments, best five are counted
 - extra work for PhD on heisemner
 
-More details soon
 
+::: {.notes}
+
+- can skip one without penalty
+- deadline after datalab to allow for last-minute fixes
+- extensions available e.g. if you/family member are sick. please tell me
+
+:::
 
 
 ## Hours
@@ -225,6 +235,7 @@ Make an issue on github
 #### [R for Data Science](https://r4ds.hadley.nz/)
 
 ```{r}
+#| fig-alt: Front cover of R for Data Science showing a kiwi
 knitr::include_graphics("figures/r4ds-cover.jpg")
 ```
 
@@ -234,6 +245,7 @@ knitr::include_graphics("figures/r4ds-cover.jpg")
 #### [Fundamentals of Data Visualization](https://clauswilke.com/dataviz/)
 
 ```{r}
+#| fig-alt: Front cover of Fundamentals of Data Visualization showing a blue-winged bird
 knitr::include_graphics("figures/fdv-cover.png")
 ```
 
@@ -243,6 +255,7 @@ knitr::include_graphics("figures/fdv-cover.png")
 #### [Introduction to Modern Statistics](https://openintro-ims.netlify.app/)
 
 ```{r}
+#| fig-alt: Front cover of Introduction to Modern Statistics
 knitr::include_graphics("figures/IMS1_front_cover.png")
 ```
 
