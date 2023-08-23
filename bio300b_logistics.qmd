@@ -235,7 +235,7 @@ Make an issue on github
 #### [R for Data Science](https://r4ds.hadley.nz/)
 
 ```{r}
-#| fig-alt: Front cover of R for Data Science showing a kiwi
+#| fig-alt: Front cover of R for Data Science showing a Kakapo Parrot
 knitr::include_graphics("figures/r4ds-cover.jpg")
 ```
 
@@ -245,7 +245,7 @@ knitr::include_graphics("figures/r4ds-cover.jpg")
 #### [Fundamentals of Data Visualization](https://clauswilke.com/dataviz/)
 
 ```{r}
-#| fig-alt: Front cover of Fundamentals of Data Visualization showing a blue-winged bird
+#| fig-alt: Front cover of Fundamentals of Data Visualization showing a Western Rosella Parakeet
 knitr::include_graphics("figures/fdv-cover.png")
 ```
 
