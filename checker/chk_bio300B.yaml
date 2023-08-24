@@ -5,7 +5,7 @@ rstudio:
       value: never
     load_workspace:
       value: 'FALSE'
-      message: For reproducibility
+      message: untick <Restore .Rdata into workspace at startup> for reproducibility
     insert_native_pipe_operator:
       value: 'TRUE'
       message: Get the native pipe

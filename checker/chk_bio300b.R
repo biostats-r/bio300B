@@ -17,7 +17,7 @@ prog <- read.csv(text = 'program, recommended, minimum, message
              strip.white = TRUE)
 opt <- read.csv(text = 'option, value, message
              "save_workspace", "never", NA
-             "load_workspace", "FALSE", "For reproducibility"
+             "load_workspace", "FALSE", "untick <Restore .Rdata into workspace at startup> for reproducibility"
              "insert_native_pipe_operator", "TRUE", "Get the native pipe"',
              strip.white = TRUE)
 
