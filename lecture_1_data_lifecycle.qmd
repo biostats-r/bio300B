@@ -10,117 +10,111 @@ format:
     theme: [default, css/custom.scss]
 ---
 
-
 ## Why do biologists need statistics anyway?
 
 Why do **YOU** need
 
-- data handling skills
-- data visualisation skills
-- statistics skills
-
+-   data handling skills
+-   data visualisation skills
+-   statistics skills
 
 ## Biology is applied data science!
 
- - Nearly all papers include data visualisation and analysis
- - Need to be able to understand the methods used to evaluate paper
- - Need to be able to make visualisations and analyses for papers, reports, theses
-
+-   Nearly all papers include data visualisation and analysis
+-   Need to be able to understand the methods used to evaluate paper
+-   Need to be able to make visualisations and analyses for papers, reports, theses
 
 ## Changing expectations
 
-- FAIR and open science
-- Reproducible research
+-   FAIR and open science
+-   Reproducible research
 
 [Most scientists 'can't replicate studies by their peers'](http://www.bbc.com/news/science-environment-39054778)
 
-
 ## Data life-cycle
 
-``` {r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, error = TRUE)
+```{r setup, include=FALSE}
 library("tidyverse")
 data(penguins, package = 'palmerpenguins')
 options(tibble.print_min = 3)
 ```
 
+```{dot}
+//| label: data-life-cycle-dot
+//| fig-height: 6.7
+//| fig-alt: Graph of data lifecycle
 
-```{r data-life-cycle}
-library(DiagrammeR)
-grViz("
-      digraph circo {
+digraph circo {
 
-      graph [layout = dot,  rankdir = TB]
+  graph [layout = dot,  rankdir = TB]
+  node [shape = egg, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = "Palatino"]
+  a [label = "Design"]
+  b [label = "Gather", fillcolor = lightgrey]
+  b2 [label = "Enter"]
+  b3 [label = "Import"]
 
-      node [shape = egg, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = 'Palatino']
-      a [label = 'Design']
-      b [label = 'Gather', fillcolor = grey]
-      b2 [label = 'Enter']
-      b3 [label = 'Import']
+  d [label = "Clean"]
+  e [label = "Visualise"]
+  f [label = "Analyse"]
+  g [label = "Communicate"]
+  h [label = "Archive", fillcolor = lightgrey]
+  i [label = "Death", shape = diamond, fillcolor = lightgrey]
+  j [label = "Find & Reuse", fillcolor = lightgrey]
 
-      d [label = 'Clean']
-      e [label = 'Visualise']
-      f [label = 'Analyse']
-      g [label = 'Communicate']
-      h [label = 'Archive', fillcolor = grey]
-      i [label = 'Death', shape = diamond, fillcolor = grey]
-      j [label = 'Find & Reuse', fillcolor = grey]
+  a->b->b2->b3->d->e->f->e
+  e->g->h
+  f->g->i
+  e->d
+  f->d
+  d->f
+  h->j->b3 [style=dashed, color=darkgrey, fontsize = 18, fixedsize = FALSE, fontname = "Palatino"]
+  subgraph {
+    rank = same; a; b; b2
+  }
+  subgraph {
+    rank = same; e; f;
+  }
+  
+  subgraph {
+    rank = same; j; b3;
+  }
 
-      a->b->b2->b3->d->e->f->e
-      e->g->h
-      f->g->i
-      e->d
-      f->d
-      d->f
-      h->j->b3 [style=dashed, color=darkgrey, fontsize = 18, fixedsize = FALSE, fontname = 'Palatino']
-      subgraph {
-        rank = same; a; b; b2
-      }
-      subgraph {
-        rank = same; e; f;
-      }
-
-      subgraph {
-        rank = same; j; b3;
-      }
-
-      }
-     ", height = 500)
+}
 ```
-
 
 ## Experimental Design
 
-Lecture 4
+Lecture 5
 
-- Observational studies vs experiments 
-- Randomisation
-- How many replicates do you need?
-- Statistical traps
-
+-   Observational studies vs experiments
+-   Randomisation
+-   How many replicates do you need?
+-   Statistical traps
 
 ## Data entry
 
- - Make your data easy to import.
- - Proof read & data validation
+-   Make your data easy to import.
 
- - Lock data file. No more edits.
+-   Proof read & data validation
+
+-   Lock data file.
+    No more edits.
 
 ## Spreadsheets {.scrollable}
 
 Practical recommendations for organizing spreadsheet data to reduce errors and ease later analyses.
 
-- be consistent
-- write dates as YYYY-MM-DD
-- do not leave any cells empty
-- put just one thing in a cell
-- organize the data as a single rectangle (rows = subjects; columns = variables;  single header row)
-- create a data dictionary
-- do not include calculations in the raw data files
-- do not use font, colour or highlighting as data
-- choose good names for things
-- use data validation to avoid data entry errors
-- save the data in plain text files.
+-   be consistent
+-   write dates as YYYY-MM-DD
+-   do not leave any cells empty
+-   put just one thing in a cell
+-   organize the data as a single rectangle (rows = subjects; columns = variables; single header row)
+-   create a data dictionary
+-   do not include calculations in the raw data files
+-   do not use font, colour or highlighting as data
+-   choose good names for things
+-   use data validation to avoid data entry errors
+-   save the data in plain text files.
 
 ::: aside
 [Broman & Woo (2018) Data Organization in Spreadsheets](https://doi.org/10.1080/00031305.2017.1375989)
@@ -132,21 +126,20 @@ When is 1-9-2021?
 
 Sex coded as 0 & 1
 
-
 ## Data importing
 
 R can import almost any data type.
 
-- CSV files with `readr`
-- Excel files with `readxl`
-- shapefiles with `sf`
-- NetCDF with `ncdf4`
+-   CSV files with `readr`
+-   Excel files with `readxl`
+-   shapefiles with `sf`
+-   NetCDF with `ncdf4`
 
 ## Data cleaning
 
-- Process your data with code
-- Reproducible analyses
-- `tidyverse` (Lecture 2)
+-   Process your data with code
+-   Reproducible analyses
+-   `tidyverse` (Lecture 3)
 
 ```{r, echo = TRUE, message=FALSE}
 library(tidyverse)
@@ -172,33 +165,32 @@ ggplot(penguins, aes(x = species,
   theme_bw(base_size = 16)
 ```
 
-## Data analysis 
+## Data analysis
 
-Huge number of statistical methods 
+Huge number of statistical methods
 
 This course will focus on
 
-- Exploratory data analysis (5)
-- Descriptive statistics (5)
-- Linear models (6-7)
-- Generalised linear models (8)
-- Mixed effect models (9)
-- Survival analysis (10)
+-   Exploratory data analysis (6)
+-   Descriptive statistics (6)
+-   Linear models (7\--8)
+-   Generalised linear models (9)
+-   Mixed effect models (10)
+-   Survival analysis (11)
 
 ## Communicate results with quarto
 
 Tradition
 
- - text in Word, code in R
- - copy figures, tables etc into Word
- - find mistakes. Return to step 2.
+-   text in Word, code in R
+-   copy figures, tables etc into Word
+-   find mistakes. Return to step 2.
 
 quarto markdown
 
-- Code and text interwoven
-- Reproducible, dynamic documents
-- This presentation made with quarto
-
+-   Code and text interwoven
+-   Reproducible, dynamic documents
+-   This presentation made with quarto
 
 ## Data death
 
@@ -208,48 +200,46 @@ knitr::include_graphics("figures/1-s2.0-S157495410500004X-gr1.jpg")
 
 Natural degradation in information content associated with **data** and **metadata**
 
-
 ::: aside
 [Michener (2006)](https://doi.org/10.1016/j.ecoinf.2005.08.004)
 :::
 
-
 ## Empirical evidence of data loss
 
-
 ```{r, out.width="70%"}
+#| label: empirical-data-loss
+#| fig-alt: Probability of data survival vs paper age. Vines et al 2014
 knitr::include_graphics("figures/gr1.jpg")
 ```
 
-
 ::: aside
-
 [Vines et al. (2014)](https://doi.org/10.1016/j.cub.2013.11.014)
-
 :::
 
-
-::: {.notes}
-
-- morphological dimensions from plants or animals
-- examined the availability of data from 516 studies between 2 and 22 years old
-- The odds of a data set being reported as extant fell by 17% per year
-- Broken e-mails and obsolete storage devices were the main obstacles to data sharing
-- Policies mandating data archiving at publication are clearly needed
+::: notes
+-   morphological dimensions from plants or animals
+-   examined the availability of data from 516 studies between 2 and 22 years old
+-   The odds of a data set being reported as extant fell by 17% per year
+-   Broken e-mails and obsolete storage devices were the main obstacles to data sharing
+-   Policies mandating data archiving at publication are clearly needed
 :::
 
 ## What would happen if you lost all of your research data?
 
-> I was focussed on creating high resolution, 3D time lapse videos of developing crustacean embryos, so all of my work was digital-based. [**When I lost my laptop and backups, I lost 400GB of data and close to four years of work.**]{style="color: red;"} As a direct result I ended up getting an MPhil rather than the PhD I’d been working towards. I was hoping to have an illustrious career in science and for a time it seemed like everything would be stopped in its tracks.
+> I was focussed on creating high resolution, 3D time lapse videos of developing crustacean embryos, so all of my work was digital-based.
+> [**When I lost my laptop and backups, I lost 400GB of data and close to four years of work.**]{style="color: red;"} As a direct result I ended up getting an MPhil rather than the PhD I'd been working towards.
+> I was hoping to have an illustrious career in science and for a time it seemed like everything would be stopped in its tracks.
 
 ::: aside
 [Billy Hinchen](https://www.digital-science.com/blog/2014/04/what-would-happen-if-you-lost-all-of-your-research-data/)
 :::
 
----
+------------------------------------------------------------------------
 
 ```{r}
+#| label: lost-laptop
 #| out-width: "50%"
+#| fig-alt: Advert offering to pay thief for data on stolen laptop
 knitr::include_graphics("figures/rutgers-stolen-ad.jpeg")
 ```
 
@@ -257,48 +247,42 @@ knitr::include_graphics("figures/rutgers-stolen-ad.jpeg")
 [Rutgers University Ph.D. candidate](https://www.technobuffalo.com/ouch-thief-steals-laptop-containing-5-years-of-ph-d-students-research-data)
 :::
 
-
-
-## [Obsolescent storage equipment]{style="color: red;"}{background-image="figures/418rKTEACTL._AC_.jpg"}
+## [Obsolescent storage equipment]{style="color: red;"} {background-image="figures/418rKTEACTL._AC_.jpg"}
 
 ::: aside
-[One in stock at Amazon](https://www.amazon.com/Iomega-ZIP-250-Parallel-external/dp/B000092QKK)
+[[One in stock at Amazon](https://www.amazon.com/Iomega-ZIP-250-Parallel-external/dp/B000092QKK)]{style="text-align: left;"}
 :::
-
 
 ## Back up your raw data!
 
-- Keep raw data
-- Multiple places
-- Physical and cloud services
-- Be paranoid!
-
+-   Keep raw data
+-   Multiple places
+-   Physical and cloud services
+-   Be paranoid!
 
 ## Archiving data
 
 Many research funders and journals demand data archiving.
 
-- subject specific archives
-  - [GeneBank](https://www.ncbi.nlm.nih.gov/genbank/)
-  - [GBIF](https://www.gbif.org/)
-- Generalist repositories
-  - [DRYAD](https://datadryad.org/stash)
-  - [OSF](https://osf.io/)
-  - [Zenodo](https://zenodo.org/)
-- University based
-   - [DataverseNO](https://dataverse.no/dataverse/uib)
-
+-   subject specific archives
+    -   [GeneBank](https://www.ncbi.nlm.nih.gov/genbank/)
+    -   [GBIF](https://www.gbif.org/)
+-   Generalist repositories
+    -   [DRYAD](https://datadryad.org/stash)
+    -   [OSF](https://osf.io/)
+    -   [Zenodo](https://zenodo.org/)
+-   University based
+    -   [DataverseNO](https://dataverse.no/dataverse/uib)
 
 ::: aside
-[Open Access to Research Data](https://www.uib.no/en/ub/111372/open-access-research-data){}
+[Open Access to Research Data](https://www.uib.no/en/ub/111372/open-access-research-data)
 :::
 
 ## Special problems
 
 Sensitive data
 
-:::: {.columns}
-
+::: columns
 ::: {.column width="50%"}
 ### Examples
 :::
@@ -306,15 +290,9 @@ Sensitive data
 ::: {.column width="50%"}
 ### Solutions
 :::
-
-::::
-
-
-
-
+:::
 
 ## Data management plans
-
 
 How data are to be collected and handled both during a research project, and after the project is completed
 
@@ -330,30 +308,26 @@ knitr::include_graphics("https://www.uib.no/sites/w3.uib.no/files/styles/content
 
 ## FAIR principles
 
-- Findable
-- Accessible
-- Interoperable
-- Reusable
+-   Findable
+-   Accessible
+-   Interoperable
+-   Reusable
 
 Meta data is as important as data.
 
-::: {.notes}
+::: notes
 Metadata is structured information that describes, explains, locates, and makes it easier to retrieve and use an information resource.
 :::
 
-
-
-
 ## Why `r fontawesome::fa(name = "r-project", fill = "steelblue")`?
 
-+ free
-+ open source
-+ large and friendly user community
-+ many statistical methods implemented
-+ makes publication ready figures
-+ reproducible research
-+ code is easy to share and publish.
-
+-   free
+-   open source
+-   large and friendly user community
+-   many statistical methods implemented
+-   makes publication ready figures
+-   reproducible research
+-   code is easy to share and publish.
 
 ## R GUI
 
@@ -363,20 +337,18 @@ knitr::include_graphics("figures/Rgui.png")
 
 You probably never need to open R directly.
 
-
 ## RStudio IDE
 
 ```{r, out.width="100%", echo=FALSE}
 knitr::include_graphics("figures/RStudiogui.png")
 ```
 
-
 ## Getting the best out of RStudio
 
-- projects
- - keep track of everything
-- code completion
-- bracket matching
+-   projects
+-   keep track of everything
+-   code completion
+-   bracket matching
 
 ## Getting help
 
@@ -384,11 +356,12 @@ knitr::include_graphics("figures/RStudiogui.png")
 
 `??length` - help search
 
-```{r echo = TRUE, eval = FALSE}
-library(introverse)
-get_help("length")# quotation marks
-```
- [Stackoverflow.com](https://stackoverflow.com/questions/tagged/r)
+[Stackoverflow.com](https://stackoverflow.com/questions/tagged/r)
 
 Google error messages
 
+### AI
+
+[ChatGPT](https://chat.openai.com/)
+
+[Phind](https://www.phind.com/)
