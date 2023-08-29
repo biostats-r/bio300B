@@ -93,8 +93,8 @@ Effects of hypoxia on fish in West Norwegian fjords
 
 ## Lectures
 
--   Start 28^th^ August
--   Mondays 1415 - 1600
+-   Start Monday 28^th^ August  1415--1600
+- Thereafter Monday 1215--1400
 -   Høyteknologisenteret, Stort auditorium
 
 Will be recorded when clashes with other courses
@@ -127,9 +127,9 @@ Slides made with quarto & revealjs
 
 |         |                       |                         |
 |---------|-----------------------|-------------------------|
-| Group 1 | Tuesday 1215 - 1400   | K1 + K2 (Bio Blokk B)   |
-| Group 2 | Tuesday 1415 - 1600   | K3 + K4 (Bio Blokk B)   |
-| Group 3 | Wednesday 1215 - 1400 | K3 + K4 (Bio Blokk B)   |
+| Group 1 | Tuesday 1215--1400   | K1 + K2 (Bio Blokk B)   |
+| Group 2 | Tuesday 1415--1600   | K3 + K4 (Bio Blokk B)   |
+| Group 3 | Wednesday 1015--1200 | K3 + K4 (Bio Blokk B)   |
 
 Please sign up for **one** group
 
