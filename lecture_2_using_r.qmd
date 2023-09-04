@@ -52,6 +52,11 @@ Don't include an argument - uses default
 
 Don't need to name arguments if in correct order
 
+```{r}
+#| eval: false
+rnorm(4, 2, 2)
+```
+
 ## Vectors
 
 All elements must be the same type
@@ -273,7 +278,7 @@ if (logical_condition) {
 
 `else` is optional
 
-use `ifelse()` or `dplyr::case_when()` for vectorised if
+use `ifelse()` or `dplyr::case_when()` for vectorised `if`
 
 ## Boolean logic
 
@@ -310,7 +315,7 @@ Useful with `ifelse()` or `dplyr::case_when()`
 a <- 1:10
 b <- rep(c("cat", "dog"), 5)
 
-a > 5 && b == "dog" # gives warning
+a > 5 && b == "dog" # gives error
 a > 5 & b == "dog"
 ```
 
@@ -341,7 +346,7 @@ for (element in vector){
 ::: fragment
 ```{r}
 for (i in 1:3) {
-  print(i)
+  i ^ 2
 }
 ```
 :::
@@ -381,6 +386,7 @@ map_dbl(lst, mean) # returns vector of doubles
 -   With your collaborators
 
 > "Your closest collaborator is you six months ago but you don't reply to email."
+> --- Paul Wilson
 
 -   With reviewers/examiners
 
@@ -419,7 +425,7 @@ Make your own style - but be consistent
 
 > --- Phil Karlton
 
--   Names can contain letter numbers "\_" and "."
+-   Names can contain letters, numbers, "\_" and "."
 -   Names must begin with a letter or "."
 -   Avoid using names of existing functions - confusing
 -   Make names concise yet meaningful
@@ -443,7 +449,7 @@ Make your own style - but be consistent
 ## Names can be too long {background-image="figures/Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch_stationbord.jpeg" background-color="black"}
 
 ::: aside
-[By Rob Koster - Own work, CC BY-SA 3.0](https://commons.wikimedia.org/w/index.php?curid=25230696)
+[Rob Koster - CC BY-SA 3.0](https://commons.wikimedia.org/w/index.php?curid=25230696)
 :::
 
 ::: notes
@@ -465,7 +471,7 @@ Common in old FORTRAN code - save memory with short names exceptions
 
 ## Naming convensions
 
-| camelCase 🐫      | UpperCamelCase    | snake_case          |
+| camelCase 🐫      | UpperCamelCase    | snake_case 🐍       |
 |-------------------|-------------------|---------------------|
 | billLengthMM      | BillLengthMM      | bill_length_mm      |
 | bergenWeather2022 | BergenWeather2022 | bergen_weather_2022 |
