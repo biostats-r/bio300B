@@ -114,15 +114,14 @@ p <- penguins |>
 
 Pipe puts result of left hand side into first available argument on right hand side
 
-- |> native R pipe (R >= 4.1)
+- `|>` native R pipe
 - `%>%` `magrittr` pipe
-
 
 
 ## Tidy data
 
->"Happy families are all alike; every unhappy family is unhappy in its own way"
-> Tolstoy 
+>"Happy families are all alike; every unhappy family is unhappy in its own way"\
+> --- Tolstoy 
   
 Tidy data
 
@@ -155,30 +154,32 @@ knitr::kable(table2 |> select(1:5))
 
 ## The heart of your analysis pipeline
 
-```{r tidy-heart, echo = FALSE, fig.alt = "Diagram showing tidy data at the heart of data analysis"}
-library(DiagrammeR)
-grViz("
-      digraph circo {
-      
-      graph [layout = dot,  rankdir = TB]
-      node [shape = circle, fontsize = 18, style = filled, fillcolor =  orange, fixedsize = FALSE, fontname = 'Palatino', label = '']
-      a1 [shape = circle, fillcolor = purple]
-      a2 [shape = doubleoctagon, fillcolor = darkgreen]
-      a3 [shape = star]
-      
-      node [shape = egg, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = 'Palatino']
+```{dot}
+//| label: tidy-heart
+//| echo: false
+//| fig.alt: "Diagram showing tidy data at the heart of data analysis"
 
-      b [label = 'Tidy data', shape = box, width = 1.5]
-      c [label = 'Clean & tidy data', shape = box, width = 2.5]
+digraph circo {
+    
+  graph [layout = dot,  rankdir = TB]
+  node [shape = circle, fontsize = 18, style = filled, fillcolor =  orange, fixedsize = FALSE, fontname = "Palatino", label = ""]
+  a1 [shape = circle, fillcolor = purple]
+  a2 [shape = doubleoctagon, fillcolor = darkgreen]
+  a3 [shape = star]
+  
+  node [shape = egg, fontsize = 18, style = filled, fillcolor =  steelblue1, fixedsize = FALSE, fontname = "Palatino"]
+  
+  b [label = "Tidy data", shape = box, width = 1.5, fillcolor = red]
+  c [label = "Clean & tidy data", shape = box, width = 2.5]
+  
+  d [label = "Analysis"]
+  e [label = "Visualisation"]
+  
+  {a1, a2, a3}->b->c->{d, e}
 
-      d [label = 'Analysis']
-      e [label = 'Visualisation']
-      
-      {a1, a2, a3}->b->c->{d, e}
-
-      }
-     ", height = 500)
+}
 ```
+
 
 
 ## Reshaping data
@@ -326,13 +327,19 @@ separate statements with commas
 Problem:
 
 ```{r}
+#| label: sqrt
+#| output-location: fragment
+
 sqrt(2) ^ 2 == 2
 ```
+. . .
 
 ```{r}
 sqrt(2) ^ 2 - 2
 ```
+. . .
 
+$\sqrt{2}$ is irrational - cannot be perfectly represented
 
 Solution:
 
@@ -539,10 +546,13 @@ band_instruments
 ```
 
 :::
+
+. . .
+
 ::::
 ```{r}
 band_members %>% 
-  left_join(band_instruments, by = "name")
+  left_join(band_instruments, by = join_by(name))
 ```
 
 
@@ -562,11 +572,11 @@ band_members %>%
 ```{r}
 #semi join
 band_members %>% 
-  semi_join(band_instruments, by = "name")
+  semi_join(band_instruments, by = join_by(name))
 
 #anti join
 band_members %>% 
-  anti_join(band_instruments, by = "name")
+  anti_join(band_instruments, by = join_by(name))
 ```
 
 
@@ -575,11 +585,11 @@ band_members %>%
 ## Further reading
 
 
-Wickham and Grolemund (2017) [_R for Data Science_](https://r4ds.had.co.nz/)
+Wickham et al. (2023) [_R for Data Science_](http://r4ds.hadley.nz/)
 
 Wickham, H. [_Advanced R_](https://adv-r.hadley.nz/index.html)
 
 ```{r, echo = FALSE, fig.alt = "Front page of the R for Data Science book with a kākāpō."}
-knitr::include_graphics("figures/r4ds-cover.png")
+knitr::include_graphics("figures/r4ds-cover.jpg")
 ```
 
