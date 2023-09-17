@@ -68,7 +68,7 @@ Tibble or data frame with data to be plotted.
 
 Tidy data
 
-Can process data within `ggplot` but usually best to do it before
+Can process data within `ggplot` but usually best to do it first
 
 Can add data to the whole plot or to individual geoms
 
@@ -187,7 +187,19 @@ p <- datasauRus::box_plots |>
 p + geom_boxplot() +
 p + geom_violin()
 ```
+## Show the raw data
 
+```{r}
+#| label: pnas-fig
+#| echo: false
+#| fig-alt: top left panel shows mean + SE only, top right shows mean + SE togther with widely spread jittered raw data Bottom plots show the same with more data so SE are smaller
+#| out-height: 15cm
+knitr::include_graphics("figures/pnas.2302491120fig01.jpg")
+```
+
+::: aside
+[Zhang et al (2023)](https://www.pnas.org/doi/10.1073/pnas.2302491120)
+:::
 
 ## geoms for scatterplots
 
@@ -404,6 +416,32 @@ ggplot(penguins,
 library(directlabels)
 direct.label(plot) 
 ```
+
+## Most common mistake in presentations
+
+```{r}
+#| label: common-mistake
+#| echo: false
+#| fig-alt: plot with very small labels
+ggplot(penguins, 
+       aes(x = body_mass_g,
+           y = flipper_length_mm,
+           colour = species,
+           shape = species)) +
+  geom_point() +
+  labs(x = "Body mass g", y = "flipper length mm", colour = "Species") +
+  theme_bw()
+```
+
+::: {.fragment}
+### Solution
+
+```{r}
+#| label: base-size
+#| eval: false
+theme_bw(base_size = 18)
+```
+:::
 
 ## Summary
 
