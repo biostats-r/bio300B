@@ -17,7 +17,10 @@ project:
     - lecture_9_generalised_linear_models.qmd
     - lecture_10_mixed_effect_models.qmd
     - lecture_11_survival_summary.qmd
-
+    - index.qmd
+    - lectures.qmd
+    - materials.qmd
+    - packages_used.qmd
 
 website:
   title: "Bio302 - Biostatistikk"
