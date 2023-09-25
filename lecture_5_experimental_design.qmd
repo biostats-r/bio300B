@@ -74,8 +74,8 @@ https://www.tylervigen.com/spurious-correlations]
 
 ## Controls{ background-image="figures/118.jpg"}
 
-- Turf transplants
-- Warmer/Wetter
+- [Turf transplants]{style="color: white"}
+- [Warmer/Wetter]{style="color: white"}
 
 ::: aside
 [Seedclim](https://audhalbritter.com/seedclim-large-scale-climate-change-experiment-in-the-western-norwegian-fjords/)
@@ -127,15 +127,13 @@ Why might you get an unbalanced design?
 
 
 
-
-
 ## Pseudoreplication { background-image="figures/46695412244_66616e8523_c.jpg"}
 
-Want to test the effect of different fish foods
+[Want to test the effect of different fish foods]{style="color: white"}
 
-Mass of each fish measured.
+[Mass of each fish measured.]{style="color: white"}
 
-Can each fish be treated as an independent observation in your analysis?
+[Can each fish be treated as an independent observation in your analysis?]{style="color: white"}
 
 ::: aside
 [WorldFish](https://www.flickr.com/photos/theworldfishcenter/46695412244)

@@ -12,7 +12,7 @@
   <meta name="generator" content="quarto-1.4.309">
 
   <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)">
-  <meta name="dcterms.date" content="2023-09-22">
+  <meta name="dcterms.date" content="2023-09-25">
   <title>Bio302 - Biostatistikk - Experimental Design</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -342,7 +342,7 @@ Richard J. Telford (Richard.Telford@uib.no)
     </div>
 </div>
 
-  <p class="date">22 September 2023</p>
+  <p class="date">25 September 2023</p>
 </section>
 <section id="starting-with-a-hypothesis" class="slide level2">
 <h2>Starting with a hypothesis</h2>
@@ -390,8 +390,8 @@ Alternative hypothesis H<sub>1</sub> - relationship</p>
 <section id="controls" class="slide level2" data-background-image="figures/118.jpg">
 <h2>Controls</h2>
 <ul>
-<li>Turf transplants</li>
-<li>Warmer/Wetter</li>
+<li><span style="color: white">Turf transplants</span></li>
+<li><span style="color: white">Warmer/Wetter</span></li>
 </ul>
 
 <aside><div>
@@ -432,9 +432,9 @@ Alternative hypothesis H<sub>1</sub> - relationship</p>
 </section>
 <section id="pseudoreplication" class="slide level2" data-background-image="figures/46695412244_66616e8523_c.jpg">
 <h2>Pseudoreplication</h2>
-<p>Want to test the effect of different fish foods</p>
-<p>Mass of each fish measured.</p>
-<p>Can each fish be treated as an independent observation in your analysis?</p>
+<p><span style="color: white">Want to test the effect of different fish foods</span></p>
+<p><span style="color: white">Mass of each fish measured.</span></p>
+<p><span style="color: white">Can each fish be treated as an independent observation in your analysis?</span></p>
 
 <aside><div>
 <p><a href="https://www.flickr.com/photos/theworldfishcenter/46695412244">WorldFish</a></p>
@@ -701,12 +701,15 @@ Alternative hypothesis H<sub>1</sub> - relationship</p>
       // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
       // slide changes (different for each slide format).
       (function () {
-        function fireSlideChanged(previousSlide, currentSlide) {
-
-          // dispatch for htmlwidgets
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
           const event = window.document.createEvent("Event");
           event.initEvent("slideenter", true, true);
           window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
 
           // dispatch for shiny
           if (window.jQuery) {
@@ -717,13 +720,6 @@ Alternative hypothesis H<sub>1</sub> - relationship</p>
               window.jQuery(currentSlide).trigger("shown");
             }
           }
-        }
-
-        // hookup for reveal
-        if (window.Reveal) {
-          window.Reveal.addEventListener("slidechanged", function(event) {
-            fireSlideChanged(event.previousSlide, event.currentSlide);
-          });
         }
 
         // hookup for slidy
