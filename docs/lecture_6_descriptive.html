@@ -8,11 +8,16 @@
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<meta name="shinylive:serviceworker_dir" content=".">
+<script src="site_libs/quarto-contrib/shinylive-0.2.0/shinylive/load-shinylive-sw.js" type="module"></script>
+<script src="site_libs/quarto-contrib/shinylive-0.2.0/shinylive/run-python-blocks.js" type="module"></script>
+<link href="site_libs/quarto-contrib/shinylive-0.2.0/shinylive/shinylive.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/shinylive-quarto-css/shinylive-quarto.css" rel="stylesheet"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.4.309">
 
   <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)">
-  <meta name="dcterms.date" content="2023-09-22">
+  <meta name="dcterms.date" content="2023-10-02">
   <title>Bio302 - Biostatistikk - Descriptive statistics and Introduction to statistical inference</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -407,7 +412,7 @@ Richard J. Telford (Richard.Telford@uib.no)
     </div>
 </div>
 
-  <p class="date">22 September 2023</p>
+  <p class="date">2 October 2023</p>
 </section>
 <section id="describing-a-distribution" class="slide level2">
 <h2>Describing a distribution</h2>
@@ -777,18 +782,30 @@ mean in group female   mean in group male
 <h2>Type 1 and type 2 errors</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div id="icntspiumk" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>html {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+<div id="icntspiumk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#icntspiumk table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#icntspiumk thead, #icntspiumk tbody, #icntspiumk tfoot, #icntspiumk tr, #icntspiumk td, #icntspiumk th {
+  border-style: none;
+}
+
+#icntspiumk p {
+  margin: 0;
+  padding: 0;
 }
 
 #icntspiumk .gt_table {
   display: table;
   border-collapse: collapse;
+  line-height: normal;
   margin-left: auto;
   margin-right: auto;
   color: #333333;
-  font-size: 16px;
+  font-size: 30px;
   font-weight: normal;
   font-style: normal;
   background-color: #FFFFFF;
@@ -807,16 +824,9 @@ mean in group female   mean in group male
   border-left-color: #D3D3D3;
 }
 
-#icntspiumk .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
+#icntspiumk .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
 #icntspiumk .gt_title {
@@ -835,12 +845,24 @@ mean in group female   mean in group male
   color: #333333;
   font-size: 85%;
   font-weight: initial;
-  padding-top: 0;
-  padding-bottom: 6px;
+  padding-top: 3px;
+  padding-bottom: 5px;
   padding-left: 5px;
   padding-right: 5px;
   border-top-color: #FFFFFF;
   border-top-width: 0;
+}
+
+#icntspiumk .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
 }
 
 #icntspiumk .gt_bottom_border {
@@ -916,6 +938,10 @@ mean in group female   mean in group male
   width: 100%;
 }
 
+#icntspiumk .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
 #icntspiumk .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
@@ -939,6 +965,7 @@ mean in group female   mean in group male
   border-right-width: 1px;
   border-right-color: #D3D3D3;
   vertical-align: middle;
+  text-align: left;
 }
 
 #icntspiumk .gt_empty_group_heading {
@@ -1014,6 +1041,10 @@ mean in group female   mean in group male
   border-top-width: 2px;
 }
 
+#icntspiumk .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
 #icntspiumk .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
@@ -1063,6 +1094,16 @@ mean in group female   mean in group male
   border-top-color: #D3D3D3;
 }
 
+#icntspiumk .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
 #icntspiumk .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
@@ -1093,8 +1134,8 @@ mean in group female   mean in group male
 #icntspiumk .gt_footnote {
   margin: 0px;
   font-size: 90%;
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   padding-left: 5px;
   padding-right: 5px;
 }
@@ -1150,20 +1191,10 @@ mean in group female   mean in group male
   font-size: 65%;
 }
 
-#icntspiumk .gt_two_val_uncert {
-  display: inline-block;
-  line-height: 1em;
-  text-align: right;
-  font-size: 60%;
-  vertical-align: -0.25em;
-  margin-left: 0.1em;
-}
-
 #icntspiumk .gt_footnote_marks {
-  font-style: italic;
-  font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
+  position: initial;
 }
 
 #icntspiumk .gt_asterisk {
@@ -1171,68 +1202,52 @@ mean in group female   mean in group male
   vertical-align: 0;
 }
 
-#icntspiumk .gt_slash_mark {
-  font-size: 0.7em;
-  line-height: 0.7em;
-  vertical-align: 0.15em;
+#icntspiumk .gt_indent_1 {
+  text-indent: 5px;
 }
 
-#icntspiumk .gt_fraction_numerator {
-  font-size: 0.6em;
-  line-height: 0.6em;
-  vertical-align: 0.45em;
+#icntspiumk .gt_indent_2 {
+  text-indent: 10px;
 }
 
-#icntspiumk .gt_fraction_denominator {
-  font-size: 0.6em;
-  line-height: 0.6em;
-  vertical-align: -0.05em;
+#icntspiumk .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#icntspiumk .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#icntspiumk .gt_indent_5 {
+  text-indent: 25px;
 }
 </style>
-
-<table class="gt_table" data-quarto-postprocess="true">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead class="gt_col_headings">
-<tr class="header">
-<th class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th">Null hypothesis is</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th">True</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th">False</th>
-</tr>
-</thead>
-<tbody class="gt_table_body">
-<tr class="odd">
-<td class="gt_row gt_left"><div class="gt_from_md">
-<p>Rejected</p>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Null hypothesis is">Null hypothesis is</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="True">True</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="False">False</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="Null hypothesis is" class="gt_row gt_left"><div class="gt_from_md"><p>Rejected</p>
 </div></td>
-<td class="gt_row gt_left" style="background-color: #FFA500"><div class="gt_from_md">
-<p>Type I error<br>
-False positive</p>
+<td headers="True" class="gt_row gt_left" style="background-color: #FFA500;"><div class="gt_from_md"><p>Type I error<br>False positive</p>
 </div></td>
-<td class="gt_row gt_left" style="background-color: #005800"><div class="gt_from_md">
-<p>Correct decision<br>
-True positive</p>
+<td headers="False" class="gt_row gt_left" style="background-color: #A0FFA0;"><div class="gt_from_md"><p>Correct decision<br>True positive</p>
+</div></td></tr>
+    <tr><td headers="Null hypothesis is" class="gt_row gt_left"><div class="gt_from_md"><p>Not rejected</p>
 </div></td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_left"><div class="gt_from_md">
-<p>Not rejected</p>
+<td headers="True" class="gt_row gt_left" style="background-color: #A0FFA0;"><div class="gt_from_md"><p>Correct decision<br>True negative</p>
 </div></td>
-<td class="gt_row gt_left" style="background-color: #005800"><div class="gt_from_md">
-<p>Correct decision<br>
-True negative</p>
-</div></td>
-<td class="gt_row gt_left" style="background-color: #FFA500"><div class="gt_from_md">
-<p>Type II error<br>
-False negative</p>
-</div></td>
-</tr>
-</tbody>
+<td headers="False" class="gt_row gt_left" style="background-color: #FFA500;"><div class="gt_from_md"><p>Type II error<br>False negative</p>
+</div></td></tr>
+  </tbody>
+  
+  
 </table>
-
 </div>
 </div>
 </div>
@@ -1241,6 +1256,73 @@ False negative</p>
 <h2>One sided Z-test</h2>
 
 <img data-src="lecture_6_descriptive_files/figure-revealjs/TP-FP-1.png" width="960" class="r-stretch"></section>
+<section id="section" class="slide level2">
+<h2></h2>
+<div class="sourceCode" id="cb23" data-engine="r"><pre class="sourceCode numberSource shinylive-r number-lines code-with-copy"><code class="sourceCode"><span id="cb23-1"><a href="#cb23-1"></a>#| label: power-app</span>
+<span id="cb23-2"><a href="#cb23-2"></a>#| standalone: true</span>
+<span id="cb23-3"><a href="#cb23-3"></a>#| viewerHeight: 600</span>
+<span id="cb23-4"><a href="#cb23-4"></a></span>
+<span id="cb23-5"><a href="#cb23-5"></a>library(shiny)</span>
+<span id="cb23-6"><a href="#cb23-6"></a></span>
+<span id="cb23-7"><a href="#cb23-7"></a>ui &lt;-  fluidPage(</span>
+<span id="cb23-8"><a href="#cb23-8"></a>        # Application title</span>
+<span id="cb23-9"><a href="#cb23-9"></a>      titlePanel("One sided Z-test"),</span>
+<span id="cb23-10"><a href="#cb23-10"></a>      sidebarLayout(</span>
+<span id="cb23-11"><a href="#cb23-11"></a>          sidebarPanel(</span>
+<span id="cb23-12"><a href="#cb23-12"></a>            sliderInput("delta", "True mean", value = 1, min = 0.1, max = 2),</span>
+<span id="cb23-13"><a href="#cb23-13"></a>            sliderInput("sd", "Standard deviation", value = 1, min = 0.5, max = 2),</span>
+<span id="cb23-14"><a href="#cb23-14"></a>            sliderInput("n", "Sample size, n", value = 10, min = 10, max = 100),</span>
+<span id="cb23-15"><a href="#cb23-15"></a>            radioButtons("alpha", "Significance level, alpha", choices = c(0.05, 0.01, 0.001), selected = 0.05)</span>
+<span id="cb23-16"><a href="#cb23-16"></a>         ),</span>
+<span id="cb23-17"><a href="#cb23-17"></a>            # Show a plot of the generated distribution</span>
+<span id="cb23-18"><a href="#cb23-18"></a>          mainPanel(</span>
+<span id="cb23-19"><a href="#cb23-19"></a>             plotOutput("distPlot")</span>
+<span id="cb23-20"><a href="#cb23-20"></a>          )</span>
+<span id="cb23-21"><a href="#cb23-21"></a>))</span>
+<span id="cb23-22"><a href="#cb23-22"></a></span>
+<span id="cb23-23"><a href="#cb23-23"></a>server &lt;- function(input, output, session) {</span>
+<span id="cb23-24"><a href="#cb23-24"></a>  output$distPlot &lt;- renderPlot({</span>
+<span id="cb23-25"><a href="#cb23-25"></a>    n &lt;- input$n</span>
+<span id="cb23-26"><a href="#cb23-26"></a>    alpha &lt;- as.numeric(input$alpha)</span>
+<span id="cb23-27"><a href="#cb23-27"></a>    delta &lt;- input$delta</span>
+<span id="cb23-28"><a href="#cb23-28"></a>    sd &lt;- input$sd</span>
+<span id="cb23-29"><a href="#cb23-29"></a>    mx &lt;- 2.5</span>
+<span id="cb23-30"><a href="#cb23-30"></a>    mn &lt;- -1.5</span>
+<span id="cb23-31"><a href="#cb23-31"></a>    crit &lt;-</span>
+<span id="cb23-32"><a href="#cb23-32"></a>      qnorm(</span>
+<span id="cb23-33"><a href="#cb23-33"></a>        alpha,</span>
+<span id="cb23-34"><a href="#cb23-34"></a>        mean = 0,</span>
+<span id="cb23-35"><a href="#cb23-35"></a>        sd = sd / sqrt(n),</span>
+<span id="cb23-36"><a href="#cb23-36"></a>        lower.tail = FALSE</span>
+<span id="cb23-37"><a href="#cb23-37"></a>      )</span>
+<span id="cb23-38"><a href="#cb23-38"></a>    H0 &lt;- data.frame(x = seq(mn, mx, length = 201))</span>
+<span id="cb23-39"><a href="#cb23-39"></a>    H0$y &lt;- dnorm(x = H0$x, mean = 0, sd = sd / sqrt(n))</span>
+<span id="cb23-40"><a href="#cb23-40"></a>    H0$what &lt;- ifelse(H0$x &lt; crit, yes = "True negative", no = "False positive")</span>
+<span id="cb23-41"><a href="#cb23-41"></a>    H0$hypothesis &lt;- "H[0]"</span>
+<span id="cb23-42"><a href="#cb23-42"></a></span>
+<span id="cb23-43"><a href="#cb23-43"></a>    H1 &lt;- data.frame(x = seq(mn, mx, length = 201))</span>
+<span id="cb23-44"><a href="#cb23-44"></a>    H1$y &lt;- dnorm(x = H1$x, mean = delta, sd = sd / sqrt(n))</span>
+<span id="cb23-45"><a href="#cb23-45"></a>    H1$what &lt;- ifelse(H1$x &lt; crit, yes = "True negative", no = "False positive")</span>
+<span id="cb23-46"><a href="#cb23-46"></a>    H1$hypothesis &lt;- "H[1]"</span>
+<span id="cb23-47"><a href="#cb23-47"></a></span>
+<span id="cb23-48"><a href="#cb23-48"></a>    par(oma=c(2,2,0,0),mar=c(1.2,2,2,1),mfrow=c(2,1), cex = 1.5, tcl = -0.1, mgp = c(3, .2, 0))</span>
+<span id="cb23-49"><a href="#cb23-49"></a>    plot(H0$x, H0$y, type = "n", main = expression(H[0]~is~true), xlab = "", ylab = "")</span>
+<span id="cb23-50"><a href="#cb23-50"></a>    polygon(H0$x, H0$y)</span>
+<span id="cb23-51"><a href="#cb23-51"></a>    polygon(c(H0$x[H0$x &gt; crit][1], H0$x[H0$x &gt; crit]), c(0, H0$y[H0$x &gt; crit]), col = "#832424")</span>
+<span id="cb23-52"><a href="#cb23-52"></a>    abline(v = crit)</span>
+<span id="cb23-53"><a href="#cb23-53"></a>   </span>
+<span id="cb23-54"><a href="#cb23-54"></a>    plot(H1$x, H1$y, type = "n", main = expression(H[1]~is~true), xlab = "", ylab = "")</span>
+<span id="cb23-55"><a href="#cb23-55"></a>    polygon(H1$x, H1$y)</span>
+<span id="cb23-56"><a href="#cb23-56"></a>    polygon(c(H1$x[H1$x &gt; crit][1], H1$x[H1$x &gt; crit]), c(0, H1$y[H1$x &gt; crit]), col = "#832424")</span>
+<span id="cb23-57"><a href="#cb23-57"></a>    abline(v = crit) </span>
+<span id="cb23-58"><a href="#cb23-58"></a>    mtext(text="x",side=1,line=0,outer=TRUE, 1.5)</span>
+<span id="cb23-59"><a href="#cb23-59"></a>    mtext(text="Density",side=2,line=0,outer=TRUE, cex = 1.5)</span>
+<span id="cb23-60"><a href="#cb23-60"></a>    </span>
+<span id="cb23-61"><a href="#cb23-61"></a>  })</span>
+<span id="cb23-62"><a href="#cb23-62"></a>}</span>
+<span id="cb23-63"><a href="#cb23-63"></a></span>
+<span id="cb23-64"><a href="#cb23-64"></a>shinyApp(ui, server)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
 <section id="the-need-for-power" class="slide level2">
 <h2>The need for power</h2>
 <p>With little power:</p>
@@ -1280,9 +1362,9 @@ False negative</p>
 <section id="power-t-test" class="slide level2">
 <h2>Power t test</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="fu">library</span>(<span class="st">"pwr"</span>)</span>
-<span id="cb23-2"><a href="#cb23-2"></a>pow <span class="ot">&lt;-</span> <span class="fu">pwr.t.test</span>(<span class="at">d =</span> <span class="fl">0.5</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">power =</span> <span class="fl">0.8</span>)</span>
-<span id="cb23-3"><a href="#cb23-3"></a>pow</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="fu">library</span>(<span class="st">"pwr"</span>)</span>
+<span id="cb24-2"><a href="#cb24-2"></a>pow <span class="ot">&lt;-</span> <span class="fu">pwr.t.test</span>(<span class="at">d =</span> <span class="fl">0.5</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">power =</span> <span class="fl">0.8</span>)</span>
+<span id="cb24-3"><a href="#cb24-3"></a>pow</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
      Two-sample t test power calculation 
@@ -1534,12 +1616,15 @@ NOTE: n is number in *each* group</code></pre>
       // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
       // slide changes (different for each slide format).
       (function () {
-        function fireSlideChanged(previousSlide, currentSlide) {
-
-          // dispatch for htmlwidgets
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
           const event = window.document.createEvent("Event");
           event.initEvent("slideenter", true, true);
           window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
 
           // dispatch for shiny
           if (window.jQuery) {
@@ -1550,13 +1635,6 @@ NOTE: n is number in *each* group</code></pre>
               window.jQuery(currentSlide).trigger("shown");
             }
           }
-        }
-
-        // hookup for reveal
-        if (window.Reveal) {
-          window.Reveal.addEventListener("slidechanged", function(event) {
-            fireSlideChanged(event.previousSlide, event.currentSlide);
-          });
         }
 
         // hookup for slidy
