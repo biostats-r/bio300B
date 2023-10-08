@@ -1,0 +1,15 @@
+```{shinylive-r}
+#| label: regression-line-ss-app
+#| standalone: true
+#| viewerHeight: 600
+library(shiny)
+
+ui <- fluidPage(
+   withMathJax(p("$$\\frac{SS_{regression}/df_{regression}}{SS_{residual}/df_{residual}}$$"))
+)
+
+server <- shinyServer(function(input, output) {})
+
+shinyApp(ui = ui, server = server)
+```
+
