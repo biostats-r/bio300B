@@ -8,11 +8,16 @@
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<meta name="shinylive:serviceworker_dir" content=".">
+<script src="site_libs/quarto-contrib/shinylive-0.2.0/shinylive/load-shinylive-sw.js" type="module"></script>
+<script src="site_libs/quarto-contrib/shinylive-0.2.0/shinylive/run-python-blocks.js" type="module"></script>
+<link href="site_libs/quarto-contrib/shinylive-0.2.0/shinylive/shinylive.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/shinylive-quarto-css/shinylive-quarto.css" rel="stylesheet"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.4.309">
 
   <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)">
-  <meta name="dcterms.date" content="2023-09-22">
+  <meta name="dcterms.date" content="2023-10-09">
   <title>Bio302 - Biostatistikk - Linear Regression 1</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -407,7 +412,7 @@ Richard J. Telford (Richard.Telford@uib.no)
     </div>
 </div>
 
-  <p class="date">22 September 2023</p>
+  <p class="date">9 October 2023</p>
 </section>
 <section id="bivariate-descriptive-statistics" class="slide level2">
 <h2>Bivariate descriptive statistics</h2>
@@ -585,37 +590,237 @@ sample estimates:
 </section>
 <section id="correlation-or-linear-model" class="slide level2">
 <h2>Correlation or linear model?</h2>
-<p>Studying foram test composition and temperature</p>
+<p>Studying foraminifera test composition and temperature</p>
 <ol type="1">
 <li>Experiment with forams in tanks at different temperatures.</li>
 </ol>
 <ul>
-<li>test Mg concentration, tank temperature</li>
-<li>test Mg concentration, test Ba concentration</li>
+<li>foram Mg concentration, tank temperature</li>
+<li>foram Mg concentration, foram Ba concentration</li>
 </ul>
 <ol start="2" type="1">
 <li>Observational study of forams collected from the ocean.</li>
 </ol>
 <ul>
-<li>test Mg concentration, Ocean temperature</li>
+<li>foram Mg concentration, Ocean temperature</li>
 <li>Ocean temperature, ocean Mg concentration</li>
-<li>test Mg concentration, foram species</li>
+<li>foram Mg concentration, foram species</li>
 </ul>
+</section>
+<section id="which-distribution-matters" class="slide level2">
+<h2>Which distribution matters?</h2>
+<div class="sourceCode" id="cb7" data-engine="r"><pre class="sourceCode numberSource shinylive-r number-lines code-with-copy"><code class="sourceCode"><span id="cb7-1"><a href="#cb7-1"></a>#| label: ydistribution-lm-app</span>
+<span id="cb7-2"><a href="#cb7-2"></a>#| standalone: true</span>
+<span id="cb7-3"><a href="#cb7-3"></a>#| viewerHeight: 600</span>
+<span id="cb7-4"><a href="#cb7-4"></a></span>
+<span id="cb7-5"><a href="#cb7-5"></a>library(shiny)</span>
+<span id="cb7-6"><a href="#cb7-6"></a></span>
+<span id="cb7-7"><a href="#cb7-7"></a>ui &lt;-  fluidPage(</span>
+<span id="cb7-8"><a href="#cb7-8"></a>  # Application title</span>
+<span id="cb7-9"><a href="#cb7-9"></a>  titlePanel("Which distribution is important?"),</span>
+<span id="cb7-10"><a href="#cb7-10"></a>  sidebarLayout(</span>
+<span id="cb7-11"><a href="#cb7-11"></a>    sidebarPanel(</span>
+<span id="cb7-12"><a href="#cb7-12"></a>      radioButtons("dist", "Predictor distributor", choices = c("Normal", "Skewed", "Bimodal"), selected = "Normal"),</span>
+<span id="cb7-13"><a href="#cb7-13"></a>      checkboxInput("show_residuals", label = "Show residuals", value = FALSE),</span>
+<span id="cb7-14"><a href="#cb7-14"></a>      radioButtons("residual_plot", "Residual plot", choices = c("None", "Histogram", "QQplot"), selected = "None")</span>
+<span id="cb7-15"><a href="#cb7-15"></a>    ),</span>
+<span id="cb7-16"><a href="#cb7-16"></a>    # Show a plot of the generated distribution</span>
+<span id="cb7-17"><a href="#cb7-17"></a>    mainPanel(</span>
+<span id="cb7-18"><a href="#cb7-18"></a>      plotOutput("distPlot")</span>
+<span id="cb7-19"><a href="#cb7-19"></a>    )</span>
+<span id="cb7-20"><a href="#cb7-20"></a>  ))</span>
+<span id="cb7-21"><a href="#cb7-21"></a></span>
+<span id="cb7-22"><a href="#cb7-22"></a>  horizHist &lt;- function(</span>
+<span id="cb7-23"><a href="#cb7-23"></a>    Data,</span>
+<span id="cb7-24"><a href="#cb7-24"></a>    breaks="Sturges",</span>
+<span id="cb7-25"><a href="#cb7-25"></a>    freq=TRUE,</span>
+<span id="cb7-26"><a href="#cb7-26"></a>    plot=TRUE,</span>
+<span id="cb7-27"><a href="#cb7-27"></a>    col=par("bg"),</span>
+<span id="cb7-28"><a href="#cb7-28"></a>    border=par("fg"),</span>
+<span id="cb7-29"><a href="#cb7-29"></a>    las=1,</span>
+<span id="cb7-30"><a href="#cb7-30"></a>    xlab=if(freq)"Frequency" else "Density",</span>
+<span id="cb7-31"><a href="#cb7-31"></a>    main=paste("Histogram of",deparse(substitute(Data))),</span>
+<span id="cb7-32"><a href="#cb7-32"></a>    ylim=range(HBreaks),</span>
+<span id="cb7-33"><a href="#cb7-33"></a>    labelat=pretty(ylim),</span>
+<span id="cb7-34"><a href="#cb7-34"></a>    labels=labelat,</span>
+<span id="cb7-35"><a href="#cb7-35"></a>    ... )</span>
+<span id="cb7-36"><a href="#cb7-36"></a>  {</span>
+<span id="cb7-37"><a href="#cb7-37"></a>    a &lt;- hist(Data, plot=FALSE, breaks=breaks)</span>
+<span id="cb7-38"><a href="#cb7-38"></a>    HBreaks &lt;- a$breaks</span>
+<span id="cb7-39"><a href="#cb7-39"></a>    hpos &lt;- function(Pos) (Pos-HBreaks[1])*(length(HBreaks)-1)/ diff(range(HBreaks))</span>
+<span id="cb7-40"><a href="#cb7-40"></a>    if(plot)</span>
+<span id="cb7-41"><a href="#cb7-41"></a>    {</span>
+<span id="cb7-42"><a href="#cb7-42"></a>      barplot(if(freq)a$counts else a$density, space=0, horiz=TRUE, ylim=hpos(ylim), col=col, border=border,</span>
+<span id="cb7-43"><a href="#cb7-43"></a>              xlab=xlab, main=main, ...)</span>
+<span id="cb7-44"><a href="#cb7-44"></a>    }</span>
+<span id="cb7-45"><a href="#cb7-45"></a>  } # End of function</span>
+<span id="cb7-46"><a href="#cb7-46"></a></span>
+<span id="cb7-47"><a href="#cb7-47"></a>server &lt;- function(input, output, session) {</span>
+<span id="cb7-48"><a href="#cb7-48"></a>  x &lt;- reactive(switch(input$dist,</span>
+<span id="cb7-49"><a href="#cb7-49"></a>                Normal = rnorm(50),</span>
+<span id="cb7-50"><a href="#cb7-50"></a>                Skewed = exp(rnorm(50)),</span>
+<span id="cb7-51"><a href="#cb7-51"></a>                Bimodal = c(rnorm(25, mean = 1, sd = 0.4), rnorm(25, mean = 5, sd = 0.4))</span>
+<span id="cb7-52"><a href="#cb7-52"></a>        ))</span>
+<span id="cb7-53"><a href="#cb7-53"></a>  y &lt;- reactive(rnorm(length(x()), mean = x()))</span>
+<span id="cb7-54"><a href="#cb7-54"></a>  mod &lt;- reactive(lm(y() ~ x()))</span>
+<span id="cb7-55"><a href="#cb7-55"></a>  </span>
+<span id="cb7-56"><a href="#cb7-56"></a>  output$distPlot &lt;- renderPlot({</span>
+<span id="cb7-57"><a href="#cb7-57"></a></span>
+<span id="cb7-58"><a href="#cb7-58"></a></span>
+<span id="cb7-59"><a href="#cb7-59"></a>    layout(mat = matrix(c(1, 2, 4, 0, 3, 0),</span>
+<span id="cb7-60"><a href="#cb7-60"></a>                        nrow = 3,</span>
+<span id="cb7-61"><a href="#cb7-61"></a>                        ncol = 2),</span>
+<span id="cb7-62"><a href="#cb7-62"></a>           heights = c(1, 3, 3),    # Heights of the two rows</span>
+<span id="cb7-63"><a href="#cb7-63"></a>           widths = c(3, 1))     # Widths of the two columns</span>
+<span id="cb7-64"><a href="#cb7-64"></a>    par(mar=c(1.2,2,2,1),  cex = 1.3, tcl = -0.1, mgp = c(1.5, 0.2, 0))</span>
+<span id="cb7-65"><a href="#cb7-65"></a>    par(mar = c(0, 3, 0, 0))</span>
+<span id="cb7-66"><a href="#cb7-66"></a>    hist(x(), axes = FALSE, main = "", ylab = "", xlab = "", breaks = 10)</span>
+<span id="cb7-67"><a href="#cb7-67"></a>    par(mar = c(3, 3, 0, 0))</span>
+<span id="cb7-68"><a href="#cb7-68"></a>    plot(x(), y(), xlab = "Predictor", ylab = "Response")</span>
+<span id="cb7-69"><a href="#cb7-69"></a>    abline(coef = coef(mod()))</span>
+<span id="cb7-70"><a href="#cb7-70"></a>    if (input$show_residuals) {</span>
+<span id="cb7-71"><a href="#cb7-71"></a>      segments(x0 = x(), y0 = y(), x1 = x(), y1 = fitted(mod()))</span>
+<span id="cb7-72"><a href="#cb7-72"></a>    }</span>
+<span id="cb7-73"><a href="#cb7-73"></a>    par(mar = c(3, 0.2, 0, 0))</span>
+<span id="cb7-74"><a href="#cb7-74"></a>    horizHist(y(), axes = FALSE, main = "", ylab = "", xlab = "", col = "lightgrey", breaks = 10)</span>
+<span id="cb7-75"><a href="#cb7-75"></a>    </span>
+<span id="cb7-76"><a href="#cb7-76"></a>    if (input$residual_plot == "Histogram") {</span>
+<span id="cb7-77"><a href="#cb7-77"></a>        par(mar = c(3, 3, 1, 0))</span>
+<span id="cb7-78"><a href="#cb7-78"></a>        hist(resid(mod()), freq = FALSE)</span>
+<span id="cb7-79"><a href="#cb7-79"></a>        x_norm &lt;- seq(-10, 10, length.out = 100)</span>
+<span id="cb7-80"><a href="#cb7-80"></a>        lines(x_norm, dnorm(x_norm, mean = 0, sd = sd(resid(mod()))), col = "#832424", xlab = "Residuals", main = "Histogram of residuals")</span>
+<span id="cb7-81"><a href="#cb7-81"></a>    } else if (input$residual_plot == "QQplot") {</span>
+<span id="cb7-82"><a href="#cb7-82"></a>        par(mar = c(3, 3, 1, 0))</span>
+<span id="cb7-83"><a href="#cb7-83"></a>        plot(mod(), which = 2, id.n = 0)</span>
+<span id="cb7-84"><a href="#cb7-84"></a>    }</span>
+<span id="cb7-85"><a href="#cb7-85"></a></span>
+<span id="cb7-86"><a href="#cb7-86"></a>  })</span>
+<span id="cb7-87"><a href="#cb7-87"></a>}</span>
+<span id="cb7-88"><a href="#cb7-88"></a></span>
+<span id="cb7-89"><a href="#cb7-89"></a>shinyApp(ui, server)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="estimating-beta" class="slide level2">
 <h2>Estimating <span class="math inline">\(\beta\)</span></h2>
-<div class="columns">
-<div class="column" style="width:50%;">
 <p>Choose <span class="math inline">\(\beta\)</span> that minimise the sum of squares of residuals</p>
 <p><span class="math display">\[\sum_{i = 1}^{n}\epsilon_i^2 =   \sum_{i = 1}^{n}(y_i - (\beta_0 + \beta_1x_i))^2\]</span></p>
-</div><div class="column" style="width:50%;">
-<div class="cell" data-hash="lecture_7_linear_regression1_cache/revealjs/slope-anim_b218f1228f3a197b39012ca3977e2f0f">
-<div class="cell-output-display">
-<p><img data-src="lecture_7_linear_regression1_files/figure-revealjs/slope-anim-1.gif"></p>
-</div>
-</div>
-</div>
-</div>
+</section>
+<section class="slide level2">
+
+<div class="sourceCode" id="cb8" data-engine="r"><pre class="sourceCode numberSource shinylive-r number-lines code-with-copy"><code class="sourceCode"><span id="cb8-1"><a href="#cb8-1"></a>#| label: regression-line-ss-app</span>
+<span id="cb8-2"><a href="#cb8-2"></a>#| standalone: true</span>
+<span id="cb8-3"><a href="#cb8-3"></a>#| viewerHeight: 600</span>
+<span id="cb8-4"><a href="#cb8-4"></a>library(shiny)</span>
+<span id="cb8-5"><a href="#cb8-5"></a></span>
+<span id="cb8-6"><a href="#cb8-6"></a>ui &lt;-  fluidPage(</span>
+<span id="cb8-7"><a href="#cb8-7"></a>        # Application title</span>
+<span id="cb8-8"><a href="#cb8-8"></a>      titlePanel("Minimise the sum of squared residuals"),</span>
+<span id="cb8-9"><a href="#cb8-9"></a>      sidebarLayout(</span>
+<span id="cb8-10"><a href="#cb8-10"></a>          sidebarPanel(</span>
+<span id="cb8-11"><a href="#cb8-11"></a>            radioButtons("residuals", "Show residuals", choices = c("None", "Residuals", "Squared-residuals"), selected = "None"),</span>
+<span id="cb8-12"><a href="#cb8-12"></a>            checkboxInput("best", "Show best model"),</span>
+<span id="cb8-13"><a href="#cb8-13"></a>            textOutput("slope"),</span>
+<span id="cb8-14"><a href="#cb8-14"></a>            textOutput("intercept")</span>
+<span id="cb8-15"><a href="#cb8-15"></a>         ),</span>
+<span id="cb8-16"><a href="#cb8-16"></a>            # Show a plot of the generated distribution</span>
+<span id="cb8-17"><a href="#cb8-17"></a>          mainPanel(</span>
+<span id="cb8-18"><a href="#cb8-18"></a>             plotOutput("plot", click = "plot_click"),</span>
+<span id="cb8-19"><a href="#cb8-19"></a>             h3(textOutput("SumSq"))</span>
+<span id="cb8-20"><a href="#cb8-20"></a>          )</span>
+<span id="cb8-21"><a href="#cb8-21"></a>))</span>
+<span id="cb8-22"><a href="#cb8-22"></a></span>
+<span id="cb8-23"><a href="#cb8-23"></a>server &lt;- function(input, output, session) {</span>
+<span id="cb8-24"><a href="#cb8-24"></a>  # make some data</span>
+<span id="cb8-25"><a href="#cb8-25"></a>  set.seed(Sys.Date())</span>
+<span id="cb8-26"><a href="#cb8-26"></a>  data &lt;- data.frame(x = 1:10, y = rnorm(10, 1:10))</span>
+<span id="cb8-27"><a href="#cb8-27"></a>  xlab &lt;- "Predictor"</span>
+<span id="cb8-28"><a href="#cb8-28"></a>  ylab &lt;- "Response"</span>
+<span id="cb8-29"><a href="#cb8-29"></a>  </span>
+<span id="cb8-30"><a href="#cb8-30"></a>  v &lt;- reactiveValues(</span>
+<span id="cb8-31"><a href="#cb8-31"></a>    click1 = NULL,  # Represents the first mouse click, if any</span>
+<span id="cb8-32"><a href="#cb8-32"></a>    intercept = NULL,    # After two clicks, this stores the intercept</span>
+<span id="cb8-33"><a href="#cb8-33"></a>    slope = NULL, # after two clicks, this stores the slope,</span>
+<span id="cb8-34"><a href="#cb8-34"></a>    pred = NULL,</span>
+<span id="cb8-35"><a href="#cb8-35"></a>    resid = NULL</span>
+<span id="cb8-36"><a href="#cb8-36"></a>  )</span>
+<span id="cb8-37"><a href="#cb8-37"></a></span>
+<span id="cb8-38"><a href="#cb8-38"></a>  # Handle clicks on the plot</span>
+<span id="cb8-39"><a href="#cb8-39"></a> observeEvent(input$plot_click, {</span>
+<span id="cb8-40"><a href="#cb8-40"></a>    if (is.null(v$click1)) {</span>
+<span id="cb8-41"><a href="#cb8-41"></a>      # We don't have a first click, so this is the first click</span>
+<span id="cb8-42"><a href="#cb8-42"></a>      v$click1 &lt;- input$plot_click</span>
+<span id="cb8-43"><a href="#cb8-43"></a>    } else {</span>
+<span id="cb8-44"><a href="#cb8-44"></a>      # We already had a first click, so this is the second click.</span>
+<span id="cb8-45"><a href="#cb8-45"></a>      # Make slope and intercept from the previous click and this one.</span>
+<span id="cb8-46"><a href="#cb8-46"></a>      v$slope &lt;- (input$plot_click$y - v$click1$y)/(input$plot_click$x - v$click1$x)</span>
+<span id="cb8-47"><a href="#cb8-47"></a>      v$intercept &lt;- (input$plot_click$y + v$click1$y)/2 - v$slope * (input$plot_click$x + v$click1$x)/2</span>
+<span id="cb8-48"><a href="#cb8-48"></a></span>
+<span id="cb8-49"><a href="#cb8-49"></a>      # predictions &amp; residuals</span>
+<span id="cb8-50"><a href="#cb8-50"></a>       v$pred &lt;- v$intercept +  v$slope * data$x</span>
+<span id="cb8-51"><a href="#cb8-51"></a>       v$resid &lt;- v$pred - data$y</span>
+<span id="cb8-52"><a href="#cb8-52"></a>      # And clear the first click so the next click starts a new line.</span>
+<span id="cb8-53"><a href="#cb8-53"></a>      v$click1 &lt;- NULL</span>
+<span id="cb8-54"><a href="#cb8-54"></a>    }</span>
+<span id="cb8-55"><a href="#cb8-55"></a>  })</span>
+<span id="cb8-56"><a href="#cb8-56"></a></span>
+<span id="cb8-57"><a href="#cb8-57"></a></span>
+<span id="cb8-58"><a href="#cb8-58"></a> output$plot &lt;- renderPlot({</span>
+<span id="cb8-59"><a href="#cb8-59"></a>   par(cex = 1.5, mar = c(3, 3, 1, 1), tcl = -0.1, mgp = c(2, 0.2, 0))</span>
+<span id="cb8-60"><a href="#cb8-60"></a>   plot(data, pch = 16, xlab = xlab, ylab = ylab)</span>
+<span id="cb8-61"><a href="#cb8-61"></a>   if (input$best) {</span>
+<span id="cb8-62"><a href="#cb8-62"></a>     mod &lt;- lm(y ~ x, data = data)</span>
+<span id="cb8-63"><a href="#cb8-63"></a>     abline(mod, colour = "navy", lty = "dashed")</span>
+<span id="cb8-64"><a href="#cb8-64"></a>   }</span>
+<span id="cb8-65"><a href="#cb8-65"></a>   if (!is.null(v$intercept)) {</span>
+<span id="cb8-66"><a href="#cb8-66"></a>     abline(a = v$intercept, b = v$slope)</span>
+<span id="cb8-67"><a href="#cb8-67"></a>     if (input$residuals == "Residuals") {</span>
+<span id="cb8-68"><a href="#cb8-68"></a>       segments(</span>
+<span id="cb8-69"><a href="#cb8-69"></a>         x0 = data$x,</span>
+<span id="cb8-70"><a href="#cb8-70"></a>         x1 = data$x,</span>
+<span id="cb8-71"><a href="#cb8-71"></a>         y0 = data$y,</span>
+<span id="cb8-72"><a href="#cb8-72"></a>         y1 = v$pred</span>
+<span id="cb8-73"><a href="#cb8-73"></a>       )</span>
+<span id="cb8-74"><a href="#cb8-74"></a>     } else if (input$residuals == "Squared-residuals") {</span>
+<span id="cb8-75"><a href="#cb8-75"></a>       w   &lt;- par("pin")[1] / diff(par("usr")[1:2])</span>
+<span id="cb8-76"><a href="#cb8-76"></a>       h   &lt;- par("pin")[2] / diff(par("usr")[3:4])</span>
+<span id="cb8-77"><a href="#cb8-77"></a>       asp &lt;- w/h</span>
+<span id="cb8-78"><a href="#cb8-78"></a>       rect(xleft = ifelse(v$resid &lt; 0,  data$x, data$x + v$resid / asp),</span>
+<span id="cb8-79"><a href="#cb8-79"></a>            ybottom = ifelse(v$resid &lt; 0, v$pred, data$y),</span>
+<span id="cb8-80"><a href="#cb8-80"></a>            xright = ifelse(v$resid &lt; 0, data$x + v$resid / asp, data$x),</span>
+<span id="cb8-81"><a href="#cb8-81"></a>            ytop = ifelse(v$resid &lt; 0, data$y, v$pred),</span>
+<span id="cb8-82"><a href="#cb8-82"></a>            col = "#83242455", border = "#832424")</span>
+<span id="cb8-83"><a href="#cb8-83"></a>     }</span>
+<span id="cb8-84"><a href="#cb8-84"></a>     </span>
+<span id="cb8-85"><a href="#cb8-85"></a>   }</span>
+<span id="cb8-86"><a href="#cb8-86"></a> })</span>
+<span id="cb8-87"><a href="#cb8-87"></a> output$SumSq &lt;- renderText({</span>
+<span id="cb8-88"><a href="#cb8-88"></a>   if (is.null(v$click1) &amp;&amp; is.null(v$intercept)) { # initial state</span>
+<span id="cb8-89"><a href="#cb8-89"></a>     "Click on the plot to start a line"</span>
+<span id="cb8-90"><a href="#cb8-90"></a>   } else if (!is.null(v$click1)) { #after one click</span>
+<span id="cb8-91"><a href="#cb8-91"></a>      "Click again to finsh a line"</span>
+<span id="cb8-92"><a href="#cb8-92"></a>   } else if(input$residuals == "None") {</span>
+<span id="cb8-93"><a href="#cb8-93"></a>     "Use radio buttons to display residuals"</span>
+<span id="cb8-94"><a href="#cb8-94"></a>   } else {</span>
+<span id="cb8-95"><a href="#cb8-95"></a>      paste0("Sum of squares = ", signif(sum(v$resid ^ 2), 3))</span>
+<span id="cb8-96"><a href="#cb8-96"></a>   }</span>
+<span id="cb8-97"><a href="#cb8-97"></a></span>
+<span id="cb8-98"><a href="#cb8-98"></a> })</span>
+<span id="cb8-99"><a href="#cb8-99"></a>    output$slope &lt;- renderText({</span>
+<span id="cb8-100"><a href="#cb8-100"></a>     if (!is.null(v$slope)) {</span>
+<span id="cb8-101"><a href="#cb8-101"></a>       paste0("Slope = ", signif(v$slope, 3))</span>
+<span id="cb8-102"><a href="#cb8-102"></a>     } else {</span>
+<span id="cb8-103"><a href="#cb8-103"></a>       ""</span>
+<span id="cb8-104"><a href="#cb8-104"></a>     }</span>
+<span id="cb8-105"><a href="#cb8-105"></a>   })</span>
+<span id="cb8-106"><a href="#cb8-106"></a>  output$intercept &lt;- renderText({</span>
+<span id="cb8-107"><a href="#cb8-107"></a>     if (!is.null(v$intercept)) {</span>
+<span id="cb8-108"><a href="#cb8-108"></a>       paste0("Intercept = ", signif(v$intercept, 3))</span>
+<span id="cb8-109"><a href="#cb8-109"></a>     } else {</span>
+<span id="cb8-110"><a href="#cb8-110"></a>       ""</span>
+<span id="cb8-111"><a href="#cb8-111"></a>     }</span>
+<span id="cb8-112"><a href="#cb8-112"></a>   })</span>
+<span id="cb8-113"><a href="#cb8-113"></a>}</span>
+<span id="cb8-114"><a href="#cb8-114"></a></span>
+<span id="cb8-115"><a href="#cb8-115"></a>shinyApp(ui, server)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="calculating-beta" class="slide level2">
 <h2>Calculating <span class="math inline">\(\beta\)</span></h2>
@@ -625,10 +830,10 @@ sample estimates:
 <section id="fitting-a-least-squares-model-in-r" class="slide level2">
 <h2>Fitting a least-squares model in R</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>gentoo <span class="ot">&lt;-</span> penguins <span class="sc">|&gt;</span> <span class="fu">filter</span>(species <span class="sc">==</span> <span class="st">"Gentoo"</span>)</span>
-<span id="cb7-2"><a href="#cb7-2"></a></span>
-<span id="cb7-3"><a href="#cb7-3"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> body_mass_g, <span class="at">data =</span> gentoo)</span>
-<span id="cb7-4"><a href="#cb7-4"></a>mod</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>gentoo <span class="ot">&lt;-</span> penguins <span class="sc">|&gt;</span> <span class="fu">filter</span>(species <span class="sc">==</span> <span class="st">"Gentoo"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2"></a></span>
+<span id="cb9-3"><a href="#cb9-3"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> body_mass_g, <span class="at">data =</span> gentoo)</span>
+<span id="cb9-4"><a href="#cb9-4"></a>mod</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -643,7 +848,7 @@ Coefficients:
 <section id="summary" class="slide level2">
 <h2>Summary()</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">summary</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">summary</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -712,7 +917,7 @@ Can be negative</p>
 <h2>Anova</h2>
 <p><span class="math display">\[F = \frac{\color{blue}{SS_{regression}}/df_{regression}}{\color{green}{SS_{residual}}/df_{residual}}\]</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Anova Table (Type II tests)
 
@@ -727,8 +932,113 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </section>
 <section id="the-f-distribution" class="slide level2">
 <h2>The F distribution</h2>
-
-<img data-src="lecture_7_linear_regression1_files/figure-revealjs/F-1.png" width="480" class="r-stretch"></section>
+<div class="sourceCode" id="cb15" data-engine="r"><pre class="sourceCode numberSource shinylive-r number-lines code-with-copy"><code class="sourceCode"><span id="cb15-1"><a href="#cb15-1"></a>#| label: regression-line-ss-app</span>
+<span id="cb15-2"><a href="#cb15-2"></a>#| standalone: true</span>
+<span id="cb15-3"><a href="#cb15-3"></a>#| viewerHeight: 600</span>
+<span id="cb15-4"><a href="#cb15-4"></a>library(shiny)</span>
+<span id="cb15-5"><a href="#cb15-5"></a> ui &lt;- fluidPage(</span>
+<span id="cb15-6"><a href="#cb15-6"></a>  </span>
+<span id="cb15-7"><a href="#cb15-7"></a>      # Application title</span>
+<span id="cb15-8"><a href="#cb15-8"></a>      titlePanel("F test"),</span>
+<span id="cb15-9"><a href="#cb15-9"></a>  </span>
+<span id="cb15-10"><a href="#cb15-10"></a>      # Sidebar with a slider input for number of bins</span>
+<span id="cb15-11"><a href="#cb15-11"></a>      sidebarLayout(</span>
+<span id="cb15-12"><a href="#cb15-12"></a>          sidebarPanel(</span>
+<span id="cb15-13"><a href="#cb15-13"></a>            HTML('</span>
+<span id="cb15-14"><a href="#cb15-14"></a>&lt;style&gt;</span>
+<span id="cb15-15"><a href="#cb15-15"></a>.frac {</span>
+<span id="cb15-16"><a href="#cb15-16"></a>    display: inline-block;</span>
+<span id="cb15-17"><a href="#cb15-17"></a>    position: relative;</span>
+<span id="cb15-18"><a href="#cb15-18"></a>    vertical-align: middle;</span>
+<span id="cb15-19"><a href="#cb15-19"></a>    letter-spacing: 0.001em;</span>
+<span id="cb15-20"><a href="#cb15-20"></a>    text-align: center;</span>
+<span id="cb15-21"><a href="#cb15-21"></a>}</span>
+<span id="cb15-22"><a href="#cb15-22"></a>.frac &gt; span {</span>
+<span id="cb15-23"><a href="#cb15-23"></a>    display: block;</span>
+<span id="cb15-24"><a href="#cb15-24"></a>    padding: 0.1em;</span>
+<span id="cb15-25"><a href="#cb15-25"></a>}</span>
+<span id="cb15-26"><a href="#cb15-26"></a>.frac span.bottom {</span>
+<span id="cb15-27"><a href="#cb15-27"></a>    border-top: thin solid black;</span>
+<span id="cb15-28"><a href="#cb15-28"></a>}</span>
+<span id="cb15-29"><a href="#cb15-29"></a>.frac span.symbol {</span>
+<span id="cb15-30"><a href="#cb15-30"></a>    display: none;</span>
+<span id="cb15-31"><a href="#cb15-31"></a>} </span>
+<span id="cb15-32"><a href="#cb15-32"></a>&lt;/style&gt;</span>
+<span id="cb15-33"><a href="#cb15-33"></a> &lt;div class="frac"&gt;</span>
+<span id="cb15-34"><a href="#cb15-34"></a>    &lt;h3&gt;&lt;span&gt;SS&lt;sub&gt;regression&lt;/sub&gt;/df&lt;sub&gt;regression&lt;/sub&gt;&lt;/span&gt;&lt;/h3&gt;</span>
+<span id="cb15-35"><a href="#cb15-35"></a>    &lt;span class="symbol"&gt;/&lt;/span&gt;</span>
+<span id="cb15-36"><a href="#cb15-36"></a>    &lt;h3&gt;&lt;span class="bottom"&gt;SS&lt;sub&gt;residual&lt;/sub&gt;/df&lt;sub&gt;residual&lt;/sub&gt;&lt;/span&gt;&lt;/h3&gt;</span>
+<span id="cb15-37"><a href="#cb15-37"></a>&lt;/div&gt;</span>
+<span id="cb15-38"><a href="#cb15-38"></a>     '),</span>
+<span id="cb15-39"><a href="#cb15-39"></a>              sliderInput("numerator",</span>
+<span id="cb15-40"><a href="#cb15-40"></a>                          "Regression degrees of freedom:",</span>
+<span id="cb15-41"><a href="#cb15-41"></a>                          min = 1,</span>
+<span id="cb15-42"><a href="#cb15-42"></a>                          max = 10,</span>
+<span id="cb15-43"><a href="#cb15-43"></a>                          round = TRUE,</span>
+<span id="cb15-44"><a href="#cb15-44"></a>                          value = 1),</span>
+<span id="cb15-45"><a href="#cb15-45"></a>              sliderInput("denominator",</span>
+<span id="cb15-46"><a href="#cb15-46"></a>                          "Residual degrees of freedom:",</span>
+<span id="cb15-47"><a href="#cb15-47"></a>                          min = 1,</span>
+<span id="cb15-48"><a href="#cb15-48"></a>                          max = 10,</span>
+<span id="cb15-49"><a href="#cb15-49"></a>                          round = TRUE,</span>
+<span id="cb15-50"><a href="#cb15-50"></a>                          value = 5),</span>
+<span id="cb15-51"><a href="#cb15-51"></a>              radioButtons("alpha",</span>
+<span id="cb15-52"><a href="#cb15-52"></a>                          "\u03b1:",</span>
+<span id="cb15-53"><a href="#cb15-53"></a>                          c("p = 0.05" = "0.05", "p = 0.01" = "0.01")</span>
+<span id="cb15-54"><a href="#cb15-54"></a>              )</span>
+<span id="cb15-55"><a href="#cb15-55"></a>          ),</span>
+<span id="cb15-56"><a href="#cb15-56"></a>  </span>
+<span id="cb15-57"><a href="#cb15-57"></a>          # Show a plot of the generated distribution</span>
+<span id="cb15-58"><a href="#cb15-58"></a>          mainPanel(</span>
+<span id="cb15-59"><a href="#cb15-59"></a>             plotOutput("distPlot")</span>
+<span id="cb15-60"><a href="#cb15-60"></a>          )</span>
+<span id="cb15-61"><a href="#cb15-61"></a>      )</span>
+<span id="cb15-62"><a href="#cb15-62"></a>  )</span>
+<span id="cb15-63"><a href="#cb15-63"></a></span>
+<span id="cb15-64"><a href="#cb15-64"></a></span>
+<span id="cb15-65"><a href="#cb15-65"></a></span>
+<span id="cb15-66"><a href="#cb15-66"></a># Define server logic required to draw a histogram</span>
+<span id="cb15-67"><a href="#cb15-67"></a>f_test_server &lt;- function(input, output) {</span>
+<span id="cb15-68"><a href="#cb15-68"></a></span>
+<span id="cb15-69"><a href="#cb15-69"></a>    output$distPlot &lt;- renderPlot({</span>
+<span id="cb15-70"><a href="#cb15-70"></a>        # generate bins based on input$bins from ui.R</span>
+<span id="cb15-71"><a href="#cb15-71"></a>       axis_max &lt;- 500</span>
+<span id="cb15-72"><a href="#cb15-72"></a>        xmax &lt;- min(axis_max, qf(p = 0.995, df1 = input$numerator, df2 = input$denominator))</span>
+<span id="cb15-73"><a href="#cb15-73"></a>        x    &lt;- seq(0, ceiling(xmax), length.out = 200)</span>
+<span id="cb15-74"><a href="#cb15-74"></a>        y &lt;- df(x, df1 = input$numerator, df2 = input$denominator)</span>
+<span id="cb15-75"><a href="#cb15-75"></a>        x &lt;- x[is.finite(y)]</span>
+<span id="cb15-76"><a href="#cb15-76"></a>        y &lt;- y[is.finite(y)]</span>
+<span id="cb15-77"><a href="#cb15-77"></a>        </span>
+<span id="cb15-78"><a href="#cb15-78"></a>        xthresh &lt;- qf(p = 1 - as.numeric(input$alpha), df1 = input$numerator, df2 = input$denominator)</span>
+<span id="cb15-79"><a href="#cb15-79"></a>        if(xthresh &gt; axis_max) {</span>
+<span id="cb15-80"><a href="#cb15-80"></a>          xthresh &lt;- NA_real_</span>
+<span id="cb15-81"><a href="#cb15-81"></a>          x2 &lt;- numeric(0)</span>
+<span id="cb15-82"><a href="#cb15-82"></a>        } else {</span>
+<span id="cb15-83"><a href="#cb15-83"></a>          x2 &lt;- seq(xthresh, ceiling(xmax), length.out = 100)</span>
+<span id="cb15-84"><a href="#cb15-84"></a>        }</span>
+<span id="cb15-85"><a href="#cb15-85"></a>        y2 &lt;- df(x2, df1 = input$numerator, df2 = input$denominator)</span>
+<span id="cb15-86"><a href="#cb15-86"></a>        df2 &lt;- data.frame(x = x2, y = y2)</span>
+<span id="cb15-87"><a href="#cb15-87"></a>        </span>
+<span id="cb15-88"><a href="#cb15-88"></a>        par(cex = 1.5, mar = c(3, 3, 1, 1), tcl = -0.1, mgp = c(2, 0.2, 0))</span>
+<span id="cb15-89"><a href="#cb15-89"></a>        plot(x, y, type = "n", </span>
+<span id="cb15-90"><a href="#cb15-90"></a>             xlab = expression(italic(F)~value),</span>
+<span id="cb15-91"><a href="#cb15-91"></a>             ylab = "Density")</span>
+<span id="cb15-92"><a href="#cb15-92"></a>        polygon(c(x[1], x, x[length(x)]), c(0, y, 0), col = "grey80", border = NA)</span>
+<span id="cb15-93"><a href="#cb15-93"></a>        polygon(c(x2[1], x2, x2[length(x2)]), c(0, y2, 0), col =  "#832424", border = NA)</span>
+<span id="cb15-94"><a href="#cb15-94"></a>        lines(x, y)</span>
+<span id="cb15-95"><a href="#cb15-95"></a>        text(xthresh, </span>
+<span id="cb15-96"><a href="#cb15-96"></a>             y2[1] + 0.05 * (max(y)- y2[1]), </span>
+<span id="cb15-97"><a href="#cb15-97"></a>             labels = bquote(italic(F)[.(input$numerator)*','~.( input$denominator)*';'~.(input$alpha)]==.(round(xthresh, 2))), </span>
+<span id="cb15-98"><a href="#cb15-98"></a>             adj = 0</span>
+<span id="cb15-99"><a href="#cb15-99"></a>            )</span>
+<span id="cb15-100"><a href="#cb15-100"></a></span>
+<span id="cb15-101"><a href="#cb15-101"></a> </span>
+<span id="cb15-102"><a href="#cb15-102"></a>        #   annotate(geom = "text", x = , y = y2[1] + 0.05 * (max(y[is.finite(y)])- y2[1]), label =, hjust = 0, vjust = 0, parse = TRUE, size = 5)</span>
+<span id="cb15-103"><a href="#cb15-103"></a>    })</span>
+<span id="cb15-104"><a href="#cb15-104"></a>}</span>
+<span id="cb15-105"><a href="#cb15-105"></a>  # Run the application</span>
+<span id="cb15-106"><a href="#cb15-106"></a>  shinyApp(ui = ui, server = f_test_server)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
 <section id="categorical-predictors" class="slide level2">
 <h2>Categorical predictors</h2>
 <div class="columns">
@@ -750,8 +1060,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <section id="fitting-the-model" class="slide level2">
 <h2>Fitting the model</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> species, <span class="at">data =</span> penguins)</span>
-<span id="cb13-2"><a href="#cb13-2"></a>mod2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> species, <span class="at">data =</span> penguins)</span>
+<span id="cb16-2"><a href="#cb16-2"></a>mod2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -766,7 +1076,7 @@ Coefficients:
 <section id="anova-1" class="slide level2">
 <h2>Anova</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Anova Table (Type II tests)
 
@@ -783,7 +1093,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <section id="summary-1" class="slide level2">
 <h2>Summary</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">summary</span>(mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">summary</span>(mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -824,13 +1134,13 @@ F-statistic:  344 on 2 and 339 DF,  p-value: &lt;2e-16</code></pre>
 <h2>Forcing the reference level</h2>
 <p>Very useful when you have a control</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>penguins2 <span class="ot">&lt;-</span> penguins <span class="sc">|&gt;</span> </span>
-<span id="cb19-2"><a href="#cb19-2"></a>  <span class="fu">mutate</span>(<span class="at">species =</span> <span class="fu">factor</span>(species, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Gentoo"</span>, <span class="st">"Adelie"</span>, <span class="st">"Chinstrap"</span>)))</span>
-<span id="cb19-3"><a href="#cb19-3"></a></span>
-<span id="cb19-4"><a href="#cb19-4"></a>mod3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> species, <span class="at">data =</span> penguins2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>penguins2 <span class="ot">&lt;-</span> penguins <span class="sc">|&gt;</span> </span>
+<span id="cb22-2"><a href="#cb22-2"></a>  <span class="fu">mutate</span>(<span class="at">species =</span> <span class="fu">factor</span>(species, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Gentoo"</span>, <span class="st">"Adelie"</span>, <span class="st">"Chinstrap"</span>)))</span>
+<span id="cb22-3"><a href="#cb22-3"></a></span>
+<span id="cb22-4"><a href="#cb22-4"></a>mod3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> species, <span class="at">data =</span> penguins2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(mod3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(mod3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 5
   term             estimate std.error statistic   p.value
@@ -843,13 +1153,15 @@ F-statistic:  344 on 2 and 339 DF,  p-value: &lt;2e-16</code></pre>
 </section>
 <section id="multiple-comparisons" class="slide level2">
 <h2>Multiple comparisons</h2>
-<p>Instead of changing the order of the levels of the predictor variable to compare all groups against each other, use a post-hoc multiple comparisons test</p>
+<ul>
+<li>Don’t changing the order of the levels of the predictor variable to compare all groups against each other</li>
+<li>use a post-hoc multiple comparisons test</li>
+</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="co">#multcomp loads plyr package which has lots of conflicts with dplyr</span></span>
-<span id="cb22-2"><a href="#cb22-2"></a><span class="co"># Solution - use conflicted package or multcomp::glht</span></span>
-<span id="cb22-3"><a href="#cb22-3"></a></span>
-<span id="cb22-4"><a href="#cb22-4"></a>mc <span class="ot">&lt;-</span> multcomp<span class="sc">::</span><span class="fu">glht</span>(mod2, <span class="at">linfct =</span> multcomp<span class="sc">::</span><span class="fu">mcp</span>(<span class="at">species =</span> <span class="st">"Tukey"</span>))</span>
-<span id="cb22-5"><a href="#cb22-5"></a><span class="fu">summary</span>(mc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="fu">library</span>(multcomp) <span class="co"># need to be using conflicted package or disaster</span></span>
+<span id="cb25-2"><a href="#cb25-2"></a></span>
+<span id="cb25-3"><a href="#cb25-3"></a>mc <span class="ot">&lt;-</span> <span class="fu">glht</span>(mod2, <span class="at">linfct =</span> <span class="fu">mcp</span>(<span class="at">species =</span> <span class="st">"Tukey"</span>))</span>
+<span id="cb25-4"><a href="#cb25-4"></a><span class="fu">summary</span>(mc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section class="slide level2">
@@ -878,12 +1190,12 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 <section class="slide level2">
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>oldpar <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="fl">5.1</span>, <span class="fl">8.1</span>, <span class="fl">4.1</span>, <span class="fl">2.1</span>))<span class="co"># set baseplot margins </span></span>
-<span id="cb24-2"><a href="#cb24-2"></a><span class="fu">plot</span>(mc)</span>
-<span id="cb24-3"><a href="#cb24-3"></a><span class="fu">par</span>(oldpar) <span class="co"># revert margin size</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="fu">ggplot</span>(<span class="fu">confint</span>(mc), <span class="fu">aes</span>(<span class="at">x =</span> lhs, <span class="at">y =</span> estimate, <span class="at">ymin =</span> lwr, <span class="at">ymax =</span> upr)) <span class="sc">+</span></span>
+<span id="cb27-2"><a href="#cb27-2"></a>   <span class="fu">geom_pointrange</span>() <span class="sc">+</span></span>
+<span id="cb27-3"><a href="#cb27-3"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="lecture_7_linear_regression1_files/figure-revealjs/multicomp-1.png" width="960" class="r-stretch"></section>
+<img data-src="lecture_7_linear_regression1_files/figure-revealjs/multicomp-figure-1.png" width="960" class="r-stretch"></section>
 <section id="assumptions-of-least-squares" class="slide level2">
 <h2>Assumptions of Least Squares</h2>
 <ol type="1">
@@ -898,8 +1210,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 <section id="diagnostic-plots" class="slide level2">
 <h2>Diagnostic plots</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="fu">library</span>(ggfortify)</span>
-<span id="cb25-2"><a href="#cb25-2"></a><span class="fu">autoplot</span>(mod) <span class="co"># can also use plot(mod)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="fu">library</span>(ggfortify)</span>
+<span id="cb28-2"><a href="#cb28-2"></a><span class="fu">autoplot</span>(mod) <span class="co"># can also use plot(mod) or performance::check_model(mod)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="lecture_7_linear_regression1_files/figure-revealjs/all-diagnostics-1.png" width="672" class="r-stretch"></section>
@@ -915,7 +1227,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 <p>Want flat line</p>
 </div><div class="column" style="width:50%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="fu">autoplot</span>(mod, <span class="at">which =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a><span class="fu">autoplot</span>(mod, <span class="at">which =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img data-src="lecture_7_linear_regression1_files/figure-revealjs/diagnostic-1-1.png" width="768"></p>
 </div>
@@ -935,7 +1247,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 <p>Points will lie on straight line if normally distributed</p>
 </div><div class="column" style="width:50%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="fu">autoplot</span>(mod, <span class="at">which =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a><span class="fu">autoplot</span>(mod, <span class="at">which =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img data-src="lecture_7_linear_regression1_files/figure-revealjs/diagnostic-2-1.png" width="960"></p>
 </div>
@@ -955,7 +1267,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 <p>Want flat line</p>
 </div><div class="column" style="width:50%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="fu">autoplot</span>(mod, <span class="at">which =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a><span class="fu">autoplot</span>(mod, <span class="at">which =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img data-src="lecture_7_linear_regression1_files/figure-revealjs/diagnostic-3-1.png" width="768"></p>
 </div>
@@ -972,7 +1284,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 <p>Points with a D &gt; 4/n merit examination</p>
 </div><div class="column" style="width:50%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a><span class="fu">autoplot</span>(mod, <span class="at">which =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a><span class="fu">autoplot</span>(mod, <span class="at">which =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img data-src="lecture_7_linear_regression1_files/figure-revealjs/diagnostic-4-1.png" width="768"></p>
 </div>
@@ -988,7 +1300,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 <p>Observations with extreme leverage should be checked</p>
 </div><div class="column" style="width:50%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a><span class="fu">autoplot</span>(mod, <span class="at">which =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1"></a><span class="fu">autoplot</span>(mod, <span class="at">which =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img data-src="lecture_7_linear_regression1_files/figure-revealjs/diagnostic-5-1.png" width="768"></p>
 </div>
@@ -1004,7 +1316,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 <p>Check extreme observations</p>
 </div><div class="column" style="width:50%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a><span class="fu">autoplot</span>(mod, <span class="at">which =</span> <span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a><span class="fu">autoplot</span>(mod, <span class="at">which =</span> <span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img data-src="lecture_7_linear_regression1_files/figure-revealjs/diagnostic-6-1.png" width="768"></p>
 </div>
@@ -1029,7 +1341,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 <section id="predict" class="slide level2">
 <h2>Predict</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a><span class="fu">predict</span>(<span class="at">object =</span> mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1"></a><span class="fu">predict</span>(<span class="at">object =</span> mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    1     2     3     4     5     6     7     8     9    10    11    12    13 
 45.15 50.06 44.94 50.06 48.83 45.35 46.38 48.01 44.74 47.81 45.76 49.44 45.76 
@@ -1057,8 +1369,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 <section id="predict-with-new-data" class="slide level2">
 <h2>Predict with new data</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a>nd <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">body_mass_g =</span> <span class="fu">c</span>(<span class="dv">5000</span>, <span class="dv">7000</span>))</span>
-<span id="cb34-2"><a href="#cb34-2"></a><span class="fu">predict</span>(mod, <span class="at">newdata =</span> nd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1"></a>nd <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">body_mass_g =</span> <span class="fu">c</span>(<span class="dv">5000</span>, <span class="dv">7000</span>))</span>
+<span id="cb37-2"><a href="#cb37-2"></a><span class="fu">predict</span>(mod, <span class="at">newdata =</span> nd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    1     2 
 47.19 55.38 </code></pre>
@@ -1069,7 +1381,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 <h2>Predictions with standard errors</h2>
 <p>Uncertainty of the mean</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a><span class="fu">predict</span>(mod, <span class="at">newdata =</span> nd, <span class="at">se.fit =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a><span class="fu">predict</span>(mod, <span class="at">newdata =</span> nd, <span class="at">se.fit =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$fit
     1     2 
@@ -1090,7 +1402,7 @@ $residual.scale
 <section id="predictions-with-confidence-interval" class="slide level2">
 <h2>Predictions with confidence interval</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1"></a><span class="fu">predict</span>(mod, <span class="at">newdata =</span> nd, <span class="at">interval =</span> <span class="st">"confidence"</span>, <span class="at">level =</span> <span class="fl">0.95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a><span class="fu">predict</span>(mod, <span class="at">newdata =</span> nd, <span class="at">interval =</span> <span class="st">"confidence"</span>, <span class="at">level =</span> <span class="fl">0.95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    fit   lwr   upr
 1 47.19 46.78 47.61
@@ -1102,11 +1414,11 @@ $residual.scale
 
 <p>Often easier to use <code>broom::augment()</code></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a><span class="fu">augment</span>(mod, <span class="at">interval =</span> <span class="st">"confidence"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb40-2"><a href="#cb40-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> body_mass_g, <span class="at">y =</span> bill_length_mm)) <span class="sc">+</span></span>
-<span id="cb40-3"><a href="#cb40-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb40-4"><a href="#cb40-4"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> .lower, <span class="at">ymax =</span> .upper), <span class="at">alpha =</span> .<span class="dv">3</span>)<span class="sc">+</span></span>
-<span id="cb40-5"><a href="#cb40-5"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1"></a><span class="fu">augment</span>(mod, <span class="at">interval =</span> <span class="st">"confidence"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb43-2"><a href="#cb43-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> body_mass_g, <span class="at">y =</span> bill_length_mm)) <span class="sc">+</span></span>
+<span id="cb43-3"><a href="#cb43-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb43-4"><a href="#cb43-4"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> .lower, <span class="at">ymax =</span> .upper), <span class="at">alpha =</span> .<span class="dv">3</span>)<span class="sc">+</span></span>
+<span id="cb43-5"><a href="#cb43-5"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="lecture_7_linear_regression1_files/figure-revealjs/augment-1.png" width="960" class="r-stretch"></section>
@@ -1114,11 +1426,11 @@ $residual.scale
 <h2>Predictions interval</h2>
 <p>Where will a new observation probably be</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a><span class="fu">augment</span>(mod, <span class="at">interval =</span> <span class="st">"prediction"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb41-2"><a href="#cb41-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> body_mass_g, <span class="at">y =</span> bill_length_mm)) <span class="sc">+</span></span>
-<span id="cb41-3"><a href="#cb41-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb41-4"><a href="#cb41-4"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> .lower, <span class="at">ymax =</span> .upper), <span class="at">alpha =</span> .<span class="dv">3</span>)<span class="sc">+</span></span>
-<span id="cb41-5"><a href="#cb41-5"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1"></a><span class="fu">augment</span>(mod, <span class="at">interval =</span> <span class="st">"prediction"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb44-2"><a href="#cb44-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> body_mass_g, <span class="at">y =</span> bill_length_mm)) <span class="sc">+</span></span>
+<span id="cb44-3"><a href="#cb44-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb44-4"><a href="#cb44-4"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> .lower, <span class="at">ymax =</span> .upper), <span class="at">alpha =</span> <span class="fl">0.3</span>)<span class="sc">+</span></span>
+<span id="cb44-5"><a href="#cb44-5"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 
@@ -1342,12 +1654,15 @@ $residual.scale
       // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
       // slide changes (different for each slide format).
       (function () {
-        function fireSlideChanged(previousSlide, currentSlide) {
-
-          // dispatch for htmlwidgets
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
           const event = window.document.createEvent("Event");
           event.initEvent("slideenter", true, true);
           window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
 
           // dispatch for shiny
           if (window.jQuery) {
@@ -1358,13 +1673,6 @@ $residual.scale
               window.jQuery(currentSlide).trigger("shown");
             }
           }
-        }
-
-        // hookup for reveal
-        if (window.Reveal) {
-          window.Reveal.addEventListener("slidechanged", function(event) {
-            fireSlideChanged(event.previousSlide, event.currentSlide);
-          });
         }
 
         // hookup for slidy
