@@ -8,14 +8,15 @@ date-format: "D MMMM YYYY"
 format: 
   revealjs:
     theme: [default, css/custom.scss]
+    resources: 
+      - shinylive-sw.js
+filters:
+  - shinylive
 execute: 
   echo: true
   warning: false
   error: true
 ---
-
-
-
 
 
 ## Bivariate descriptive statistics
@@ -25,6 +26,8 @@ library("tidyverse")
 library("patchwork")
 library(broom)
 library(glue)
+library(conflicted)
+conflict_prefer_all("dplyr")
 theme_set(theme_bw(base_size = 18))
 data(penguins, package = "palmerpenguins")
 options(dplyr.print_min = 2, dplyr.print_max = 3, digits = 4)
@@ -215,56 +218,33 @@ Use when
 
 ## Correlation or linear model?
 
-Studying foram test composition and temperature
+Studying foraminifera test composition and temperature
 
 1) Experiment with forams in tanks at different temperatures.
 
-- test Mg concentration, tank temperature
-- test Mg concentration, test Ba concentration 
+- foram Mg concentration, tank temperature
+- foram Mg concentration, foram Ba concentration 
 
 2) Observational study of forams collected from the ocean.
 
-- test Mg concentration, Ocean temperature
+- foram Mg concentration, Ocean temperature
 - Ocean temperature, ocean Mg concentration
-- test Mg concentration, foram species
+- foram Mg concentration, foram species
+
+## Which distribution matters?
+
+{{< include includes/_x-distributions.qmd >}}
 
 ## Estimating $\beta$
 
 
-:::: {.columns}
-
-::: {.column width="50%"}
 Choose $\beta$ that minimise the sum of squares of residuals
 
 $$\sum_{i = 1}^{n}\epsilon_i^2 =   \sum_{i = 1}^{n}(y_i - (\beta_0 + \beta_1x_i))^2$$
-:::
 
-::: {.column width="50%"}
-```{r slope-anim, echo = FALSE, fig.height = 5, fig.width = 5, cache = TRUE}
-gentoo <- penguins |> filter(species == "Gentoo")
-library(gganimate)
+---
 
-betas <- tibble(b_0 = c(seq(41, 56, 3),  rep(47, 11)), 
-                b1 = c(rep(0, 7), seq(-0.01, 0.01, 0.0025), 0.00409), 
-                b0 = b_0 - b1 * mean(gentoo$body_mass_g, na.rm = TRUE)) |> 
-  mutate(n = 1:n()) |> 
-  rowwise() |> 
-  mutate(ss = sum((gentoo$bill_length_mm - (b0 + b1 * gentoo$body_mass_g))^2, na.rm = TRUE),
-         ss = round(ss))
-
-ggplot(gentoo, aes(x = body_mass_g, y = bill_length_mm)) +
-   geom_point() +
-   geom_abline(aes(intercept = b0, slope = b1), colour = "red", data = betas) + 
-  transition_states(n) +
-  labs(title = paste0("Sum squares: {betas %>% filter(n == closest_state) %>% pull(ss)} ")) +
-  ease_aes('linear')
-  
-  
-```
-:::
-
-::::
-
+{{< include includes/_regression-line-ss.qmd >}}
 
 ## Calculating $\beta$
 
@@ -408,18 +388,8 @@ car::Anova(mod)
 
 ## The F distribution
 
+{{< include includes/_f_test.qmd >}}
 
-```{r F, echo = FALSE, fig.height = 4, fig.width=5}
-tibble(x = seq(0.1, 10, length = 1000), 
-       y = df(x, df1 = 1, df2 = df.residual(mod)), 
-       fill = x >= qf(0.95, df1 = 1, df2 = 340, lower.tail = TRUE)) |> 
-  ggplot(aes(x = x, y = y, fill = fill)) +
-  geom_area(show.legend = FALSE) +
-  scale_fill_manual(values = c(`FALSE` = "grey60", `TRUE` = scales::muted("red"))) +
-  labs(x = "F", y = "Density")
-#pf(q = 19.9, df1 = 1, df2 = 340) 
-
-```
 
 ## Categorical predictors
 
@@ -509,14 +479,14 @@ broom::tidy(mod3)
 
 ## Multiple comparisons
 
-Instead of changing the order of the levels of the predictor variable to 
-compare all groups against each other, use a post-hoc multiple comparisons test
+- Don't changing the order of the levels of the predictor variable to 
+compare all groups against each other
+- use a post-hoc multiple comparisons test
 
 ```{r, results = 'hide'}
-#multcomp loads plyr package which has lots of conflicts with dplyr
-# Solution - use conflicted package or multcomp::glht
+library(multcomp) # need to be using conflicted package or disaster
 
-mc <- multcomp::glht(mod2, linfct = multcomp::mcp(species = "Tukey"))
+mc <- glht(mod2, linfct = mcp(species = "Tukey"))
 summary(mc)
 ```
 
@@ -528,10 +498,11 @@ summary(mc)
 
 ---
 
-```{r multicomp, fig.show='hold'}
-oldpar <- par(mar = c(5.1, 8.1, 4.1, 2.1))# set baseplot margins 
-plot(mc)
-par(oldpar) # revert margin size
+```{r}
+#| label: multicomp-figure
+ggplot(confint(mc), aes(x = lhs, y = estimate, ymin = lwr, ymax = upr)) +
+   geom_pointrange() +
+  labs(x = NULL)
 ```
 
 
@@ -549,7 +520,7 @@ Violation of assumptions cannot be detected using the _t_ or _F_ statistics or R
 
 ```{r all-diagnostics, fig.height = 6, fig.width = 7}
 library(ggfortify)
-autoplot(mod) # can also use plot(mod)
+autoplot(mod) # can also use plot(mod) or performance::check_model(mod)
 ```
 
 
@@ -762,6 +733,6 @@ Where will a new observation probably be
 augment(mod, interval = "prediction") |> 
   ggplot(aes(x = body_mass_g, y = bill_length_mm)) +
   geom_point() +
-  geom_ribbon(aes(ymin = .lower, ymax = .upper), alpha = .3)+
+  geom_ribbon(aes(ymin = .lower, ymax = .upper), alpha = 0.3)+
   geom_line(aes(y = .fitted))
 ```
