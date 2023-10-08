@@ -413,7 +413,7 @@ Get a data frame with
 
 - Male Gentoo penguins
 - Penguins with a mass > 1000 g
-- Pengins from Dream or Biscoe Island
+- Penguins from Dream or Biscoe Island
 
 
 
