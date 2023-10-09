@@ -43,7 +43,7 @@ We want to test whether Adelie penguins differ in body mass between islands.
 - Interpret the model coefficients
 - Is the model statistically significant?
 - Include the predicted mass with confidence interval on the plot
-- Do a post-hoc test to test for differences between pairs of islands (in real analysis only do this if overall model is significant) (Hint - use `multcomp` package but DO NOT use `library(multcomp)` - it also loads `plyr` and causes conflicts)
+- Do a post-hoc test to test for differences between pairs of islands (in real analysis only do this if overall model is significant) (Hint - use `multcomp` package - you need to have loaded `conflicted` package or `select` from `dplyr` will be masked)
 - plot the result of the post-hoc test and interpret the results
 
 ## Exploring diagnostic plots
