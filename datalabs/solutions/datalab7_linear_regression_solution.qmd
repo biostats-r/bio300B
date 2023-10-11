@@ -10,6 +10,8 @@ format: html
 library(tidyverse)
 library(broom)
 library(ggfortify)
+library(conflicted)
+conflict_prefer_all("dplyr", quiet = TRUE)
 data(penguins, package = "palmerpenguins")
 theme_set(theme_bw())
 ```
@@ -42,7 +44,11 @@ ct
 # extracting components with broom
 glance(ct) |> select(starts_with("conf"))
 
+
 # or without
+ct$conf.int
+
+# significant?
 ct$p.value < 0.05
 ```
 
@@ -51,8 +57,8 @@ ct$p.value < 0.05
 
 ```{r}
 corr <- cor(gentoo$bill_length_mm, gentoo$bill_depth_mm, use = "complete.obs")
-corr^2
-corr^2 * 100 # %
+corr ^ 2
+corr ^ 2 * 100 # %
 
 ```
 
@@ -217,16 +223,20 @@ island_mass_plot +
 ```
 
 
-- Do a post-hoc test to test for differences between pairs of islands (in real analysis only do this if overall model is significant) (Hint - use `multcomp` package but DO NOT use `library(multcomp)` - it also loads `plyr` and causes conflicts)
+- Do a post-hoc test to test for differences between pairs of islands (in real analysis only do this if overall model is significant) (Hint - use `multcomp` package - you need to have loaded `conflicted` package or `select` from `dplyr` will be masked)
 - plot the result of the post-hoc test and interpret the results
 
 ```{r}
 #| label: multcomp-plot
-
-mc <- multcomp::glht(model = mod2, linfct = multcomp::mcp(island = "Tukey"))
+library(multcomp)
+mc <- glht(model = mod2, linfct = mcp(island = "Tukey"))
 mc
 
 plot(mc)
+
+ggplot(confint(mc), aes(x = lhs, y = estimate, ymin = lwr, ymax = upr)) +
+  geom_pointrange()+
+  labs(x = NULL)
 ```
 
 
