@@ -319,8 +319,8 @@ summary(mod)
 
 ## Power needed for interactions
 
-- Main effect = ybar1 - ybar2
-- Interaction = (ybar1 - ybar2) - (ybar3 - ybar4)
+- Main effect = $\bar{y_1}$ - $\bar{y_2}$
+- Interaction = ($\bar{y_1}$ - $\bar{y_2}$) - ($\bar{y_3}$ - $\bar{y_4}$)
 
 ```{r}
 #| label: power-int
@@ -429,6 +429,20 @@ AIC weights - probability model is best of those tested
 dredge(full)
 ```
 
+## Inference
+
+Test small number of _a priori_ hypothesis.
+
+Use `anova()` to compare nested models
+
+H<sub>0</sub> there is no interaction between sex and species for predicting flipper length
+
+```{r}
+mod1 <- lm(body_mass_g ~ species + sex, data = penguins)
+mod2 <- lm(body_mass_g ~ species * sex, data = penguins)
+anova(mod1, mod2)
+```
+
 ## car::Anova vs anova
 
 
@@ -455,20 +469,6 @@ car::Anova(mod3)
 ```
 
 
-## Inference
-
-Test small number of _a priori_ hypothesis.
-
-Use `anova()` to compare nested models
-
-H<sub>0</sub> there is no interaction between sex and species for predicting flipper length
-
-```{r}
-mod1 <- lm(body_mass_g ~ species + sex, data = penguins)
-mod2 <- lm(body_mass_g ~ species * sex, data = penguins)
-anova(mod1, mod2)
-```
-
 ## Multicollinearity
 
 - Two or more predictor variables in a 
@@ -481,6 +481,14 @@ changes in the model or the data.
 
 - Solve by having lots of data
 
+--- 
+
+```{r}
+#| label: collinearity
+col <- performance::check_collinearity(full)
+col
+plot(col)
+```
 
 
 

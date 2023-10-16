@@ -12,7 +12,7 @@
   <meta name="generator" content="quarto-1.4.309">
 
   <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)">
-  <meta name="dcterms.date" content="2023-09-22">
+  <meta name="dcterms.date" content="2023-10-16">
   <title>Bio302 - Biostatistikk - Multiple Regression</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -409,7 +409,7 @@ Richard J. Telford (Richard.Telford@uib.no)
     </div>
 </div>
 
-  <p class="date">22 September 2023</p>
+  <p class="date">16 October 2023</p>
 </section>
 <section id="outline" class="slide level2">
 <h2>Outline</h2>
@@ -650,8 +650,8 @@ F-statistic: 14.6 on 3 and 147 DF,  p-value: 2.2e-08</code></pre>
 <section id="power-needed-for-interactions" class="slide level2">
 <h2>Power needed for interactions</h2>
 <ul>
-<li>Main effect = ybar1 - ybar2</li>
-<li>Interaction = (ybar1 - ybar2) - (ybar3 - ybar4)</li>
+<li>Main effect = <span class="math inline">\(\bar{y_1}\)</span> - <span class="math inline">\(\bar{y_2}\)</span></li>
+<li>Interaction = (<span class="math inline">\(\bar{y_1}\)</span> - <span class="math inline">\(\bar{y_2}\)</span>) - (<span class="math inline">\(\bar{y_3}\)</span> - <span class="math inline">\(\bar{y_4}\)</span>)</li>
 </ul>
 
 <img data-src="lecture_8_multiple_regression_files/figure-revealjs/power-int-1.png" width="960" class="r-stretch"></section>
@@ -907,11 +907,33 @@ Models ranked by AICc(x) </code></pre>
 </div>
 </div>
 </section>
+<section id="inference" class="slide level2">
+<h2>Inference</h2>
+<p>Test small number of <em>a priori</em> hypothesis.</p>
+<p>Use <code>anova()</code> to compare nested models</p>
+<p>H<sub>0</sub> there is no interaction between sex and species for predicting flipper length</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> species <span class="sc">+</span> sex, <span class="at">data =</span> penguins)</span>
+<span id="cb25-2"><a href="#cb25-2"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> species <span class="sc">*</span> sex, <span class="at">data =</span> penguins)</span>
+<span id="cb25-3"><a href="#cb25-3"></a><span class="fu">anova</span>(mod1, mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: body_mass_g ~ species + sex
+Model 2: body_mass_g ~ species * sex
+  Res.Df      RSS Df Sum of Sq    F Pr(&gt;F)    
+1    329 32979185                             
+2    327 31302628  2   1676557 8.76  2e-04 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
 <section id="caranova-vs-anova" class="slide level2">
 <h2>car::Anova vs anova</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> species <span class="sc">+</span> sex, <span class="at">data =</span> penguins)</span>
-<span id="cb25-2"><a href="#cb25-2"></a>mod3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> sex <span class="sc">+</span> species, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> species <span class="sc">+</span> sex, <span class="at">data =</span> penguins)</span>
+<span id="cb27-2"><a href="#cb27-2"></a>mod3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> sex <span class="sc">+</span> species, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
 <li>anova - tests terms sequentially</li>
@@ -921,7 +943,7 @@ Models ranked by AICc(x) </code></pre>
 <section class="slide level2">
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="fu">anova</span>(mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="fu">anova</span>(mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
@@ -933,7 +955,7 @@ Residuals 329 3.30e+07   100241
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="fu">anova</span>(mod3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a><span class="fu">anova</span>(mod3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
@@ -950,7 +972,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <section class="slide level2">
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Anova Table (Type II tests)
 
@@ -962,7 +984,7 @@ Residuals 3.30e+07 329
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(mod3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(mod3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Anova Table (Type II tests)
 
@@ -971,28 +993,6 @@ Response: body_mass_g
 sex       3.71e+07   1     370 &lt;2e-16 ***
 species   1.43e+08   2     715 &lt;2e-16 ***
 Residuals 3.30e+07 329                   
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
-</div>
-</div>
-</section>
-<section id="inference" class="slide level2">
-<h2>Inference</h2>
-<p>Test small number of <em>a priori</em> hypothesis.</p>
-<p>Use <code>anova()</code> to compare nested models</p>
-<p>H<sub>0</sub> there is no interaction between sex and species for predicting flipper length</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> species <span class="sc">+</span> sex, <span class="at">data =</span> penguins)</span>
-<span id="cb34-2"><a href="#cb34-2"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> species <span class="sc">*</span> sex, <span class="at">data =</span> penguins)</span>
-<span id="cb34-3"><a href="#cb34-3"></a><span class="fu">anova</span>(mod1, mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Analysis of Variance Table
-
-Model 1: body_mass_g ~ species + sex
-Model 2: body_mass_g ~ species * sex
-  Res.Df      RSS Df Sum of Sq    F Pr(&gt;F)    
-1    329 32979185                             
-2    327 31302628  2   1676557 8.76  2e-04 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
@@ -1005,8 +1005,38 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <li><p>Coefficient estimates may change erratically in response to small changes in the model or the data.</p></li>
 <li><p>Solve by having lots of data</p></li>
 </ul>
+</section>
+<section class="slide level2">
 
-<div class="footer footer-default">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a>col <span class="ot">&lt;-</span> performance<span class="sc">::</span><span class="fu">check_collinearity</span>(full)</span>
+<span id="cb36-2"><a href="#cb36-2"></a>col</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Check for Multicollinearity
+
+Low Correlation
+
+   Term  VIF     VIF 95% CI Increased SE Tolerance Tolerance 95% CI
+ island 3.73 [ 3.14,  4.49]         1.93      0.27     [0.22, 0.32]
+    sex 2.33 [ 2.00,  2.77]         1.53      0.43     [0.36, 0.50]
+
+Moderate Correlation
+
+              Term  VIF     VIF 95% CI Increased SE Tolerance Tolerance 95% CI
+    bill_length_mm 6.10 [ 5.06,  7.40]         2.47      0.16     [0.14, 0.20]
+     bill_depth_mm 6.10 [ 5.06,  7.41]         2.47      0.16     [0.14, 0.20]
+ flipper_length_mm 6.80 [ 5.63,  8.26]         2.61      0.15     [0.12, 0.18]
+
+High Correlation
+
+    Term   VIF     VIF 95% CI Increased SE Tolerance Tolerance 95% CI
+ species 63.52 [51.73, 78.06]         7.97      0.02     [0.01, 0.02]</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1"></a><span class="fu">plot</span>(col)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+
+<img data-src="lecture_8_multiple_regression_files/figure-revealjs/collinearity-1.png" width="960" class="r-stretch"><div class="footer footer-default">
 
 </div>
 </section>
@@ -1228,12 +1258,15 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
       // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
       // slide changes (different for each slide format).
       (function () {
-        function fireSlideChanged(previousSlide, currentSlide) {
-
-          // dispatch for htmlwidgets
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
           const event = window.document.createEvent("Event");
           event.initEvent("slideenter", true, true);
           window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
 
           // dispatch for shiny
           if (window.jQuery) {
@@ -1244,13 +1277,6 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
               window.jQuery(currentSlide).trigger("shown");
             }
           }
-        }
-
-        // hookup for reveal
-        if (window.Reveal) {
-          window.Reveal.addEventListener("slidechanged", function(event) {
-            fireSlideChanged(event.previousSlide, event.currentSlide);
-          });
         }
 
         // hookup for slidy
