@@ -15,7 +15,7 @@ Temperature data are not given (could be extracted from an atlas with latitude/l
 
 ## Download and import data
 
-- Download data as tab-delimited test from https://doi.pangaea.de/10.1594/PANGAEA.828674
+- Download data as tab-delimited text from https://doi.pangaea.de/10.1594/PANGAEA.828674
 - Import the data into R
 
 ## Process data
@@ -26,7 +26,7 @@ Temperature data are not given (could be extracted from an atlas with latitude/l
 
 - plot richness against latitude
 - fit an appropriate model to find the relationship between richness and latitude
-- plot the fitted values from the model with the raw data. Is the model a good fit. Do you need to add extra terms?
+- plot the fitted values from the model with the raw data. Is the model a good fit.
 - interpret the model coefficients
 
 # Part 2
