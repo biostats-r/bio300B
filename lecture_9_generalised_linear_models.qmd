@@ -252,6 +252,21 @@ $$\color{purple}{var(Y_i) = \phi V(\mu_i)}$$
  - $\color{red}{\mu} = \color{red}{E(y_i)} = \color{blue}{β_0 + β_1x_i}$
  - $\color{purple}{var(y)} = \color{purple}{σ^2}$
  
+```{r}
+#| label: normal-dist
+#| echo: false
+m = 100
+sd = 30
+dat <- tibble(x = 00:200, 
+              y = dnorm(x, mean = m, sd = sd))
+
+p1 <- ggplot(dat, aes(x = x, y = y)) + 
+  geom_area(fill = "grey80") +
+  geom_vline(xintercept = m, colour = "red", linetype = "dashed") +
+  geom_pointrange(data = tibble(xmin = m-sd, xmax = m+sd, x = m, y = max(dat$y)* 0.6), aes(xmin =xmin, xmax = xmax, y = y))
+p1
+```
+ 
 
 ## Poisson
 
@@ -692,3 +707,13 @@ mod_q <- glm(richness ~ elevation, data = gonga_rich,
              family = quasipoisson)
 anova(mod_q, test = "F")
 ```
+
+
+## Diagnostics plots
+
+```{r}
+#| label: performance-plot
+library(performance)
+check_model(budworm.lg)
+```
+
