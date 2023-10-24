@@ -20,7 +20,7 @@ Temperature data are not given (could be extracted from an atlas with latitude/l
 
 ## Process data
 
-- Tidy the data and find the species richness for each site ("Event") (i.e. number of diatoms with a percent > 0) 
+- Tidy the data and find the species richness for each site ("Event") (i.e. number of diatoms with a percent > 0) (hint: `pivot_longer()` will help)
 
 ## plot and model data
 
