@@ -13,6 +13,8 @@ format: html
 library(tidyverse)
 library(broom) 
 library(ggfortify)
+library(conflicted)
+conflict_prefer_all("dplyr", quiet = TRUE)
 
 # theme defaults
 theme_set(theme_bw())
@@ -136,7 +138,7 @@ coef(mod3)["(Intercept)"] + coef(mod3)["body_mass_g"] * 5000 + coef(mod3)["sexma
 #female
 coef(mod4)["(Intercept)"] + coef(mod4)["body_mass_g"] * 5000
 #male
-coef(mod4)["(Intercept)"] + coef(mod4)["body_mass_g"] * 5000 + coef(mod4)["sexmale"] + coef(mod4)["body_mass_g:sexmale"] * 100
+coef(mod4)["(Intercept)"] + coef(mod4)["body_mass_g"] * 5000 + coef(mod4)["sexmale"] + coef(mod4)["body_mass_g:sexmale"] * 5000
 
 
 #check
@@ -152,6 +154,8 @@ augment(mod4, newdata = nd)
 ```{r}
 autoplot(mod3)
 autoplot(mod4)
+
+performance::check_model(mod3)
 ```
 
 - Plot the raw data and the models, including confidence intervals.
