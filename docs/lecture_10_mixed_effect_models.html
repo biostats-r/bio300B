@@ -12,7 +12,7 @@
   <meta name="generator" content="quarto-1.4.309">
 
   <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)">
-  <meta name="dcterms.date" content="2023-09-22">
+  <meta name="dcterms.date" content="2023-10-30">
   <title>Bio302 - Biostatistikk - Mixed effect Models</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -409,7 +409,7 @@ Richard J. Telford (Richard.Telford@uib.no)
     </div>
 </div>
 
-  <p class="date">22 September 2023</p>
+  <p class="date">30 October 2023</p>
 </section>
 <section id="assumptions-of-least-squares" class="slide level2">
 <h2>Assumptions of Least Squares</h2>
@@ -427,12 +427,12 @@ Richard J. Telford (Richard.Telford@uib.no)
 </section>
 <section id="clustered-data" class="slide level2" data-background-image="figures/46695412244_66616e8523_c.jpg">
 <h2>Clustered data</h2>
-<p>Observations not independent</p>
+<p><span style="color: black;">Observations not independent</span></p>
 <ul>
-<li>clustered data</li>
-<li>repeat measurements</li>
+<li><span style="color: black;">clustered data</span></li>
+<li><span style="color: black;">repeat measurements</span></li>
 </ul>
-<p>Ignoring it causes pseudoreplication</p>
+<p><span style="color: black;">Ignoring it causes pseudoreplication</span></p>
 
 <aside><div>
 <p><a href="https://www.flickr.com/photos/theworldfishcenter/46695412244">WorldFish</a></p>
@@ -464,7 +464,7 @@ Call:
 lm(formula = Mass_g ~ tank, data = demo)
 
 Coefficients:
-(Intercept)       tankt2  
+(Intercept)    tanktank2  
      1147.6       -105.1  </code></pre>
 </div>
 </div>
@@ -491,13 +491,13 @@ Coefficients: (1 not defined because of singularities)
               Estimate Std. Error t value Pr(&gt;|t|)    
 (Intercept)    1202.37      33.38  36.021  &lt; 2e-16 ***
 conditiontest   -68.44      47.21  -1.450 0.151439    
-tankt2         -118.07      47.21  -2.501 0.014654 *  
-tankt3         -195.25      47.21  -4.136 9.44e-05 ***
-tankt4           33.35      47.21   0.707 0.482102    
-tankt5         -178.79      47.21  -3.788 0.000313 ***
-tankt6          -49.47      47.21  -1.048 0.298128    
-tankt7          -96.71      47.21  -2.049 0.044128 *  
-tankt8              NA         NA      NA       NA    
+tanktank2      -118.07      47.21  -2.501 0.014654 *  
+tanktank3      -195.25      47.21  -4.136 9.44e-05 ***
+tanktank4        33.35      47.21   0.707 0.482102    
+tanktank5      -178.79      47.21  -3.788 0.000313 ***
+tanktank6       -49.47      47.21  -1.048 0.298128    
+tanktank7       -96.71      47.21  -2.049 0.044128 *  
+tanktank8           NA         NA      NA       NA    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -893,12 +893,19 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 
 </div>
 <img data-src="lecture_10_mixed_effect_models_files/figure-revealjs/diag5-1.png" width="960" class="r-stretch"></section>
+<section id="performance-package" class="slide level2">
+<h2>performance package</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a>performance<span class="sc">::</span><span class="fu">check_model</span>(fm1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="lecture_10_mixed_effect_models_files/figure-revealjs/performance-1.png" width="960" class="r-stretch"></section>
 <section id="crossed-random-effects" class="slide level2">
 <h2>Crossed random effects</h2>
 <p>Two random effects</p>
 <p>Eggs from birds nests (first random effect - lay_nest) moved to other nests (second random effect - hatch_nest)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a><span class="fu">lmer</span>(mass <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>lay_nest) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>hatch_nest), <span class="at">data =</span> data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a><span class="fu">lmer</span>(mass <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>lay_nest) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>hatch_nest), <span class="at">data =</span> data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="nested-random-effects" class="slide level2">
@@ -910,8 +917,15 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <li>species nested in family</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a><span class="fu">lmer</span>(mass <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>site<span class="sc">/</span>plot), <span class="at">data =</span> data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a><span class="fu">lmer</span>(mass <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>site<span class="sc">/</span>plot), <span class="at">data =</span> data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="convergence-other-problems" class="slide level2">
+<h2>Convergence &amp; other problems</h2>
+<p>Sometimes mixed effect models report errors.</p>
+<p>Take them seriously.</p>
+<p>May need to simplify the model</p>
+<p>Having predictors on same scale can help</p>
 </section>
 <section id="beyond-linear-mixed-effect-models" class="slide level2">
 <h2>Beyond linear mixed effect models</h2>
@@ -1168,12 +1182,15 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
       // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
       // slide changes (different for each slide format).
       (function () {
-        function fireSlideChanged(previousSlide, currentSlide) {
-
-          // dispatch for htmlwidgets
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
           const event = window.document.createEvent("Event");
           event.initEvent("slideenter", true, true);
           window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
 
           // dispatch for shiny
           if (window.jQuery) {
@@ -1184,13 +1201,6 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
               window.jQuery(currentSlide).trigger("shown");
             }
           }
-        }
-
-        // hookup for reveal
-        if (window.Reveal) {
-          window.Reveal.addEventListener("slidechanged", function(event) {
-            fireSlideChanged(event.previousSlide, event.currentSlide);
-          });
         }
 
         // hookup for slidy

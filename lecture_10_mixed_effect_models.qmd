@@ -44,12 +44,12 @@ data(penguins, package = "palmerpenguins")
 
 ## Clustered data{background-image="figures/46695412244_66616e8523_c.jpg"}
 
-Observations not independent
+[Observations not independent]{style="color: black;"}
 
-- clustered data
-- repeat measurements
+- [clustered data]{style="color: black;"}
+- [repeat measurements]{style="color: black;"}
 
-Ignoring it causes pseudoreplication
+[Ignoring it causes pseudoreplication]{style="color: black;"}
 
 ::: aside
 [WorldFish](https://www.flickr.com/photos/theworldfishcenter/46695412244)
@@ -81,7 +81,8 @@ demo <- add_random(subj = subj_n, tank = 2) |>
 demo |> 
   ggplot(aes(x = tank, y = Mass_g)) +
   geom_violin() +
-  geom_quasirandom(aes(colour = condition))
+  geom_quasirandom(aes(colour = condition)) +
+  labs(y = "Mass g", colour = "Treatment")
 ```
 
 
@@ -110,7 +111,9 @@ demo2 <- add_random(subj = subj_n, tank = 8) |>
 outer_plot <- demo2 |> 
   ggplot(aes(x = tank, y = Mass_g)) +
   geom_violin() +
-  geom_quasirandom(aes(colour = condition))
+  geom_quasirandom(aes(colour = condition)) +
+  labs(y = "Mass g", colour = "Treatment")
+  
 
 outer_plot
 ```
@@ -152,8 +155,9 @@ p1 <- demo2 |>
   ggplot(aes(x = tank, y = Mass_g)) +
   geom_violin() +
   geom_quasirandom(aes(colour = condition)) +
-  stat_summary(fun = "mean", geom= "point", size = 2) +
-  theme(legend.position = "none")
+  stat_summary(fun = "mean", geom = "point", size = 2) +
+  theme(legend.position = "none") +
+  labs(y = "Mass g")
 
 p2 <- tibble(x = -350:350, y = dnorm(x, mean = 0, sd = u0s_sd)) |> 
   ggplot(aes(x, y)) +
@@ -381,6 +385,14 @@ qqmath(ranef(fm1))
 ```
 
 
+## performance package
+
+```{r}
+#| label: performance
+performance::check_model(fm1)
+```
+
+
 ## Crossed random effects
 
 Two random effects
@@ -403,6 +415,16 @@ Hierarchical random effects
 ```{r, eval = FALSE}
 lmer(mass ~ treatment + (1|site/plot), data = data)
 ```
+
+## Convergence & other problems
+
+Sometimes mixed effect models report errors.
+
+Take them seriously.
+
+May need to simplify the model
+
+Having predictors on same scale can help
 
 ## Beyond linear mixed effect models
 
