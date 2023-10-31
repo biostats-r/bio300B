@@ -77,6 +77,13 @@ mod_richness
 - plot the fitted values from the model with the raw data. Is the model a good fit. Do you need to add extra terms?
 
 ```{r}
+#| label: diagnostics-poisson
+performance::check_model(mod_richness) # under dispersed. Will make model conservative. Probably OK.
+
+```
+
+
+```{r}
 #| label: plot-with-fitted
 augment(mod_richness, type.predict = "response") |> 
   ggplot(aes(x = latitude, y = n)) +
@@ -136,6 +143,10 @@ p_fc
 #| label: fc-mod
 mod_fc <- glm(f_cylindrus ~ latitude, data = f_cylindrus_df, family = binomial)
 mod_fc  
+performance::check_model(mod_fc) # first plot is hiding - dont know why
+# make again
+performance::check_posterior_predictions(mod_fc)
+
 ```
 
 - add the fitted model, with uncertainties, to the plot
@@ -180,8 +191,6 @@ ggplot(f_kerguelensis_df, aes(x = latitude, y = f_kerguelensis_prop)) +
 
 
 ```{r}
-
-
 # can fit with proportion and weights
 mod_ra <- glm(f_kerguelensis_prop ~ latitude, 
               data = f_kerguelensis_df,
@@ -208,7 +217,14 @@ mod_ra2 <- glm(cbind(fk, not_fk) ~ latitude,
 #result is same (small differences because of fixing the rounding errors)
 tidy(mod_ra)
 tidy(mod_ra2)
+```
 
+```{r}
+performance::check_model(mod_ra) # terrible fit!
+```
+
+
+```{r}
 #quadratic model
 # why poly
 cor(f_kerguelensis_df$latitude, f_kerguelensis_df$latitude ^ 2)
@@ -251,13 +267,18 @@ summary(mod_ra2b)
 
 #is quadratic needed
 anova(mod_ra, mod_ra2b, test = "Chi") # yes
+
+
 ```
 
 - is there evidence of overdispersion?
 
 
 ```{r}
+
 anova(mod_ra2b) # residual deviance >> residual df
+performance::check_model(mod_ra2b) # better but still bad. over dispersed
+performance::check_overdispersion(mod_ra2b)
 ```
 
 - adjust the model if necessary
@@ -283,6 +304,7 @@ tidy(mod_ra_quasi2) # quasibinomial
 
 
 anova(mod_ra_quasi2) # now got "permission" for Resid. Dev/ Resid Df >> 1
+performance::check_model(mod_ra_quasi2)
 ```
 
 
@@ -321,5 +343,6 @@ ggplot(f_kerguelensis_df, aes(x = latitude, y = f_kerguelensis_prop)) +
 
 # wider ( & more realistic) confidence interval
 # much smoother curve
+# would want to check obs at 61 S is correct
 ```
 
