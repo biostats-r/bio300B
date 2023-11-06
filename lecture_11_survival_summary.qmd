@@ -48,7 +48,7 @@ Data are typically right censored.
 Response data 
 
 - time
-- status (0/1, TRUE/FALSE)
+- status (0/1, 1/2 TRUE/FALSE)
 
 ```{r data}
 library(survival)
@@ -77,6 +77,7 @@ Surv(lung$time, lung$status)[1:30]
 
 lung <- lung |> 
   mutate(sex = factor(sex, levels = 1:2, labels = c("male", "female")))
+
 mod_surv <- survfit(Surv(time, status) ~ sex, data = lung)
 
 mod_surv
@@ -94,9 +95,9 @@ autoplot(mod_surv)
 ```
 
 
-## Testing a model
+## Testing differences in survival time
 
- - logrank (Mantel-Cox) test 
+ - between two or more groups
 
 ```{r}
 mod_diff <- survdiff(Surv(time, status) ~ sex, data = lung)
@@ -125,6 +126,8 @@ m_ll <- survreg(Surv(time, status) ~ age + sex,
 summary(m_ll)
 ```
 
+Choice of distribution
+
 ---
 
 Exponentiated coefficients show relative increase or decrease in the expected survival times when a covariate is increased one step while others are fixed:
@@ -151,6 +154,43 @@ m_ll$scale
 The scale parameter < 1, indicates that slope of the
 hazard decreases with time -  Type III
 
+## Choice of distribution
+
+```{r}
+#| echo: false
+read_delim("Distribution, df
+exponential, 1 
+Weibull, 2 
+lognormal, 2 
+log logistic, 2 ") |> 
+  gt::gt() |> 
+  gt::tab_options(table.font.size = 20)
+```
+
+```{r}
+#| label: distr
+#| echo: false
+#| eval: false
+
+x = seq(0, 2.5, length = 100)
+c(0.5, 1, 1.5, 5) |> 
+  set_names() |> 
+  map(~dweibull(x, shape = 1, scale = .x)) |> 
+  map(enframe) |> 
+  map(bind_cols, x = x) |> 
+  list_rbind(names_to = "scale") |> 
+  ggplot(aes(x = x, y = value, colour = scale )) +
+  geom_line()
+        
+```
+
+
+Can use AIC to choose best
+
+```{r}
+m_w <- update(m_ll, dist = "weibull")
+AIC(m_ll, m_w)
+```
 
 
 ## Summary
@@ -163,52 +203,13 @@ hazard decreases with time -  Type III
 1. Importing data
 1. Cleaning data
 1. Data visualisation
-1. Using R markdown
+1. Using quarto
 1. Choosing a model type
 1. Interpreting model output
 
 
 
-## Designing an experiment
 
-
-
-
-## R tips and tricks
-
-
-
-
-## Entering data into a spreadsheet
-
-
-
-
-
-## Importing data
-
-
-
-
-
-## Cleaning data
-
-
-
-
-## Data visualisation
-
-
-
-
-## Using quarto
-
-
-
-## Choosing a model
-
-
-## Interpreting model output
 
 
 
@@ -264,8 +265,16 @@ summary(mod)
 
 ## More statistics at BIO
 
-Bio302 - more regression methods
+### Bio302 Spring semester
 
-Bio303 - multivatiate methods
+- more regression methods
+- more R
+- GitHub
+
+### Bio303 
+
+- multivariate methods
+  - ordinations
+  - cluster analysis
 
 
