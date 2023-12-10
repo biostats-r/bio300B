@@ -1,18 +1,19 @@
 ---
-title: "Datalab 10"
+title: "Datalab 11"
 author: "Richard Telford"
-date: "11/9/2021"
-output: html_document
+date: today
+format: html
 ---
 
 ```{r}
 #| label: setup
 #| include: false
-knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(survival)
 library(ggfortify) # for autoplot
+
+theme_set(theme_bw())
 ```
 
 You have done an experiment where you have tested how the castrating bacterium
@@ -23,8 +24,15 @@ and import them.
 
 ```{r}
 #| label: import
-daphnia <- read_delim(file=here::here("data/daphnia_survival.csv"), delim = ",", skip = 9)
-daphnia
+#| message: false
+
+daphnia <- read_delim(file = here::here("data/daphnia_survival.csv"), 
+                      skip = 9) |> 
+  janitor::clean_names()
+
+# make uninfected the reference group
+daphnia <- daphnia |>
+  mutate(group = factor(group, levels = c("Uninfected", "Infected")))
 ```
 
 
@@ -34,11 +42,12 @@ Using the example in the lecture as a guide
 
 ```{r}
 #| label: surv-plot
-daphnia_fit <- survfit(Surv(Day.of.death, Dead) ~ Group, data = daphnia)
+daphnia_fit <- survfit(Surv(day_of_death, dead) ~ group, data = daphnia)
 
 daphnia_fit
 
-autoplot(daphnia_fit) + labs(x = "Day", y = "Percent survival")
+autoplot(daphnia_fit) + 
+  labs(x = "Day", y = "Percent survival")
 
 ```
 
@@ -51,20 +60,20 @@ Could do a non-parametric test. Fewer assumptions than parametric tests, but les
 
 ```{r}
 #logrank test
-survdiff(Surv(Day.of.death, Dead) ~ Group, data = daphnia)
+survdiff(Surv(day_of_death, dead) ~ group, data = daphnia)
 ```
 - strong evidence of a difference. 
-- Cannot use this function to make predictions. Could get median survival time from survfit output above
+- Cannot use this function to make predictions. Could get median survival time from `survfit` output above
 
 
--Or we can use a parametric test - survreg(). This requires us to choose a distribution. weibull and loglogistic are popular distributions
+Or we can use a parametric test - `survreg()`. This requires us to choose a distribution. weibull and loglogistic are popular distributions
 
 ```{r}
-daphnia_weibull <- survreg(Surv(Day.of.death, Dead) ~ Group,
+daphnia_weibull <- survreg(Surv(day_of_death, dead) ~ group,
           dist = 'weibull',
           data = daphnia)
 
-daphnia_loglogistic <- survreg(Surv(Day.of.death, Dead) ~ Group,
+daphnia_loglogistic <- update(daphnia_weibull,
           dist = 'loglogistic',
           data = daphnia)
 
@@ -77,25 +86,28 @@ daphnia_weibull
 
 anova(daphnia_weibull)
 
-daphnia_loglogistic
+exp(coef(daphnia_weibull)) # intercept give mean time for uninfected group, groupinfected gives the ratio of the survival times. Infected live ~ half as long
 ```
 
 
 - Use the model to calculate the expected mean age at death for the two groups (infected and uninfected)
 
 ```{r}
-nd <- tibble(Group = c("Infected", "Uninfected"))
+# Can calculate from coefficients or use predict
+
+nd <- tibble(group = c("Infected", "Uninfected"))
 predict(daphnia_weibull, newdata = nd)
 #or use 
 broom::augment(daphnia_loglogistic, newdata = nd)
 # results sensitive to distribution assumed
 ```
+
 There is also the semi-parametric Cox proportional Hazard model
 
 
 ```{r}
 #| label: cox
-daphnia_cox <- coxph(Surv(Day.of.death, Dead) ~ Group, data = daphnia)
+daphnia_cox <- coxph(Surv(day_of_death, dead) ~ group, data = daphnia)
 daphnia_cox
 
 
