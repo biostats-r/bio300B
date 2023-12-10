@@ -1,15 +1,19 @@
 ---
 title: "Datalab 9: Mixed effect models"
 author: "Richard Telford"
-date: "11/2/2021"
-output: html_document
+date: today
+format: html
 ---
 
 ```{r}
 #| label: setup
 #| include: false
-knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(lme4)
+library(lmerTest) # to get approximate p-values
+library(broom.mixed) # tidy output from mixed effect models
+# set default theme
+theme_set(theme_bw())
 ```
 
 Do your analyses in an R markdown document
@@ -21,8 +25,7 @@ load the data.
 
 ```{r}
 #| label: load-data
-library(lme4)
-library(lmerTest) # to get approximate p-values
+
 head(sleepstudy)
 ```
 
@@ -37,7 +40,7 @@ Day 0-1 were training days and should be removed.
 
 ```{r}
 # remove training days
-sleepstudy <- sleepstudy |> 
+sleepstudy <- sleepstudy |>
   filter(Days > 1)
 ```
 
@@ -47,14 +50,12 @@ Make a publication ready plot of the data.
 
 ```{r}
 #| label: raw-data-plot
-# set default theme
-theme_set(theme_bw())
+
 ggplot(sleepstudy, aes(x = Days, y = Reaction, colour = Subject)) +
   geom_point(show.legend = FALSE) + # turn off legend
-  #better x-axis breaks
+  # better x-axis breaks
   scale_x_continuous(breaks = 2:9) +
   labs(y = "Reaction time (ms)")
-  
 ```
 
 
@@ -66,7 +67,7 @@ Is predictor an inner or outer variable?
 Fit an appropriate model to the data to give an random intercept.
 
 ```{r}
-mod1 <- lmer(Reaction ~ Days + (1|Subject), data = sleepstudy)
+mod1 <- lmer(Reaction ~ Days + (1 | Subject), data = sleepstudy)
 ```
 
 
@@ -83,7 +84,7 @@ summary(mod1)
 Compare the results with a model that incorrectly ignores the repeat measurement design.
 
 ```{r}
-#ignore random effects - use lm
+# ignore random effects - use lm
 mod_bad <- lm(Reaction ~ Days, data = sleepstudy)
 summary(mod_bad)
 ```
@@ -95,15 +96,14 @@ Add the fitted values for each subject and the overall fixed effects to the plot
 
 ```{r}
 #| label: random-intercept-plot
-library(broom.mixed)
-augment(mod1) |> 
+
+augment(mod1) |>
   ggplot(aes(x = Days, y = Reaction, colour = Subject)) +
   geom_point() +
   geom_line(aes(y = .fitted)) +
-  geom_line(aes(y = .fixed), colour = "black", size = 1.5) +
+  geom_line(aes(y = .fixed), colour = "black", linewidth = 1.5) +
   theme(legend.position = "none") +
   labs(y = "Reaction time (ms)")
-
 ```
 
 
@@ -113,9 +113,9 @@ Examine the model's diagnostic plots.
 #| label: diag1
 a_mod1 <- augment(mod1)
 ## standardized residuals versus fitted values
-ggplot(a_mod1, aes(.fitted, .resid)) + 
-  geom_point(colour="blue") +
-  geom_hline(yintercept=0) +
+ggplot(a_mod1, aes(.fitted, .resid)) +
+  geom_point(colour = "blue") +
+  geom_hline(yintercept = 0) +
   geom_smooth()
 ```
 
@@ -125,8 +125,8 @@ ggplot(a_mod1, aes(.fitted, .resid)) +
 ```{r}
 #| label: diag2
 ## box-plots of residuals by Subject
-ggplot(a_mod1, aes(Subject,.resid)) + 
-  geom_boxplot() + 
+ggplot(a_mod1, aes(Subject, .resid)) +
+  geom_boxplot() +
   geom_hline(yintercept = 0, colour = "red", linetype = "dashed") +
   coord_flip()
 ```
@@ -135,16 +135,16 @@ ggplot(a_mod1, aes(Subject,.resid)) +
 
 ```{r}
 #| label: diag3
-ggplot(a_mod1, aes(.fitted, Reaction)) + 
-  geom_point(colour="blue") +
-    facet_wrap(~Subject) +
-  geom_abline(intercept=0,slope=1)
+ggplot(a_mod1, aes(.fitted, Reaction)) +
+  geom_point(colour = "blue") +
+  facet_wrap(vars(Subject)) +
+  geom_abline(intercept = 0, slope = 1)
 ```
 
 
 ```{r}
 #| label: diag4
-#qq plot of residuals
+# qq plot of residuals
 library(lattice)
 qqmath(mod1)
 ```
@@ -153,7 +153,7 @@ qqmath(mod1)
 
 ```{r}
 #| label: diag5
-#qq plot of random effects
+# qq plot of random effects
 qqmath(ranef(mod1))
 ```
 
@@ -161,7 +161,7 @@ qqmath(ranef(mod1))
 Make a new model with a random slope and intercept.
 
 ```{r}
-mod2 <- lmer(Reaction ~ Days + (Days|Subject), data = sleepstudy)
+mod2 <- lmer(Reaction ~ Days + (Days | Subject), data = sleepstudy)
 summary(mod2)
 ```
 
@@ -178,11 +178,11 @@ strong evidence that random slope model is better. Often recommended to fit an r
 Plot the results.
 
 ```{r}
-augment(mod2) |> 
+augment(mod2) |>
   ggplot(aes(x = Days, y = Reaction, colour = Subject)) +
   geom_point() +
   geom_line(aes(y = .fitted)) +
-  geom_line(aes(y = .fixed), colour = "black", size = 1.5) +
+  geom_line(aes(y = .fixed), colour = "black", linewidth = 1.5) +
   theme(legend.position = "none") +
   labs(y = "Reaction time (ms)")
 ```
@@ -195,9 +195,9 @@ Examine the diagnostic plots of the new model.
 #| label: diag1-2
 a_mod2 <- augment(mod2)
 ## standardized residuals versus fitted values
-ggplot(a_mod2, aes(.fitted, .resid)) + 
-  geom_point(colour="blue") +
-  geom_hline(yintercept=0) +
+ggplot(a_mod2, aes(.fitted, .resid)) +
+  geom_point(colour = "blue") +
+  geom_hline(yintercept = 0) +
   geom_smooth()
 ```
 
@@ -208,8 +208,8 @@ ggplot(a_mod2, aes(.fitted, .resid)) +
 ```{r}
 #| label: diag2-2
 ## box-plots of residuals by Subject
-ggplot(a_mod2, aes(Subject,.resid)) + 
-  geom_boxplot() + 
+ggplot(a_mod2, aes(Subject, .resid)) +
+  geom_boxplot() +
   coord_flip()
 ```
 
@@ -218,16 +218,16 @@ ggplot(a_mod2, aes(Subject,.resid)) +
 
 ```{r}
 #| label: diag3-2
-ggplot(a_mod2, aes(.fitted, Reaction)) + 
-  geom_point(colour="blue") +
-    facet_wrap(~Subject) +
-  geom_abline(intercept=0,slope=1)
+ggplot(a_mod2, aes(.fitted, Reaction)) +
+  geom_point(colour = "blue") +
+  facet_wrap(~Subject) +
+  geom_abline(intercept = 0, slope = 1)
 ```
  - generally better fits than before
 
 ```{r}
 #| label: diag4-2
-#qq plot of residuals
+# qq plot of residuals
 library(lattice)
 qqmath(mod2)
 ```
@@ -236,9 +236,17 @@ qqmath(mod2)
 
 ```{r}
 #| label: diag5-2
-#qq plot of random effects
+# qq plot of random effects
 qqmath(ranef(mod2))
 ```
  - two panels as two random effects
  - plot has been flipped so standard normal quantiles now the y-axis
  - seem to be a straight line through the subjects - normal distribution
+
+
+```{r}
+# alternative performance plots with performance package
+performance::check_model(mod1)
+performance::check_model(mod2)
+```
+
