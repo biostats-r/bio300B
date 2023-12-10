@@ -1,12 +1,8 @@
 ---
 title: "Datalab 10: Mixed effect models"
 author: "Richard Telford"
-format: 
-  html:
-    self-contained: true
-editor: visual
+format: html
 ---
-
 
 Do your analyses in a quarto document
 
