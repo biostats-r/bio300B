@@ -1,0 +1,245 @@
+---
+title: "Assignment 6. Aquaculture induced evolution in salmon lice"
+format: 
+  html:
+    self-contained: true
+    code-tools: 
+      source: true
+---
+
+Salmon lice are parasites on salmon. We are interested in evidence that they evolved after the development of salmon farms by comparing lice from regions with, and without, salmon farms.
+
+
+Specifically, we want to test the hypothesis that time it takes salmon lice to start laying eggs differs between the two types of areas.
+
+
+The data, from Mennerat et al (2017; https://doi.org/10.1111/eva.12488) are in file `timing_ES1_5.txt`.
+
+The columns are:
+
+- status : farmed or wild area
+- exp : which room the salmon were raised in. Experimental conditions are not identical - see paper.
+- origin : geographic area. B: Austevoll; F: Frøya; O: Oslofjord ; S: Scotland
+- tank2 : combination of exp and tank
+- tank : which tank the salmon were raised in.
+- daysPI : days post-infection of the lice on the salmon that eggs were produced.
+- ES : reproductive event. We are only interested in the first event
+
+1. Fit a suitable model to test the hypothesis and examine any diagnostics.
+2. Justify your choice of model.
+2. Make a publication-ready plot of the data and the model results
+3. Report your model results either in a publishable table or in a short paragraph.
+
+
+
+```{r}
+#| label: setup
+#| message: false
+library(tidyverse)
+library(survival)
+library(lme4)
+library(here)
+library(ggfortify)
+library(performance)
+library(conflicted) # prevent namespace conflicts
+conflict_prefer_all("dplyr", quiet = TRUE)
+
+theme_set(theme_bw()) # set default theme
+```
+
+```{r}
+#| label: load-data
+#| message: false
+lice <- read_delim(here("data/timing_ES1to5.txt")) |> 
+  janitor::clean_names() |> 
+  rename(room = exp) |> 
+  filter(es == 1) |> # only the first egg string
+  mutate(origin = case_match(origin, 
+                             "B" ~ "Austevoll",
+                             "F" ~ "Frøya",
+                             "O" ~ "Oslofjord",
+                             "S" ~ "Scotland"))
+```
+## Data description
+
+- status - farmed/wild - predictor of interested response is positive, continuous (but reported as integers)
+- room - if we had a several rooms, it could be a random effect (with tank nested in room - this is what the authors used) - but since there are only two rooms, and the method differed between rooms, it might be better to use a fixed effect. I'm going to treat it as a random effect where possible.
+- origin - could use a fixed effect (not going to be possible to estimate coefficient for all regions because they can be calculated from the other coefficients) or could use a random effect
+- days_pi - days post-infection - response
+- tank - lice from the same tank are not independent - need a random effect in a mixed model (note some tank numbers are in both rooms, need to make sure model does not treat as one tank)
+- tank2 - unique tank names (safer to use these)
+
+## Survival analysis
+
+Could run a survival analysis
+
+
+```{r}
+# using es as a convenient source of 1s
+survfit(Surv(days_pi, event = es) ~ status, data = lice) |> 
+  autoplot() +
+  coord_cartesian(xlim = c(40, NA)) # truncate y axis
+# unexpected kink - farmed initially leads then lags.
+# Ignores other effects
+# need to add other variables
+
+survfit(Surv(days_pi, event = es) ~ origin, data = lice) |> 
+  autoplot()
+```
+
+Make a better plot
+```{r}
+surv <- survfit(Surv(days_pi, event = es) ~ origin, data = lice) |> 
+  fortify(surv.connect = TRUE)
+```
+
+
+```{r}
+surv |> 
+  mutate(
+    status = if_else(strata %in% c("Scotland", "Oslofjord"), true = "Wild", false = "Farmed"), # remake status column
+    vjust = case_match(strata, # adjustments for label positions
+                       "Scotland" ~ 1,
+                       "Oslofjord" ~ -1.5,
+                       "Austevoll" ~ 1,
+                        "Frøya" ~ -1.5
+                       )) |> 
+  ggplot(aes(x = time, y = surv, ymin = lower, ymax = upper, fill = status, group = strata, linetype = status)) +
+  ggfortify:::geom_confint(alpha = 0.5) +
+  geom_step(aes(colour = status)) +
+  geomtextpath::geom_textline(
+    aes(label = strata, vjust = vjust), 
+    hjust = 0.85, 
+    show.legend = FALSE, 
+    linewidth = 0) +
+  scale_colour_manual(values = c(Farmed = "darksalmon", Wild = "skyblue")) +
+   scale_fill_manual(values = c(Farmed = "darksalmon", Wild = "skyblue")) + 
+  labs(x = "Days post-infection", 
+       y = "Proportion lice without eggs", 
+       colour = "Aquaculture status",
+       fill = "Aquaculture status", 
+       linetype = "Aquaculture status") +
+  coord_cartesian(xlim = c(48, NA)) + # truncate x axis
+  theme(
+    legend.position = c(0.99, 0.99), 
+    legend.justification = c(1, 1)
+  )
+
+```
+ 
+
+Large difference between room 1 (Austevoll, Oslofjord) and room 2 (Scotland, Frøya)!
+
+Fitting a model
+
+
+```{r}
+mod_s <- survreg(Surv(days_pi, event = es) ~ status + room , data = lice)
+summary(mod_s)
+```
+Model is not fully appropriate as it ignores random effects of origin and tank
+
+
+Including random effects can be done with more advanced survival models such as a Mixed Effects Cox Model which can be fitted by the `coxme` package.
+
+```{r}
+#| message: false
+library(coxme)
+```
+
+
+```{r}
+mod_c <- coxme(Surv(days_pi, event = es) ~ status + (1|room/tank2) + (1|origin) , data = lice)
+summary(mod_c)
+confint(mod_c)
+```
+
+## Alternative approaches
+
+The data are not censored - all the female lice make egg strings - so we could also use a lmer/glmer. 
+
+need to choose a family.
+Response is positive valued and rounded up to the nearest integer (ie only checked once per day)
+
+ - poisson (used by authors) assumes a Poisson process (which we don't have) and that mean = variance
+ - Gaussian - includes negative values (but we are far from zero so a minor problem), assumes that variance is constant (we could adjust for this)
+ - Gamma and other distributions might also be useful
+
+First lets plot the data
+
+```{r}
+lice |> 
+  ggplot(aes(x = status, y = days_pi, colour = origin, shape = factor(room))) +
+  ggbeeswarm::geom_quasirandom()
+```
+
+
+
+
+```{r}
+#| message: false
+library(lme4)
+library(lmerTest)
+library(broom.mixed)
+conflicts_prefer(lmerTest::lmer)
+```
+
+
+```{r}
+mod1 <- lmer(days_pi ~ status  + (1|room/tank2) + (1|origin), data = lice)
+summary(mod1)
+# room variance is huge!
+# tank variance is small relative to residual variance
+```
+
+Effect of room is huge compared to status. Worrying.
+
+```{r}
+#| fig-height: 10
+check_model(mod1) # posterior predictive plot is not great - probably because variance differs between rooms
+lice |> 
+  group_by(room, origin) |> 
+  summarise(s = sd(days_pi), .groups = "drop")
+```
+
+```{r}
+txt_location <- lice |> 
+  group_by(status, origin) |> 
+  summarise(days_pi = mean(days_pi), .groups = "drop")
+
+colours <-  c(farmed = "darkorange2" , wild = "navyblue")
+
+preds <- augment(mod1)
+
+ggplot(lice, aes(x = status, y = days_pi, colour = status)) +
+  ggbeeswarm::geom_quasirandom(aes(shape = factor(room), alpha = factor(room))) +
+  geom_text(aes(label = origin, colour = status), data = txt_location, position = position_dodge(width = 0.9)) +
+  geom_point(data = preds, aes(y = .fixed), size = 5, colour = "black") +
+  scale_color_manual(values = colours) +
+  scale_alpha_manual(values = c("1" = 0.8, "2" = 0.5)) + 
+  labs(x = "Status", y = "Days post-infection", shape = "Room", alpha = "Room") +
+
+  scale_x_discrete(labels = c(farmed = "Farmed", wild = "Wild")) +
+  theme(
+    legend.position = c(0.01,0.99),
+    legend.justification = c(0, 1)) +
+  guides(colour = "none")
+
+# should add confidence interval to predictions but that is quite complicated
+```
+
+
+
+Design would have been better if 
+
+  - treatment was the same in each room
+  - lice from each region were split between the rooms (could probably then ignore room effect)
+  - more regions
+  
+```{r}
+mod_tidy <- tidy(mod1, effects = "fixed", conf.int = TRUE) |> 
+  filter(term == "statuswild") |> 
+  mutate(across(where(is.numeric), \(x)round(x, 2)))
+```
+
+Salmon lice from areas without fish farms produced eggs `r -mod_tidy$estimate` days earlier 95% CI [`r -mod_tidy$conf.high`,  `r -mod_tidy$conf.low` days], but the large effect of room and the small number of regions prevent any conclusive result.
