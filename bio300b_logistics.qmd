@@ -1,5 +1,5 @@
 ---
-title: Bio300B Logistics 2023
+title: Bio300B Logistics 2024
 subtitle: Biostatistics
 author: Richard J. Telford (Richard.Telford@uib.no)
 institute: Institutt for biovitenskap, UiB
