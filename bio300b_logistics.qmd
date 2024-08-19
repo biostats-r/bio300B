@@ -65,22 +65,24 @@ Interests in global change ecology, biogeography and conservation biology.
 :::
 
 ::: {.column}
-#### Francesco Saltalamacchia 
+#### Mika Helene Kirkhus 
 
 ```{r}
 #| out-height: 3.8in
-#| fig-alt: Photograph of Francesco Saltalamacchia with a fish
-knitr::include_graphics("https://www.uib.no/sites/w3.uib.no/files/styles/user_thumbnail/public/pictures/picture-397770-1614181269.jpg?itok=2noLtn2P")
+#| fig-alt: Photograph of Mika Helene Kirkhus with a tree
+knitr::include_graphics("https://profile.uib.no/sites/default/files/styles/profile_image/public/pictures/picture-407394-1700047107.jpg?h=8bc2e66f&itok=djQ-CciE")
 ```
 
-Effects of hypoxia on fish in West Norwegian fjords
+Interests in mycorrhizae
 :::
 
 ::::
 
 ## Students
 
-93 Students
+124 Students
+
+Including about 6 PhD students
 
 ::: {.notes}
 
@@ -93,13 +95,13 @@ Effects of hypoxia on fish in West Norwegian fjords
 
 ## Lectures
 
--   Start Monday 28^th^ August  1415--1600
-- Thereafter Monday 1215--1400
--   Høyteknologisenteret, Stort auditorium
+-   Start Tuesday 20^th^ August  1415--1600
+-   Thormøhlens gate 51 (VilVite), Auditorium
 
-Will be recorded when clashes with other courses
 
-- Bio325 (25^th^ Sept / 2^nd^ Oct)
+
+- Bio230 (August)
+- Bio325 (End Sept / early Oct)
 - ???
 
 ::: {.notes}
@@ -127,9 +129,11 @@ Slides made with quarto & revealjs
 
 |         |                       |                         |
 |---------|-----------------------|-------------------------|
-| Group 1 | Tuesday 1215--1400   | K1 + K2 (Bio Blokk B)   |
-| Group 2 | Tuesday 1415--1600   | K3 + K4 (Bio Blokk B)   |
-| Group 3 | Wednesday 1015--1200 | K3 + K4 (Bio Blokk B)   |
+| Group 1 | Wednesday 1215--1400   | K1 + K2 (Bio Blokk B)   |
+| Group 2 | Thursday 1015--1200   | K3 + K4 (Bio Blokk B)   |
+| Group 3 | Thursday 1415--1600 | K1 + K2 (Bio Blokk A) \*  |
+
+\* except week 43
 
 Please sign up for **one** group
 
@@ -156,6 +160,7 @@ Portfolio assessment
 - can skip one without penalty
 - deadline after datalab to allow for last-minute fixes
 - extensions available e.g. if you/family member are sick. please tell me
+- plagiarism
 
 :::
 
@@ -187,8 +192,8 @@ Portfolio assessment
 
 ## Software requirements
 
--   R version \>= 4.3
--   RStudio version \>= 2023.03.0
+-   R version \>= 4.4
+-   RStudio version \>= 2024.04.0
 -   quarto
 
 For installation & configuration instructions see [Chapter 1](https://biostats-r.github.io/biostats/workingInR/0010_Getting_Started_with_RStudio.html) of the Working in R coursebook
@@ -273,6 +278,8 @@ knitr::include_graphics("figures/IMS1_front_cover.png")
     -   Autumn semester
 -   Bio302 Biostatisics II
     -   Spring semester
+    
+Open Science course ([Hjerkinn - 4--9 November](https://www.uib.no/en/rg/EECRG/171658/open-reproducible-and-transparent-science-ecology))
 
 ## Rklubben
 

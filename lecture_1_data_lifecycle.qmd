@@ -37,6 +37,7 @@ Why do **YOU** need
 library("tidyverse")
 data(penguins, package = 'palmerpenguins')
 options(tibble.print_min = 3)
+theme_set(theme_bw(base_size = 16))
 ```
 
 ```{dot}
@@ -126,6 +127,10 @@ When is 1-9-2021?
 
 Sex coded as 0 & 1
 
+::: {.notes}
+Show bad_data.xlsx for group discussion
+:::
+
 ## Data importing
 
 R can import almost any data type.
@@ -161,8 +166,7 @@ ggplot(penguins, aes(x = species,
                      colour = species)) +
   geom_beeswarm() +
   scale_colour_brewer(palette = "Set1") +
-  labs(x = "Species", y = "Bill length mm", colour = "Species") +
-  theme_bw(base_size = 16)
+  labs(x = "Species", y = "Bill length mm", colour = "Species") 
 ```
 
 ## Data analysis
@@ -178,19 +182,41 @@ This course will focus on
 -   Mixed effect models (10)
 -   Survival analysis (11)
 
-## Communicate results with quarto
+## Communicate results with quarto {.scrollable}
 
-Tradition
+::: columns
+```{r}
+#| label: quarto-workflow
+#| eval: true
+#| fig-alt:  Schematic diagram showing the copy-paste workflow using word and the reproducible quarto workflow
+knitr::include_graphics("figures/quarto_workflow.jpg")
+```
+:::
 
--   text in Word, code in R
--   copy figures, tables etc into Word
--   find mistakes. Return to step 2.
+::: columns
+::: {.column width="50%"}
+### Past
 
-quarto markdown
+- text in Word, code in R
+- copy figures & tables, paste into Word
+- find mistakes - go to step 1.
+:::
 
--   Code and text interwoven
--   Reproducible, dynamic documents
--   This presentation made with quarto
+::: {.column width="50%"}
+### Future
+
+- Code and text interwoven
+- Reproducible, dynamic documents
+:::
+:::
+
+
+::: {.notes}
+- Will be using quarto for all assignments
+- first datalab will to to use quarto
+- demo time
+:::
+
 
 ## Data death
 
@@ -365,3 +391,12 @@ Google error messages
 [ChatGPT](https://chat.openai.com/)
 
 [Phind](https://www.phind.com/)
+
+[Copilot](https://github.com/education/students) Need github account. Copilot is free with student account.
+
+
+::: notes
+
+copilot demo
+
+:::
