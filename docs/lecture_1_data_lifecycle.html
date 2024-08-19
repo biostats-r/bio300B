@@ -9,11 +9,11 @@
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.4.309">
+  <meta name="generator" content="quarto-1.5.53">
 
   <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)">
-  <meta name="dcterms.date" content="2023-09-22">
-  <title>Bio302 - Biostatistikk - Data lifecycle</title>
+  <meta name="dcterms.date" content="2024-08-19">
+  <title>Bio302 - Biostatistikk – Data lifecycle</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -33,7 +33,7 @@
     }
     /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span { line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -44,7 +44,7 @@
     }
     @media print {
     pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
     }
     pre.numberSource code
       { counter-reset: source-line 0; }
@@ -72,7 +72,7 @@
     code span.at { color: #657422; } /* Attribute */
     code span.bn { color: #ad0000; } /* BaseN */
     code span.bu { } /* BuiltIn */
-    code span.cf { color: #003b4f; } /* ControlFlow */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
     code span.ch { color: #20794d; } /* Char */
     code span.cn { color: #8f5902; } /* Constant */
     code span.co { color: #5e5e5e; } /* Comment */
@@ -86,7 +86,7 @@
     code span.fu { color: #4758ab; } /* Function */
     code span.im { color: #00769e; } /* Import */
     code span.in { color: #5e5e5e; } /* Information */
-    code span.kw { color: #003b4f; } /* Keyword */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
     code span.op { color: #5e5e5e; } /* Operator */
     code span.ot { color: #003b4f; } /* Other */
     code span.pp { color: #ad0000; } /* Preprocessor */
@@ -407,7 +407,7 @@ Richard J. Telford (Richard.Telford@uib.no)
     </div>
 </div>
 
-  <p class="date">22 September 2023</p>
+  <p class="date">19 August 2024</p>
 </section>
 <section id="why-do-biologists-need-statistics-anyway" class="slide level2">
 <h2>Why do biologists need statistics anyway?</h2>
@@ -436,7 +436,7 @@ Richard J. Telford (Richard.Telford@uib.no)
 </section>
 <section id="data-life-cycle" class="slide level2">
 <h2>Data life-cycle</h2>
-<div class="cell" data-fig-height="6.7">
+<div class="cell" data-fig-height="6.7" data-layout-align="default">
 <div class="cell-output-display">
 <div id="data-life-cycle-dot">
 <div>
@@ -655,6 +655,19 @@ Richard J. Telford (Richard.Telford@uib.no)
 <h2>Examples</h2>
 <p>When is 1-9-2021?</p>
 <p>Sex coded as 0 &amp; 1</p>
+<aside class="notes">
+<p>Show bad_data.xlsx for group discussion</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="data-importing" class="slide level2">
 <h2>Data importing</h2>
@@ -674,13 +687,13 @@ Richard J. Telford (Richard.Telford@uib.no)
 <li><code>tidyverse</code> (Lecture 3)</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">data</span>(penguins, <span class="at">package =</span> <span class="st">"palmerpenguins"</span>)</span>
-<span id="cb1-3"><a href="#cb1-3"></a>penguins <span class="sc">|&gt;</span></span>
-<span id="cb1-4"><a href="#cb1-4"></a>  <span class="fu">group_by</span>(species) <span class="sc">|&gt;</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb1-6"><a href="#cb1-6"></a>    <span class="at">n =</span> <span class="fu">n</span>(),</span>
-<span id="cb1-7"><a href="#cb1-7"></a>    <span class="at">mean_mass =</span> <span class="fu">mean</span>(body_mass_g, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a></a><span class="fu">data</span>(penguins, <span class="at">package =</span> <span class="st">"palmerpenguins"</span>)</span>
+<span id="cb1-3"><a></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb1-4"><a></a>  <span class="fu">group_by</span>(species) <span class="sc">|&gt;</span></span>
+<span id="cb1-5"><a></a>  <span class="fu">summarise</span>(</span>
+<span id="cb1-6"><a></a>    <span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb1-7"><a></a>    <span class="at">mean_mass =</span> <span class="fu">mean</span>(body_mass_g, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 3
   species       n mean_mass
@@ -694,15 +707,14 @@ Richard J. Telford (Richard.Telford@uib.no)
 <section id="visualise-with-ggplot2" class="slide level2">
 <h2>Visualise with ggplot2</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="fu">library</span>(ggbeeswarm)</span>
-<span id="cb3-3"><a href="#cb3-3"></a><span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> species,</span>
-<span id="cb3-4"><a href="#cb3-4"></a>                     <span class="at">y =</span> bill_length_mm,</span>
-<span id="cb3-5"><a href="#cb3-5"></a>                     <span class="at">colour =</span> species)) <span class="sc">+</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a>  <span class="fu">geom_beeswarm</span>() <span class="sc">+</span></span>
-<span id="cb3-7"><a href="#cb3-7"></a>  <span class="fu">scale_colour_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>) <span class="sc">+</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Species"</span>, <span class="at">y =</span> <span class="st">"Bill length mm"</span>, <span class="at">colour =</span> <span class="st">"Species"</span>) <span class="sc">+</span></span>
-<span id="cb3-9"><a href="#cb3-9"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb3-2"><a></a><span class="fu">library</span>(ggbeeswarm)</span>
+<span id="cb3-3"><a></a><span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> species,</span>
+<span id="cb3-4"><a></a>                     <span class="at">y =</span> bill_length_mm,</span>
+<span id="cb3-5"><a></a>                     <span class="at">colour =</span> species)) <span class="sc">+</span></span>
+<span id="cb3-6"><a></a>  <span class="fu">geom_beeswarm</span>() <span class="sc">+</span></span>
+<span id="cb3-7"><a></a>  <span class="fu">scale_colour_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>) <span class="sc">+</span></span>
+<span id="cb3-8"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Species"</span>, <span class="at">y =</span> <span class="st">"Bill length mm"</span>, <span class="at">colour =</span> <span class="st">"Species"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="lecture_1_data_lifecycle_files/figure-revealjs/unnamed-chunk-3-1.png" width="480" class="r-stretch"></section>
@@ -719,26 +731,61 @@ Richard J. Telford (Richard.Telford@uib.no)
 <li>Survival analysis (11)</li>
 </ul>
 </section>
-<section id="communicate-results-with-quarto" class="slide level2">
+<section id="communicate-results-with-quarto" class="slide level2 scrollable">
 <h2>Communicate results with quarto</h2>
-<p>Tradition</p>
+<div class="columns">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="figures/quarto_workflow.jpg" alt="Schematic diagram showing the copy-paste workflow using word and the reproducible quarto workflow" width="844"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="past">Past</h3>
 <ul>
 <li>text in Word, code in R</li>
-<li>copy figures, tables etc into Word</li>
-<li>find mistakes. Return to step 2.</li>
+<li>copy figures &amp; tables, paste into Word</li>
+<li>find mistakes - go to step 1.</li>
 </ul>
-<p>quarto markdown</p>
+</div><div class="column" style="width:50%;">
+<h3 id="future">Future</h3>
 <ul>
 <li>Code and text interwoven</li>
 <li>Reproducible, dynamic documents</li>
-<li>This presentation made with quarto</li>
 </ul>
+</div></div>
+<aside class="notes">
+<ul>
+<li>Will be using quarto for all assignments</li>
+<li>first datalab will to to use quarto</li>
+<li>demo time</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="data-death" class="slide level2">
 <h2>Data death</h2>
 <div class="cell">
 <div class="cell-output-display">
+<div>
+<figure>
 <p><img data-src="figures/1-s2.0-S157495410500004X-gr1.jpg" style="width:50.0%"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Natural degradation in information content associated with <strong>data</strong> and <strong>metadata</strong></p>
@@ -750,7 +797,11 @@ Richard J. Telford (Richard.Telford@uib.no)
 <h2>Empirical evidence of data loss</h2>
 <div class="cell">
 <div class="cell-output-display">
+<div>
+<figure>
 <p><img data-src="figures/gr1.jpg" style="width:70.0%" alt="Probability of data survival vs paper age. Vines et al 2014"></p>
+</figure>
+</div>
 </div>
 </div>
 
@@ -789,7 +840,11 @@ Richard J. Telford (Richard.Telford@uib.no)
 
 <div class="cell">
 <div class="cell-output-display">
+<div>
+<figure>
 <p><img data-src="figures/rutgers-stolen-ad.jpeg" style="width:50.0%" alt="Advert offering to pay thief for data on stolen laptop"></p>
+</figure>
+</div>
 </div>
 </div>
 
@@ -843,8 +898,7 @@ Richard J. Telford (Richard.Telford@uib.no)
 <h3 id="examples-1">Examples</h3>
 </div><div class="column" style="width:50%;">
 <h3 id="solutions">Solutions</h3>
-</div>
-</div>
+</div></div>
 </section>
 <section id="data-management-plans" class="slide level2">
 <h2>Data management plans</h2>
@@ -852,7 +906,11 @@ Richard J. Telford (Richard.Telford@uib.no)
 <p>Write one before you start work.</p>
 <div class="cell">
 <div class="cell-output-display">
+<div>
+<figure>
 <p><img data-src="https://www.uib.no/sites/w3.uib.no/files/styles/content_main_wide_1x/public/20171119_benefitsdmp_tekengebied-1_large.png?itok=YnWxrDdr&amp;timestamp=1616058199"></p>
+</figure>
+</div>
 </div>
 </div>
 
@@ -921,9 +979,25 @@ Richard J. Telford (Richard.Telford@uib.no)
 <h3 id="ai">AI</h3>
 <p><a href="https://chat.openai.com/">ChatGPT</a></p>
 <p><a href="https://www.phind.com/">Phind</a></p>
+<p><a href="https://github.com/education/students">Copilot</a> Need github account. Copilot is free with student account.</p>
+<aside class="notes">
+<p>copilot demo</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 
+<div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 
+</div>
 </div>
 </section>
     </div>
@@ -1206,18 +1280,7 @@ Richard J. Telford (Richard.Telford@uib.no)
         }
         return false;
       }
-      const clipboard = new window.ClipboardJS('.code-copy-button', {
-        text: function(trigger) {
-          const codeEl = trigger.previousElementSibling.cloneNode(true);
-          for (const childEl of codeEl.children) {
-            if (isCodeAnnotation(childEl)) {
-              childEl.remove();
-            }
-          }
-          return codeEl.innerText;
-        }
-      });
-      clipboard.on('success', function(e) {
+      const onCopySuccess = function(e) {
         // button target
         const button = e.trigger;
         // don't keep focus
@@ -1249,7 +1312,47 @@ Richard J. Telford (Richard.Telford@uib.no)
         }, 1000);
         // clear code selection
         e.clearSelection();
+      }
+      const getTextToCopy = function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+        text: getTextToCopy
       });
+      clipboard.on('success', onCopySuccess);
+      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+        // For code content inside modals, clipBoardJS needs to be initialized with a container option
+        // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+          text: getTextToCopy,
+          container: window.document.getElementById('quarto-embedded-source-code-modal')
+        });
+        clipboardModal.on('success', onCopySuccess);
+      }
+        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+        var mailtoRegex = new RegExp(/^mailto:/);
+          var filterRegex = new RegExp('/' + window.location.host + '/');
+        var isInternal = (href) => {
+            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+        }
+        // Inspect non-navigation links and adorn them if external
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+        for (var i=0; i<links.length; i++) {
+          const link = links[i];
+          if (!isInternal(link.href)) {
+            // undo the damage that might have been done by quarto-nav.js in the case of
+            // links that we want to consider external
+            if (link.dataset.originalHref !== undefined) {
+              link.href = link.dataset.originalHref;
+            }
+          }
+        }
       function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
         const config = {
           allowHTML: true,
@@ -1286,7 +1389,11 @@ Richard J. Telford (Richard.Telford@uib.no)
           try { href = new URL(href).hash; } catch {}
           const id = href.replace(/^#\/?/, "");
           const note = window.document.getElementById(id);
-          return note.innerHTML;
+          if (note) {
+            return note.innerHTML;
+          } else {
+            return "";
+          }
         });
       }
       const findCites = (el) => {
