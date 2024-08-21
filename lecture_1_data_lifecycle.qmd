@@ -189,7 +189,7 @@ This course will focus on
 #| label: quarto-workflow
 #| eval: true
 #| fig-alt:  Schematic diagram showing the copy-paste workflow using word and the reproducible quarto workflow
-knitr::include_graphics("figures/quarto_workflow.jpg")
+knitr::include_graphics("figures/quarto_workflow.png")
 ```
 :::
 
