@@ -200,12 +200,12 @@ For installation & configuration instructions see [Chapter 1](https://biostats-r
 
 ## R packages
 
--    tidyverse (for data manipulation and plotting)
--    remotes (for installing packages from GitHub)
--    usethis  (for setting up some course material)
--    here (for helping load file)
--    gt (for making tables)
--    quarto (for making reproducible documents)
+-    `tidyverse` (for data manipulation and plotting)
+-    `remotes` (for installing packages from GitHub)
+-    `usethis`  (for setting up some course material)
+-    `here` (for helping load file)
+-    `gt` (for making tables)
+-    `quarto` (for making reproducible documents)
 
 See [Chapter 5](https://biostats-r.github.io/biostats/workingInR/0013_packages.html) of the Working in R coursebook
 
