@@ -25,6 +25,18 @@ execute:
 (2 + 5) * 8
 ```
 
+::: notes
+
+order of operations 
+
+-    Parentheses
+-    Exponentiation
+-    Multiplication and division
+-    Addition and subtraction
+
+:::
+
+
 ## Assigning
 
 Assign object to a name
@@ -38,15 +50,22 @@ x ^ 2
 
 Forgetting to assign is a very common error
 
+::: notes
+`<-` is the preferred assignment operator
+some people use `=` (but can cause problems)
+don't use `<<-` unless you know what you are doing
+never use `->` - subverts the usual order of operations
+:::
+
 ## Functions
-
-Brackets
-
-Arguments separated by comma
 
 ```{r}
 rnorm(n = 4, mean = 2, sd = 2)
 ```
+
+Function name followed by brackets
+
+Arguments separated by comma
 
 Don't include an argument - uses default
 
@@ -56,6 +75,13 @@ Don't need to name arguments if in correct order
 #| eval: false
 rnorm(4, 2, 2)
 ```
+
+::: notes
+`rnorm` is a function that generates random numbers from a normal distribution
+good idea to name arguments for clarity
+:::
+
+# Data types
 
 ## Vectors
 
@@ -69,6 +95,12 @@ c(1L, 5L, 19L)          # integer
 c(3.14, 1, 1.9e2)       # double
 c("cat", "dog", "fish") # character
 ```
+
+
+::: notes
+`L` suffix for integers
+hierarchical order of types: logical < integer < double < character
+:::
 
 ## Coercion
 
@@ -149,6 +181,10 @@ m
 
 Arrays can have 3+ dimensions
 
+::: notes
+Arrays are mind-melting
+:::
+
 ## Subsetting a matrix
 
 ```{r}
@@ -167,15 +203,15 @@ m[1:2, 2]
 Each element of a list can be a different type
 
 ```{r}
-lst <- list(
+x <- list(
   1:5,
   "b",
   c(TRUE, FALSE)
 )
 
-str(lst)
+str(x)
 
-lst
+x
 ```
 
 ::: notes
@@ -220,6 +256,10 @@ Extract vector "a"
 ```{r}
 x$a
 ```
+
+::: notes
+Many functions return named lists eg lm, glm, t-test
+:::
 
 ## Data frames and tibbles
 
@@ -289,9 +329,9 @@ animal <- "cat"
 number <- 3
 ```
 
-- `&&` AND - TRUE if both TRUE
-- `||` OR - TRUE if either TRUE 
-- `!` NOT - TRUE if FALSE (or use `!=`)
+- `&&` AND - TRUE if **both** TRUE
+- `||` OR - TRUE if **either** TRUE 
+- `!` NOT - TRUE if FALSE (or use `!=` for not equal)
 
 ```{r}
 animal == "cat" && number == 7
@@ -365,7 +405,7 @@ for (i in 1:n) {
 
 Rarely need a loop - `purrr::map()`, `apply()` generally cleaner
 
-## Better iteration with \`map\`
+## Better iteration with \`map()\`
 
 ```{r}
 library(purrr) # part of tidyverse
@@ -375,7 +415,7 @@ map(lst, mean)
 map_dbl(lst, mean) # returns vector of doubles
 ```
 
-`apply` for iterating over rows/columns of a matrix
+`apply()` for iterating over rows/columns of a matrix
 
 # Style
 
@@ -393,6 +433,16 @@ map_dbl(lst, mean) # returns vector of doubles
 Need understandable code
 
 Goodstylemakescodeeasiertoread
+
+## Journal code archiving requirements {.scrollable}
+
+### [Nature Journals](https://www.nature.com/nature-portfolio/editorial-policies/reporting-standards)
+
+> A condition of publication in a Nature Portfolio journal is that authors are required to make materials, data, **code**, and associated protocols promptly available to readers without undue qualifications.
+
+### [Canadian Journal of Fisheries and Aquatic Sciences](https://blog.cdnsciencepub.com/open-data-and-code-in-fisheries-and-aquatic-science/)
+
+>  it is a condition for publication of accepted manuscripts at CJFAS that authors make publicly available all data and **code** needed to reproduce those results (including code to reproduce statistical results, simulation results, and figures) via an online data repository.
 
 ## Tidy code
 
@@ -459,11 +509,13 @@ Make your own style - but be consistent
 ## Or too short
 
 ::: r-fit-text
-no
+k
 :::
 
 ::: notes
-Common in old FORTRAN code - save memory with short names exceptions
+Common in old FORTRAN code - save memory with short names 
+
+exceptions
 
 -   counter in a for loop
 -   main object in a function
@@ -546,8 +598,7 @@ Use `styler` package to edit code to meet style guide.
 Use `lintr` package for static code analysis, including style check
 
 ::: notes
-Demo Need dev version of styler for quarto files.
-`remotes::install_github("r-lib/styler")`
+Demo 
 :::
 
 ## Comments
@@ -558,9 +609,19 @@ Help you and others to understand what you did
 
 Comments should explain the why, not the what.
 
+```{r}
+#| eval: false
+# Bad
+# remove line 37 of the penguins dataset
+penguins <- penguins[-37, ]
+```
+
+
 Try to make code self-documenting with descriptive object names
 
-Use comments for navigation
+## Comments for navigation
+
+Helps you find your way around a script
 
 ```{r, eval = FALSE}
 #### Load data ####
@@ -573,12 +634,14 @@ Use comments for navigation
 ## No magic numbers
 
 ```{r}
+# Bad
 x <- c(1, 5, 6, 3, 6)
 mean(x)
 x[x > 4.2]
 ```
 ::: fragment
 ```{r}
+# Good
 x <- c(1, 5, 6, 3, 6)
 x_mean <- mean(x)
 x[x > x_mean]
