@@ -29,8 +29,8 @@ library(patchwork)
 ```
 
 ```{r a-dist}
-p_dist <- penguins |> 
-  filter(species == "Gentoo") |> 
+p_dist <- penguins |>
+  filter(species == "Gentoo") |>
   ggplot(aes(x = bill_length_mm)) +
   geom_histogram(bins = 25, fill = "grey50") +
   labs(x = "Bill length mm", y = "Count") +
@@ -41,17 +41,24 @@ p_dist
 ## Midpoint
 
 ```{r midpoint, fig.width = 9, fig.height = 5}
-mid <- penguins |> 
-  filter(species == "Gentoo") |> 
-  drop_na() |> 
-  summarise(mean  = mean(bill_length_mm),
-            median = median(bill_length_mm)) |> 
+mid <- penguins |>
+  filter(species == "Gentoo") |>
+  drop_na() |>
+  summarise(
+    mean = mean(bill_length_mm),
+    median = median(bill_length_mm),
+    .groups = "drop"
+  ) |>
   pivot_longer(everything())
-p_dist + 
-  geom_segment(aes(x = value, xend = value, y = 5, yend = 0, colour = name), data = mid, arrow = arrow(type = "closed")) +
-  theme(legend.position = c(0.99, 0.99), legend.justification = c(1, 1), 
-        legend.title = element_blank())
-  
+
+p_dist +
+  geom_segment(aes(x = value, xend = value, y = 5, yend = 0, colour = name),
+    data = mid, arrow = arrow(type = "closed")
+  ) +
+  theme(
+    legend.position = c(0.99, 0.99), legend.justification = c(1, 1),
+    legend.title = element_blank()
+  )
 ```
 
 ## Mean
@@ -59,13 +66,14 @@ p_dist +
 ::: columns
 ::: {.column width="50%"}
 ```{r mean, fig.width = 4.5, fig.height = 4.5}
-
-p_dist + 
-  geom_segment(aes(x = value, xend = value, y = 5, yend = 0, colour = name), 
-               data = mid |>  filter(name == "mean"), arrow = arrow(type = "closed")) +
-  theme(legend.position = c(0.99, 0.99), legend.justification = c(1, 1), 
-        legend.title = element_blank())
-  
+p_dist +
+  geom_segment(aes(x = value, xend = value, y = 5, yend = 0, colour = name),
+    data = mid |> filter(name == "mean"), arrow = arrow(type = "closed")
+  ) +
+  theme(
+    legend.position = c(0.99, 0.99), legend.justification = c(1, 1),
+    legend.title = element_blank()
+  )
 ```
 :::
 
@@ -81,32 +89,35 @@ $$\overline{x} = \frac{\sum_{i=1}^n x_i}{n}$$
 ## Median
 
 ```{r median-anim, cache = TRUE}
-median_setup <- penguins|> 
-  filter(species == "Gentoo") |> 
+median_setup <- penguins |>
+  filter(species == "Gentoo") |>
   drop_na(bill_length_mm) |>
-  select(bill_length_mm) |> 
-  mutate(n = (1:n()), order = n, fill = "grey50")
+  select(bill_length_mm) |>
+  mutate(n = seq_len(n()), order = n, fill = "grey50")
 
-median_anim <-  bind_rows(
-  raw = median_setup,
-  sorted = median_setup |>  
+median_anim <- bind_rows(
+  a_raw = median_setup,
+  b_sorted = median_setup |>
     mutate(order = rank(bill_length_mm, ties.method = "first")),
-  highlight = median_setup |>  
+  c_highlight = median_setup |>
     mutate(
       order = rank(bill_length_mm, ties.method = "first"),
-      fill = if_else(between(order, (n() + 1)/2 - 0.5, (n() + 1)/2 + 0.5), "red", fill)
+      fill = if_else(
+        between(order, (n() + 1) / 2 - 0.5, (n() + 1) / 2 + 0.5),
+        true = "red", false = fill
+      )
     ),
-    .id = "what"
-  ) |> 
-  mutate(order = order * 1.0) |> 
+  .id = "what"
+) |>
+  mutate(order = order * 1.0) |>
   ggplot(aes(x = order, y = bill_length_mm, group = n, fill = I(fill))) +
-  geom_col() + 
+  geom_col() +
   scale_x_continuous(expand = c(0.01, 0)) +
   labs(x = "Order", y = "Bill length mm") +
   transition_states(what, transition_length = c(1, 1, 1), state_length = c(1, .1, 1), wrap = FALSE) +
-  ease_aes('cubic-in-out')
-  
-animate(width = 500, height = 300, median_anim)
+  ease_aes("cubic-in-out")
+
+median_anim
 ```
 
 -   Sort from minimum to maximum
@@ -116,7 +127,7 @@ animate(width = 500, height = 300, median_anim)
 ## Mean vs Median
 
 ```{r biomass-import, include=FALSE}
-biomass <- read_delim("data/biomass2015_H.csv", delim = ",") |> 
+biomass <- read_delim("data/biomass2015_H.csv", delim = ",") |>
   mutate(production = as.numeric(production))
 ```
 
@@ -130,17 +141,22 @@ biomass_plot
 ## Mean vs Median
 
 ```{r biomass-plot2}
-mid_biomass <- biomass |> 
-  drop_na(production) |> 
-  summarise(mean  = mean(production),
-            median = median(production)) |> 
+mid_biomass <- biomass |>
+  drop_na(production) |>
+  summarise(
+    mean = mean(production),
+    median = median(production),
+    .groups = "drop"
+  ) |>
   pivot_longer(everything())
-biomass_plot + 
+
+biomass_plot +
   geom_segment(aes(x = value, xend = value, y = 15, yend = 0, colour = name), data = mid_biomass, arrow = arrow(type = "closed")) +
   theme(
     legend.position = c(0.99, 0.99),
-    legend.justification = c(1, 1), 
-    legend.title = element_blank())
+    legend.justification = c(1, 1),
+    legend.title = element_blank()
+  )
 ```
 
 ## Calculating Mean and Median in R
@@ -171,44 +187,57 @@ mean(vec, na.rm = TRUE)
 # median of a column
 median(penguins$bill_length_mm, na.rm = TRUE)
 # or
-penguins |> 
+penguins |>
   summarise(med = median(bill_length_mm, na.rm = TRUE))
 
-#mean of a column with a grouping variable
-penguins |> 
-  group_by(species) |> 
-  summarise(med = median(bill_length_mm, na.rm = TRUE))
+# mean of a column with a grouping variable
+penguins |>
+  group_by(species) |>
+  summarise(
+    med = median(bill_length_mm, na.rm = TRUE),
+    .groups = "drop"
+  )
 ```
 
 ## Spread
 
 ```{r spread, fig.width = 9, fig.height = 5}
-max_min <- penguins |> 
-  filter(species == "Gentoo") |> 
-  drop_na() |> 
-  summarise(minimum  = min(bill_length_mm),
-            maximum = max(bill_length_mm)) 
-mean_sd <- penguins |> 
-  filter(species == "Gentoo") |> 
-  drop_na() |> 
-  summarise(mean  = mean(bill_length_mm),
-            mean_sd = mean(bill_length_mm) + sd(bill_length_mm)) 
-p_dist + 
+max_min <- penguins |>
+  filter(species == "Gentoo") |>
+  drop_na() |>
+  summarise(
+    minimum = min(bill_length_mm),
+    maximum = max(bill_length_mm)
+  )
+
+mean_sd <- penguins |>
+  filter(species == "Gentoo") |>
+  drop_na() |>
+  summarise(
+    mean = mean(bill_length_mm),
+    mean_sd = mean(bill_length_mm) + sd(bill_length_mm)
+  )
+p_dist +
   geom_segment(
-    aes(x = value, xend = value, y = 5, yend = 0, colour = name), 
-    data = max_min |> 
-  pivot_longer(everything()), 
-  arrow = arrow(type = "closed")) +
-geom_segment(
-    aes(x = minimum, xend = maximum, y = 7, yend = 7, colour = "Range"), 
-    data = max_min, 
-  arrow = arrow(type = "closed", ends = "both")) +
+    aes(x = value, xend = value, y = 5, yend = 0, colour = name),
+    data = max_min |>
+      pivot_longer(everything()),
+    arrow = arrow(type = "closed")
+  ) +
   geom_segment(
-    aes(x = mean, xend = mean_sd, y = 10, yend = 10, colour = "Standard Deviation"), 
-    data = mean_sd, 
-  arrow = arrow(type = "closed", ends = "last")) +
-  theme(legend.position = c(0.99, 0.99), legend.justification = c(1, 1), 
-        legend.title = element_blank())
+    aes(x = minimum, xend = maximum, y = 7, yend = 7, colour = "Range"),
+    data = max_min,
+    arrow = arrow(type = "closed", ends = "both")
+  ) +
+  geom_segment(
+    aes(x = mean, xend = mean_sd, y = 10, yend = 10, colour = "Standard Deviation"),
+    data = mean_sd,
+    arrow = arrow(type = "closed", ends = "last")
+  ) +
+  theme(
+    legend.position = c(0.99, 0.99), legend.justification = c(1, 1),
+    legend.title = element_blank()
+  )
 ```
 
 ## Minimum, maximum and range
@@ -223,8 +252,8 @@ Range is difference between smallest and largest.
 range(penguins$bill_length_mm, na.rm = TRUE)
 
 # calculate range as
-max(penguins$bill_length_mm, na.rm = TRUE) - 
-min(penguins$bill_length_mm, na.rm = TRUE)
+max(penguins$bill_length_mm, na.rm = TRUE) -
+  min(penguins$bill_length_mm, na.rm = TRUE)
 
 # or
 diff(range(penguins$bill_length_mm, na.rm = TRUE))
@@ -258,15 +287,17 @@ Square root of the variance $$s = \sqrt{s^2}$$ $$s  = \sqrt{\frac{\sum_{i=1}^n (
 ```{r sd, fig.height = 4, fig.width = 4}
 bind_rows(
   `5` = tibble(x = 10:70, y = dnorm(x, mean = 40, sd = 5)),
-  `10` = tibble(x = 10:70, y = dnorm(x, mean = 40, sd = 10)), 
+  `10` = tibble(x = 10:70, y = dnorm(x, mean = 40, sd = 10)),
   .id = "sd"
-) |> 
-ggplot(aes(x = x, y = y, fill = sd)) +
+) |>
+  ggplot(aes(x = x, y = y, fill = sd)) +
   geom_area(alpha = 0.5, position = "identity") +
   scale_fill_brewer(palette = "Set1") +
   labs(x = "Value", y = "Density") +
-  theme(legend.position = c(0.99, 0.99),
-        legend.justification = c(1, 1))
+  theme(
+    legend.position = c(0.99, 0.99),
+    legend.justification = c(1, 1)
+  )
 ```
 :::
 :::
@@ -274,19 +305,21 @@ ggplot(aes(x = x, y = y, fill = sd)) +
 ------------------------------------------------------------------------
 
 ```{r}
-  tibble(x = 5:75, y = dnorm(x, mean = 40, sd = 10), sd = 10) |> 
-ggplot(aes(x = x, y = y, fill = factor(sd))) +
+tibble(x = 5:75, y = dnorm(x, mean = 40, sd = 10), sd = 10) |>
+  ggplot(aes(x = x, y = y, fill = factor(sd))) +
   geom_area(alpha = 0.5, position = "identity", show.legend = FALSE) +
   annotate(geom = "segment", x = 40, xend = 40, y = 0, yend = dnorm(40, mean = 40, sd = 10), linetype = "dashed") +
-  annotate(geom = "text", x = 40, y = dnorm(40, mean = 40, sd = 10), label = expression(mean), hjust = 0) + 
+  annotate(geom = "text", x = 40, y = dnorm(40, mean = 40, sd = 10), label = expression(mean), hjust = 0) +
   annotate(geom = "segment", x = 30, xend = 50, y = dnorm(30, mean = 40, sd = 10), yend = dnorm(50, mean = 40, sd = 10)) +
-  annotate(geom = "text", x = 50, y = dnorm(30, mean = 40, sd = 10), label = expression(mean%+-%1~SD), hjust = 0) +
+  annotate(geom = "text", x = 50, y = dnorm(30, mean = 40, sd = 10), label = expression(mean %+-% 1 ~ SD), hjust = 0) +
   annotate(geom = "segment", x = 20, xend = 60, y = dnorm(20, mean = 40, sd = 10), yend = dnorm(60, mean = 40, sd = 10)) +
-  annotate(geom = "text", x = 60, y = dnorm(60, mean = 40, sd = 10), label = expression(mean%+-%2~SD), hjust = 0) +
+  annotate(geom = "text", x = 60, y = dnorm(60, mean = 40, sd = 10), label = expression(mean %+-% 2 ~ SD), hjust = 0) +
   scale_fill_brewer(palette = "Set1") +
   labs(x = "Value", y = "Density") +
-  theme(legend.position = c(0.99, 0.99),
-        legend.justification = c(1, 1))
+  theme(
+    legend.position = c(0.99, 0.99),
+    legend.justification = c(1, 1)
+  )
 ```
 
 # Higher moments
@@ -309,9 +342,11 @@ positive skew `e1071::skewness()`
 ## Kurtosis
 
 ```{r kurtosis, fig.height = 5, fig.width = 5}
-crossing(x = seq(-7, 7, length = 100), 
-         df = c(1)) |> 
-  mutate(y = dt(x, df = df)) |> 
+crossing(
+  x = seq(-7, 7, length = 100),
+  df = c(1)
+) |>
+  mutate(y = dt(x, df = df)) |>
   ggplot(aes(x = x, y = y)) +
   geom_area(fill = "grey") +
   geom_line(data = tibble(x = seq(-7, 7, length = 100), y = dnorm(x, sd = 1)), colour = "black") +
@@ -335,32 +370,32 @@ What can we infer about the population from the sample?
 ```{r mean-uncertainty}
 dat <- tibble(x = rnorm(1e6, mean = 100, sd = 10))
 
-p1 <- ggplot(dat, aes(x = x)) + 
+p1 <- ggplot(dat, aes(x = x)) +
   geom_density(fill = "grey80") +
   geom_vline(xintercept = 100, colour = "red", linetype = "dashed")
 
 dat2 <- bind_rows(
-  small = rerun(1000, slice_sample(dat, n = 20)) |> bind_rows(.id = "run"),
-  large = rerun(1000, slice_sample(dat, n = 100)) |> bind_rows(.id = "run"),
-.id = "size") |> 
+  small = map(1:1000, ~ slice_sample(dat, n = 20)) |> list_rbind(names_to = "run"),
+  large = map(1:1000, ~ slice_sample(dat, n = 100)) |> list_rbind(names_to = "run"),
+  .id = "size"
+) |>
   mutate(run = as.numeric(run))
 
-means <- dat2 |> 
-  group_by(run, size) |> 
-  summarise(mean = mean(x))
-  
+means <- dat2 |>
+  group_by(run, size) |>
+  summarise(mean = mean(x), .groups = "drop")
+
 p2 <- ggplot(dat2 |> filter(run <= 10), aes(x = x)) +
   geom_histogram(bins = 20) +
   geom_segment(data = means |> filter(run <= 10), aes(x = mean, xend = mean, y = 5, yend = 0), arrow = arrow(type = "closed"), colour = "red") +
-  facet_wrap(~size) +
+  facet_wrap(facets = vars(size)) +
   transition_states(states = run, transition_length = 1, state_length = 2) +
-  ease_aes('cubic-in-out')
+  ease_aes("cubic-in-out")
 
 p3 <- ggplot(means, aes(x = mean)) +
   geom_histogram() +
-  facet_wrap(~size) +
+  facet_wrap(facets = vars(size)) +
   geom_vline(xintercept = 100, colour = "red", linetype = "dashed")
-
 ```
 
 ```{r pop, fig.height = 5}
@@ -397,7 +432,7 @@ Small n - large SE - less reliable estimate of mean
 
 If experiment repeated many times, confidence level represents the proportion of confidence intervals that contain the true value of the unknown population parameter.
 
-So 95% confidence interval will contain true value in 95% of repeat experiments
+95% confidence interval will contain true value in 95% of repeat experiments
 
 Easily misunderstood.
 
@@ -412,9 +447,11 @@ Mean $\pm$ 1.96 \* SE
 Why 1.96?
 
 ```{r se1.96, fig.height=4}
-tibble(x = seq(-3, 3, length = 1000), 
-       y = dnorm(x, mean = 0, sd = 1), 
-       z = case_when(x < -1.96 ~ "lower", x > 1.96 ~ "upper",TRUE ~ "a")) |> 
+tibble(
+  x = seq(-3, 3, length = 1000),
+  y = dnorm(x, mean = 0, sd = 1),
+  z = case_when(x < -1.96 ~ "lower", x > 1.96 ~ "upper", TRUE ~ "a")
+) |>
   ggplot(aes(x = x, y = y, fill = z)) +
   geom_area(show.legend = FALSE) +
   scale_fill_manual(values = c(lower = scales::muted("red"), upper = scales::muted("red"), a = "grey")) +
@@ -429,11 +466,12 @@ Grey area is 95% of the normal distribution
 Estimated means with 95% confidence interval for different sample sizes
 
 ```{r}
-dat2 |> filter(run < 50) |> 
+dat2 |>
+  filter(run < 50) |>
   ggplot(aes(x = run, y = x)) +
   geom_hline(yintercept = 100, colour = "red") +
   stat_summary(fun.data = "mean_se", fun.args = list(mult = 1.96)) +
-  facet_wrap(~ size) +
+  facet_wrap(facets = vars(size)) +
   coord_flip() +
   labs(y = "value")
 ```
@@ -487,12 +525,13 @@ Shape varies with mean
 bind_rows(
   `mean = 1` = tibble(x = rpois(1000, lambda = 1)),
   `mean = 5` = tibble(x = rpois(1000, lambda = 5)),
-  `mean = 10` = tibble(x = rpois(1000, lambda = 10)), 
-  .id = "lambda") |> 
-  mutate(lambda = factor(lambda, levels = c("mean = 1", "mean = 5", "mean = 10"))) |> 
+  `mean = 10` = tibble(x = rpois(1000, lambda = 10)),
+  .id = "lambda"
+) |>
+  mutate(lambda = factor(lambda, levels = c("mean = 1", "mean = 5", "mean = 10"))) |>
   ggplot(aes(x = x)) +
   geom_bar() +
-  facet_wrap(~lambda)
+  facet_wrap(facets = vars(lambda))
 ```
 
 ## Experimental design
@@ -521,20 +560,20 @@ Compare means
 H<sub>0</sub>: Bill length does not depend on sex in Gentoo penguins
 
 ```{r t-test-plot, fig.height = 4}
-penguins |> 
-  filter(species == "Gentoo")|> 
-  drop_na(bill_length_mm, sex) |> 
-ggplot(aes(x = bill_length_mm, fill = sex)) +
+penguins |>
+  filter(species == "Gentoo") |>
+  drop_na(bill_length_mm, sex) |>
+  ggplot(aes(x = bill_length_mm, fill = sex)) +
   geom_histogram(show.legend = FALSE) +
   scale_fill_viridis_d() +
-  facet_wrap(~sex, nrow = 1)
+  facet_wrap(facets = vars(sex), nrow = 1)
 ```
 
 ## t-test in R
 
 ```{r echo = TRUE}
-gentoo <- penguins |> 
-  filter(species == "Gentoo")|> 
+gentoo <- penguins |>
+  filter(species == "Gentoo") |>
   drop_na(bill_length_mm, sex)
 
 mod1 <- t.test(bill_length_mm ~ sex, data = gentoo)
@@ -565,37 +604,43 @@ Confidence intervals are more interpretable
 
 ```{r}
 library(gt)
-correct <-"#a0ffa0"
+correct <- "#a0ffa0"
 error <- "orange"
-tibble(`Null hypothesis is` = c("Rejected", "Not rejected"), 
-      True = c("Type I error<br>False positive", "Correct decision<br>True negative"),
-      False = c("Correct decision<br>True positive", "Type II error<br>False negative")) |> 
-  gt::gt() |> 
-    tab_style(
-      style = cell_fill(color = correct),
-      locations = cells_body(
-      columns = c(True), 
+tibble(
+  `Null hypothesis is` = c("Rejected", "Not rejected"),
+  True = c("Type I error<br>False positive", "Correct decision<br>True negative"),
+  False = c("Correct decision<br>True positive", "Type II error<br>False negative")
+) |>
+  gt::gt() |>
+  tab_style(
+    style = cell_fill(color = correct),
+    locations = cells_body(
+      columns = c(True),
       rows = str_detect(True, "Correct")
-  )) |> 
-      tab_style(
-      style = cell_fill(color = correct),
-      locations = cells_body(
-      columns = c(False), 
+    )
+  ) |>
+  tab_style(
+    style = cell_fill(color = correct),
+    locations = cells_body(
+      columns = c(False),
       rows = str_detect(False, "Correct")
-  )) |> 
-      tab_style(
-      style = cell_fill(color = error),
-      locations = cells_body(
-      columns = c(True), 
+    )
+  ) |>
+  tab_style(
+    style = cell_fill(color = error),
+    locations = cells_body(
+      columns = c(True),
       rows = !str_detect(True, "Correct")
-  )) |> 
-      tab_style(
-      style = cell_fill(color = error),
-      locations = cells_body(
-      columns = c(False), 
+    )
+  ) |>
+  tab_style(
+    style = cell_fill(color = error),
+    locations = cells_body(
+      columns = c(False),
       rows = !str_detect(False, "Correct")
-  )) |> 
-   fmt_markdown(columns = everything()) |> 
+    )
+  ) |>
+  fmt_markdown(columns = everything()) |>
   tab_options(table.font.size = 30)
 ```
 
@@ -610,22 +655,28 @@ delta <- 1
 sd <- 1
 mx <- 2.5
 mn <- -1.5
-crit <- qnorm(alpha, mean = 0, sd = sd/sqrt(n), lower.tail = FALSE)
-H0 <- tibble(x = seq(mn, mx, length = 201), 
-       y = dnorm(x = x, mean = 0, sd = sd / sqrt(n)), 
-       what = if_else(x < crit, true = "True negative", false = "False positive"))
-H1 <- tibble(x = seq(mn, mx, length = 201), 
-       y = dnorm(x = x, mean = delta, sd = sd / sqrt(n)), 
-       what = if_else(x > crit, true = "True positive", false = "False negative"))
-  
-H <- bind_rows(`H[0]~is~true` = H0, 
-          `H[1]~is~true` = H1, 
-          .id = "Hypothesis")
-ggplot(H, mapping = aes(x = x, y = y, fill = what)) + 
+crit <- qnorm(alpha, mean = 0, sd = sd / sqrt(n), lower.tail = FALSE)
+H0 <- tibble(
+  x = seq(mn, mx, length = 201),
+  y = dnorm(x = x, mean = 0, sd = sd / sqrt(n)),
+  what = if_else(x < crit, true = "True negative", false = "False positive")
+)
+H1 <- tibble(
+  x = seq(mn, mx, length = 201),
+  y = dnorm(x = x, mean = delta, sd = sd / sqrt(n)),
+  what = if_else(x > crit, true = "True positive", false = "False negative")
+)
+
+H <- bind_rows(
+  `H[0]~is~true` = H0,
+  `H[1]~is~true` = H1,
+  .id = "Hypothesis"
+)
+ggplot(H, mapping = aes(x = x, y = y, fill = what)) +
   geom_area() +
   geom_line(aes(group = 1)) +
   geom_vline(aes(xintercept = crit, linetype = "Critical Value")) +
-  facet_wrap(~ Hypothesis, ncol = 1, labeller = label_parsed) +
+  facet_wrap(facets = vars(Hypothesis), ncol = 1, labeller = label_parsed) +
   labs(x = "x", y = "Density", linetype = "", fill = "")
 ```
 
@@ -653,7 +704,7 @@ Need to do power analysis before experiment.
 
 -   Effect size
 -   Type I error rate (significance level - conventionally set to 0.05)
--   Type II error rate (conventionally aim for 0.8)
+-   Power (1 - Type II error rate) - conventionally aim for 0.8
 -   Number of observations
 
 Can solve for any of these
