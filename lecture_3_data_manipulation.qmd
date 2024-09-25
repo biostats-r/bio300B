@@ -60,6 +60,31 @@ Size measurements for adult foraging Adélie, Chinstrap, and Gentoo penguins obs
 
 :::
 
+## Importing data
+
+First step of almost any data analysis
+
+- `read_delim()` from `readr` package
+- `read_excel()` from `readxl` package
+
+Lots of arguments to help import data correctly
+
+Find the data rectangle and import just that.
+
+## Paths
+
+Use RStudio projects
+
+Use relative paths
+
+```{r}
+#| eval: false
+# absolute path - bad
+"c://users/richard/documents/biostats/data/data.csv"
+# relative path - good
+"data/data.csv"
+```
+
 ## Pipes
 
 Analysis:
@@ -68,7 +93,11 @@ Analysis:
  - Drop rows with NA sex
  - find mean bill length per species per sex
 
+---
+
 First solution
+
+Nested functions
 
 ```{r}
 summarise(
@@ -238,8 +267,9 @@ mites_wide
 options(dplyr.print_min = 2, dplyr.print_max = 3)
 ```
 
+## Processing data with `dplyr`
 
-## Key dplyr functions
+Key dplyr functions
 
 - `select()`
 - `filter()`
