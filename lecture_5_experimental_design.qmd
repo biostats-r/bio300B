@@ -142,10 +142,12 @@ Why might you get an unbalanced design?
 
 ## Confounding factors
 
-You have a hypothesis that age of a fish
-should affect parasite resistance because  host age affects the immune
-system. But, size of a fish varies with
-age. Size may also affect the immune system. Thus, size may be a
+H~0~: age of a fish affects parasite resistance because host age affects the immune
+system. 
+
+But, size of a fish varies with
+age. \
+Size may also affect the immune system. Thus, size may be a
 confounding factor in the experiment.
 
 ```{r}
