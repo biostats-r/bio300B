@@ -10,15 +10,15 @@
 <link href="site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <meta name="shinylive:serviceworker_dir" content=".">
-<script src="site_libs/quarto-contrib/shinylive-0.2.0/shinylive/load-shinylive-sw.js" type="module"></script>
-<script src="site_libs/quarto-contrib/shinylive-0.2.0/shinylive/run-python-blocks.js" type="module"></script>
-<link href="site_libs/quarto-contrib/shinylive-0.2.0/shinylive/shinylive.css" rel="stylesheet">
+<script src="site_libs/quarto-contrib/shinylive-0.5.0/shinylive/load-shinylive-sw.js" type="module"></script>
+<script src="site_libs/quarto-contrib/shinylive-0.5.0/shinylive/run-python-blocks.js" type="module"></script>
+<link href="site_libs/quarto-contrib/shinylive-0.5.0/shinylive/shinylive.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/shinylive-quarto-css/shinylive-quarto.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.4.309">
+  <meta name="generator" content="quarto-1.5.53">
 
   <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)">
-  <meta name="dcterms.date" content="2023-10-02">
-  <title>Bio302 - Biostatistikk - Descriptive statistics and Introduction to statistical inference</title>
+  <meta name="dcterms.date" content="2024-09-25">
+  <title>Bio302 - Biostatistikk – Descriptive statistics and Introduction to statistical inference</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -38,7 +38,7 @@
     }
     /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span { line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -49,7 +49,7 @@
     }
     @media print {
     pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
     }
     pre.numberSource code
       { counter-reset: source-line 0; }
@@ -77,7 +77,7 @@
     code span.at { color: #657422; } /* Attribute */
     code span.bn { color: #ad0000; } /* BaseN */
     code span.bu { } /* BuiltIn */
-    code span.cf { color: #003b4f; } /* ControlFlow */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
     code span.ch { color: #20794d; } /* Char */
     code span.cn { color: #8f5902; } /* Constant */
     code span.co { color: #5e5e5e; } /* Comment */
@@ -91,7 +91,7 @@
     code span.fu { color: #4758ab; } /* Function */
     code span.im { color: #00769e; } /* Import */
     code span.in { color: #5e5e5e; } /* Information */
-    code span.kw { color: #003b4f; } /* Keyword */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
     code span.op { color: #5e5e5e; } /* Operator */
     code span.ot { color: #003b4f; } /* Other */
     code span.pp { color: #ad0000; } /* Preprocessor */
@@ -412,7 +412,7 @@ Richard J. Telford (Richard.Telford@uib.no)
     </div>
 </div>
 
-  <p class="date">2 October 2023</p>
+  <p class="date">25 September 2024</p>
 </section>
 <section id="describing-a-distribution" class="slide level2">
 <h2>Describing a distribution</h2>
@@ -428,7 +428,11 @@ Richard J. Telford (Richard.Telford@uib.no)
 <div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
+<div>
+<figure>
 <p><img data-src="lecture_6_descriptive_files/figure-revealjs/mean-1.png" width="432"></p>
+</figure>
+</div>
 </div>
 </div>
 </div><div class="column" style="width:50%;">
@@ -438,8 +442,7 @@ Richard J. Telford (Richard.Telford@uib.no)
 <li>Centre of gravity of the data</li>
 <li><code>mean()</code></li>
 </ul>
-</div>
-</div>
+</div></div>
 </section>
 <section id="median" class="slide level2">
 <h2>Median</h2>
@@ -461,14 +464,14 @@ Richard J. Telford (Richard.Telford@uib.no)
 <section id="calculating-mean-and-median-in-r" class="slide level2">
 <h2>Calculating Mean and Median in R</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>vec <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">56.7</span>, <span class="fl">57.2</span>, <span class="fl">62.7</span>, <span class="fl">56.4</span>, <span class="fl">60.8</span>)</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="co"># mean of a vector</span></span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">mean</span>(vec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>vec <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">56.7</span>, <span class="fl">57.2</span>, <span class="fl">62.7</span>, <span class="fl">56.4</span>, <span class="fl">60.8</span>)</span>
+<span id="cb1-2"><a></a><span class="co"># mean of a vector</span></span>
+<span id="cb1-3"><a></a><span class="fu">mean</span>(vec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 58.76</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># median of a vector</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="fu">median</span>(vec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="co"># median of a vector</span></span>
+<span id="cb3-2"><a></a><span class="fu">median</span>(vec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 57.2</code></pre>
 </div>
@@ -478,14 +481,14 @@ Richard J. Telford (Richard.Telford@uib.no)
 
 <p>Use <code>na.rm = TRUE</code> to remove missing values.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>vec <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">56.7</span>, <span class="fl">57.2</span>, <span class="fl">62.7</span>, <span class="fl">56.4</span>, <span class="fl">60.8</span>, <span class="cn">NA</span>)</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="co"># mean of a vector with NA</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="fu">mean</span>(vec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>vec <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">56.7</span>, <span class="fl">57.2</span>, <span class="fl">62.7</span>, <span class="fl">56.4</span>, <span class="fl">60.8</span>, <span class="cn">NA</span>)</span>
+<span id="cb5-2"><a></a><span class="co"># mean of a vector with NA</span></span>
+<span id="cb5-3"><a></a><span class="fu">mean</span>(vec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] NA</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># mean of a vector excluding NA</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="fu">mean</span>(vec, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="co"># mean of a vector excluding NA</span></span>
+<span id="cb7-2"><a></a><span class="fu">mean</span>(vec, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 58.76</code></pre>
 </div>
@@ -494,24 +497,27 @@ Richard J. Telford (Richard.Telford@uib.no)
 <section class="slide level2">
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># median of a column</span></span>
-<span id="cb9-2"><a href="#cb9-2"></a><span class="fu">median</span>(penguins<span class="sc">$</span>bill_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="co"># median of a column</span></span>
+<span id="cb9-2"><a></a><span class="fu">median</span>(penguins<span class="sc">$</span>bill_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 44.45</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># or</span></span>
-<span id="cb11-2"><a href="#cb11-2"></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb11-3"><a href="#cb11-3"></a>  <span class="fu">summarise</span>(<span class="at">med =</span> <span class="fu">median</span>(bill_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="co"># or</span></span>
+<span id="cb11-2"><a></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a></a>  <span class="fu">summarise</span>(<span class="at">med =</span> <span class="fu">median</span>(bill_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 1
     med
   &lt;dbl&gt;
 1  44.4</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="co">#mean of a column with a grouping variable</span></span>
-<span id="cb13-2"><a href="#cb13-2"></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb13-3"><a href="#cb13-3"></a>  <span class="fu">group_by</span>(species) <span class="sc">|&gt;</span> </span>
-<span id="cb13-4"><a href="#cb13-4"></a>  <span class="fu">summarise</span>(<span class="at">med =</span> <span class="fu">median</span>(bill_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="co"># mean of a column with a grouping variable</span></span>
+<span id="cb13-2"><a></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb13-3"><a></a>  <span class="fu">group_by</span>(species) <span class="sc">|&gt;</span></span>
+<span id="cb13-4"><a></a>  <span class="fu">summarise</span>(</span>
+<span id="cb13-5"><a></a>    <span class="at">med =</span> <span class="fu">median</span>(bill_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb13-6"><a></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb13-7"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 2
   species     med
@@ -534,19 +540,19 @@ Richard J. Telford (Richard.Telford@uib.no)
 </ul>
 <p>Range is difference between smallest and largest.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="co"># range() gives smallest and largest values</span></span>
-<span id="cb15-2"><a href="#cb15-2"></a><span class="fu">range</span>(penguins<span class="sc">$</span>bill_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="co"># range() gives smallest and largest values</span></span>
+<span id="cb15-2"><a></a><span class="fu">range</span>(penguins<span class="sc">$</span>bill_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 32.1 59.6</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="co"># calculate range as</span></span>
-<span id="cb17-2"><a href="#cb17-2"></a><span class="fu">max</span>(penguins<span class="sc">$</span>bill_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">-</span> </span>
-<span id="cb17-3"><a href="#cb17-3"></a><span class="fu">min</span>(penguins<span class="sc">$</span>bill_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="co"># calculate range as</span></span>
+<span id="cb17-2"><a></a><span class="fu">max</span>(penguins<span class="sc">$</span>bill_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">-</span></span>
+<span id="cb17-3"><a></a>  <span class="fu">min</span>(penguins<span class="sc">$</span>bill_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 27.5</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="co"># or</span></span>
-<span id="cb19-2"><a href="#cb19-2"></a><span class="fu">diff</span>(<span class="fu">range</span>(penguins<span class="sc">$</span>bill_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a><span class="co"># or</span></span>
+<span id="cb19-2"><a></a><span class="fu">diff</span>(<span class="fu">range</span>(penguins<span class="sc">$</span>bill_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 27.5</code></pre>
 </div>
@@ -571,11 +577,14 @@ Richard J. Telford (Richard.Telford@uib.no)
 </div><div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
+<div>
+<figure>
 <p><img data-src="lecture_6_descriptive_files/figure-revealjs/sd-1.png" width="384"></p>
+</figure>
 </div>
 </div>
 </div>
-</div>
+</div></div>
 </section>
 <section class="slide level2">
 
@@ -592,14 +601,17 @@ Richard J. Telford (Richard.Telford@uib.no)
 <div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
+<div>
+<figure>
 <p><img data-src="lecture_6_descriptive_files/figure-revealjs/biomassplot-again-1.png" width="480"></p>
+</figure>
+</div>
 </div>
 </div>
 </div><div class="column" style="width:50%;">
 <p>Right skew<br>
 positive skew <code>e1071::skewness()</code></p>
-</div>
-</div>
+</div></div>
 </section>
 <section id="kurtosis" class="slide level2">
 <h2>Kurtosis</h2>
@@ -622,18 +634,14 @@ positive skew <code>e1071::skewness()</code></p>
 <section class="slide level2">
 
 <p>Histograms of samples</p>
-<div class="cell" data-hash="lecture_6_descriptive_cache/revealjs/samples_eefb04c87c8c48f73e69561952dc5ccd">
-<div class="cell-output-display">
-<p><img data-src="lecture_6_descriptive_files/figure-revealjs/samples-1.gif"></p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>NULL</code></pre>
 </div>
 </div>
 <p>Histogram of sample means</p>
-<div class="cell">
-<div class="cell-output-display">
-<p><img data-src="lecture_6_descriptive_files/figure-revealjs/sample-means-1.png" width="576"></p>
-</div>
-</div>
-</section>
+
+<img data-src="lecture_6_descriptive_files/figure-revealjs/sample-means-1.png" width="576" class="r-stretch"></section>
 <section id="standard-error-of-the-mean" class="slide level2">
 <h2>Standard error of the mean</h2>
 <p>Standard deviation divided by square root of number of observations</p>
@@ -643,7 +651,7 @@ positive skew <code>e1071::skewness()</code></p>
 <section id="confidence-interval" class="slide level2">
 <h2>Confidence interval</h2>
 <p>If experiment repeated many times, confidence level represents the proportion of confidence intervals that contain the true value of the unknown population parameter.</p>
-<p>So 95% confidence interval will contain true value in 95% of repeat experiments</p>
+<p>95% confidence interval will contain true value in 95% of repeat experiments</p>
 <p>Easily misunderstood.</p>
 <p>(Bayesian credibility intervals are much more intuitive)</p>
 </section>
@@ -741,11 +749,11 @@ H<sub>0</sub>: The bill length of Gentoo penguins does not depend on sex.</p>
 <section id="t-test-in-r" class="slide level2">
 <h2>t-test in R</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>gentoo <span class="ot">&lt;-</span> penguins <span class="sc">|&gt;</span> </span>
-<span id="cb21-2"><a href="#cb21-2"></a>  <span class="fu">filter</span>(species <span class="sc">==</span> <span class="st">"Gentoo"</span>)<span class="sc">|&gt;</span> </span>
-<span id="cb21-3"><a href="#cb21-3"></a>  <span class="fu">drop_na</span>(bill_length_mm, sex)</span>
-<span id="cb21-4"><a href="#cb21-4"></a></span>
-<span id="cb21-5"><a href="#cb21-5"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(bill_length_mm <span class="sc">~</span> sex, <span class="at">data =</span> gentoo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>gentoo <span class="ot">&lt;-</span> penguins <span class="sc">|&gt;</span></span>
+<span id="cb22-2"><a></a>  <span class="fu">filter</span>(species <span class="sc">==</span> <span class="st">"Gentoo"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb22-3"><a></a>  <span class="fu">drop_na</span>(bill_length_mm, sex)</span>
+<span id="cb22-4"><a></a></span>
+<span id="cb22-5"><a></a>mod1 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(bill_length_mm <span class="sc">~</span> sex, <span class="at">data =</span> gentoo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section class="slide level2">
@@ -782,23 +790,23 @@ mean in group female   mean in group male
 <h2>Type 1 and type 2 errors</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div id="icntspiumk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#icntspiumk table {
+<div id="ouhujuflvx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ouhujuflvx table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#icntspiumk thead, #icntspiumk tbody, #icntspiumk tfoot, #icntspiumk tr, #icntspiumk td, #icntspiumk th {
+#ouhujuflvx thead, #ouhujuflvx tbody, #ouhujuflvx tfoot, #ouhujuflvx tr, #ouhujuflvx td, #ouhujuflvx th {
   border-style: none;
 }
 
-#icntspiumk p {
+#ouhujuflvx p {
   margin: 0;
   padding: 0;
 }
 
-#icntspiumk .gt_table {
+#ouhujuflvx .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -824,12 +832,12 @@ mean in group female   mean in group male
   border-left-color: #D3D3D3;
 }
 
-#icntspiumk .gt_caption {
+#ouhujuflvx .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#icntspiumk .gt_title {
+#ouhujuflvx .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -841,7 +849,7 @@ mean in group female   mean in group male
   border-bottom-width: 0;
 }
 
-#icntspiumk .gt_subtitle {
+#ouhujuflvx .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -853,7 +861,7 @@ mean in group female   mean in group male
   border-top-width: 0;
 }
 
-#icntspiumk .gt_heading {
+#ouhujuflvx .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -865,13 +873,13 @@ mean in group female   mean in group male
   border-right-color: #D3D3D3;
 }
 
-#icntspiumk .gt_bottom_border {
+#ouhujuflvx .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#icntspiumk .gt_col_headings {
+#ouhujuflvx .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -886,7 +894,7 @@ mean in group female   mean in group male
   border-right-color: #D3D3D3;
 }
 
-#icntspiumk .gt_col_heading {
+#ouhujuflvx .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -906,7 +914,7 @@ mean in group female   mean in group male
   overflow-x: hidden;
 }
 
-#icntspiumk .gt_column_spanner_outer {
+#ouhujuflvx .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -918,15 +926,15 @@ mean in group female   mean in group male
   padding-right: 4px;
 }
 
-#icntspiumk .gt_column_spanner_outer:first-child {
+#ouhujuflvx .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#icntspiumk .gt_column_spanner_outer:last-child {
+#ouhujuflvx .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#icntspiumk .gt_column_spanner {
+#ouhujuflvx .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -938,11 +946,11 @@ mean in group female   mean in group male
   width: 100%;
 }
 
-#icntspiumk .gt_spanner_row {
+#ouhujuflvx .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#icntspiumk .gt_group_heading {
+#ouhujuflvx .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -968,7 +976,7 @@ mean in group female   mean in group male
   text-align: left;
 }
 
-#icntspiumk .gt_empty_group_heading {
+#ouhujuflvx .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -983,15 +991,15 @@ mean in group female   mean in group male
   vertical-align: middle;
 }
 
-#icntspiumk .gt_from_md > :first-child {
+#ouhujuflvx .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#icntspiumk .gt_from_md > :last-child {
+#ouhujuflvx .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#icntspiumk .gt_row {
+#ouhujuflvx .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1010,7 +1018,7 @@ mean in group female   mean in group male
   overflow-x: hidden;
 }
 
-#icntspiumk .gt_stub {
+#ouhujuflvx .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1023,7 +1031,7 @@ mean in group female   mean in group male
   padding-right: 5px;
 }
 
-#icntspiumk .gt_stub_row_group {
+#ouhujuflvx .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1037,15 +1045,15 @@ mean in group female   mean in group male
   vertical-align: top;
 }
 
-#icntspiumk .gt_row_group_first td {
+#ouhujuflvx .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#icntspiumk .gt_row_group_first th {
+#ouhujuflvx .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#icntspiumk .gt_summary_row {
+#ouhujuflvx .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1055,16 +1063,16 @@ mean in group female   mean in group male
   padding-right: 5px;
 }
 
-#icntspiumk .gt_first_summary_row {
+#ouhujuflvx .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#icntspiumk .gt_first_summary_row.thick {
+#ouhujuflvx .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#icntspiumk .gt_last_summary_row {
+#ouhujuflvx .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1074,7 +1082,7 @@ mean in group female   mean in group male
   border-bottom-color: #D3D3D3;
 }
 
-#icntspiumk .gt_grand_summary_row {
+#ouhujuflvx .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1084,7 +1092,7 @@ mean in group female   mean in group male
   padding-right: 5px;
 }
 
-#icntspiumk .gt_first_grand_summary_row {
+#ouhujuflvx .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1094,7 +1102,7 @@ mean in group female   mean in group male
   border-top-color: #D3D3D3;
 }
 
-#icntspiumk .gt_last_grand_summary_row_top {
+#ouhujuflvx .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1104,11 +1112,11 @@ mean in group female   mean in group male
   border-bottom-color: #D3D3D3;
 }
 
-#icntspiumk .gt_striped {
+#ouhujuflvx .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#icntspiumk .gt_table_body {
+#ouhujuflvx .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1117,7 +1125,7 @@ mean in group female   mean in group male
   border-bottom-color: #D3D3D3;
 }
 
-#icntspiumk .gt_footnotes {
+#ouhujuflvx .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1131,7 +1139,7 @@ mean in group female   mean in group male
   border-right-color: #D3D3D3;
 }
 
-#icntspiumk .gt_footnote {
+#ouhujuflvx .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1140,7 +1148,7 @@ mean in group female   mean in group male
   padding-right: 5px;
 }
 
-#icntspiumk .gt_sourcenotes {
+#ouhujuflvx .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1154,7 +1162,7 @@ mean in group female   mean in group male
   border-right-color: #D3D3D3;
 }
 
-#icntspiumk .gt_sourcenote {
+#ouhujuflvx .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1162,92 +1170,94 @@ mean in group female   mean in group male
   padding-right: 5px;
 }
 
-#icntspiumk .gt_left {
+#ouhujuflvx .gt_left {
   text-align: left;
 }
 
-#icntspiumk .gt_center {
+#ouhujuflvx .gt_center {
   text-align: center;
 }
 
-#icntspiumk .gt_right {
+#ouhujuflvx .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#icntspiumk .gt_font_normal {
+#ouhujuflvx .gt_font_normal {
   font-weight: normal;
 }
 
-#icntspiumk .gt_font_bold {
+#ouhujuflvx .gt_font_bold {
   font-weight: bold;
 }
 
-#icntspiumk .gt_font_italic {
+#ouhujuflvx .gt_font_italic {
   font-style: italic;
 }
 
-#icntspiumk .gt_super {
+#ouhujuflvx .gt_super {
   font-size: 65%;
 }
 
-#icntspiumk .gt_footnote_marks {
+#ouhujuflvx .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#icntspiumk .gt_asterisk {
+#ouhujuflvx .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#icntspiumk .gt_indent_1 {
+#ouhujuflvx .gt_indent_1 {
   text-indent: 5px;
 }
 
-#icntspiumk .gt_indent_2 {
+#ouhujuflvx .gt_indent_2 {
   text-indent: 10px;
 }
 
-#icntspiumk .gt_indent_3 {
+#ouhujuflvx .gt_indent_3 {
   text-indent: 15px;
 }
 
-#icntspiumk .gt_indent_4 {
+#ouhujuflvx .gt_indent_4 {
   text-indent: 20px;
 }
 
-#icntspiumk .gt_indent_5 {
+#ouhujuflvx .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Null hypothesis is">Null hypothesis is</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="True">True</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="False">False</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="Null hypothesis is" class="gt_row gt_left"><div class="gt_from_md"><p>Rejected</p>
-</div></td>
-<td headers="True" class="gt_row gt_left" style="background-color: #FFA500;"><div class="gt_from_md"><p>Type I error<br>False positive</p>
-</div></td>
-<td headers="False" class="gt_row gt_left" style="background-color: #A0FFA0;"><div class="gt_from_md"><p>Correct decision<br>True positive</p>
-</div></td></tr>
-    <tr><td headers="Null hypothesis is" class="gt_row gt_left"><div class="gt_from_md"><p>Not rejected</p>
-</div></td>
-<td headers="True" class="gt_row gt_left" style="background-color: #A0FFA0;"><div class="gt_from_md"><p>Correct decision<br>True negative</p>
-</div></td>
-<td headers="False" class="gt_row gt_left" style="background-color: #FFA500;"><div class="gt_from_md"><p>Type II error<br>False negative</p>
-</div></td></tr>
-  </tbody>
-  
-  
+
+<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header gt_col_headings">
+<th id="Null hypothesis is" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Null hypothesis is</th>
+<th id="True" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">True</th>
+<th id="False" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">False</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Null hypothesis is"><p>Rejected</p></td>
+<td class="gt_row gt_left" headers="True" style="background-color: #FFA500"><p>Type I error<br>False positive</p></td>
+<td class="gt_row gt_left" headers="False" style="background-color: #A0FFA0"><p>Correct decision<br>True positive</p></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Null hypothesis is"><p>Not rejected</p></td>
+<td class="gt_row gt_left" headers="True" style="background-color: #A0FFA0"><p>Correct decision<br>True negative</p></td>
+<td class="gt_row gt_left" headers="False" style="background-color: #FFA500"><p>Type II error<br>False negative</p></td>
+</tr>
+</tbody>
 </table>
+
 </div>
 </div>
 </div>
@@ -1258,70 +1268,70 @@ mean in group female   mean in group male
 <img data-src="lecture_6_descriptive_files/figure-revealjs/TP-FP-1.png" width="960" class="r-stretch"></section>
 <section id="section" class="slide level2">
 <h2></h2>
-<div class="sourceCode" id="cb23" data-engine="r"><pre class="sourceCode numberSource shinylive-r number-lines code-with-copy"><code class="sourceCode"><span id="cb23-1"><a href="#cb23-1"></a>#| label: power-app</span>
-<span id="cb23-2"><a href="#cb23-2"></a>#| standalone: true</span>
-<span id="cb23-3"><a href="#cb23-3"></a>#| viewerHeight: 600</span>
-<span id="cb23-4"><a href="#cb23-4"></a></span>
-<span id="cb23-5"><a href="#cb23-5"></a>library(shiny)</span>
-<span id="cb23-6"><a href="#cb23-6"></a></span>
-<span id="cb23-7"><a href="#cb23-7"></a>ui &lt;-  fluidPage(</span>
-<span id="cb23-8"><a href="#cb23-8"></a>        # Application title</span>
-<span id="cb23-9"><a href="#cb23-9"></a>      titlePanel("One sided Z-test"),</span>
-<span id="cb23-10"><a href="#cb23-10"></a>      sidebarLayout(</span>
-<span id="cb23-11"><a href="#cb23-11"></a>          sidebarPanel(</span>
-<span id="cb23-12"><a href="#cb23-12"></a>            sliderInput("delta", "True mean", value = 1, min = 0.1, max = 2),</span>
-<span id="cb23-13"><a href="#cb23-13"></a>            sliderInput("sd", "Standard deviation", value = 1, min = 0.5, max = 2),</span>
-<span id="cb23-14"><a href="#cb23-14"></a>            sliderInput("n", "Sample size, n", value = 10, min = 10, max = 100),</span>
-<span id="cb23-15"><a href="#cb23-15"></a>            radioButtons("alpha", "Significance level, alpha", choices = c(0.05, 0.01, 0.001), selected = 0.05)</span>
-<span id="cb23-16"><a href="#cb23-16"></a>         ),</span>
-<span id="cb23-17"><a href="#cb23-17"></a>            # Show a plot of the generated distribution</span>
-<span id="cb23-18"><a href="#cb23-18"></a>          mainPanel(</span>
-<span id="cb23-19"><a href="#cb23-19"></a>             plotOutput("distPlot")</span>
-<span id="cb23-20"><a href="#cb23-20"></a>          )</span>
-<span id="cb23-21"><a href="#cb23-21"></a>))</span>
-<span id="cb23-22"><a href="#cb23-22"></a></span>
-<span id="cb23-23"><a href="#cb23-23"></a>server &lt;- function(input, output, session) {</span>
-<span id="cb23-24"><a href="#cb23-24"></a>  output$distPlot &lt;- renderPlot({</span>
-<span id="cb23-25"><a href="#cb23-25"></a>    n &lt;- input$n</span>
-<span id="cb23-26"><a href="#cb23-26"></a>    alpha &lt;- as.numeric(input$alpha)</span>
-<span id="cb23-27"><a href="#cb23-27"></a>    delta &lt;- input$delta</span>
-<span id="cb23-28"><a href="#cb23-28"></a>    sd &lt;- input$sd</span>
-<span id="cb23-29"><a href="#cb23-29"></a>    mx &lt;- 2.5</span>
-<span id="cb23-30"><a href="#cb23-30"></a>    mn &lt;- -1.5</span>
-<span id="cb23-31"><a href="#cb23-31"></a>    crit &lt;-</span>
-<span id="cb23-32"><a href="#cb23-32"></a>      qnorm(</span>
-<span id="cb23-33"><a href="#cb23-33"></a>        alpha,</span>
-<span id="cb23-34"><a href="#cb23-34"></a>        mean = 0,</span>
-<span id="cb23-35"><a href="#cb23-35"></a>        sd = sd / sqrt(n),</span>
-<span id="cb23-36"><a href="#cb23-36"></a>        lower.tail = FALSE</span>
-<span id="cb23-37"><a href="#cb23-37"></a>      )</span>
-<span id="cb23-38"><a href="#cb23-38"></a>    H0 &lt;- data.frame(x = seq(mn, mx, length = 201))</span>
-<span id="cb23-39"><a href="#cb23-39"></a>    H0$y &lt;- dnorm(x = H0$x, mean = 0, sd = sd / sqrt(n))</span>
-<span id="cb23-40"><a href="#cb23-40"></a>    H0$what &lt;- ifelse(H0$x &lt; crit, yes = "True negative", no = "False positive")</span>
-<span id="cb23-41"><a href="#cb23-41"></a>    H0$hypothesis &lt;- "H[0]"</span>
-<span id="cb23-42"><a href="#cb23-42"></a></span>
-<span id="cb23-43"><a href="#cb23-43"></a>    H1 &lt;- data.frame(x = seq(mn, mx, length = 201))</span>
-<span id="cb23-44"><a href="#cb23-44"></a>    H1$y &lt;- dnorm(x = H1$x, mean = delta, sd = sd / sqrt(n))</span>
-<span id="cb23-45"><a href="#cb23-45"></a>    H1$what &lt;- ifelse(H1$x &lt; crit, yes = "True negative", no = "False positive")</span>
-<span id="cb23-46"><a href="#cb23-46"></a>    H1$hypothesis &lt;- "H[1]"</span>
-<span id="cb23-47"><a href="#cb23-47"></a></span>
-<span id="cb23-48"><a href="#cb23-48"></a>    par(oma=c(2,2,0,0),mar=c(1.2,2,2,1),mfrow=c(2,1), cex = 1.5, tcl = -0.1, mgp = c(3, .2, 0))</span>
-<span id="cb23-49"><a href="#cb23-49"></a>    plot(H0$x, H0$y, type = "n", main = expression(H[0]~is~true), xlab = "", ylab = "")</span>
-<span id="cb23-50"><a href="#cb23-50"></a>    polygon(H0$x, H0$y)</span>
-<span id="cb23-51"><a href="#cb23-51"></a>    polygon(c(H0$x[H0$x &gt; crit][1], H0$x[H0$x &gt; crit]), c(0, H0$y[H0$x &gt; crit]), col = "#832424")</span>
-<span id="cb23-52"><a href="#cb23-52"></a>    abline(v = crit)</span>
-<span id="cb23-53"><a href="#cb23-53"></a>   </span>
-<span id="cb23-54"><a href="#cb23-54"></a>    plot(H1$x, H1$y, type = "n", main = expression(H[1]~is~true), xlab = "", ylab = "")</span>
-<span id="cb23-55"><a href="#cb23-55"></a>    polygon(H1$x, H1$y)</span>
-<span id="cb23-56"><a href="#cb23-56"></a>    polygon(c(H1$x[H1$x &gt; crit][1], H1$x[H1$x &gt; crit]), c(0, H1$y[H1$x &gt; crit]), col = "#832424")</span>
-<span id="cb23-57"><a href="#cb23-57"></a>    abline(v = crit) </span>
-<span id="cb23-58"><a href="#cb23-58"></a>    mtext(text="x",side=1,line=0,outer=TRUE, 1.5)</span>
-<span id="cb23-59"><a href="#cb23-59"></a>    mtext(text="Density",side=2,line=0,outer=TRUE, cex = 1.5)</span>
-<span id="cb23-60"><a href="#cb23-60"></a>    </span>
-<span id="cb23-61"><a href="#cb23-61"></a>  })</span>
-<span id="cb23-62"><a href="#cb23-62"></a>}</span>
-<span id="cb23-63"><a href="#cb23-63"></a></span>
-<span id="cb23-64"><a href="#cb23-64"></a>shinyApp(ui, server)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb24" data-engine="r"><pre class="sourceCode numberSource shinylive-r number-lines code-with-copy"><code class="sourceCode"><span id="cb24-1"><a></a>#| label: power-app</span>
+<span id="cb24-2"><a></a>#| standalone: true</span>
+<span id="cb24-3"><a></a>#| viewerHeight: 600</span>
+<span id="cb24-4"><a></a></span>
+<span id="cb24-5"><a></a>library(shiny)</span>
+<span id="cb24-6"><a></a></span>
+<span id="cb24-7"><a></a>ui &lt;-  fluidPage(</span>
+<span id="cb24-8"><a></a>        # Application title</span>
+<span id="cb24-9"><a></a>      titlePanel("One sided Z-test"),</span>
+<span id="cb24-10"><a></a>      sidebarLayout(</span>
+<span id="cb24-11"><a></a>          sidebarPanel(</span>
+<span id="cb24-12"><a></a>            sliderInput("delta", "True mean", value = 1, min = 0.1, max = 2),</span>
+<span id="cb24-13"><a></a>            sliderInput("sd", "Standard deviation", value = 1, min = 0.5, max = 2),</span>
+<span id="cb24-14"><a></a>            sliderInput("n", "Sample size, n", value = 10, min = 10, max = 100),</span>
+<span id="cb24-15"><a></a>            radioButtons("alpha", "Significance level, alpha", choices = c(0.05, 0.01, 0.001), selected = 0.05)</span>
+<span id="cb24-16"><a></a>         ),</span>
+<span id="cb24-17"><a></a>            # Show a plot of the generated distribution</span>
+<span id="cb24-18"><a></a>          mainPanel(</span>
+<span id="cb24-19"><a></a>             plotOutput("distPlot")</span>
+<span id="cb24-20"><a></a>          )</span>
+<span id="cb24-21"><a></a>))</span>
+<span id="cb24-22"><a></a></span>
+<span id="cb24-23"><a></a>server &lt;- function(input, output, session) {</span>
+<span id="cb24-24"><a></a>  output$distPlot &lt;- renderPlot({</span>
+<span id="cb24-25"><a></a>    n &lt;- input$n</span>
+<span id="cb24-26"><a></a>    alpha &lt;- as.numeric(input$alpha)</span>
+<span id="cb24-27"><a></a>    delta &lt;- input$delta</span>
+<span id="cb24-28"><a></a>    sd &lt;- input$sd</span>
+<span id="cb24-29"><a></a>    mx &lt;- 2.5</span>
+<span id="cb24-30"><a></a>    mn &lt;- -1.5</span>
+<span id="cb24-31"><a></a>    crit &lt;-</span>
+<span id="cb24-32"><a></a>      qnorm(</span>
+<span id="cb24-33"><a></a>        alpha,</span>
+<span id="cb24-34"><a></a>        mean = 0,</span>
+<span id="cb24-35"><a></a>        sd = sd / sqrt(n),</span>
+<span id="cb24-36"><a></a>        lower.tail = FALSE</span>
+<span id="cb24-37"><a></a>      )</span>
+<span id="cb24-38"><a></a>    H0 &lt;- data.frame(x = seq(mn, mx, length = 201))</span>
+<span id="cb24-39"><a></a>    H0$y &lt;- dnorm(x = H0$x, mean = 0, sd = sd / sqrt(n))</span>
+<span id="cb24-40"><a></a>    H0$what &lt;- ifelse(H0$x &lt; crit, yes = "True negative", no = "False positive")</span>
+<span id="cb24-41"><a></a>    H0$hypothesis &lt;- "H[0]"</span>
+<span id="cb24-42"><a></a></span>
+<span id="cb24-43"><a></a>    H1 &lt;- data.frame(x = seq(mn, mx, length = 201))</span>
+<span id="cb24-44"><a></a>    H1$y &lt;- dnorm(x = H1$x, mean = delta, sd = sd / sqrt(n))</span>
+<span id="cb24-45"><a></a>    H1$what &lt;- ifelse(H1$x &lt; crit, yes = "True negative", no = "False positive")</span>
+<span id="cb24-46"><a></a>    H1$hypothesis &lt;- "H[1]"</span>
+<span id="cb24-47"><a></a></span>
+<span id="cb24-48"><a></a>    par(oma=c(2,2,0,0), mar=c(1.2,2,2,1), mfrow=c(2,1), cex = 1.5, tcl = -0.1, mgp = c(3, 0.2, 0))</span>
+<span id="cb24-49"><a></a>    plot(H0$x, H0$y, type = "n", main = expression(H[0]~is~true), xlab = "", ylab = "")</span>
+<span id="cb24-50"><a></a>    polygon(H0$x, H0$y)</span>
+<span id="cb24-51"><a></a>    polygon(c(H0$x[H0$x &gt; crit][1], H0$x[H0$x &gt; crit]), c(0, H0$y[H0$x &gt; crit]), col = "#832424")</span>
+<span id="cb24-52"><a></a>    abline(v = crit)</span>
+<span id="cb24-53"><a></a>   </span>
+<span id="cb24-54"><a></a>    plot(H1$x, H1$y, type = "n", main = expression(H[1]~is~true), xlab = "", ylab = "")</span>
+<span id="cb24-55"><a></a>    polygon(H1$x, H1$y)</span>
+<span id="cb24-56"><a></a>    polygon(c(H1$x[H1$x &gt; crit][1], H1$x[H1$x &gt; crit]), c(0, H1$y[H1$x &gt; crit]), col = "#832424")</span>
+<span id="cb24-57"><a></a>    abline(v = crit) </span>
+<span id="cb24-58"><a></a>    mtext(text="x",side=1,line=0,outer=TRUE, 1.5)</span>
+<span id="cb24-59"><a></a>    mtext(text="Density",side=2,line=0,outer=TRUE, cex = 1.5)</span>
+<span id="cb24-60"><a></a>    </span>
+<span id="cb24-61"><a></a>  })</span>
+<span id="cb24-62"><a></a>}</span>
+<span id="cb24-63"><a></a></span>
+<span id="cb24-64"><a></a>shinyApp(ui, server)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="the-need-for-power" class="slide level2">
 <h2>The need for power</h2>
@@ -1343,7 +1353,7 @@ mean in group female   mean in group male
 <ul>
 <li>Effect size</li>
 <li>Type I error rate (significance level - conventionally set to 0.05)</li>
-<li>Type II error rate (conventionally aim for 0.8)</li>
+<li>Power (1 - Type II error rate) - conventionally aim for 0.8</li>
 <li>Number of observations</li>
 </ul>
 <p>Can solve for any of these</p>
@@ -1362,9 +1372,9 @@ mean in group female   mean in group male
 <section id="power-t-test" class="slide level2">
 <h2>Power t test</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="fu">library</span>(<span class="st">"pwr"</span>)</span>
-<span id="cb24-2"><a href="#cb24-2"></a>pow <span class="ot">&lt;-</span> <span class="fu">pwr.t.test</span>(<span class="at">d =</span> <span class="fl">0.5</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">power =</span> <span class="fl">0.8</span>)</span>
-<span id="cb24-3"><a href="#cb24-3"></a>pow</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a><span class="fu">library</span>(<span class="st">"pwr"</span>)</span>
+<span id="cb25-2"><a></a>pow <span class="ot">&lt;-</span> <span class="fu">pwr.t.test</span>(<span class="at">d =</span> <span class="fl">0.5</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">power =</span> <span class="fl">0.8</span>)</span>
+<span id="cb25-3"><a></a>pow</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
      Two-sample t test power calculation 
@@ -1396,8 +1406,10 @@ NOTE: n is number in *each* group</code></pre>
 </ul></li>
 </ul>
 
+<div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 
+</div>
 </div>
 </section></section>
     </div>
@@ -1680,18 +1692,7 @@ NOTE: n is number in *each* group</code></pre>
         }
         return false;
       }
-      const clipboard = new window.ClipboardJS('.code-copy-button', {
-        text: function(trigger) {
-          const codeEl = trigger.previousElementSibling.cloneNode(true);
-          for (const childEl of codeEl.children) {
-            if (isCodeAnnotation(childEl)) {
-              childEl.remove();
-            }
-          }
-          return codeEl.innerText;
-        }
-      });
-      clipboard.on('success', function(e) {
+      const onCopySuccess = function(e) {
         // button target
         const button = e.trigger;
         // don't keep focus
@@ -1723,7 +1724,47 @@ NOTE: n is number in *each* group</code></pre>
         }, 1000);
         // clear code selection
         e.clearSelection();
+      }
+      const getTextToCopy = function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+        text: getTextToCopy
       });
+      clipboard.on('success', onCopySuccess);
+      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+        // For code content inside modals, clipBoardJS needs to be initialized with a container option
+        // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+          text: getTextToCopy,
+          container: window.document.getElementById('quarto-embedded-source-code-modal')
+        });
+        clipboardModal.on('success', onCopySuccess);
+      }
+        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+        var mailtoRegex = new RegExp(/^mailto:/);
+          var filterRegex = new RegExp('/' + window.location.host + '/');
+        var isInternal = (href) => {
+            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+        }
+        // Inspect non-navigation links and adorn them if external
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+        for (var i=0; i<links.length; i++) {
+          const link = links[i];
+          if (!isInternal(link.href)) {
+            // undo the damage that might have been done by quarto-nav.js in the case of
+            // links that we want to consider external
+            if (link.dataset.originalHref !== undefined) {
+              link.href = link.dataset.originalHref;
+            }
+          }
+        }
       function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
         const config = {
           allowHTML: true,
@@ -1760,7 +1801,11 @@ NOTE: n is number in *each* group</code></pre>
           try { href = new URL(href).hash; } catch {}
           const id = href.replace(/^#\/?/, "");
           const note = window.document.getElementById(id);
-          return note.innerHTML;
+          if (note) {
+            return note.innerHTML;
+          } else {
+            return "";
+          }
         });
       }
       const findCites = (el) => {
