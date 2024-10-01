@@ -4,7 +4,6 @@ project:
   resources:
   - shinylive-sw.js
   render:
-    - delme.qmd
     - bio300b_logistics.qmd
     - lecture_1_data_lifecycle.qmd
     - lecture_2_using_r.qmd
