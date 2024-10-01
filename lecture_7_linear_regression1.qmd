@@ -28,6 +28,7 @@ library(broom)
 library(glue)
 library(conflicted)
 conflict_prefer_all("dplyr")
+
 theme_set(theme_bw(base_size = 18))
 data(penguins, package = "palmerpenguins")
 options(dplyr.print_min = 2, dplyr.print_max = 3, digits = 4)
@@ -53,13 +54,13 @@ Use with
 ::::
 
 ```{r corr, fig.width = 5, fig.height = 5, echo = FALSE}
-gentoo <- penguins |> 
-  filter(species == "Gentoo") |> 
+gentoo <- penguins |>
+  filter(species == "Gentoo") |>
   drop_na(bill_length_mm)
 g1 <- ggplot(gentoo, aes(x = body_mass_g, y = bill_length_mm)) +
   geom_point() +
   labs(x = "Bill length mm", y = "Bill depth mm")
-g1 
+g1
 ```
 
 
@@ -118,15 +119,17 @@ $r_{xy} = r_{yx}$
 ## Correlations in R
 
 ```{r cor}
-cor(x = penguins$bill_length_mm,
-    y = penguins$body_mass_g, 
-    use = "pairwise.complete")
+cor(
+  x = penguins$bill_length_mm,
+  y = penguins$body_mass_g,
+  use = "pairwise.complete"
+)
 ```
 
 ```{r cor-mat}
-penguins |> 
-  select(bill_length_mm:body_mass_g) |> 
-cor(use = "complete.obs")
+penguins |>
+  select(bill_length_mm:body_mass_g) |>
+  cor(use = "complete.obs")
 ```
 
 
@@ -144,8 +147,9 @@ $$R^2 = r^2$$
 
 ```{r cor-test}
 cor.test(penguins$bill_length_mm,
-    penguins$body_mass_g, 
-    use = "pairwise.complete")
+  penguins$body_mass_g,
+  use = "pairwise.complete"
+)
 ```
 
 Not robust to outliers
@@ -168,10 +172,10 @@ p1 <- ggplot(gentoo, aes(x = body_mass_g, y = bill_length_mm)) +
 
 p2 <- ggplot(penguins, aes(x = species, y = body_mass_g)) +
   ggbeeswarm::geom_quasirandom() +
-  stat_summary(colour = "red", size = 1.2, fun.data = "mean_cl_normal", fun.args= list(na.rm = TRUE)) +
+  stat_summary(colour = "red", size = 1, fun.data = "mean_cl_normal", fun.args = list(na.rm = TRUE)) +
   labs(x = "Species", y = "Body mass g", title = "Categorical")
 
-p1 + p2 
+p1 + p2
 ```
 
 ::: notes
@@ -235,6 +239,8 @@ Studying foraminifera test composition and temperature
 
 {{< include includes/_x-distributions.qmd >}}
 
+
+
 ## Estimating $\beta$
 
 
@@ -274,54 +280,61 @@ summary(mod)
 ## Variance partitioning
 
 ```{r, echo = FALSE}
-ss_plot <- function(data, x, y){
+ss_plot <- function(data, x, y) {
   data <- data |> drop_na(.data[[x]], .data[[y]])
   mod <- lm(as.formula(glue("{y} ~ {x}")), data = data)
-  res <- augment(mod) |> 
+  res <- augment(mod) |>
     mutate(
-      total = mean(.data[[y]]), 
-  )
+      total = mean(.data[[y]]),
+    )
   reg <- tibble(
-    what = c("Residual", "Regression", "Total", "Regression"), 
+    what = c("Residual", "Regression", "Total", "Regression"),
     intercept = c(rep(coef(mod)[1], 2), rep(mean(data[[y]]), 2)),
-    slope = c(rep(coef(mod)[2], 2), 0, 0)) |> 
-    mutate(what = factor(what, levels = c("Regression", "Residual", "Total")), 
-           what = fct_rev(what))
-  
-  
+    slope = c(rep(coef(mod)[2], 2), 0, 0)
+  ) |>
+    mutate(
+      what = factor(what, levels = c("Regression", "Residual", "Total")),
+      what = fct_rev(what)
+    )
+
+
   res2 <- bind_rows(
-    Total = res |> 
+    Total = res |>
       mutate(y = .data[[y]], yend = total),
-    Residual = res |> 
+    Residual = res |>
       mutate(y = .data[[y]], yend = .fitted),
-    Regression = res |> 
+    Regression = res |>
       mutate(y = .fitted, yend = total),
     .id = "what"
-  ) |> 
-    mutate(what = factor(what, levels = c("Regression", "Residual", "Total")), 
-           what = fct_rev(what))
+  ) |>
+    mutate(
+      what = factor(what, levels = c("Regression", "Residual", "Total")),
+      what = fct_rev(what)
+    )
 
-  
-res2 |> 
-  ggplot(aes(x = .data[[x]], y = .data[[y]])) +
+
+  res2 |>
+    ggplot(aes(x = .data[[x]], y = .data[[y]])) +
     geom_point() +
     geom_segment(
-      aes(x = .data[[x]],
-          xend = .data[[x]],
-          y = y,
-          yend = yend, 
-          colour = what),
-      show.legend = FALSE) +
-  geom_abline(data = reg, aes(intercept = intercept, slope = slope)) +
-     facet_wrap(~ what, ncol = 1)
-
-  
+      aes(
+        x = .data[[x]],
+        xend = .data[[x]],
+        y = y,
+        yend = yend,
+        colour = what
+      ),
+      show.legend = FALSE
+    ) +
+    geom_abline(data = reg, aes(intercept = intercept, slope = slope)) +
+    facet_wrap(~what, ncol = 1)
 }
 
-sum_sq_plot <- penguins |> filter(species == "Gentoo") |> 
-  drop_na(bill_length_mm, body_mass_g) |> 
-  ss_plot( x = "body_mass_g", y = "bill_length_mm") +
-   labs( x = "Body mass g", y = "Bill length mm")
+sum_sq_plot <- penguins |>
+  filter(species == "Gentoo") |>
+  drop_na(bill_length_mm, body_mass_g) |>
+  ss_plot(x = "body_mass_g", y = "bill_length_mm") +
+  labs(x = "Body mass g", y = "Bill length mm")
 ```
 
 :::: {.columns}
@@ -352,7 +365,6 @@ sum_sq_plot
 
 ## $R^2$
 
-
 Coefficient of determination 
 
 Coefficient of multiple correlation
@@ -377,7 +389,7 @@ $p$ = number of parameters
 Only increases if useful predictors added  
 Can be negative
  
-## Anova
+## Using `Anova`
 
 $$F = \frac{\color{blue}{SS_{regression}}/df_{regression}}{\color{green}{SS_{residual}}/df_{residual}}$$
 
@@ -423,9 +435,6 @@ ggplot(penguins, aes(x = species, y = body_mass_g, colour = species, fill = afte
 
 
 
-
-
-
 ## Fitting the model
 
 ```{r}
@@ -434,7 +443,7 @@ mod2
 ```
 
 
-## Anova
+## `Anova` for categorical variables
 
 ```{r}
 car::Anova(mod2)
@@ -443,7 +452,7 @@ car::Anova(mod2)
 At least two groups differ
 
 
-## Summary
+## `summary` for categorical variables
 
 ```{r}
 summary(mod2)
@@ -458,7 +467,7 @@ Summary shows difference between
 
 Not between 
 
- - Chinstrap and Adelie
+ - Chinstrap and Gentoo
 
 
 ## Forcing the reference level
@@ -466,7 +475,7 @@ Not between
 Very useful when you have a control
 
 ```{r}
-penguins2 <- penguins |> 
+penguins2 <- penguins |>
   mutate(species = factor(species, levels = c("Gentoo", "Adelie", "Chinstrap")))
 
 mod3 <- lm(body_mass_g ~ species, data = penguins2)
@@ -479,7 +488,7 @@ broom::tidy(mod3)
 
 ## Multiple comparisons
 
-- Don't changing the order of the levels of the predictor variable to 
+- Don't change the order of the levels of the predictor variable to 
 compare all groups against each other
 - use a post-hoc multiple comparisons test
 
@@ -501,7 +510,7 @@ summary(mc)
 ```{r}
 #| label: multicomp-figure
 ggplot(confint(mc), aes(x = lhs, y = estimate, ymin = lwr, ymax = upr)) +
-   geom_pointrange() +
+  geom_pointrange() +
   labs(x = NULL)
 ```
 
@@ -518,11 +527,49 @@ Violation of assumptions cannot be detected using the _t_ or _F_ statistics or R
 
 ## Diagnostic plots
 
-```{r all-diagnostics, fig.height = 6, fig.width = 7}
-library(ggfortify)
-autoplot(mod) # can also use plot(mod) or performance::check_model(mod)
+- `plot()` base R diagnostic plots
+- `autoplot()` from `ggfortify` - same plots but prettier
+- `check_model()` from `performance` - more diagnostics
+- `DHARMa` package - very powerful diagnostics
+
+## `performance`
+
+
+```{r}
+#| label: fig-check-model  
+
+library(performance)
+check_model(mod)  
 ```
 
+## Posterior predictive checks
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+Check for systematic discrepancies between real and simulated data
+
+- green - density of observed response
+- blue - density of simulated response
+
+Want green line to resemble blue lines
+:::
+
+::: {.column width="50%"}
+
+```{r}
+#| label: fig-posterior-predictive
+#| echo: false
+# return a list of single plots
+diagnostic_plots <- plot(check_model(mod, panel = FALSE))
+# posterior predicive checks
+diagnostic_plots$PP_CHECK
+```
+
+:::
+
+::::
 
 
 ## Residual vs fitted
@@ -539,8 +586,10 @@ Want flat line
 :::
 
 ::: {.column width="50%"}
-```{r diagnostic-1, fig.height = 6, fig.width=8}
-autoplot(mod, which = 1)
+```{r}
+#| label: fig-residual-fitted
+#| echo: false
+diagnostic_plots$NCV
 ```
 :::
 
@@ -565,8 +614,11 @@ Points will lie on straight line if normally distributed
 :::
 
 ::: {.column width="50%"}
-```{r diagnostic-2}
-autoplot(mod, which = 2)
+```{r}
+#| label: fig-qq
+#| echo: false
+# normally distributed residuals
+diagnostic_plots$QQ
 ```
 :::
 
@@ -588,33 +640,18 @@ Want flat line
 :::
 
 ::: {.column width="50%"}
-```{r diagnostic-3, fig.height = 6, fig.width=8}
-autoplot(mod, which = 3)
+```{r}
+#| label: fig-scale-location
+#| echo: false
+# homoscedasticiy - homogeneity of variance
+diagnostic_plots$HOMOGENEITY
 ```
 :::
 
 ::::
 
 
-## Cook's distance
 
-:::: {.columns}
-
-::: {.column width="50%"}
-Influence of individual points on the fitted values
-
-– how much do fitted values change when observation _i_ removed
-
-Points with a D > 4/n merit examination
-:::
-
-::: {.column width="50%"}
-```{r diagnostic-4, fig.height = 6, fig.width=8}
-autoplot(mod, which = 4)
-```
-:::
-
-::::
 
 ## Residuals vs leverage
 
@@ -627,31 +664,15 @@ Observations with extreme leverage should be checked
 :::
 
 ::: {.column width="50%"}
-```{r diagnostic-5, fig.height = 6, fig.width=8}
-autoplot(mod, which = 5)
+```{r}
+#| label: fig-residual-leverage
+#| echo: false
+diagnostic_plots$OUTLIERS
 ```
 :::
 
 ::::
 
-
-## Cook's distance vs leverage
-
-:::: {.columns}
-
-::: {.column width="50%"}
-Influence vs leverage with contours of standardised residuals
-
-Check extreme observations
-:::
-
-::: {.column width="50%"}
-```{r diagnostic-6, fig.height = 6, fig.width=8}
-autoplot(mod, which = 6)
-```
-:::
-
-::::
 
 
 
@@ -665,15 +686,13 @@ $$y = \beta_0+\beta_1x$$
 
 ::: {.column width="50%"}
 ```{r pred-plot, echo = FALSE}
-
 x <- 5000
 ggplot(gentoo, aes(x = body_mass_g, y = bill_length_mm)) +
   geom_point() +
   geom_abline(intercept = coef(mod)[1], slope = coef(mod)[2], colour = scales::muted("red")) +
   geom_vline(xintercept = x, linetype = "dashed") +
-  geom_hline(yintercept = coef(mod)[1] +coef(mod)[2] * x, linetype = "dashed") +
+  geom_hline(yintercept = coef(mod)[1] + coef(mod)[2] * x, linetype = "dashed") +
   labs(x = "Body mass g", y = "Bill length mm")
-
 ```
 :::
 
@@ -693,9 +712,12 @@ predict(object = mod)
 ## Predict with new data
 
 ```{r}
-nd <- tibble(body_mass_g = c(5000, 7000))
-predict(mod, newdata = nd)
+nd <- tibble(body_mass_g = c(5000, 7000)) # <1>
+predict(mod, newdata = nd) # <2>
 ```
+
+1. Make tibble or data.frame with new data. Must include all predictors.
+2. Use `predict()` with the model and new data.
 
 ## Predictions with standard errors
 
@@ -716,10 +738,10 @@ predict(mod, newdata = nd, interval = "confidence", level = 0.95)
 Often easier to use `broom::augment()`
 
 ```{r augment, fig.height = 5}
-augment(mod, interval = "confidence") |> 
+augment(mod, interval = "confidence") |>
   ggplot(aes(x = body_mass_g, y = bill_length_mm)) +
   geom_point() +
-  geom_ribbon(aes(ymin = .lower, ymax = .upper), alpha = .3)+
+  geom_ribbon(aes(ymin = .lower, ymax = .upper), alpha = .3) +
   geom_line(aes(y = .fitted))
 ```
 
@@ -730,9 +752,9 @@ Where will a new observation probably be
 
 
 ```{r prediction-interval, fig.height = 5}
-augment(mod, interval = "prediction") |> 
+augment(mod, interval = "prediction") |>
   ggplot(aes(x = body_mass_g, y = bill_length_mm)) +
   geom_point() +
-  geom_ribbon(aes(ymin = .lower, ymax = .upper), alpha = 0.3)+
+  geom_ribbon(aes(ymin = .lower, ymax = .upper), alpha = 0.3) +
   geom_line(aes(y = .fitted))
 ```
