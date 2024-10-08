@@ -8,12 +8,17 @@
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.4.309">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<meta name="shinylive:serviceworker_dir" content=".">
+<script src="site_libs/quarto-contrib/shinylive-0.5.0/shinylive/load-shinylive-sw.js" type="module"></script>
+<script src="site_libs/quarto-contrib/shinylive-0.5.0/shinylive/run-python-blocks.js" type="module"></script>
+<link href="site_libs/quarto-contrib/shinylive-0.5.0/shinylive/shinylive.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/shinylive-quarto-css/shinylive-quarto.css" rel="stylesheet"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.5.53">
 
   <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)">
-  <meta name="dcterms.date" content="2023-10-16">
-  <title>Bio302 - Biostatistikk - Multiple Regression</title>
+  <meta name="dcterms.date" content="2024-10-08">
+  <title>Bio302 - Biostatistikk – Multiple Regression</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -33,7 +38,7 @@
     }
     /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span { line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -44,7 +49,7 @@
     }
     @media print {
     pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
     }
     pre.numberSource code
       { counter-reset: source-line 0; }
@@ -72,7 +77,7 @@
     code span.at { color: #657422; } /* Attribute */
     code span.bn { color: #ad0000; } /* BaseN */
     code span.bu { } /* BuiltIn */
-    code span.cf { color: #003b4f; } /* ControlFlow */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
     code span.ch { color: #20794d; } /* Char */
     code span.cn { color: #8f5902; } /* Constant */
     code span.co { color: #5e5e5e; } /* Comment */
@@ -86,7 +91,7 @@
     code span.fu { color: #4758ab; } /* Function */
     code span.im { color: #00769e; } /* Import */
     code span.in { color: #5e5e5e; } /* Information */
-    code span.kw { color: #003b4f; } /* Keyword */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
     code span.op { color: #5e5e5e; } /* Operator */
     code span.ot { color: #003b4f; } /* Other */
     code span.pp { color: #ad0000; } /* Preprocessor */
@@ -409,7 +414,7 @@ Richard J. Telford (Richard.Telford@uib.no)
     </div>
 </div>
 
-  <p class="date">16 October 2023</p>
+  <p class="date">8 October 2024</p>
 </section>
 <section id="outline" class="slide level2">
 <h2>Outline</h2>
@@ -422,25 +427,27 @@ Richard J. Telford (Richard.Telford@uib.no)
 <li>Anova for hypothesis testing</li>
 </ul></li>
 <li>Multi-collinearity</li>
+<li>Autocorrelation</li>
+<li>Reporting statistics</li>
 </ul>
 </section>
 <section id="adding-more-variables" class="slide level2">
 <h2>Adding more variables</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Two way anova - two categorical predictors</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a>mod_anova2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> sex <span class="sc">+</span> species, <span class="at">data =</span> penguins)</span>
-<span id="cb1-3"><a href="#cb1-3"></a></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="co"># ancova - one categorical one continuous predictor</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a>mod_ancova <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> sex <span class="sc">+</span> flipper_length_mm, <span class="at">data =</span> penguins)</span>
-<span id="cb1-6"><a href="#cb1-6"></a></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="co"># Multiple regression - two continuous</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a>mod_mult <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> body_mass_g <span class="sc">+</span> flipper_length_mm, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="co"># Two way anova - two categorical predictors</span></span>
+<span id="cb1-2"><a></a>mod_anova2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> sex <span class="sc">+</span> species, <span class="at">data =</span> penguins)</span>
+<span id="cb1-3"><a></a></span>
+<span id="cb1-4"><a></a><span class="co"># ancova - one categorical one continuous predictor</span></span>
+<span id="cb1-5"><a></a>mod_ancova <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> sex <span class="sc">+</span> flipper_length_mm, <span class="at">data =</span> penguins)</span>
+<span id="cb1-6"><a></a></span>
+<span id="cb1-7"><a></a><span class="co"># Multiple regression - two continuous</span></span>
+<span id="cb1-8"><a></a>mod_mult <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> body_mass_g <span class="sc">+</span> flipper_length_mm, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section class="slide level2">
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">summary</span>(mod_anova2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">summary</span>(mod_anova2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -469,7 +476,7 @@ F-statistic:  503 on 3 and 329 DF,  p-value: &lt;2e-16</code></pre>
 <section class="slide level2">
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">summary</span>(mod_ancova)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">summary</span>(mod_ancova)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -497,7 +504,7 @@ F-statistic:  141 on 2 and 330 DF,  p-value: &lt;2e-16</code></pre>
 <section class="slide level2">
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">summary</span>(mod_mult)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="fu">summary</span>(mod_mult)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -541,8 +548,8 @@ F-statistic:  129 on 2 and 339 DF,  p-value: &lt;2e-16</code></pre>
 <div class="columns">
 <div class="column" style="width:90%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(flipper_length_mm <span class="sc">~</span> species <span class="sc">*</span> sex, <span class="at">data =</span> penguins)</span>
-<span id="cb8-2"><a href="#cb8-2"></a><span class="fu">summary</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(flipper_length_mm <span class="sc">~</span> species <span class="sc">*</span> sex, <span class="at">data =</span> penguins)</span>
+<span id="cb8-2"><a></a><span class="fu">summary</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -572,11 +579,187 @@ F-statistic:  342 on 5 and 327 DF,  p-value: &lt;2e-16</code></pre>
 </div><div class="column" style="width:20%;">
 <div class="cell">
 <div class="cell-output-display">
+<div>
+<figure>
 <p><img data-src="lecture_8_multiple_regression_files/figure-revealjs/species_sex_model-1.png" width="960"></p>
+</figure>
 </div>
 </div>
 </div>
-</div>
+</div></div>
+</section>
+<section id="understanding-coefficients" class="slide level2">
+<h2>Understanding coefficients</h2>
+<div class="sourceCode" id="cb10" data-engine="r"><pre class="sourceCode numberSource shinylive-r number-lines code-with-copy"><code class="sourceCode"><span id="cb10-1"><a></a>#| label: coef-explain-app</span>
+<span id="cb10-2"><a></a>#| standalone: true</span>
+<span id="cb10-3"><a></a>#| viewerHeight: 650</span>
+<span id="cb10-4"><a></a></span>
+<span id="cb10-5"><a></a>library(shiny)</span>
+<span id="cb10-6"><a></a>library(bslib)</span>
+<span id="cb10-7"><a></a></span>
+<span id="cb10-8"><a></a>ui &lt;- page_sidebar(</span>
+<span id="cb10-9"><a></a>  sidebar = sidebar(checkboxGroupInput("pred",</span>
+<span id="cb10-10"><a></a>    "Predictor",</span>
+<span id="cb10-11"><a></a>    choiceValues = c(</span>
+<span id="cb10-12"><a></a>      "Food", "Temperature",</span>
+<span id="cb10-13"><a></a>      "Interaction"</span>
+<span id="cb10-14"><a></a>    ), choiceNames = c(</span>
+<span id="cb10-15"><a></a>      "Food (A vs. B)",</span>
+<span id="cb10-16"><a></a>      "Temperature (Low vs. High)", "Interaction"</span>
+<span id="cb10-17"><a></a>    )</span>
+<span id="cb10-18"><a></a>  )), card(</span>
+<span id="cb10-19"><a></a>    textOutput("formula")</span>
+<span id="cb10-20"><a></a>  ), card(</span>
+<span id="cb10-21"><a></a>    card_header("Coefficients"),</span>
+<span id="cb10-22"><a></a>    tableOutput("coef_table")</span>
+<span id="cb10-23"><a></a>  ), card(plotOutput("plot")),</span>
+<span id="cb10-24"><a></a>  tags$head(tags$style("#coef_table td{\n                     position:relative;\n                     };\n\n                     ")),</span>
+<span id="cb10-25"><a></a>)</span>
+<span id="cb10-26"><a></a>server &lt;- function(input, output, session) {</span>
+<span id="cb10-27"><a></a>  data &lt;- reactive({</span>
+<span id="cb10-28"><a></a>    b0 &lt;- 5</span>
+<span id="cb10-29"><a></a>    b1 &lt;- 3</span>
+<span id="cb10-30"><a></a>    b2 &lt;- 2</span>
+<span id="cb10-31"><a></a>    b3 &lt;- 2</span>
+<span id="cb10-32"><a></a>    food &lt;- factor(rep(c("A", "B"), times = 24))</span>
+<span id="cb10-33"><a></a>    temperature &lt;- factor(rep(c("Low", "High"), each = 24),</span>
+<span id="cb10-34"><a></a>      levels = c("Low", "High")</span>
+<span id="cb10-35"><a></a>    )</span>
+<span id="cb10-36"><a></a>    response &lt;- b0 + b1 * (food == "B") + b2 * (temperature ==</span>
+<span id="cb10-37"><a></a>      "High") + b3 * (food == "B" &amp; temperature ==</span>
+<span id="cb10-38"><a></a>      "High") + rnorm(48)</span>
+<span id="cb10-39"><a></a>    data.frame(</span>
+<span id="cb10-40"><a></a>      food = food, temperature = temperature,</span>
+<span id="cb10-41"><a></a>      response = response</span>
+<span id="cb10-42"><a></a>    )</span>
+<span id="cb10-43"><a></a>  })</span>
+<span id="cb10-44"><a></a>  form &lt;- "response ~"</span>
+<span id="cb10-45"><a></a>  form2 &lt;- reactive({</span>
+<span id="cb10-46"><a></a>    if ("Interaction" %in% input$pred) {</span>
+<span id="cb10-47"><a></a>      paste(form, "food * temperature")</span>
+<span id="cb10-48"><a></a>    } else if ("Food" %in% input$pred &amp; "Temperature" %in%</span>
+<span id="cb10-49"><a></a>      input$pred) {</span>
+<span id="cb10-50"><a></a>      paste(form, "food + temperature")</span>
+<span id="cb10-51"><a></a>    } else if ("Food" %in% input$pred) {</span>
+<span id="cb10-52"><a></a>      paste(form, "food")</span>
+<span id="cb10-53"><a></a>    } else if ("Temperature" %in% input$pred) {</span>
+<span id="cb10-54"><a></a>      paste(form, "temperature")</span>
+<span id="cb10-55"><a></a>    } else {</span>
+<span id="cb10-56"><a></a>      paste(form, "1")</span>
+<span id="cb10-57"><a></a>    }</span>
+<span id="cb10-58"><a></a>  })</span>
+<span id="cb10-59"><a></a>  observe({</span>
+<span id="cb10-60"><a></a>    if ("Interaction" %in% input$pred) {</span>
+<span id="cb10-61"><a></a>      updateCheckboxGroupInput(session, "pred", selected = c(</span>
+<span id="cb10-62"><a></a>        "Food",</span>
+<span id="cb10-63"><a></a>        "Temperature", "Interaction"</span>
+<span id="cb10-64"><a></a>      ))</span>
+<span id="cb10-65"><a></a>    }</span>
+<span id="cb10-66"><a></a>  })</span>
+<span id="cb10-67"><a></a>  model &lt;- reactive({</span>
+<span id="cb10-68"><a></a>    lm(form2(), data = data())</span>
+<span id="cb10-69"><a></a>  })</span>
+<span id="cb10-70"><a></a>  coefs &lt;- reactive({</span>
+<span id="cb10-71"><a></a>    coef(model())</span>
+<span id="cb10-72"><a></a>  })</span>
+<span id="cb10-73"><a></a>  coef_colours &lt;- reactive({</span>
+<span id="cb10-74"><a></a>    c(</span>
+<span id="cb10-75"><a></a>      `(Intercept)` = "skyblue", foodB = "red", temperatureHigh = "green",</span>
+<span id="cb10-76"><a></a>      `foodB:temperatureHigh` = "orange"</span>
+<span id="cb10-77"><a></a>    )[names(coefs())]</span>
+<span id="cb10-78"><a></a>  })</span>
+<span id="cb10-79"><a></a>  coef_table &lt;- reactive({</span>
+<span id="cb10-80"><a></a>    c1 &lt;- "&lt;div style=\"width: 100%; height: 100%; z-index: 0; background-color: "</span>
+<span id="cb10-81"><a></a>    c2 &lt;- "; position:absolute; top: 0; left: 0; padding:5px;\"&gt;\n&lt;span&gt;"</span>
+<span id="cb10-82"><a></a>    c3 &lt;- "&lt;/span&gt;&lt;/div&gt;"</span>
+<span id="cb10-83"><a></a>    tab &lt;- data.frame(</span>
+<span id="cb10-84"><a></a>      Beta = paste0(</span>
+<span id="cb10-85"><a></a>        c1, coef_colours(),</span>
+<span id="cb10-86"><a></a>        c2, "β", seq_along(coefs()), c3</span>
+<span id="cb10-87"><a></a>      ), Coefficent = names(coefs()),</span>
+<span id="cb10-88"><a></a>      Estimate = coefs()</span>
+<span id="cb10-89"><a></a>    )</span>
+<span id="cb10-90"><a></a>    tab</span>
+<span id="cb10-91"><a></a>  })</span>
+<span id="cb10-92"><a></a>  output$formula &lt;- renderText(paste("Model formula:", form2()))</span>
+<span id="cb10-93"><a></a>  output$coef_table &lt;- renderTable(coef_table(), sanitize.text.function = function(x) x)</span>
+<span id="cb10-94"><a></a>  output$plot &lt;- renderPlot({</span>
+<span id="cb10-95"><a></a>    set.seed(1)</span>
+<span id="cb10-96"><a></a>    f &lt;- as.formula(form2())</span>
+<span id="cb10-97"><a></a>    fc &lt;- as.character(f)</span>
+<span id="cb10-98"><a></a>    ylim &lt;- c(0, max(data()$response))</span>
+<span id="cb10-99"><a></a>    par(mar = c(1.5, 2.5, .5, .5), mgp = c(1.5, 0.5, 0))</span>
+<span id="cb10-100"><a></a>    if (fc[3] == "1") {</span>
+<span id="cb10-101"><a></a>      stripchart(data()$response,</span>
+<span id="cb10-102"><a></a>        method = "jitter",</span>
+<span id="cb10-103"><a></a>        jitter = 0.1, vertical = TRUE, pch = 1, ylim = ylim,</span>
+<span id="cb10-104"><a></a>        ylab = "response"</span>
+<span id="cb10-105"><a></a>      )</span>
+<span id="cb10-106"><a></a>    } else {</span>
+<span id="cb10-107"><a></a>      stripchart(f,</span>
+<span id="cb10-108"><a></a>        data = data(), method = "jitter",</span>
+<span id="cb10-109"><a></a>        jitter = 0.1, vertical = TRUE, pch = 1, ylim = ylim</span>
+<span id="cb10-110"><a></a>      )</span>
+<span id="cb10-111"><a></a>    }</span>
+<span id="cb10-112"><a></a>    cols &lt;- c("food", "temperature")[c(grepl(</span>
+<span id="cb10-113"><a></a>      "food",</span>
+<span id="cb10-114"><a></a>      fc[3]</span>
+<span id="cb10-115"><a></a>    ), grepl("temperature", fc[3]))]</span>
+<span id="cb10-116"><a></a>    if (length(cols) == 0) {</span>
+<span id="cb10-117"><a></a>      cols &lt;- "food"</span>
+<span id="cb10-118"><a></a>    }</span>
+<span id="cb10-119"><a></a>    pred &lt;- predict(model(), newdata = unique(data()[,</span>
+<span id="cb10-120"><a></a>      cols,</span>
+<span id="cb10-121"><a></a>      drop = FALSE</span>
+<span id="cb10-122"><a></a>    ]))</span>
+<span id="cb10-123"><a></a>    points(seq_along(pred), pred,</span>
+<span id="cb10-124"><a></a>      col = "#832424", pch = 16,</span>
+<span id="cb10-125"><a></a>      cex = 4</span>
+<span id="cb10-126"><a></a>    )</span>
+<span id="cb10-127"><a></a>    xs &lt;- seq_along(pred) - 0.2</span>
+<span id="cb10-128"><a></a>    arrows(xs, rep(0, length(pred)), xs, rep(</span>
+<span id="cb10-129"><a></a>      coefs()[1],</span>
+<span id="cb10-130"><a></a>      length(pred)</span>
+<span id="cb10-131"><a></a>    ),</span>
+<span id="cb10-132"><a></a>    col = coef_colours()[1], lwd = 4,</span>
+<span id="cb10-133"><a></a>    length = 0.1</span>
+<span id="cb10-134"><a></a>    )</span>
+<span id="cb10-135"><a></a>    pos &lt;- 2 - 0.2</span>
+<span id="cb10-136"><a></a>    if ("foodB" %in% names(coefs())) {</span>
+<span id="cb10-137"><a></a>      arrows(pos, coefs()[1], pos, coefs()[1] + coefs()["foodB"],</span>
+<span id="cb10-138"><a></a>        col = coef_colours()["foodB"], lwd = 4, length = 0.1</span>
+<span id="cb10-139"><a></a>      )</span>
+<span id="cb10-140"><a></a>      pos &lt;- pos + 1</span>
+<span id="cb10-141"><a></a>    }</span>
+<span id="cb10-142"><a></a>    if ("temperatureHigh" %in% names(coefs())) {</span>
+<span id="cb10-143"><a></a>      arrows(pos, coefs()[1], pos, coefs()[1] + coefs()["temperatureHigh"],</span>
+<span id="cb10-144"><a></a>        col = coef_colours()["temperatureHigh"], lwd = 4,</span>
+<span id="cb10-145"><a></a>        length = 0.1</span>
+<span id="cb10-146"><a></a>      )</span>
+<span id="cb10-147"><a></a>      pos &lt;- pos + 1</span>
+<span id="cb10-148"><a></a>    }</span>
+<span id="cb10-149"><a></a>    if (all(c("foodB", "temperatureHigh") %in% names(coefs()))) {</span>
+<span id="cb10-150"><a></a>      arrows(pos, coefs()[1], pos, coefs()[1] + coefs()["foodB"],</span>
+<span id="cb10-151"><a></a>        col = coef_colours()["foodB"], lwd = 4, length = 0.1</span>
+<span id="cb10-152"><a></a>      )</span>
+<span id="cb10-153"><a></a>      arrows(pos, coefs()[1] + coefs()["foodB"], pos,</span>
+<span id="cb10-154"><a></a>        coefs()[1] + coefs()["foodB"] + coefs()["temperatureHigh"],</span>
+<span id="cb10-155"><a></a>        col = coef_colours()["temperatureHigh"], lwd = 4,</span>
+<span id="cb10-156"><a></a>        length = 0.1</span>
+<span id="cb10-157"><a></a>      )</span>
+<span id="cb10-158"><a></a>      if ("foodB:temperatureHigh" %in% names(coefs())) {</span>
+<span id="cb10-159"><a></a>        arrows(pos, coefs()[1] + coefs()["foodB"] +</span>
+<span id="cb10-160"><a></a>          coefs()["temperatureHigh"], pos, coefs()[1] +</span>
+<span id="cb10-161"><a></a>          coefs()["foodB"] + coefs()["temperatureHigh"] +</span>
+<span id="cb10-162"><a></a>          coefs()["temperatureHigh"],</span>
+<span id="cb10-163"><a></a>        col = coef_colours()["foodB:temperatureHigh"],</span>
+<span id="cb10-164"><a></a>        lwd = 4, length = 0.1</span>
+<span id="cb10-165"><a></a>        )</span>
+<span id="cb10-166"><a></a>      }</span>
+<span id="cb10-167"><a></a>    }</span>
+<span id="cb10-168"><a></a>  })</span>
+<span id="cb10-169"><a></a>}</span>
+<span id="cb10-170"><a></a>shinyApp(ui, server)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="interaction-between-continuous-and-categorical-predictors" class="slide level2">
 <h2>Interaction between continuous and categorical predictors</h2>
@@ -585,8 +768,8 @@ F-statistic:  342 on 5 and 327 DF,  p-value: &lt;2e-16</code></pre>
 <section class="slide level2">
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>mod_interact <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> sex <span class="sc">*</span> flipper_length_mm, <span class="at">data =</span> adelie)</span>
-<span id="cb10-2"><a href="#cb10-2"></a><span class="fu">summary</span>(mod_interact)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>mod_interact <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> sex <span class="sc">*</span> flipper_length_mm, <span class="at">data =</span> adelie)</span>
+<span id="cb11-2"><a></a><span class="fu">summary</span>(mod_interact)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -606,7 +789,6 @@ sexmale:flipper_length_mm   0.1217     0.0583    2.09    0.039 *
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Residual standard error: 2.11 on 142 degrees of freedom
-  (6 observations deleted due to missingness)
 Multiple R-squared:  0.385, Adjusted R-squared:  0.372 
 F-statistic: 29.6 on 3 and 142 DF,  p-value: 6.43e-15</code></pre>
 </div>
@@ -619,8 +801,8 @@ F-statistic: 29.6 on 3 and 142 DF,  p-value: 6.43e-15</code></pre>
 <section class="slide level2">
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(flipper_length_mm <span class="sc">~</span> body_mass_g <span class="sc">*</span> bill_length_mm, <span class="at">data =</span> adelie)</span>
-<span id="cb12-2"><a href="#cb12-2"></a><span class="fu">summary</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(flipper_length_mm <span class="sc">~</span> body_mass_g <span class="sc">*</span> bill_length_mm, <span class="at">data =</span> adelie)</span>
+<span id="cb13-2"><a></a><span class="fu">summary</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -629,21 +811,20 @@ lm(formula = flipper_length_mm ~ body_mass_g * bill_length_mm,
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--14.480  -3.111   0.044   3.481  16.818 
+-14.653  -3.101  -0.003   3.369  16.585 
 
 Coefficients:
                             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)                 2.07e+02   5.70e+01    3.63  0.00039 ***
-body_mass_g                -7.01e-03   1.52e-02   -0.46  0.64454    
-bill_length_mm             -1.01e+00   1.47e+00   -0.68  0.49640    
-body_mass_g:bill_length_mm  3.31e-04   3.88e-04    0.85  0.39406    
+(Intercept)                 2.04e+02   5.72e+01    3.58  0.00048 ***
+body_mass_g                -6.63e-03   1.52e-02   -0.44  0.66330    
+bill_length_mm             -9.19e-01   1.48e+00   -0.62  0.53531    
+body_mass_g:bill_length_mm  3.17e-04   3.89e-04    0.82  0.41546    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 5.8 on 147 degrees of freedom
-  (1 observation deleted due to missingness)
-Multiple R-squared:  0.23,  Adjusted R-squared:  0.214 
-F-statistic: 14.6 on 3 and 147 DF,  p-value: 2.2e-08</code></pre>
+Residual standard error: 5.79 on 142 degrees of freedom
+Multiple R-squared:  0.229, Adjusted R-squared:  0.212 
+F-statistic:   14 on 3 and 142 DF,  p-value: 4.62e-08</code></pre>
 </div>
 </div>
 </section>
@@ -658,14 +839,16 @@ F-statistic: 14.6 on 3 and 147 DF,  p-value: 2.2e-08</code></pre>
 <section class="slide level2">
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb14-2"><a href="#cb14-2"></a>sigma <span class="ot">=</span> <span class="dv">10</span></span>
-<span id="cb14-3"><a href="#cb14-3"></a>n <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
-<span id="cb14-4"><a href="#cb14-4"></a>random <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>), n, <span class="at">replace =</span> <span class="cn">TRUE</span>), </span>
-<span id="cb14-5"><a href="#cb14-5"></a>       <span class="at">z =</span> <span class="fu">sample</span>(<span class="fu">factor</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>), n, <span class="at">replace =</span> <span class="cn">TRUE</span>), </span>
-<span id="cb14-6"><a href="#cb14-6"></a>       <span class="at">y =</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sigma))</span>
-<span id="cb14-7"><a href="#cb14-7"></a></span>
-<span id="cb14-8"><a href="#cb14-8"></a><span class="fu">lm</span>(y <span class="sc">~</span> x<span class="sc">*</span>z, <span class="at">data =</span> random) <span class="sc">|&gt;</span> <span class="fu">tidy</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb15-2"><a></a>sigma <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb15-3"><a></a>n <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb15-4"><a></a>random <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb15-5"><a></a>  <span class="at">x =</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>), n, <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb15-6"><a></a>  <span class="at">z =</span> <span class="fu">sample</span>(<span class="fu">factor</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>), n, <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb15-7"><a></a>  <span class="at">y =</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sigma)</span>
+<span id="cb15-8"><a></a>)</span>
+<span id="cb15-9"><a></a></span>
+<span id="cb15-10"><a></a><span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">*</span> z, <span class="at">data =</span> random) <span class="sc">|&gt;</span> <span class="fu">tidy</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 5
   term        estimate std.error statistic p.value
@@ -687,25 +870,25 @@ F-statistic: 14.6 on 3 and 147 DF,  p-value: 2.2e-08</code></pre>
 <section class="slide level2">
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(flipper_length_mm <span class="sc">~</span> species <span class="sc">+</span> sex <span class="sc">+</span> species<span class="sc">:</span>sex, <span class="at">data =</span> penguins)</span>
-<span id="cb16-2"><a href="#cb16-2"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(flipper_length_mm <span class="sc">~</span> species <span class="sc">*</span> sex, <span class="at">data =</span> penguins)</span>
-<span id="cb16-3"><a href="#cb16-3"></a>mod3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(flipper_length_mm <span class="sc">~</span> (species <span class="sc">+</span> sex)<span class="sc">^</span><span class="dv">2</span>, <span class="at">data =</span> penguins)</span>
-<span id="cb16-4"><a href="#cb16-4"></a></span>
-<span id="cb16-5"><a href="#cb16-5"></a><span class="fu">coef</span>(mod1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>mod1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(flipper_length_mm <span class="sc">~</span> species <span class="sc">+</span> sex <span class="sc">+</span> species<span class="sc">:</span>sex, <span class="at">data =</span> penguins)</span>
+<span id="cb17-2"><a></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(flipper_length_mm <span class="sc">~</span> species <span class="sc">*</span> sex, <span class="at">data =</span> penguins)</span>
+<span id="cb17-3"><a></a>mod3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(flipper_length_mm <span class="sc">~</span> (species <span class="sc">+</span> sex)<span class="sc">^</span><span class="dv">2</span>, <span class="at">data =</span> penguins)</span>
+<span id="cb17-4"><a></a></span>
+<span id="cb17-5"><a></a><span class="fu">coef</span>(mod1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>             (Intercept)         speciesChinstrap            speciesGentoo 
                  187.795                    3.941                   24.912 
                  sexmale speciesChinstrap:sexmale    speciesGentoo:sexmale 
                    4.616                    3.560                    4.218 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">coef</span>(mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a><span class="fu">coef</span>(mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>             (Intercept)         speciesChinstrap            speciesGentoo 
                  187.795                    3.941                   24.912 
                  sexmale speciesChinstrap:sexmale    speciesGentoo:sexmale 
                    4.616                    3.560                    4.218 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">coef</span>(mod3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a><span class="fu">coef</span>(mod3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>             (Intercept)         speciesChinstrap            speciesGentoo 
                  187.795                    3.941                   24.912 
@@ -740,20 +923,24 @@ F-statistic: 14.6 on 3 and 147 DF,  p-value: 2.2e-08</code></pre>
 <section id="automatic-model-selection" class="slide level2">
 <h2>Automatic model selection</h2>
 <p>Last resort - many problems and biases</p>
-<p>Forward selection</p>
-<p>Backwards selection</p>
-<p>All possible models</p>
+<ul>
+<li><p>Forward selection</p></li>
+<li><p>Backwards selection</p></li>
+<li><p>All possible models</p></li>
+</ul>
 </section>
 <section class="slide level2">
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="fu">library</span>(MuMIn)</span>
-<span id="cb22-2"><a href="#cb22-2"></a><span class="fu">library</span>(conflicted)</span>
-<span id="cb22-3"><a href="#cb22-3"></a><span class="fu">conflict_prefer</span>(<span class="st">"filter"</span>, <span class="st">"dplyr"</span>)</span>
-<span id="cb22-4"><a href="#cb22-4"></a><span class="fu">conflict_prefer</span>(<span class="st">"select"</span>, <span class="st">"dplyr"</span>)</span>
-<span id="cb22-5"><a href="#cb22-5"></a></span>
-<span id="cb22-6"><a href="#cb22-6"></a>penguins2 <span class="ot">&lt;-</span> penguins <span class="sc">|&gt;</span> <span class="fu">drop_na</span>() <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>year)</span>
-<span id="cb22-7"><a href="#cb22-7"></a>full <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> ., <span class="at">data =</span> penguins2, <span class="at">na.action =</span> <span class="st">"na.fail"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a><span class="fu">library</span>(MuMIn)</span>
+<span id="cb23-2"><a></a><span class="fu">library</span>(conflicted)</span>
+<span id="cb23-3"><a></a><span class="fu">conflict_prefer</span>(<span class="st">"filter"</span>, <span class="st">"dplyr"</span>)</span>
+<span id="cb23-4"><a></a><span class="fu">conflict_prefer</span>(<span class="st">"select"</span>, <span class="st">"dplyr"</span>)</span>
+<span id="cb23-5"><a></a></span>
+<span id="cb23-6"><a></a>penguins2 <span class="ot">&lt;-</span> penguins <span class="sc">|&gt;</span></span>
+<span id="cb23-7"><a></a>  <span class="fu">drop_na</span>() <span class="sc">|&gt;</span></span>
+<span id="cb23-8"><a></a>  <span class="fu">select</span>(<span class="sc">-</span>year)</span>
+<span id="cb23-9"><a></a>full <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> ., <span class="at">data =</span> penguins2, <span class="at">na.action =</span> <span class="st">"na.fail"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="aic" class="slide level2">
@@ -768,142 +955,1367 @@ F-statistic: 14.6 on 3 and 147 DF,  p-value: 2.2e-08</code></pre>
 <section class="slide level2">
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="fu">dredge</span>(full)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Global model call: lm(formula = body_mass_g ~ ., data = penguins2, na.action = "na.fail")
----
-Model selection table 
-     (Int) bll_dpt_mm bll_lng_mm flp_lng_mm isl sex spc df logLik AICc  delta
-56 -1461.0      67.22     18.200      15.95       +   +  8  -2354 4724   0.00
-64 -1500.0      67.58     18.190      16.24   +   +   + 10  -2354 4728   3.54
-54 -1212.0      74.38                 17.54       +   +  7  -2357 4729   4.54
-62 -1245.0      74.51                 17.85   +   +   +  9  -2357 4732   8.03
-55  -759.1                21.630      17.85       +   +  7  -2360 4734   9.54
-63  -785.6                21.530      18.14   +   +   +  9  -2359 4738  13.15
-53  -365.8                            20.02       +   +  6  -2364 4741  16.65
-61  -390.0                            20.32   +   +   +  8  -2364 4744  20.12
-52   844.0      87.93     26.540                  +   +  7  -2369 4752  27.26
-60   829.8      88.33     26.660              +   +   +  9  -2369 4756  31.39
-50  1577.0     102.00                             +   +  6  -2375 4763  38.57
-58  1576.0     102.10                         +   +   +  8  -2375 4767  42.75
-51  2169.0                32.540                  +   +  6  -2378 4768  43.90
-59  2168.0                32.540              +   +   +  8  -2378 4772  48.09
-40 -4282.0     141.80     39.720      20.23           +  7  -2385 4784  59.63
-49  3372.0                                        +   +  5  -2388 4786  61.39
-48 -4324.0     141.80     39.600      20.58   +       +  9  -2384 4786  62.05
-57  3376.0                                    +   +   +  7  -2388 4790  65.44
-30 -2219.0     -50.03                 35.69   +   +      7  -2397 4807  82.98
-32 -2116.0     -50.34      6.052      33.94   +   +      8  -2396 4808  83.57
-38 -4485.0     182.00                 25.53           +  6  -2400 4811  86.96
-46 -4524.0     181.50                 25.95   +       +  8  -2399 4814  89.25
-29 -3720.0                            39.30   +   +      6  -2401 4815  90.41
-31 -3630.0                 5.808      37.64   +   +      7  -2401 4816  91.14
-36 -1710.0     180.80     54.060                      +  6  -2405 4822  97.44
-44 -1735.0     181.30     54.250              +       +  8  -2404 4825 100.78
-39 -3864.0                60.120      27.54           +  6  -2411 4834 109.08
-22 -2247.0     -86.95                 38.19       +      5  -2412 4834 109.70
-24 -2288.0     -86.09     -2.329      38.83       +      6  -2412 4836 111.53
-47 -3903.0                59.870      27.96   +       +  8  -2410 4836 111.69
-21 -5410.0                            46.98       +      4  -2427 4863 138.22
-23 -5434.0                -5.201      48.21       +      5  -2427 4864 139.13
-34 -1001.0     256.60                                 +  5  -2431 4871 146.98
-42 -1015.0     257.20                         +       +  7  -2430 4875 150.70
-16 -5707.0      51.24     13.750      42.90   +          7  -2438 4891 166.75
-14 -6115.0      56.67                 47.40   +          6  -2441 4895 170.82
-37 -4013.0                            40.61           +  5  -2443 4896 171.07
-45 -4048.0                            41.09   +       +  7  -2442 4898 173.11
-35   200.5                90.300                      +  5  -2444 4899 174.47
-15 -4355.0                16.880      39.66   +          6  -2445 4902 177.78
-43   182.0                90.510              +       +  7  -2444 4903 178.29
-13 -4688.0                            44.89   +          5  -2450 4909 184.81
-6  -6538.0      19.88                 51.77              4  -2460 4928 203.67
-5  -5872.0                            50.15              3  -2461 4928 203.84
-7  -5836.0                 4.959      48.89              4  -2461 4929 204.97
-8  -6445.0      17.84      3.293      50.76              5  -2460 4930 205.35
-28  4785.0    -155.10     44.770              +   +      7  -2470 4955 230.24
-27  1747.0                60.620              +   +      6  -2505 5022 297.54
-20  6551.0    -257.30     36.520                  +      5  -2507 5023 299.04
-26  7580.0    -211.50                         +   +      6  -2506 5024 299.24
-33  3706.0                                            +  4  -2513 5035 310.28
-41  3710.0                                    +       +  6  -2513 5039 314.41
-18  8779.0    -299.30                             +      4  -2529 5066 341.86
-12  1697.0     -26.23     76.000              +          6  -2537 5086 361.23
-11  1239.0                76.910              +          5  -2538 5086 361.35
-25  4376.0                                    +   +      5  -2562 5133 409.06
-4   3413.0    -145.50     74.810                         4  -2595 5199 474.20
-19   746.1                74.020                  +      4  -2614 5236 512.01
-10  5590.0     -54.76                         +          5  -2615 5240 516.03
-9   4719.0                                    +          4  -2618 5244 519.96
-3    388.8                86.790                         3  -2629 5264 539.83
-2   7520.0    -193.00                                    3  -2658 5322 598.05
-17  3862.0                                        +      3  -2667 5340 615.65
-1   4207.0                                               2  -2700 5404 679.94
-   weight
-56  0.768
-64  0.131
-54  0.079
-62  0.014
-55  0.007
-63  0.001
-53  0.000
-61  0.000
-52  0.000
-60  0.000
-50  0.000
-58  0.000
-51  0.000
-59  0.000
-40  0.000
-49  0.000
-48  0.000
-57  0.000
-30  0.000
-32  0.000
-38  0.000
-46  0.000
-29  0.000
-31  0.000
-36  0.000
-44  0.000
-39  0.000
-22  0.000
-24  0.000
-47  0.000
-21  0.000
-23  0.000
-34  0.000
-42  0.000
-16  0.000
-14  0.000
-37  0.000
-45  0.000
-35  0.000
-15  0.000
-43  0.000
-13  0.000
-6   0.000
-5   0.000
-7   0.000
-8   0.000
-28  0.000
-27  0.000
-20  0.000
-26  0.000
-33  0.000
-41  0.000
-18  0.000
-12  0.000
-11  0.000
-25  0.000
-4   0.000
-19  0.000
-10  0.000
-9   0.000
-3   0.000
-2   0.000
-17  0.000
-1   0.000
-Models ranked by AICc(x) </code></pre>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a><span class="fu">dredge</span>(full) <span class="sc">|&gt;</span> gt<span class="sc">::</span><span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="tmstveldau" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#tmstveldau table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#tmstveldau thead, #tmstveldau tbody, #tmstveldau tfoot, #tmstveldau tr, #tmstveldau td, #tmstveldau th {
+  border-style: none;
+}
+
+#tmstveldau p {
+  margin: 0;
+  padding: 0;
+}
+
+#tmstveldau .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#tmstveldau .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#tmstveldau .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#tmstveldau .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#tmstveldau .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#tmstveldau .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#tmstveldau .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#tmstveldau .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#tmstveldau .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#tmstveldau .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#tmstveldau .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#tmstveldau .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#tmstveldau .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#tmstveldau .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#tmstveldau .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#tmstveldau .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#tmstveldau .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#tmstveldau .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#tmstveldau .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#tmstveldau .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#tmstveldau .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#tmstveldau .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#tmstveldau .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#tmstveldau .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#tmstveldau .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#tmstveldau .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#tmstveldau .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#tmstveldau .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#tmstveldau .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#tmstveldau .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#tmstveldau .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#tmstveldau .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#tmstveldau .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#tmstveldau .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#tmstveldau .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#tmstveldau .gt_left {
+  text-align: left;
+}
+
+#tmstveldau .gt_center {
+  text-align: center;
+}
+
+#tmstveldau .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#tmstveldau .gt_font_normal {
+  font-weight: normal;
+}
+
+#tmstveldau .gt_font_bold {
+  font-weight: bold;
+}
+
+#tmstveldau .gt_font_italic {
+  font-style: italic;
+}
+
+#tmstveldau .gt_super {
+  font-size: 65%;
+}
+
+#tmstveldau .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#tmstveldau .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#tmstveldau .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#tmstveldau .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#tmstveldau .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#tmstveldau .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#tmstveldau .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+
+<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="(Intercept)" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">(Intercept)</th>
+<th id="bill_depth_mm" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">bill_depth_mm</th>
+<th id="bill_length_mm" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">bill_length_mm</th>
+<th id="flipper_length_mm" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">flipper_length_mm</th>
+<th id="island" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">island</th>
+<th id="sex" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">sex</th>
+<th id="species" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">species</th>
+<th id="df" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">df</th>
+<th id="logLik" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">logLik</th>
+<th id="AICc" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">AICc</th>
+<th id="delta" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">delta</th>
+<th id="weight" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">weight</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">-1461.0</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">67.22</td>
+<td class="gt_row gt_right" headers="bill_length_mm">18.204</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">15.95</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">8</td>
+<td class="gt_row gt_right" headers="logLik">-2354</td>
+<td class="gt_row gt_right" headers="AICc">4724</td>
+<td class="gt_row gt_right" headers="delta">0.000</td>
+<td class="gt_row gt_center" headers="weight">7.682e-01</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">-1500.0</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">67.58</td>
+<td class="gt_row gt_right" headers="bill_length_mm">18.189</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">16.24</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">10</td>
+<td class="gt_row gt_right" headers="logLik">-2354</td>
+<td class="gt_row gt_right" headers="AICc">4728</td>
+<td class="gt_row gt_right" headers="delta">3.543</td>
+<td class="gt_row gt_center" headers="weight">1.307e-01</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">-1211.5</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">74.38</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">17.54</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">7</td>
+<td class="gt_row gt_right" headers="logLik">-2357</td>
+<td class="gt_row gt_right" headers="AICc">4729</td>
+<td class="gt_row gt_right" headers="delta">4.537</td>
+<td class="gt_row gt_center" headers="weight">7.948e-02</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">-1245.4</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">74.51</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">17.85</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">9</td>
+<td class="gt_row gt_right" headers="logLik">-2357</td>
+<td class="gt_row gt_right" headers="AICc">4732</td>
+<td class="gt_row gt_right" headers="delta">8.027</td>
+<td class="gt_row gt_center" headers="weight">1.388e-02</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">-759.1</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">21.633</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">17.85</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">7</td>
+<td class="gt_row gt_right" headers="logLik">-2360</td>
+<td class="gt_row gt_right" headers="AICc">4734</td>
+<td class="gt_row gt_right" headers="delta">9.536</td>
+<td class="gt_row gt_center" headers="weight">6.526e-03</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">-785.6</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">21.528</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">18.14</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">9</td>
+<td class="gt_row gt_right" headers="logLik">-2359</td>
+<td class="gt_row gt_right" headers="AICc">4738</td>
+<td class="gt_row gt_right" headers="delta">13.153</td>
+<td class="gt_row gt_center" headers="weight">1.070e-03</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">-365.8</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">20.02</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">6</td>
+<td class="gt_row gt_right" headers="logLik">-2364</td>
+<td class="gt_row gt_right" headers="AICc">4741</td>
+<td class="gt_row gt_right" headers="delta">16.649</td>
+<td class="gt_row gt_center" headers="weight">1.863e-04</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">-390.0</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">20.32</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">8</td>
+<td class="gt_row gt_right" headers="logLik">-2364</td>
+<td class="gt_row gt_right" headers="AICc">4745</td>
+<td class="gt_row gt_right" headers="delta">20.118</td>
+<td class="gt_row gt_center" headers="weight">3.287e-05</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">844.0</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">87.93</td>
+<td class="gt_row gt_right" headers="bill_length_mm">26.537</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">7</td>
+<td class="gt_row gt_right" headers="logLik">-2369</td>
+<td class="gt_row gt_right" headers="AICc">4752</td>
+<td class="gt_row gt_right" headers="delta">27.263</td>
+<td class="gt_row gt_center" headers="weight">9.232e-07</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">829.8</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">88.33</td>
+<td class="gt_row gt_right" headers="bill_length_mm">26.664</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">9</td>
+<td class="gt_row gt_right" headers="logLik">-2369</td>
+<td class="gt_row gt_right" headers="AICc">4756</td>
+<td class="gt_row gt_right" headers="delta">31.392</td>
+<td class="gt_row gt_center" headers="weight">1.172e-07</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">1577.0</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">102.04</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">6</td>
+<td class="gt_row gt_right" headers="logLik">-2375</td>
+<td class="gt_row gt_right" headers="AICc">4763</td>
+<td class="gt_row gt_right" headers="delta">38.571</td>
+<td class="gt_row gt_center" headers="weight">3.236e-09</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">1576.2</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">102.15</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">8</td>
+<td class="gt_row gt_right" headers="logLik">-2375</td>
+<td class="gt_row gt_right" headers="AICc">4767</td>
+<td class="gt_row gt_right" headers="delta">42.751</td>
+<td class="gt_row gt_center" headers="weight">4.000e-10</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">2169.3</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">32.537</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">6</td>
+<td class="gt_row gt_right" headers="logLik">-2378</td>
+<td class="gt_row gt_right" headers="AICc">4768</td>
+<td class="gt_row gt_right" headers="delta">43.901</td>
+<td class="gt_row gt_center" headers="weight">2.252e-10</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">2167.9</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">32.535</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">8</td>
+<td class="gt_row gt_right" headers="logLik">-2378</td>
+<td class="gt_row gt_right" headers="AICc">4772</td>
+<td class="gt_row gt_right" headers="delta">48.086</td>
+<td class="gt_row gt_center" headers="weight">2.778e-11</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">-4282.1</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">141.77</td>
+<td class="gt_row gt_right" headers="bill_length_mm">39.718</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">20.23</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">7</td>
+<td class="gt_row gt_right" headers="logLik">-2385</td>
+<td class="gt_row gt_right" headers="AICc">4784</td>
+<td class="gt_row gt_right" headers="delta">59.631</td>
+<td class="gt_row gt_center" headers="weight">8.643e-14</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">3372.4</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">5</td>
+<td class="gt_row gt_right" headers="logLik">-2388</td>
+<td class="gt_row gt_right" headers="AICc">4786</td>
+<td class="gt_row gt_right" headers="delta">61.394</td>
+<td class="gt_row gt_center" headers="weight">3.580e-14</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">-4324.0</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">141.82</td>
+<td class="gt_row gt_right" headers="bill_length_mm">39.599</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">20.58</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">9</td>
+<td class="gt_row gt_right" headers="logLik">-2384</td>
+<td class="gt_row gt_right" headers="AICc">4786</td>
+<td class="gt_row gt_right" headers="delta">62.049</td>
+<td class="gt_row gt_center" headers="weight">2.580e-14</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">3375.8</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">7</td>
+<td class="gt_row gt_right" headers="logLik">-2388</td>
+<td class="gt_row gt_right" headers="AICc">4790</td>
+<td class="gt_row gt_right" headers="delta">65.442</td>
+<td class="gt_row gt_center" headers="weight">4.731e-15</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">-2219.3</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">-50.03</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">35.69</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">7</td>
+<td class="gt_row gt_right" headers="logLik">-2397</td>
+<td class="gt_row gt_right" headers="AICc">4807</td>
+<td class="gt_row gt_right" headers="delta">82.977</td>
+<td class="gt_row gt_center" headers="weight">7.364e-19</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">-2115.6</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">-50.34</td>
+<td class="gt_row gt_right" headers="bill_length_mm">6.052</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">33.94</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">8</td>
+<td class="gt_row gt_right" headers="logLik">-2396</td>
+<td class="gt_row gt_right" headers="AICc">4808</td>
+<td class="gt_row gt_right" headers="delta">83.566</td>
+<td class="gt_row gt_center" headers="weight">5.488e-19</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">-4484.7</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">181.95</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">25.53</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">6</td>
+<td class="gt_row gt_right" headers="logLik">-2400</td>
+<td class="gt_row gt_right" headers="AICc">4811</td>
+<td class="gt_row gt_right" headers="delta">86.962</td>
+<td class="gt_row gt_center" headers="weight">1.004e-19</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">-4524.1</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">181.54</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">25.95</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">8</td>
+<td class="gt_row gt_right" headers="logLik">-2399</td>
+<td class="gt_row gt_right" headers="AICc">4814</td>
+<td class="gt_row gt_right" headers="delta">89.247</td>
+<td class="gt_row gt_center" headers="weight">3.204e-20</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">-3720.1</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">39.30</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">6</td>
+<td class="gt_row gt_right" headers="logLik">-2401</td>
+<td class="gt_row gt_right" headers="AICc">4815</td>
+<td class="gt_row gt_right" headers="delta">90.409</td>
+<td class="gt_row gt_center" headers="weight">1.792e-20</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">-3629.6</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">5.808</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">37.64</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">7</td>
+<td class="gt_row gt_right" headers="logLik">-2401</td>
+<td class="gt_row gt_right" headers="AICc">4816</td>
+<td class="gt_row gt_right" headers="delta">91.143</td>
+<td class="gt_row gt_center" headers="weight">1.242e-20</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">-1709.5</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">180.78</td>
+<td class="gt_row gt_right" headers="bill_length_mm">54.061</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">6</td>
+<td class="gt_row gt_right" headers="logLik">-2405</td>
+<td class="gt_row gt_right" headers="AICc">4822</td>
+<td class="gt_row gt_right" headers="delta">97.444</td>
+<td class="gt_row gt_center" headers="weight">5.318e-22</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">-1735.5</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">181.30</td>
+<td class="gt_row gt_right" headers="bill_length_mm">54.252</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">8</td>
+<td class="gt_row gt_right" headers="logLik">-2404</td>
+<td class="gt_row gt_right" headers="AICc">4825</td>
+<td class="gt_row gt_right" headers="delta">100.777</td>
+<td class="gt_row gt_center" headers="weight">1.005e-22</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">-3864.1</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">60.117</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">27.54</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">6</td>
+<td class="gt_row gt_right" headers="logLik">-2411</td>
+<td class="gt_row gt_right" headers="AICc">4833</td>
+<td class="gt_row gt_right" headers="delta">109.078</td>
+<td class="gt_row gt_center" headers="weight">1.583e-24</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">-2246.8</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">-86.95</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">38.19</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">5</td>
+<td class="gt_row gt_right" headers="logLik">-2412</td>
+<td class="gt_row gt_right" headers="AICc">4834</td>
+<td class="gt_row gt_right" headers="delta">109.703</td>
+<td class="gt_row gt_center" headers="weight">1.158e-24</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">-2288.5</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">-86.09</td>
+<td class="gt_row gt_right" headers="bill_length_mm">-2.329</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">38.83</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">6</td>
+<td class="gt_row gt_right" headers="logLik">-2412</td>
+<td class="gt_row gt_right" headers="AICc">4836</td>
+<td class="gt_row gt_right" headers="delta">111.527</td>
+<td class="gt_row gt_center" headers="weight">4.653e-25</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">-3902.9</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">59.868</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">27.96</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">8</td>
+<td class="gt_row gt_right" headers="logLik">-2410</td>
+<td class="gt_row gt_right" headers="AICc">4836</td>
+<td class="gt_row gt_right" headers="delta">111.692</td>
+<td class="gt_row gt_center" headers="weight">4.284e-25</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">-5410.3</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">46.98</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">4</td>
+<td class="gt_row gt_right" headers="logLik">-2427</td>
+<td class="gt_row gt_right" headers="AICc">4863</td>
+<td class="gt_row gt_right" headers="delta">138.223</td>
+<td class="gt_row gt_center" headers="weight">7.424e-31</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">-5433.5</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">-5.201</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">48.21</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">5</td>
+<td class="gt_row gt_right" headers="logLik">-2427</td>
+<td class="gt_row gt_right" headers="AICc">4864</td>
+<td class="gt_row gt_right" headers="delta">139.128</td>
+<td class="gt_row gt_center" headers="weight">4.723e-31</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">-1000.8</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">256.55</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">5</td>
+<td class="gt_row gt_right" headers="logLik">-2431</td>
+<td class="gt_row gt_right" headers="AICc">4871</td>
+<td class="gt_row gt_right" headers="delta">146.983</td>
+<td class="gt_row gt_center" headers="weight">9.299e-33</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">-1014.6</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">257.16</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">7</td>
+<td class="gt_row gt_right" headers="logLik">-2430</td>
+<td class="gt_row gt_right" headers="AICc">4875</td>
+<td class="gt_row gt_right" headers="delta">150.703</td>
+<td class="gt_row gt_center" headers="weight">1.448e-33</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">-5707.1</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">51.24</td>
+<td class="gt_row gt_right" headers="bill_length_mm">13.748</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">42.90</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">7</td>
+<td class="gt_row gt_right" headers="logLik">-2438</td>
+<td class="gt_row gt_right" headers="AICc">4891</td>
+<td class="gt_row gt_right" headers="delta">166.751</td>
+<td class="gt_row gt_center" headers="weight">4.741e-37</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">-6114.7</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">56.67</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">47.40</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">6</td>
+<td class="gt_row gt_right" headers="logLik">-2441</td>
+<td class="gt_row gt_right" headers="AICc">4895</td>
+<td class="gt_row gt_right" headers="delta">170.817</td>
+<td class="gt_row gt_center" headers="weight">6.209e-38</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">-4013.2</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">40.61</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">5</td>
+<td class="gt_row gt_right" headers="logLik">-2443</td>
+<td class="gt_row gt_right" headers="AICc">4895</td>
+<td class="gt_row gt_right" headers="delta">171.067</td>
+<td class="gt_row gt_center" headers="weight">5.478e-38</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">-4047.8</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">41.09</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">7</td>
+<td class="gt_row gt_right" headers="logLik">-2442</td>
+<td class="gt_row gt_right" headers="AICc">4897</td>
+<td class="gt_row gt_right" headers="delta">173.113</td>
+<td class="gt_row gt_center" headers="weight">1.970e-38</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">200.5</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">90.298</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">5</td>
+<td class="gt_row gt_right" headers="logLik">-2444</td>
+<td class="gt_row gt_right" headers="AICc">4899</td>
+<td class="gt_row gt_right" headers="delta">174.468</td>
+<td class="gt_row gt_center" headers="weight">1.001e-38</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">-4355.0</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">16.883</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">39.66</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">6</td>
+<td class="gt_row gt_right" headers="logLik">-2445</td>
+<td class="gt_row gt_right" headers="AICc">4902</td>
+<td class="gt_row gt_right" headers="delta">177.784</td>
+<td class="gt_row gt_center" headers="weight">1.906e-39</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">182.0</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">90.510</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">7</td>
+<td class="gt_row gt_right" headers="logLik">-2444</td>
+<td class="gt_row gt_right" headers="AICc">4903</td>
+<td class="gt_row gt_right" headers="delta">178.295</td>
+<td class="gt_row gt_center" headers="weight">1.477e-39</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">-4687.9</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">44.89</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">5</td>
+<td class="gt_row gt_right" headers="logLik">-2450</td>
+<td class="gt_row gt_right" headers="AICc">4909</td>
+<td class="gt_row gt_right" headers="delta">184.809</td>
+<td class="gt_row gt_center" headers="weight">5.685e-41</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">-6537.6</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">19.88</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">51.77</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">4</td>
+<td class="gt_row gt_right" headers="logLik">-2460</td>
+<td class="gt_row gt_right" headers="AICc">4928</td>
+<td class="gt_row gt_right" headers="delta">203.674</td>
+<td class="gt_row gt_center" headers="weight">4.552e-45</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">-5872.1</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">50.15</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">3</td>
+<td class="gt_row gt_right" headers="logLik">-2461</td>
+<td class="gt_row gt_right" headers="AICc">4928</td>
+<td class="gt_row gt_right" headers="delta">203.836</td>
+<td class="gt_row gt_center" headers="weight">4.198e-45</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">-5836.3</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">4.959</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">48.89</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">4</td>
+<td class="gt_row gt_right" headers="logLik">-2461</td>
+<td class="gt_row gt_right" headers="AICc">4929</td>
+<td class="gt_row gt_right" headers="delta">204.973</td>
+<td class="gt_row gt_center" headers="weight">2.377e-45</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">-6445.5</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">17.84</td>
+<td class="gt_row gt_right" headers="bill_length_mm">3.293</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">50.76</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">5</td>
+<td class="gt_row gt_right" headers="logLik">-2460</td>
+<td class="gt_row gt_right" headers="AICc">4930</td>
+<td class="gt_row gt_right" headers="delta">205.355</td>
+<td class="gt_row gt_center" headers="weight">1.965e-45</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">4784.5</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">-155.12</td>
+<td class="gt_row gt_right" headers="bill_length_mm">44.769</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">7</td>
+<td class="gt_row gt_right" headers="logLik">-2470</td>
+<td class="gt_row gt_right" headers="AICc">4955</td>
+<td class="gt_row gt_right" headers="delta">230.236</td>
+<td class="gt_row gt_center" headers="weight">7.767e-51</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">1747.4</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">60.616</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">6</td>
+<td class="gt_row gt_right" headers="logLik">-2505</td>
+<td class="gt_row gt_right" headers="AICc">5022</td>
+<td class="gt_row gt_right" headers="delta">297.540</td>
+<td class="gt_row gt_center" headers="weight">1.886e-65</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">6551.4</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">-257.31</td>
+<td class="gt_row gt_right" headers="bill_length_mm">36.519</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">5</td>
+<td class="gt_row gt_right" headers="logLik">-2507</td>
+<td class="gt_row gt_right" headers="AICc">5023</td>
+<td class="gt_row gt_right" headers="delta">299.035</td>
+<td class="gt_row gt_center" headers="weight">8.929e-66</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">7580.2</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">-211.52</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">6</td>
+<td class="gt_row gt_right" headers="logLik">-2506</td>
+<td class="gt_row gt_right" headers="AICc">5024</td>
+<td class="gt_row gt_right" headers="delta">299.241</td>
+<td class="gt_row gt_center" headers="weight">8.057e-66</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">3706.2</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">4</td>
+<td class="gt_row gt_right" headers="logLik">-2513</td>
+<td class="gt_row gt_right" headers="AICc">5035</td>
+<td class="gt_row gt_right" headers="delta">310.285</td>
+<td class="gt_row gt_center" headers="weight">3.221e-68</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">3709.7</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">+</td>
+<td class="gt_row gt_right" headers="df">6</td>
+<td class="gt_row gt_right" headers="logLik">-2513</td>
+<td class="gt_row gt_right" headers="AICc">5039</td>
+<td class="gt_row gt_right" headers="delta">314.411</td>
+<td class="gt_row gt_center" headers="weight">4.093e-69</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">8779.1</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">-299.34</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">4</td>
+<td class="gt_row gt_right" headers="logLik">-2529</td>
+<td class="gt_row gt_right" headers="AICc">5066</td>
+<td class="gt_row gt_right" headers="delta">341.864</td>
+<td class="gt_row gt_center" headers="weight">4.474e-75</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">1697.5</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">-26.23</td>
+<td class="gt_row gt_right" headers="bill_length_mm">76.000</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">6</td>
+<td class="gt_row gt_right" headers="logLik">-2537</td>
+<td class="gt_row gt_right" headers="AICc">5086</td>
+<td class="gt_row gt_right" headers="delta">361.234</td>
+<td class="gt_row gt_center" headers="weight">2.782e-79</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">1239.3</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">76.905</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">5</td>
+<td class="gt_row gt_right" headers="logLik">-2538</td>
+<td class="gt_row gt_right" headers="AICc">5086</td>
+<td class="gt_row gt_right" headers="delta">361.346</td>
+<td class="gt_row gt_center" headers="weight">2.632e-79</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">4375.8</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">5</td>
+<td class="gt_row gt_right" headers="logLik">-2562</td>
+<td class="gt_row gt_right" headers="AICc">5133</td>
+<td class="gt_row gt_right" headers="delta">409.061</td>
+<td class="gt_row gt_center" headers="weight">1.145e-89</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">3413.5</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">-145.51</td>
+<td class="gt_row gt_right" headers="bill_length_mm">74.813</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">4</td>
+<td class="gt_row gt_right" headers="logLik">-2595</td>
+<td class="gt_row gt_right" headers="AICc">5199</td>
+<td class="gt_row gt_right" headers="delta">474.205</td>
+<td class="gt_row gt_center" headers="weight">8.187e-104</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">746.1</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">74.025</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">4</td>
+<td class="gt_row gt_right" headers="logLik">-2614</td>
+<td class="gt_row gt_right" headers="AICc">5236</td>
+<td class="gt_row gt_right" headers="delta">512.010</td>
+<td class="gt_row gt_center" headers="weight">5.056e-112</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">5590.3</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">-54.76</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">5</td>
+<td class="gt_row gt_right" headers="logLik">-2615</td>
+<td class="gt_row gt_right" headers="AICc">5240</td>
+<td class="gt_row gt_right" headers="delta">516.032</td>
+<td class="gt_row gt_center" headers="weight">6.767e-113</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">4719.2</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">+</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">4</td>
+<td class="gt_row gt_right" headers="logLik">-2618</td>
+<td class="gt_row gt_right" headers="AICc">5244</td>
+<td class="gt_row gt_right" headers="delta">519.963</td>
+<td class="gt_row gt_center" headers="weight">9.482e-114</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">388.8</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">86.792</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">3</td>
+<td class="gt_row gt_right" headers="logLik">-2629</td>
+<td class="gt_row gt_right" headers="AICc">5264</td>
+<td class="gt_row gt_right" headers="delta">539.833</td>
+<td class="gt_row gt_center" headers="weight">4.594e-118</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">7520.0</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">-193.01</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">3</td>
+<td class="gt_row gt_right" headers="logLik">-2658</td>
+<td class="gt_row gt_right" headers="AICc">5322</td>
+<td class="gt_row gt_right" headers="delta">598.047</td>
+<td class="gt_row gt_center" headers="weight">1.050e-130</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="(Intercept)">3862.3</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">+</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">3</td>
+<td class="gt_row gt_right" headers="logLik">-2667</td>
+<td class="gt_row gt_right" headers="AICc">5340</td>
+<td class="gt_row gt_right" headers="delta">615.648</td>
+<td class="gt_row gt_center" headers="weight">1.582e-134</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="(Intercept)">4207.1</td>
+<td class="gt_row gt_right" headers="bill_depth_mm">NA</td>
+<td class="gt_row gt_right" headers="bill_length_mm">NA</td>
+<td class="gt_row gt_right" headers="flipper_length_mm">NA</td>
+<td class="gt_row gt_center" headers="island">NA</td>
+<td class="gt_row gt_center" headers="sex">NA</td>
+<td class="gt_row gt_center" headers="species">NA</td>
+<td class="gt_row gt_right" headers="df">2</td>
+<td class="gt_row gt_right" headers="logLik">-2700</td>
+<td class="gt_row gt_right" headers="AICc">5404</td>
+<td class="gt_row gt_right" headers="delta">679.945</td>
+<td class="gt_row gt_center" headers="weight">1.727e-148</td>
+</tr>
+</tbody>
+</table>
+
+</div>
 </div>
 </div>
 </section>
@@ -913,9 +2325,9 @@ Models ranked by AICc(x) </code></pre>
 <p>Use <code>anova()</code> to compare nested models</p>
 <p>H<sub>0</sub> there is no interaction between sex and species for predicting flipper length</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> species <span class="sc">+</span> sex, <span class="at">data =</span> penguins)</span>
-<span id="cb25-2"><a href="#cb25-2"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> species <span class="sc">*</span> sex, <span class="at">data =</span> penguins)</span>
-<span id="cb25-3"><a href="#cb25-3"></a><span class="fu">anova</span>(mod1, mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>mod1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> species <span class="sc">+</span> sex, <span class="at">data =</span> penguins)</span>
+<span id="cb25-2"><a></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> species <span class="sc">*</span> sex, <span class="at">data =</span> penguins)</span>
+<span id="cb25-3"><a></a><span class="fu">anova</span>(mod1, mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
@@ -932,8 +2344,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <section id="caranova-vs-anova" class="slide level2">
 <h2>car::Anova vs anova</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> species <span class="sc">+</span> sex, <span class="at">data =</span> penguins)</span>
-<span id="cb27-2"><a href="#cb27-2"></a>mod3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> sex <span class="sc">+</span> species, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> species <span class="sc">+</span> sex, <span class="at">data =</span> penguins)</span>
+<span id="cb27-2"><a></a>mod3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> sex <span class="sc">+</span> species, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
 <li>anova - tests terms sequentially</li>
@@ -943,7 +2355,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <section class="slide level2">
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="fu">anova</span>(mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a><span class="fu">anova</span>(mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
@@ -955,7 +2367,7 @@ Residuals 329 3.30e+07   100241
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a><span class="fu">anova</span>(mod3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a><span class="fu">anova</span>(mod3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
@@ -972,7 +2384,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <section class="slide level2">
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a>car<span class="sc">::</span><span class="fu">Anova</span>(mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Anova Table (Type II tests)
 
@@ -984,7 +2396,7 @@ Residuals 3.30e+07 329
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(mod3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a></a>car<span class="sc">::</span><span class="fu">Anova</span>(mod3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Anova Table (Type II tests)
 
@@ -1001,16 +2413,19 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <section id="multicollinearity" class="slide level2">
 <h2>Multicollinearity</h2>
 <ul>
-<li><p>Two or more predictor variables in a multiple regression model are highly correlated. Example: pH and calcium</p></li>
-<li><p>Coefficient estimates may change erratically in response to small changes in the model or the data.</p></li>
-<li><p>Solve by having lots of data</p></li>
+<li>Two or more predictor variables in a multiple regression model are highly correlated. Example: pH and calcium</li>
+<li>Coefficient estimates are unstable
+<ul>
+<li>erratic change in response to small changes in the model or the data.</li>
+</ul></li>
+<li>Solve by having lots of data</li>
 </ul>
 </section>
 <section class="slide level2">
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a>col <span class="ot">&lt;-</span> performance<span class="sc">::</span><span class="fu">check_collinearity</span>(full)</span>
-<span id="cb36-2"><a href="#cb36-2"></a>col</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a>col <span class="ot">&lt;-</span> performance<span class="sc">::</span><span class="fu">check_collinearity</span>(full)</span>
+<span id="cb36-2"><a></a>col</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Check for Multicollinearity
 
@@ -1032,12 +2447,1071 @@ High Correlation
     Term   VIF     VIF 95% CI Increased SE Tolerance Tolerance 95% CI
  species 63.52 [51.73, 78.06]         7.97      0.02     [0.01, 0.02]</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1"></a><span class="fu">plot</span>(col)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a><span class="fu">plot</span>(col)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
+<img data-src="lecture_8_multiple_regression_files/figure-revealjs/collinearity-1.png" width="960" class="r-stretch"></section>
+<section id="autocorrelation" class="slide level2">
+<h2>Autocorrelation</h2>
+<p>Linear models assume residuals are independent</p>
+<p>If data are spatially or temporally structured, residuals may be correlated.</p>
+<p>Positive autocorrelation</p>
+<ul>
+<li>confidence intervals are too narrow</li>
+<li>increases risk of false positive (Type I error)</li>
+</ul>
+</section>
+<section id="luteinising-hormone-concentration" class="slide level2">
+<h2>Luteinising Hormone concentration</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a><span class="fu">library</span>(ggfortify)</span>
+<span id="cb39-2"><a></a></span>
+<span id="cb39-3"><a></a>lh <span class="ot">&lt;-</span> <span class="fu">fortify</span>(lh) <span class="sc">|&gt;</span></span>
+<span id="cb39-4"><a></a>  <span class="fu">mutate</span>(<span class="at">time =</span> Index <span class="sc">*</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
+<span id="cb39-5"><a></a>  <span class="fu">rename</span>(<span class="at">concentration =</span> Data)</span>
+<span id="cb39-6"><a></a></span>
+<span id="cb39-7"><a></a>mod_lh <span class="ot">&lt;-</span> <span class="fu">lm</span>(concentration <span class="sc">~</span> time, <span class="at">data =</span> lh)</span>
+<span id="cb39-8"><a></a></span>
+<span id="cb39-9"><a></a><span class="fu">augment</span>(mod_lh, <span class="at">interval =</span> <span class="st">"confidence"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb39-10"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> concentration)) <span class="sc">+</span></span>
+<span id="cb39-11"><a></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb39-12"><a></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb39-13"><a></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> .lower, <span class="at">ymax =</span> .upper), <span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">fill =</span> <span class="st">"#ee5050"</span>) <span class="sc">+</span></span>
+<span id="cb39-14"><a></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted), <span class="at">colour =</span> <span class="st">"#ee5050"</span>) <span class="sc">+</span></span>
+<span id="cb39-15"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Time, minutes"</span>, <span class="at">y =</span> <span class="st">"Hormone concentration"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 
-<img data-src="lecture_8_multiple_regression_files/figure-revealjs/collinearity-1.png" width="960" class="r-stretch"><div class="footer footer-default">
+</div>
+<img data-src="lecture_8_multiple_regression_files/figure-revealjs/autocorrelation-1.png" width="960" class="r-stretch"></section>
+<section id="detecting-autocorrelation" class="slide level2">
+<h2>Detecting autocorrelation</h2>
+<p>For time series with equally-spaced observations, use autocorrelation function (ACF)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a></a><span class="fu">autoplot</span>(<span class="fu">acf</span>(mod_lh<span class="sc">$</span>residuals, <span class="at">plot =</span> <span class="cn">FALSE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
+</div>
+<img data-src="lecture_8_multiple_regression_files/figure-revealjs/unnamed-chunk-28-1.png" width="960" class="r-stretch"></section>
+<section id="detecting-autocorrelation-1" class="slide level2">
+<h2>Detecting autocorrelation</h2>
+<p>Tests for equally-spaced observations</p>
+<p>Durbin-Watson test</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a>performance<span class="sc">::</span><span class="fu">check_autocorrelation</span>(mod_lh)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Warning: Autocorrelated residuals detected (p &lt; .001).</code></pre>
+</div>
+</div>
+<p>Other methods for spatial data and non-equally spaced data</p>
+<p>Solution - use a model that accounts for autocorrelation</p>
+<ul>
+<li>generalised least squares (<code>nlme::gls()</code>)</li>
+</ul>
+</section>
+<section id="reporting-regression-results---tables" class="slide level2">
+<h2>Reporting regression results - tables</h2>
+<p>Make a table - estimates, confidence intervals, p-values</p>
+<p>Can calculate confidence intervals with <code>broom::tidy()</code> and format output</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a></a><span class="fu">library</span>(gt)</span>
+<span id="cb43-2"><a></a><span class="fu">tidy</span>(mod_mult, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb43-3"><a></a>  <span class="fu">select</span>(term, estimate, conf.low, conf.high, p.value) <span class="sc">|&gt;</span></span>
+<span id="cb43-4"><a></a>  <span class="fu">mutate</span>(<span class="at">p.value =</span> <span class="fu">format.pval</span>(p.value, <span class="at">eps =</span> <span class="fl">0.001</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb43-5"><a></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb43-6"><a></a>  <span class="fu">fmt_number</span>(</span>
+<span id="cb43-7"><a></a>    <span class="at">columns =</span> <span class="fu">c</span>(estimate, conf.low, conf.high),</span>
+<span id="cb43-8"><a></a>    <span class="at">decimals =</span> <span class="dv">4</span></span>
+<span id="cb43-9"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="nuhpffrbuf" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#nuhpffrbuf table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#nuhpffrbuf thead, #nuhpffrbuf tbody, #nuhpffrbuf tfoot, #nuhpffrbuf tr, #nuhpffrbuf td, #nuhpffrbuf th {
+  border-style: none;
+}
+
+#nuhpffrbuf p {
+  margin: 0;
+  padding: 0;
+}
+
+#nuhpffrbuf .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#nuhpffrbuf .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#nuhpffrbuf .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#nuhpffrbuf .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#nuhpffrbuf .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#nuhpffrbuf .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nuhpffrbuf .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#nuhpffrbuf .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#nuhpffrbuf .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#nuhpffrbuf .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#nuhpffrbuf .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#nuhpffrbuf .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#nuhpffrbuf .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#nuhpffrbuf .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#nuhpffrbuf .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#nuhpffrbuf .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#nuhpffrbuf .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#nuhpffrbuf .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#nuhpffrbuf .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nuhpffrbuf .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#nuhpffrbuf .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#nuhpffrbuf .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#nuhpffrbuf .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nuhpffrbuf .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#nuhpffrbuf .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#nuhpffrbuf .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nuhpffrbuf .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nuhpffrbuf .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#nuhpffrbuf .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nuhpffrbuf .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#nuhpffrbuf .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nuhpffrbuf .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#nuhpffrbuf .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nuhpffrbuf .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#nuhpffrbuf .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nuhpffrbuf .gt_left {
+  text-align: left;
+}
+
+#nuhpffrbuf .gt_center {
+  text-align: center;
+}
+
+#nuhpffrbuf .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#nuhpffrbuf .gt_font_normal {
+  font-weight: normal;
+}
+
+#nuhpffrbuf .gt_font_bold {
+  font-weight: bold;
+}
+
+#nuhpffrbuf .gt_font_italic {
+  font-style: italic;
+}
+
+#nuhpffrbuf .gt_super {
+  font-size: 65%;
+}
+
+#nuhpffrbuf .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#nuhpffrbuf .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#nuhpffrbuf .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#nuhpffrbuf .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#nuhpffrbuf .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#nuhpffrbuf .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#nuhpffrbuf .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+
+<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="term" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">term</th>
+<th id="estimate" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">estimate</th>
+<th id="conf.low" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">conf.low</th>
+<th id="conf.high" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">conf.high</th>
+<th id="p.value" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">p.value</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">(Intercept)</td>
+<td class="gt_row gt_right" headers="estimate">−3.4367</td>
+<td class="gt_row gt_right" headers="conf.low">−12.4466</td>
+<td class="gt_row gt_right" headers="conf.high">5.5732</td>
+<td class="gt_row gt_left" headers="p.value">0.45</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="term">body_mass_g</td>
+<td class="gt_row gt_right" headers="estimate">0.0007</td>
+<td class="gt_row gt_right" headers="conf.low">−0.0005</td>
+<td class="gt_row gt_right" headers="conf.high">0.0018</td>
+<td class="gt_row gt_left" headers="p.value">0.24</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="term">flipper_length_mm</td>
+<td class="gt_row gt_right" headers="estimate">0.2219</td>
+<td class="gt_row gt_right" headers="conf.low">0.1582</td>
+<td class="gt_row gt_right" headers="conf.high">0.2855</td>
+<td class="gt_row gt_left" headers="p.value">&lt;0.001</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="gtsummary" class="slide level2">
+<h2><code>gtsummary</code></h2>
+<p>Or make table with <code>gtsummary</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a></a><span class="fu">library</span>(gtsummary)</span>
+<span id="cb44-2"><a></a>tbl <span class="ot">&lt;-</span> <span class="fu">tbl_regression</span>(mod_mult,</span>
+<span id="cb44-3"><a></a>  <span class="at">label =</span> <span class="fu">list</span>(</span>
+<span id="cb44-4"><a></a>    <span class="at">body_mass_g =</span> <span class="st">"Body mass g"</span>,</span>
+<span id="cb44-5"><a></a>    <span class="at">flipper_length_mm =</span> <span class="st">"Flipper length mm"</span></span>
+<span id="cb44-6"><a></a>  ),</span>
+<span id="cb44-7"><a></a>  <span class="at">estimate_fun =</span> <span class="fu">label_style_sigfig</span>(<span class="at">digits =</span> <span class="dv">4</span>)</span>
+<span id="cb44-8"><a></a>)</span>
+<span id="cb44-9"><a></a>tbl</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="bsiqxlonbj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#bsiqxlonbj table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#bsiqxlonbj thead, #bsiqxlonbj tbody, #bsiqxlonbj tfoot, #bsiqxlonbj tr, #bsiqxlonbj td, #bsiqxlonbj th {
+  border-style: none;
+}
+
+#bsiqxlonbj p {
+  margin: 0;
+  padding: 0;
+}
+
+#bsiqxlonbj .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#bsiqxlonbj .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#bsiqxlonbj .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#bsiqxlonbj .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#bsiqxlonbj .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#bsiqxlonbj .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bsiqxlonbj .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#bsiqxlonbj .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#bsiqxlonbj .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#bsiqxlonbj .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#bsiqxlonbj .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#bsiqxlonbj .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#bsiqxlonbj .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#bsiqxlonbj .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#bsiqxlonbj .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#bsiqxlonbj .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#bsiqxlonbj .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#bsiqxlonbj .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#bsiqxlonbj .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bsiqxlonbj .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#bsiqxlonbj .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#bsiqxlonbj .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#bsiqxlonbj .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bsiqxlonbj .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#bsiqxlonbj .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#bsiqxlonbj .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bsiqxlonbj .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bsiqxlonbj .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#bsiqxlonbj .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bsiqxlonbj .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#bsiqxlonbj .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bsiqxlonbj .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#bsiqxlonbj .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bsiqxlonbj .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#bsiqxlonbj .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bsiqxlonbj .gt_left {
+  text-align: left;
+}
+
+#bsiqxlonbj .gt_center {
+  text-align: center;
+}
+
+#bsiqxlonbj .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#bsiqxlonbj .gt_font_normal {
+  font-weight: normal;
+}
+
+#bsiqxlonbj .gt_font_bold {
+  font-weight: bold;
+}
+
+#bsiqxlonbj .gt_font_italic {
+  font-style: italic;
+}
+
+#bsiqxlonbj .gt_super {
+  font-size: 65%;
+}
+
+#bsiqxlonbj .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#bsiqxlonbj .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#bsiqxlonbj .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#bsiqxlonbj .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#bsiqxlonbj .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#bsiqxlonbj .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#bsiqxlonbj .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+
+<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="<strong>Characteristic</strong>" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"><strong>Characteristic</strong></th>
+<th id="<strong>Beta</strong>" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>Beta</strong></th>
+<th id="<strong>95% CI</strong><span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;><sup>1</sup></span>" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>95% CI</strong><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></th>
+<th id="<strong>p-value</strong>" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>p-value</strong></th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="label">Body mass g</td>
+<td class="gt_row gt_center" headers="estimate">0.0007</td>
+<td class="gt_row gt_center" headers="conf.low">-0.0005, 0.0018</td>
+<td class="gt_row gt_center" headers="p.value">0.2</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="label">Flipper length mm</td>
+<td class="gt_row gt_center" headers="estimate">0.2219</td>
+<td class="gt_row gt_center" headers="conf.low">0.1582, 0.2855</td>
+<td class="gt_row gt_center" headers="p.value">&lt;0.001</td>
+</tr>
+</tbody><tfoot class="gt_footnotes">
+<tr class="odd">
+<td colspan="4" class="gt_footnote"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span> CI = Confidence Interval</td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="reporting-regression-results---inline" class="slide level2">
+<h2>Reporting regression results - inline</h2>
+<p>Can extract values directly from regression .</p>
+<ul>
+<li>estimate</li>
+<li>confidence intervals</li>
+<li>p-value, degrees of freedom, statistic</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb45-1"><a></a>Flipper length is associated with longer bill length (estimate = <span class="in">`r round(coef(mod_mult)["flipper_length_mm"], 2)`</span> mm/mm, 95% CI = <span class="in">`r round(confint(mod_mult)["flipper_length_mm", ], 2)`</span> p = <span class="in">`r format.pval(tidy(mod_mult) |&gt; filter(term == "flipper_length_mm") |&gt; select("p.value"), eps = 0.001)`</span>).</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Flipper length is associated with longer bill length (estimate = 0.22 mm/mm, 95% CI = 0.16, 0.29 p = &lt;0.001).</p>
+<p>Also function <code>inline_text()</code> from <code>gtsummary</code></p>
+<p>See APA guide for reporting statistics</p>
+
+<div class="quarto-auto-generated-content">
+<div class="footer footer-default">
+
+</div>
 </div>
 </section>
     </div>
@@ -1322,18 +3796,7 @@ High Correlation
         }
         return false;
       }
-      const clipboard = new window.ClipboardJS('.code-copy-button', {
-        text: function(trigger) {
-          const codeEl = trigger.previousElementSibling.cloneNode(true);
-          for (const childEl of codeEl.children) {
-            if (isCodeAnnotation(childEl)) {
-              childEl.remove();
-            }
-          }
-          return codeEl.innerText;
-        }
-      });
-      clipboard.on('success', function(e) {
+      const onCopySuccess = function(e) {
         // button target
         const button = e.trigger;
         // don't keep focus
@@ -1365,7 +3828,47 @@ High Correlation
         }, 1000);
         // clear code selection
         e.clearSelection();
+      }
+      const getTextToCopy = function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+        text: getTextToCopy
       });
+      clipboard.on('success', onCopySuccess);
+      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+        // For code content inside modals, clipBoardJS needs to be initialized with a container option
+        // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+          text: getTextToCopy,
+          container: window.document.getElementById('quarto-embedded-source-code-modal')
+        });
+        clipboardModal.on('success', onCopySuccess);
+      }
+        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+        var mailtoRegex = new RegExp(/^mailto:/);
+          var filterRegex = new RegExp('/' + window.location.host + '/');
+        var isInternal = (href) => {
+            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+        }
+        // Inspect non-navigation links and adorn them if external
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+        for (var i=0; i<links.length; i++) {
+          const link = links[i];
+          if (!isInternal(link.href)) {
+            // undo the damage that might have been done by quarto-nav.js in the case of
+            // links that we want to consider external
+            if (link.dataset.originalHref !== undefined) {
+              link.href = link.dataset.originalHref;
+            }
+          }
+        }
       function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
         const config = {
           allowHTML: true,
@@ -1402,7 +3905,11 @@ High Correlation
           try { href = new URL(href).hash; } catch {}
           const id = href.replace(/^#\/?/, "");
           const note = window.document.getElementById(id);
-          return note.innerHTML;
+          if (note) {
+            return note.innerHTML;
+          } else {
+            return "";
+          }
         });
       }
       const findCites = (el) => {

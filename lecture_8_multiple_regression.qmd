@@ -9,6 +9,10 @@ format:
   revealjs:
     theme: [default, css/custom.scss]
     chalkboard: true
+    resources: 
+      - shinylive-sw.js
+filters:
+  - shinylive
 execute: 
   echo: true
   warning: false
@@ -37,6 +41,8 @@ options(dplyr.print_min = 5, dplyr.print_max = 5, digits = 4)
   - Exploratory data analysis
   - Anova for hypothesis testing
 - Multi-collinearity
+- Autocorrelation
+- Reporting statistics
 
 ## Adding more variables
 
@@ -77,12 +83,13 @@ summary(mod_mult)
 #| fig.height: 6.5
 #| echo: false
 #| fig.width: 10.0
-adelie <- penguins |> 
-  filter(species == "Adelie")
+adelie <- penguins |>
+  filter(species == "Adelie") |>
+  drop_na(bill_length_mm, flipper_length_mm, sex)
+
 
 base_plot <- ggplot(adelie, aes(x = flipper_length_mm, y = bill_length_mm)) +
-  geom_point(colour = "orange") +
-  labs(x = "Flipper length mm", y = "Bill length mm")
+  labs(x = "Flipper length mm", y = "Bill length mm", colour = "Sex")
 
 # intercept only
 mod0 <- lm(bill_length_mm ~ 1, data = adelie)
@@ -102,26 +109,38 @@ mod_interact <- lm(bill_length_mm ~ sex * flipper_length_mm, data = adelie)
 
 preds <- bind_rows(
   "y ~ 1" = adelie |> select(-sex) |> mutate(.fitted = coef(mod0[1])),
-  "y ~ x" =  augment(mod_slope),
-  "y ~ z" =  left_join(adelie |> drop_na(sex, flipper_length_mm, bill_length_mm), augment(mod_cat)), 
+  "y ~ x" = augment(mod_slope),
+  "y ~ z" = left_join(adelie |> drop_na(sex, flipper_length_mm, bill_length_mm), augment(mod_cat)),
   "y ~ x + z" = augment(mod_ancova),
-  "y ~ x * z" = augment(mod_interact), 
-  .id = "model") |> 
-  left_join(tribble(~model, ~type,
-                      "y ~ 1", "Intercept only",
-  "y ~ x", "Continuous predictor",
-  "y ~ z", "Categorical predictor", 
-  "y ~ x + z", "Continuous & categorical predictors",
-  "y ~ x * z", "Interaction")) |> 
-  mutate(model = factor(model, levels = c("y ~ 1", "y ~ x", "y ~ z", "y ~ x + z", "y ~ x * z")),
-         type = factor(type, levels = c("Intercept only", "Continuous predictor", "Categorical predictor", "Continuous & categorical predictors", "Interaction")))
+  "y ~ x * z" = augment(mod_interact),
+  .id = "model"
+) |>
+  left_join(tribble(
+    ~model, ~type,
+    "y ~ 1", "Intercept only",
+    "y ~ x", "Continuous predictor",
+    "y ~ z", "Categorical predictor",
+    "y ~ x + z", "Continuous & categorical predictors",
+    "y ~ x * z", "Interaction"
+  )) |>
+  mutate(
+    model = factor(model, levels = c("y ~ 1", "y ~ x", "y ~ z", "y ~ x + z", "y ~ x * z")),
+    type = factor(type, levels = c("Intercept only", "Continuous predictor", "Categorical predictor", "Continuous & categorical predictors", "Interaction")),
+    sex2 = if_else(
+      type %in% c("Intercept only", "Continuous predictor"),
+      true = "Both sexes",
+      false = sex
+    ),
+    sex2 = factor(sex2, levels = c("female", "male", "Both sexes"), labels = c("Female", "Male", "Both sexes"))
+  )
 
 base_plot +
-  geom_line(data = preds, aes(y = .fitted, colour = sex), size = 1.5) +
-  facet_wrap(~ type + model) +
+  geom_point(data = preds, aes(colour = sex2), alpha = 0.5) +
+  geom_line(data = preds, aes(y = .fitted, colour = sex2), linewidth = 1.5) +
+  facet_wrap(vars(type, model)) +
   scale_color_brewer(palette = "Set1", na.value = "grey30") +
-  theme(legend.position = c(5/6, 1/4))
-
+  theme(legend.position = c(5 / 6, 1 / 4)) +
+  guides(colour = guide_legend(override.aes = list(alpha = 1, size = 4)))
 ```
 
 ---
@@ -135,8 +154,8 @@ library(ggbeeswarm)
 
 
 base_plot <- ggplot(penguins |> drop_na(sex, bill_length_mm), aes(x = "Penguin", y = flipper_length_mm)) +
-geom_violin() +
- geom_quasirandom(alpha = 0.3, dodge.width = 1) +
+  geom_violin() +
+  geom_quasirandom(alpha = 0.3, dodge.width = 1) +
   labs(x = "Species", y = "Flipper length mm") +
   scale_color_brewer(palette = "Set1") +
   theme(axis.title.x = element_blank())
@@ -157,10 +176,11 @@ mod_interaction <- lm(flipper_length_mm ~ species * sex, data = penguins)
 
 p1 <- base_plot +
   geom_pointrange(
-    aes(y = .fitted, ymax = .upper, ymin = .lower), 
+    aes(y = .fitted, ymax = .upper, ymin = .lower),
     data = augment(mod0, interval = "confidence") |> slice(1),
     colour = "red",
-    size = 1.1) +
+    size = 1.1
+  ) +
   ggtitle("Intercept only", subtitle = "y ~ 1")
 
 
@@ -168,35 +188,37 @@ p1 <- base_plot +
 p2 <- base_plot +
   aes(x = species) +
   geom_pointrange(
-    aes(y = .fitted, ymax = .upper, ymin = .lower), 
+    aes(y = .fitted, ymax = .upper, ymin = .lower),
     data = augment(mod_anova, interval = "confidence", newdata = distinct(penguins, species)),
     colour = "red",
-    size = 1.1) +
-  ggtitle("Anova", subtitle = "y ~ x") 
+    size = 1.1
+  ) +
+  ggtitle("Anova", subtitle = "y ~ x")
 
 
 p3 <- base_plot +
   aes(x = species, colour = sex) +
   geom_pointrange(
-    aes(y = .fitted, ymax = .upper, ymin = .lower, colour = sex), 
+    aes(y = .fitted, ymax = .upper, ymin = .lower, colour = sex),
     data = augment(mod_anova2, interval = "confidence", newdata = distinct(penguins, species, sex) |> drop_na(sex)),
     position = position_dodge(width = 1),
-    size = 1.1) +
+    size = 1.1
+  ) +
   ggtitle("Two-way anova", subtitle = "y ~ x + z")
 
 
 p4 <- base_plot +
   aes(x = species, colour = sex) +
   geom_pointrange(
-    aes(y = .fitted, ymax = .upper, ymin = .lower, colour = sex), 
-    data = augment(mod_interaction, interval = "confidence", newdata = distinct(penguins, species, sex) |> drop_na(sex)), 
+    aes(y = .fitted, ymax = .upper, ymin = .lower, colour = sex),
+    data = augment(mod_interaction, interval = "confidence", newdata = distinct(penguins, species, sex) |> drop_na(sex)),
     position = position_dodge(width = 1),
-    size = 1.1) +
+    size = 1.1
+  ) +
   ggtitle("Interaction", subtitle = "y ~ x * z OR y ~ x + z + x:z")
 
 
-p1 + p2 +p3 + p4 & theme(legend.position = "none")
-
+p1 + p2 + p3 + p4 & theme(legend.position = "none")
 ```
 
 ## What is an interaction
@@ -209,18 +231,22 @@ Effect of one predictor depends on value of another
 #| fig.height: 6.0
 #| echo: false
 
-p1 <- crossing(species = c("A", "B"), sex = c("F", "M")) |> 
-  mutate(mean = if_else(species == "A", 0.9, 2.1),
-         mean = if_else(sex == "F", mean, mean + 1)) |> 
-  ggplot(aes(x = species, y = mean, ymin = mean -0.5, ymax = mean + 0.5, colour = sex)) +
+p1 <- crossing(species = c("A", "B"), sex = c("F", "M")) |>
+  mutate(
+    mean = if_else(species == "A", 0.9, 2.1),
+    mean = if_else(sex == "F", mean, mean + 1)
+  ) |>
+  ggplot(aes(x = species, y = mean, ymin = mean - 0.5, ymax = mean + 0.5, colour = sex)) +
   geom_pointrange(position = position_dodge(width = .5)) +
   labs(y = "Value", title = "No Interaction", x = "Predictor 1", colour = "Predictor 2")
 
-p2 <- crossing(species = c("A", "B"), sex = c("F", "M")) |> 
-  mutate(mean = if_else(species == "A", 0.9, 2.1),
-         mean = if_else(sex == "F", mean, mean + 1), 
-         mean = if_else(species == "B" & sex == "M", mean + 0.5, mean)) |> 
-  ggplot(aes(x = species, y = mean, ymin = mean -0.5, ymax = mean + 0.5, colour = sex)) +
+p2 <- crossing(species = c("A", "B"), sex = c("F", "M")) |>
+  mutate(
+    mean = if_else(species == "A", 0.9, 2.1),
+    mean = if_else(sex == "F", mean, mean + 1),
+    mean = if_else(species == "B" & sex == "M", mean + 0.5, mean)
+  ) |>
+  ggplot(aes(x = species, y = mean, ymin = mean - 0.5, ymax = mean + 0.5, colour = sex)) +
   geom_pointrange(position = position_dodge(width = .5)) +
   labs(y = "Value", title = "Interaction", x = "Predictor 1", colour = "Predictor 2")
 
@@ -242,9 +268,9 @@ summary(mod)
 ```{r}
 #| label: species_sex_model
 #| echo: false
-penguins |> 
-  drop_na(sex) |> 
-ggplot(aes(x = species, y = flipper_length_mm, fill = sex)) +
+penguins |>
+  drop_na(sex) |>
+  ggplot(aes(x = species, y = flipper_length_mm, fill = sex)) +
   geom_violin(draw_quantiles = 0.5) +
   labs(x = "Species", y = "Flipper length mm", fill = "Sex")
 ```
@@ -253,6 +279,182 @@ ggplot(aes(x = species, y = flipper_length_mm, fill = sex)) +
 
 ::::
 
+## Understanding coefficients
+
+
+```{shinylive-r}
+#| label: coef-explain-app
+#| standalone: true
+#| viewerHeight: 650
+
+library(shiny)
+library(bslib)
+
+ui <- page_sidebar(
+  sidebar = sidebar(checkboxGroupInput("pred",
+    "Predictor",
+    choiceValues = c(
+      "Food", "Temperature",
+      "Interaction"
+    ), choiceNames = c(
+      "Food (A vs. B)",
+      "Temperature (Low vs. High)", "Interaction"
+    )
+  )), card(
+    textOutput("formula")
+  ), card(
+    card_header("Coefficients"),
+    tableOutput("coef_table")
+  ), card(plotOutput("plot")),
+  tags$head(tags$style("#coef_table td{\n                     position:relative;\n                     };\n\n                     ")),
+)
+server <- function(input, output, session) {
+  data <- reactive({
+    b0 <- 5
+    b1 <- 3
+    b2 <- 2
+    b3 <- 2
+    food <- factor(rep(c("A", "B"), times = 24))
+    temperature <- factor(rep(c("Low", "High"), each = 24),
+      levels = c("Low", "High")
+    )
+    response <- b0 + b1 * (food == "B") + b2 * (temperature ==
+      "High") + b3 * (food == "B" & temperature ==
+      "High") + rnorm(48)
+    data.frame(
+      food = food, temperature = temperature,
+      response = response
+    )
+  })
+  form <- "response ~"
+  form2 <- reactive({
+    if ("Interaction" %in% input$pred) {
+      paste(form, "food * temperature")
+    } else if ("Food" %in% input$pred & "Temperature" %in%
+      input$pred) {
+      paste(form, "food + temperature")
+    } else if ("Food" %in% input$pred) {
+      paste(form, "food")
+    } else if ("Temperature" %in% input$pred) {
+      paste(form, "temperature")
+    } else {
+      paste(form, "1")
+    }
+  })
+  observe({
+    if ("Interaction" %in% input$pred) {
+      updateCheckboxGroupInput(session, "pred", selected = c(
+        "Food",
+        "Temperature", "Interaction"
+      ))
+    }
+  })
+  model <- reactive({
+    lm(form2(), data = data())
+  })
+  coefs <- reactive({
+    coef(model())
+  })
+  coef_colours <- reactive({
+    c(
+      `(Intercept)` = "skyblue", foodB = "red", temperatureHigh = "green",
+      `foodB:temperatureHigh` = "orange"
+    )[names(coefs())]
+  })
+  coef_table <- reactive({
+    c1 <- "<div style=\"width: 100%; height: 100%; z-index: 0; background-color: "
+    c2 <- "; position:absolute; top: 0; left: 0; padding:5px;\">\n<span>"
+    c3 <- "</span></div>"
+    tab <- data.frame(
+      Beta = paste0(
+        c1, coef_colours(),
+        c2, "β", seq_along(coefs()), c3
+      ), Coefficent = names(coefs()),
+      Estimate = coefs()
+    )
+    tab
+  })
+  output$formula <- renderText(paste("Model formula:", form2()))
+  output$coef_table <- renderTable(coef_table(), sanitize.text.function = function(x) x)
+  output$plot <- renderPlot({
+    set.seed(1)
+    f <- as.formula(form2())
+    fc <- as.character(f)
+    ylim <- c(0, max(data()$response))
+    par(mar = c(1.5, 2.5, .5, .5), mgp = c(1.5, 0.5, 0))
+    if (fc[3] == "1") {
+      stripchart(data()$response,
+        method = "jitter",
+        jitter = 0.1, vertical = TRUE, pch = 1, ylim = ylim,
+        ylab = "response"
+      )
+    } else {
+      stripchart(f,
+        data = data(), method = "jitter",
+        jitter = 0.1, vertical = TRUE, pch = 1, ylim = ylim
+      )
+    }
+    cols <- c("food", "temperature")[c(grepl(
+      "food",
+      fc[3]
+    ), grepl("temperature", fc[3]))]
+    if (length(cols) == 0) {
+      cols <- "food"
+    }
+    pred <- predict(model(), newdata = unique(data()[,
+      cols,
+      drop = FALSE
+    ]))
+    points(seq_along(pred), pred,
+      col = "#832424", pch = 16,
+      cex = 4
+    )
+    xs <- seq_along(pred) - 0.2
+    arrows(xs, rep(0, length(pred)), xs, rep(
+      coefs()[1],
+      length(pred)
+    ),
+    col = coef_colours()[1], lwd = 4,
+    length = 0.1
+    )
+    pos <- 2 - 0.2
+    if ("foodB" %in% names(coefs())) {
+      arrows(pos, coefs()[1], pos, coefs()[1] + coefs()["foodB"],
+        col = coef_colours()["foodB"], lwd = 4, length = 0.1
+      )
+      pos <- pos + 1
+    }
+    if ("temperatureHigh" %in% names(coefs())) {
+      arrows(pos, coefs()[1], pos, coefs()[1] + coefs()["temperatureHigh"],
+        col = coef_colours()["temperatureHigh"], lwd = 4,
+        length = 0.1
+      )
+      pos <- pos + 1
+    }
+    if (all(c("foodB", "temperatureHigh") %in% names(coefs()))) {
+      arrows(pos, coefs()[1], pos, coefs()[1] + coefs()["foodB"],
+        col = coef_colours()["foodB"], lwd = 4, length = 0.1
+      )
+      arrows(pos, coefs()[1] + coefs()["foodB"], pos,
+        coefs()[1] + coefs()["foodB"] + coefs()["temperatureHigh"],
+        col = coef_colours()["temperatureHigh"], lwd = 4,
+        length = 0.1
+      )
+      if ("foodB:temperatureHigh" %in% names(coefs())) {
+        arrows(pos, coefs()[1] + coefs()["foodB"] +
+          coefs()["temperatureHigh"], pos, coefs()[1] +
+          coefs()["foodB"] + coefs()["temperatureHigh"] +
+          coefs()["temperatureHigh"],
+        col = coef_colours()["foodB:temperatureHigh"],
+        lwd = 4, length = 0.1
+        )
+      }
+    }
+  })
+}
+shinyApp(ui, server)
+
+```
 
 
 ## Interaction between continuous and categorical predictors
@@ -263,23 +465,25 @@ ggplot(aes(x = species, y = flipper_length_mm, fill = sex)) +
 #| fig.width: 10.0
 #| fig.height: 6.0
 
-tribble(~ type, ~ predictor, ~ intercept, ~ slope,
-       "No interaction", "A" , 10, 5, 
-       "No interaction", "B", 12, 5,
-       "Interaction - steeper", "A", 10, 5,
-       "Interaction - steeper", "B", 12, 8,
-       "Interaction - shallower", "A", 10, 5,
-       "Interaction - shallower", "B", 12, 3,
-) |> 
-  crossing(continuous = 1:100) |> 
-  mutate(value = continuous * slope/50 + intercept,
-         type = factor(type), 
-         type = fct_rev(type)) |> 
+tribble(
+  ~type, ~predictor, ~intercept, ~slope,
+  "No interaction", "A", 10, 5,
+  "No interaction", "B", 12, 5,
+  "Interaction - steeper", "A", 10, 5,
+  "Interaction - steeper", "B", 12, 8,
+  "Interaction - shallower", "A", 10, 5,
+  "Interaction - shallower", "B", 12, 3,
+) |>
+  crossing(continuous = 1:100) |>
+  mutate(
+    value = continuous * slope / 50 + intercept,
+    type = factor(type),
+    type = fct_rev(type)
+  ) |>
   ggplot(aes(x = continuous, y = value, colour = predictor)) +
   geom_line() +
   facet_wrap(~type) +
   labs(x = "Continuous Predictor", colour = "Categorical\npredictor", y = "Response")
-
 ```
 
 ---
@@ -298,13 +502,15 @@ summary(mod_interact)
 #| echo: false
 #| fig.width: 8.0
 #| fig.height: 6.0
-crossing(A = 1:100, B = 1:100, type = c("Interaction", "No interaction")) |> 
-  mutate(type = factor(type), 
-         type = fct_rev(type), 
-         response = if_else(type == "Interaction",( A * 7 + B * 5 + A*B * 2)/10, A * 7 + B * 5)) |> 
+crossing(A = 1:100, B = 1:100, type = c("Interaction", "No interaction")) |>
+  mutate(
+    type = factor(type),
+    type = fct_rev(type),
+    response = if_else(type == "Interaction", (A * 7 + B * 5 + A * B * 2) / 10, A * 7 + B * 5)
+  ) |>
   ggplot(aes(x = A, y = B, z = response)) +
   geom_contour_filled() +
-  facet_wrap(~ type) +
+  facet_wrap(~type) +
   scale_x_continuous(expand = c(0, 0)) +
   scale_y_continuous(expand = c(0, 0)) +
   labs(x = "Predictor A", y = "Predictor B", fill = "Response")
@@ -332,13 +538,15 @@ p2
 
 ```{r}
 set.seed(42)
-sigma = 10
+sigma <- 10
 n <- 1000
-random <- tibble(x = sample(c("A", "B"), n, replace = TRUE), 
-       z = sample(factor(1:2), n, replace = TRUE), 
-       y = rnorm(n, mean = 0, sd = sigma))
+random <- tibble(
+  x = sample(c("A", "B"), n, replace = TRUE),
+  z = sample(factor(1:2), n, replace = TRUE),
+  y = rnorm(n, mean = 0, sd = sigma)
+)
 
-lm(y ~ x*z, data = random) |> tidy()
+lm(y ~ x * z, data = random) |> tidy()
 ```
 
 ## Formula for interactions
@@ -390,13 +598,20 @@ The more biology you include in the model
 
 Last resort - many problems and biases
 
-Forward selection
+- Forward selection
 
-Backwards selection
+- Backwards selection
 
-All possible models
+- All possible models
 
 ---
+
+```{r}
+#| label: set-options
+#| echo: false
+old <- options(width = 120)
+```
+
 
 ```{r}
 library(MuMIn)
@@ -404,7 +619,9 @@ library(conflicted)
 conflict_prefer("filter", "dplyr")
 conflict_prefer("select", "dplyr")
 
-penguins2 <- penguins |> drop_na() |> select(-year)
+penguins2 <- penguins |>
+  drop_na() |>
+  select(-year)
 full <- lm(body_mass_g ~ ., data = penguins2, na.action = "na.fail")
 ```
 
@@ -426,7 +643,14 @@ AIC weights - probability model is best of those tested
 ---
 
 ```{r}
-dredge(full)
+dredge(full) |> gt::gt()
+```
+
+
+```{r}
+#| label: reset-options
+#| echo: false
+options(old)
 ```
 
 ## Inference
@@ -475,8 +699,8 @@ car::Anova(mod3)
 multiple regression model are highly 
 correlated. Example: pH and 
 calcium
-- Coefficient estimates may change 
-erratically in response to small 
+- Coefficient estimates are unstable 
+  - erratic change in response to small 
 changes in the model or the data.
 
 - Solve by having lots of data
@@ -490,7 +714,116 @@ col
 plot(col)
 ```
 
+## Autocorrelation
+
+Linear models assume residuals are independent
+
+If data are spatially or temporally structured, residuals may be correlated.
+
+Positive autocorrelation 
+
+- confidence intervals are too narrow
+- increases risk of false positive (Type I error) 
 
 
+## Luteinising Hormone concentration
+
+```{r}
+#| label: autocorrelation
+#| echo: true
+#| code-fold: true
+
+library(ggfortify)
+
+lh <- fortify(lh) |>
+  mutate(time = Index * 10) |>
+  rename(concentration = Data)
+
+mod_lh <- lm(concentration ~ time, data = lh)
+
+augment(mod_lh, interval = "confidence") |>
+  ggplot(aes(x = time, y = concentration)) +
+  geom_line() +
+  geom_point() +
+  geom_ribbon(aes(ymin = .lower, ymax = .upper), alpha = 0.2, fill = "#ee5050") +
+  geom_line(aes(y = .fitted), colour = "#ee5050") +
+  labs(x = "Time, minutes", y = "Hormone concentration")
+```
+
+## Detecting autocorrelation
+
+For time series with equally-spaced observations, use autocorrelation function (ACF)
+
+```{r}
+autoplot(acf(mod_lh$residuals, plot = FALSE))
+```
+
+## Detecting autocorrelation
+
+Tests for equally-spaced observations
+
+Durbin-Watson test
+
+```{r}
+performance::check_autocorrelation(mod_lh)
+```
+
+Other methods for spatial data and non-equally spaced data
+
+Solution - use a model that accounts for autocorrelation
+
+- generalised least squares (`nlme::gls()`)
 
 
+## Reporting regression results - tables
+
+Make a table - estimates, confidence intervals, p-values
+
+Can calculate confidence intervals with `broom::tidy()` and format output
+
+```{r}
+library(gt)
+tidy(mod_mult, conf.int = TRUE) |>
+  select(term, estimate, conf.low, conf.high, p.value) |>
+  mutate(p.value = format.pval(p.value, eps = 0.001)) |>
+  gt() |>
+  fmt_number(
+    columns = c(estimate, conf.low, conf.high),
+    decimals = 4
+  )
+```
+
+## `gtsummary`
+
+Or make table with `gtsummary`
+
+```{r}
+library(gtsummary)
+tbl <- tbl_regression(mod_mult,
+  label = list(
+    body_mass_g = "Body mass g",
+    flipper_length_mm = "Flipper length mm"
+  ),
+  estimate_fun = label_style_sigfig(digits = 4)
+)
+tbl
+```
+
+## Reporting regression results - inline
+
+Can extract values directly from regression . 
+
+- estimate
+- confidence intervals
+- p-value, degrees of freedom, statistic
+
+```{markdown}
+Flipper length is associated with longer bill length (estimate = `r round(coef(mod_mult)["flipper_length_mm"], 2)` mm/mm, 95% CI = `r round(confint(mod_mult)["flipper_length_mm", ], 2)` p = `r format.pval(tidy(mod_mult) |> filter(term == "flipper_length_mm") |> select("p.value"), eps = 0.001)`).
+```
+
+Flipper length is associated with longer bill length (estimate = `r round(coef(mod_mult)["flipper_length_mm"], 2)` mm/mm, 95% CI = `r round(confint(mod_mult)["flipper_length_mm", ], 2)` p = `r format.pval(tidy(mod_mult) |> filter(term == "flipper_length_mm") |> select("p.value"), eps = 0.001)`).
+
+
+Also function `inline_text()` from `gtsummary`
+
+See APA guide for reporting statistics
