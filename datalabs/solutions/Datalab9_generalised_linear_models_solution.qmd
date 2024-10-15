@@ -26,7 +26,7 @@ Temperature data are not given (could be extracted from an atlas with latitude/l
 
 ## Download and import data
 
-- Download data as tab-delimited test from https://doi.pangaea.de/10.1594/PANGAEA.828674
+- Download data as tab-delimited text from https://doi.pangaea.de/10.1594/PANGAEA.828674
 - Import the data into R
 
 ```{r}
@@ -34,7 +34,7 @@ Temperature data are not given (could be extracted from an atlas with latitude/l
 #| message: false
 # here() find the file relative to the project root
 esper <- read_delim(file = here("data/Esper-Gersonde_2014.tab"), skip = 155) |> 
-  janitor::clean_names()#tidy column names
+  janitor::clean_names() #tidy column names
 ```
 
 
@@ -143,9 +143,7 @@ p_fc
 #| label: fc-mod
 mod_fc <- glm(f_cylindrus ~ latitude, data = f_cylindrus_df, family = binomial)
 mod_fc  
-performance::check_model(mod_fc) # first plot is hiding - dont know why
-# make again
-performance::check_posterior_predictions(mod_fc)
+performance::check_model(mod_fc) 
 
 ```
 
@@ -201,8 +199,9 @@ mod_ra <- glm(f_kerguelensis_prop ~ latitude,
 f_kerguelensis_df |> 
   filter(f_kerguelensis_prop > 0) |> 
   mutate(fk = f_kerguelensis_prop * diatoms_number) |> 
-  select(f_kerguelensis_prop, fk) |>  # non-integers
-  as.data.frame() |> head()
+  select(f_kerguelensis_prop, fk) |>  
+  slice(1:5) |> # non-integers
+  as.data.frame() # to make it print the decimals
 
 # can also fit model with 2 column response: successes and failures
 f_kerguelensis_df <- f_kerguelensis_df |> 
@@ -227,8 +226,8 @@ performance::check_model(mod_ra) # terrible fit!
 ```{r}
 #quadratic model
 # why poly
-cor(f_kerguelensis_df$latitude, f_kerguelensis_df$latitude ^ 2)
-poly(f_kerguelensis_df$latitude, 2) |> cor()
+cor(f_kerguelensis_df$latitude, f_kerguelensis_df$latitude ^ 2) # hightly correlated
+poly(f_kerguelensis_df$latitude, 2) |> cor() # orthogonal
 
 poly(f_kerguelensis_df$latitude, 2) |> 
   as.data.frame() |> 
@@ -266,7 +265,7 @@ summary(mod_ra2a)
 summary(mod_ra2b)
 
 #is quadratic needed
-anova(mod_ra, mod_ra2b, test = "Chi") # yes
+anova(mod_ra, mod_ra2b) # yes
 
 
 ```
@@ -295,7 +294,7 @@ mod_ra_quasi2 <- glm(f_kerguelensis_prop ~poly(latitude, 2),
               weights = diatoms_number)
 
 #test is quadratic model still needed with quasibinomial
-anova(mod_ra_quasi1, mod_ra_quasi2, test = "F")
+anova(mod_ra_quasi1, mod_ra_quasi2)
 
 # comparing binomial and quasibinomial
 tidy(mod_ra2b) # binomial
