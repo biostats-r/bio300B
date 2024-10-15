@@ -659,7 +659,7 @@ Test small number of _a priori_ hypothesis.
 
 Use `anova()` to compare nested models
 
-H<sub>0</sub> there is no interaction between sex and species for predicting flipper length
+H<sub>0</sub> there is no interaction between sex and species for predicting body mass
 
 ```{r}
 mod1 <- lm(body_mass_g ~ species + sex, data = penguins)
@@ -818,10 +818,10 @@ Can extract values directly from regression .
 - p-value, degrees of freedom, statistic
 
 ```{markdown}
-Flipper length is associated with longer bill length (estimate = `r round(coef(mod_mult)["flipper_length_mm"], 2)` mm/mm, 95% CI = `r round(confint(mod_mult)["flipper_length_mm", ], 2)` p = `r format.pval(tidy(mod_mult) |> filter(term == "flipper_length_mm") |> select("p.value"), eps = 0.001)`).
+Longer flipper length is associated with longer bill length (estimate = `r round(coef(mod_mult)["flipper_length_mm"], 2)` mm/mm, 95% CI = `r round(confint(mod_mult)["flipper_length_mm", ], 2)` p = `r format.pval(tidy(mod_mult) |> filter(term == "flipper_length_mm") |> select("p.value"), eps = 0.001)`).
 ```
 
-Flipper length is associated with longer bill length (estimate = `r round(coef(mod_mult)["flipper_length_mm"], 2)` mm/mm, 95% CI = `r round(confint(mod_mult)["flipper_length_mm", ], 2)` p = `r format.pval(tidy(mod_mult) |> filter(term == "flipper_length_mm") |> select("p.value"), eps = 0.001)`).
+Longer flipper length is associated with longer bill length (estimate = `r round(coef(mod_mult)["flipper_length_mm"], 2)` mm/mm, 95% CI = `r round(confint(mod_mult)["flipper_length_mm", ], 2)` p = `r format.pval(tidy(mod_mult) |> filter(term == "flipper_length_mm") |> select("p.value"), eps = 0.001)`).
 
 
 Also function `inline_text()` from `gtsummary`
