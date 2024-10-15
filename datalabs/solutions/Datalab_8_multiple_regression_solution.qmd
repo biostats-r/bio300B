@@ -1,5 +1,5 @@
 ---
-title: 'Datalab 7: Multiple regression'
+title: 'Datalab 8: Multiple regression'
 author: "Richard Telford"
 date: today
 format: html
@@ -81,8 +81,10 @@ augment(mod2, newdata = nd)
 - Examine the models' diagnostic plots
 
 ```{r}
-autoplot(mod1)
-autoplot(mod2)
+#| label: fig-diagnostics
+#| fig-height: 10
+performance::check_model(mod1)
+performance::check_model(mod2)
 # look fine
 ```
 
@@ -152,10 +154,8 @@ augment(mod4, newdata = nd)
 - Examine the models' diagnostic plots
 
 ```{r}
-autoplot(mod3)
-autoplot(mod4)
-
 performance::check_model(mod3)
+performance::check_model(mod4)
 ```
 
 - Plot the raw data and the models, including confidence intervals.
@@ -192,7 +192,7 @@ anova(mod3, mod4) # p > 0.05 - not significantly better
 adelie <- penguins |> filter(species == "Adelie") |> 
   drop_na() |> #remove ALL NA values
   select(-species) # now only one species, so cannot use as a predictor
-mod5 <- lm(body_mass_g ~ ., data = adelie, na.action = na.fail)
+mod5 <- lm(body_mass_g ~ ., data = adelie, na.action = na.fail) # have to use na.fail or dredge fails
 library(MuMIn)
 dredge(mod5) #top few models have similar AICc
 ```
