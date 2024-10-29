@@ -15,7 +15,8 @@ project:
     - lecture_8_multiple_regression.qmd
     - lecture_9_generalised_linear_models.qmd
     - lecture_10_mixed_effect_models.qmd
-    - lecture_11_survival_summary.qmd
+    - lecture_11_survival_multivariate.qmd
+    - lecture_12_non-linear.qmd
     - index.qmd
     - lectures.qmd
     - materials.qmd

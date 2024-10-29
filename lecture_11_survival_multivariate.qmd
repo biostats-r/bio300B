@@ -1,0 +1,341 @@
+---
+title: "Survival analysis and Multivariate methods"
+subtitle: "Bio300B Lecture 11"
+author: "Richard J. Telford (Richard.Telford@uib.no)"
+institute: "Institutt for biovitenskap, UiB"
+date: today
+date-format: "D MMMM YYYY"
+format: 
+  revealjs:
+    theme: [default, css/custom.scss]
+    chalkboard: true
+execute: 
+  echo: true
+  warning: false
+  error: true
+---
+
+
+## Survival analysis
+
+
+```{r setup, echo=FALSE, message=FALSE}
+library("tidyverse")
+library("patchwork")
+library(broom)
+library(glue)
+library(ggbeeswarm)
+library(lme4)
+library(patchwork)
+library(conflicted)
+conflict_prefer_all("dplyr", quiet = TRUE)
+theme_set(theme_bw(base_size = 18))
+data(penguins, package = "palmerpenguins")
+#options(dplyr.print_min = 2, dplyr.print_max = 3, digits = 4)
+
+```
+
+How long (or far) until an event happens
+
+- How long before a seed germinates
+- How long before a patient dies after diagnosis
+- How many jumps can a horse clear at a racecourse
+
+Data are typically right censored.
+
+`survival` package
+
+
+## Survival data
+
+Response data 
+
+- time
+- status (alive/dead coded as 0/1, 1/2 TRUE/FALSE)
+
+```{r data}
+library(survival)
+lung |> slice(1:10)
+```
+
+
+## Survival response
+
+\+ indicates censored data
+
+```{r, eval = FALSE}
+Surv(lung$time, lung$status)
+```
+
+```{r, echo = FALSE}
+Surv(lung$time, lung$status)[1:30]
+```
+
+
+## Fitting a model
+
+
+```{r}
+
+lung <- lung |> 
+  mutate(sex = factor(sex, levels = 1:2, labels = c("male", "female")))
+
+mod_surv <- survfit(Surv(time, status) ~ sex, data = lung)
+
+mod_surv
+```
+
+
+## Plotting a model
+
+- Kaplan-Meier curve
+- '+' mark censored data
+
+```{r survival-plot, fig.height = 5}
+library(ggfortify)
+autoplot(mod_surv)
+```
+
+
+## Testing differences in survival time
+
+ - between two or more groups
+
+```{r}
+mod_diff <- survdiff(Surv(time, status) ~ sex, data = lung)
+mod_diff
+```
+
+
+## Survivorship curve
+
+Shape of the survival curve
+
+
+```{r}
+#| label: fig-survivorship-curves
+#| echo: false
+#| out-height: 5in
+#| out-width: 7in
+knitr::include_graphics("figures/Survivorship_Curves.jpg")
+```
+
+
+
+
+## Hazard: The instantaneous risk of death
+
+```{r}
+m_ll <- survreg(Surv(time, status) ~ age + sex, 
+                data = lung,
+                dist = "loglogistic")
+summary(m_ll)
+```
+
+
+---
+
+Exponentiated coefficients show relative increase or decrease in the expected survival times when a covariate is increased one step while others are fixed:
+
+```{r}
+
+exp(coef(m_ll))
+```
+
+Expected survival time decreases by 1.4 % (i.e. multiply by 0.986) for each additional year of age
+
+Expected survival time for females is 61.2 % higher than for males (multiply by 1.612).
+
+
+---
+
+scale 
+
+```{r}
+m_ll$scale
+```
+
+
+The scale parameter < 1, indicates that slope of the
+hazard decreases with time -  Type III
+
+## Choice of distribution
+
+```{r}
+#| echo: false
+read_delim("Distribution, df
+exponential, 1 
+Weibull, 2 
+lognormal, 2 
+log logistic, 2 ") |> 
+  gt::gt() |> 
+  gt::tab_options(table.font.size = 20)
+```
+
+```{r}
+#| label: distr
+#| echo: false
+#| eval: false
+
+x = seq(0, 2.5, length = 100)
+c(0.5, 1, 1.5, 5) |> 
+  set_names() |> 
+  map(~dweibull(x, shape = 1, scale = .x)) |> 
+  map(enframe) |> 
+  map(bind_cols, x = x) |> 
+  list_rbind(names_to = "scale") |> 
+  ggplot(aes(x = x, y = value, colour = scale )) +
+  geom_line()
+        
+```
+
+
+Can use AIC to choose best
+
+```{r}
+m_w <- update(m_ll, dist = "weibull")
+AIC(m_ll, m_w)
+```
+
+## Mixed effect survival analysis 
+
+Survival of nestlings in nests
+
+- nest is a random effect
+
+`coxme` package
+
+```{r}
+library(coxme)
+fit <- coxme(Surv(time, status) ~ ph.ecog + age + (1|inst), data = lung)
+fit
+```
+
+
+
+## Multivariate data
+
+All methods so far - single **response** variable
+
+Multivariate statistics - multiple **response** variable 
+
+- plant species abundances
+- physical & chemical measurements
+- climate data
+
+Ordinations, cluster analysis
+
+## Correlation matrices
+
+```{r}
+library(analogue)
+library(corrplot)
+data("Climate")
+ppt <- Climate |> select(pjan:pdec)
+mat <- cor(ppt)
+corrplot(mat) # also try GGally::ggpairs
+```
+
+## Ordinations
+
+- make sense of multivariate data by focusing on main axes of variability
+- separate signal from noise
+
+Several methods appropriate for different types of data
+ 
+ - principal components analysis
+ - correspondence analysis
+ - non-metric multidimensional scaling
+
+## Principal components analysis
+
+```{r}
+#| fig-height: 6
+#| echo: false
+#| message: false
+p1 <- ggplot(ppt, aes(x = pjan, y = pfeb)) +
+  geom_point(alpha = 0.5) +
+  labs(x = "January ppt (mm)",
+       y = "February ppt (mm)", 
+       title = "1. The data")
+
+p2 <- p1 %+% (ppt |> mutate(pjan = pjan - mean(pjan), pfeb = pfeb- mean(pfeb))) +
+  labs(title = "2. Centre data")
+
+p3 <- p2 + geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "2. Find main axis of variability")
+
+p4 <- rda(ppt[,1:2]) |> 
+  scores(display = "sites") |> 
+  as_tibble() |> 
+  ggplot(aes(x = PC1, y = PC2)) +
+  geom_point() +
+  labs(x = "PC1", y = "PC2", title = " 4. Rotate data")
+
+p1 + p2 + p3 + p4
+
+```
+## Principal components analysis in R
+
+Implemented in several packages
+
+```{r}
+library(vegan)
+pca <- rda(ppt)
+pca
+```
+## Screeplots
+
+- Show length of each eigenvector
+- Can help decide how many axes to interpret
+- Can use broken stick null model to help decide
+
+```{r}
+screeplot(pca, bstick = TRUE)
+```
+
+
+## Plotting the PCA
+
+```{r}
+# plot(pca) # can make prettier
+library(ggvegan) #remotes::install_github("gavinsimpson/ggvegan")
+autoplot(pca) + theme(legend.position = "none")
+```
+
+
+
+## Interpreting the plot
+
+::::{.columns}
+:::{.column}
+- dots are observations (sites)
+- dots close together are similar
+- arrows are variables
+- arrows point in direction of increasing values
+- arrows close together are correlated
+- arrow length shows importance on axes shown
+
+:::
+:::{.column}
+```{r}
+#| echo: false
+#| fig-height: 8
+autoplot(pca) + theme(legend.position = "none")
+```
+:::
+::::
+
+## Artefacts
+
+- PCA assumes linear relationships between variables
+- appropriate for most environmental data
+- can fail with species data on long gradients
+
+```{r}
+#| echo: false
+data(ImbrieKipp)
+pca_ik <- rda(sqrt(ImbrieKipp))
+autoplot(pca_ik) + theme(legend.position = "none") + labs(title = "Atlantic planktic foraminifera assemblages")
+```
+
