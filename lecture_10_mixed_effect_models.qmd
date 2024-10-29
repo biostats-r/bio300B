@@ -343,47 +343,9 @@ anova(fm1, fm2)
 
 See ?plot.merMod
 
-```{r diag1}
-fm1F <- augment(fm1)
-## standardized residuals versus fitted values
-ggplot(fm1F, aes(x = .fitted, y = .resid)) + 
-  geom_point(colour = "blue") +
-  geom_hline(yintercept = 0)
-```
+performance::check_model()
 
----
-
-```{r diag2}
-## box-plots of residuals by Subject
-ggplot(fm1F, aes(x = Subject, y = .resid)) + 
-  geom_boxplot() + 
-  coord_flip()
-```
-
----
-
-```{r diag3}
-ggplot(fm1F, aes(x = .fitted, y = Reaction)) + 
-  geom_point(colour = "blue") +
-    facet_wrap(facets = vars(Subject)) +
-  geom_abline(intercept = 0, slope = 1)
-```
-
----
-
-```{r diag4}
-#qq plot of residuals
-library(lattice)
-qqmath(fm1)
-```
-
----
-
-```{r diag5}
-#qq plot of random effects
-qqmath(ranef(fm1))
-```
-
+DHARMa package
 
 ## performance package
 
@@ -439,6 +401,16 @@ Autocorrelated data
 
 - repeat measurements
 - fit with `nlme::lme()`
+
+## `glmmTMB` package
+
+- mixed effect models with wide range of distribution families
+  - negative binomial
+  - betabinomial
+  - tweedie
+- zero inflation models
+- autocorrelation
+  
 
 ## Bayesian hierarchial models
 
