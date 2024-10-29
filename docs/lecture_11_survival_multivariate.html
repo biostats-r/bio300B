@@ -9,11 +9,11 @@
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.4.309">
+  <meta name="generator" content="quarto-1.5.53">
 
   <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)">
-  <meta name="dcterms.date" content="2023-11-06">
-  <title>Bio302 - Biostatistikk - Survival analysis and Summary</title>
+  <meta name="dcterms.date" content="2024-10-29">
+  <title>Bio302 - Biostatistikk – Survival analysis and Multivariate methods</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -33,7 +33,7 @@
     }
     /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span { line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -44,7 +44,7 @@
     }
     @media print {
     pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
     }
     pre.numberSource code
       { counter-reset: source-line 0; }
@@ -72,7 +72,7 @@
     code span.at { color: #657422; } /* Attribute */
     code span.bn { color: #ad0000; } /* BaseN */
     code span.bu { } /* BuiltIn */
-    code span.cf { color: #003b4f; } /* ControlFlow */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
     code span.ch { color: #20794d; } /* Char */
     code span.cn { color: #8f5902; } /* Constant */
     code span.co { color: #5e5e5e; } /* Comment */
@@ -86,7 +86,7 @@
     code span.fu { color: #4758ab; } /* Function */
     code span.im { color: #00769e; } /* Import */
     code span.in { color: #5e5e5e; } /* Information */
-    code span.kw { color: #003b4f; } /* Keyword */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
     code span.op { color: #5e5e5e; } /* Operator */
     code span.ot { color: #003b4f; } /* Other */
     code span.pp { color: #ad0000; } /* Preprocessor */
@@ -395,7 +395,7 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Survival analysis and Summary</h1>
+  <h1 class="title">Survival analysis and Multivariate methods</h1>
   <p class="subtitle">Bio300B Lecture 11</p>
 
 <div class="quarto-title-authors">
@@ -409,7 +409,7 @@ Richard J. Telford (Richard.Telford@uib.no)
     </div>
 </div>
 
-  <p class="date">6 November 2023</p>
+  <p class="date">29 October 2024</p>
 </section>
 <section id="survival-analysis" class="slide level2">
 <h2>Survival analysis</h2>
@@ -427,12 +427,11 @@ Richard J. Telford (Richard.Telford@uib.no)
 <p>Response data</p>
 <ul>
 <li>time</li>
-<li>status (0/1, 1/2 TRUE/FALSE)</li>
+<li>status (alive/dead coded as 0/1, 1/2 TRUE/FALSE)</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(survival)</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">data</span>(lung)</span>
-<span id="cb1-3"><a href="#cb1-3"></a>lung <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(survival)</span>
+<span id="cb1-2"><a></a>lung <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   inst time status age sex ph.ecog ph.karno pat.karno meal.cal wt.loss
 1     3  306      2  74   1       1       90       100     1175      NA
@@ -450,11 +449,9 @@ Richard J. Telford (Richard.Telford@uib.no)
 </section>
 <section id="survival-response" class="slide level2">
 <h2>Survival response</h2>
-<ul>
-<li>indicates censored data</li>
-</ul>
+<p>+ indicates censored data</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">Surv</span>(lung<span class="sc">$</span>time, lung<span class="sc">$</span>status)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">Surv</span>(lung<span class="sc">$</span>time, lung<span class="sc">$</span>status)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
@@ -467,12 +464,12 @@ Richard J. Telford (Richard.Telford@uib.no)
 <section id="fitting-a-model" class="slide level2">
 <h2>Fitting a model</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>lung <span class="ot">&lt;-</span> lung <span class="sc">|&gt;</span> </span>
-<span id="cb5-2"><a href="#cb5-2"></a>  <span class="fu">mutate</span>(<span class="at">sex =</span> <span class="fu">factor</span>(sex, <span class="at">levels =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"male"</span>, <span class="st">"female"</span>)))</span>
-<span id="cb5-3"><a href="#cb5-3"></a></span>
-<span id="cb5-4"><a href="#cb5-4"></a>mod_surv <span class="ot">&lt;-</span> <span class="fu">survfit</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> sex, <span class="at">data =</span> lung)</span>
-<span id="cb5-5"><a href="#cb5-5"></a></span>
-<span id="cb5-6"><a href="#cb5-6"></a>mod_surv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>lung <span class="ot">&lt;-</span> lung <span class="sc">|&gt;</span> </span>
+<span id="cb5-2"><a></a>  <span class="fu">mutate</span>(<span class="at">sex =</span> <span class="fu">factor</span>(sex, <span class="at">levels =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"male"</span>, <span class="st">"female"</span>)))</span>
+<span id="cb5-3"><a></a></span>
+<span id="cb5-4"><a></a>mod_surv <span class="ot">&lt;-</span> <span class="fu">survfit</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> sex, <span class="at">data =</span> lung)</span>
+<span id="cb5-5"><a></a></span>
+<span id="cb5-6"><a></a>mod_surv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call: survfit(formula = Surv(time, status) ~ sex, data = lung)
 
@@ -483,25 +480,25 @@ sex=female  90     53    426     348     550</code></pre>
 </div>
 </section>
 <section id="plotting-a-model" class="slide level2">
-<h2>plotting a model</h2>
+<h2>Plotting a model</h2>
 <ul>
 <li>Kaplan-Meier curve</li>
 <li>‘+’ mark censored data</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">library</span>(ggfortify)</span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="fu">autoplot</span>(mod_surv)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">library</span>(ggfortify)</span>
+<span id="cb7-2"><a></a><span class="fu">autoplot</span>(mod_surv)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="lecture_11_survival_summary_files/figure-revealjs/survival-plot-1.png" width="960" class="r-stretch"></section>
+<img data-src="lecture_11_survival_multivariate_files/figure-revealjs/survival-plot-1.png" width="960" class="r-stretch"></section>
 <section id="testing-differences-in-survival-time" class="slide level2">
 <h2>Testing differences in survival time</h2>
 <ul>
 <li>between two or more groups</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>mod_diff <span class="ot">&lt;-</span> <span class="fu">survdiff</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> sex, <span class="at">data =</span> lung)</span>
-<span id="cb8-2"><a href="#cb8-2"></a>mod_diff</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>mod_diff <span class="ot">&lt;-</span> <span class="fu">survdiff</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> sex, <span class="at">data =</span> lung)</span>
+<span id="cb8-2"><a></a>mod_diff</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
 survdiff(formula = Surv(time, status) ~ sex, data = lung)
@@ -519,17 +516,25 @@ sex=female  90       53     73.4      5.68      10.3
 <p>Shape of the survival curve</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img data-src="figures/Survivorship_Curves.jpg" style="height:60.0%" width="400"></p>
+<div id="fig-survivorship-curves" class="quarto-float quarto-figure quarto-figure-center" height="5in" width="7in">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-survivorship-curves-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img data-src="figures/Survivorship_Curves.jpg" id="fig-survivorship-curves" style="width:7in;height:5in">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-survivorship-curves-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+</figcaption>
+</figure>
+</div>
 </div>
 </div>
 </section>
 <section id="hazard-the-instantaneous-risk-of-death" class="slide level2">
 <h2>Hazard: The instantaneous risk of death</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>m_ll <span class="ot">&lt;-</span> <span class="fu">survreg</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> age <span class="sc">+</span> sex, </span>
-<span id="cb10-2"><a href="#cb10-2"></a>                <span class="at">data =</span> lung,</span>
-<span id="cb10-3"><a href="#cb10-3"></a>                <span class="at">dist =</span> <span class="st">"loglogistic"</span>)</span>
-<span id="cb10-4"><a href="#cb10-4"></a><span class="fu">summary</span>(m_ll)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>m_ll <span class="ot">&lt;-</span> <span class="fu">survreg</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> age <span class="sc">+</span> sex, </span>
+<span id="cb10-2"><a></a>                <span class="at">data =</span> lung,</span>
+<span id="cb10-3"><a></a>                <span class="at">dist =</span> <span class="st">"loglogistic"</span>)</span>
+<span id="cb10-4"><a></a><span class="fu">summary</span>(m_ll)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -550,26 +555,25 @@ Number of Newton-Raphson Iterations: 4
 n= 228 </code></pre>
 </div>
 </div>
-<p>Choice of distribution</p>
 </section>
 <section class="slide level2">
 
 <p>Exponentiated coefficients show relative increase or decrease in the expected survival times when a covariate is increased one step while others are fixed:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">exp</span>(<span class="fu">coef</span>(m_ll))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">exp</span>(<span class="fu">coef</span>(m_ll))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(Intercept)         age   sexfemale 
 601.7394821   0.9860925   1.6120541 </code></pre>
 </div>
 </div>
 <p>Expected survival time decreases by 1.4 % (i.e.&nbsp;multiply by 0.986) for each additional year of age</p>
-<p>The expected survival time for females is 61.2 % higher than for males (multiply by 1.612).</p>
+<p>Expected survival time for females is 61.2 % higher than for males (multiply by 1.612).</p>
 </section>
 <section class="slide level2">
 
 <p>scale</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>m_ll<span class="sc">$</span>scale</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>m_ll<span class="sc">$</span>scale</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.5655786</code></pre>
 </div>
@@ -580,23 +584,23 @@ n= 228 </code></pre>
 <h2>Choice of distribution</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div id="nyirmxrgmk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#nyirmxrgmk table {
+<div id="drttrnejwk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#drttrnejwk table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#nyirmxrgmk thead, #nyirmxrgmk tbody, #nyirmxrgmk tfoot, #nyirmxrgmk tr, #nyirmxrgmk td, #nyirmxrgmk th {
+#drttrnejwk thead, #drttrnejwk tbody, #drttrnejwk tfoot, #drttrnejwk tr, #drttrnejwk td, #drttrnejwk th {
   border-style: none;
 }
 
-#nyirmxrgmk p {
+#drttrnejwk p {
   margin: 0;
   padding: 0;
 }
 
-#nyirmxrgmk .gt_table {
+#drttrnejwk .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -622,12 +626,12 @@ n= 228 </code></pre>
   border-left-color: #D3D3D3;
 }
 
-#nyirmxrgmk .gt_caption {
+#drttrnejwk .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#nyirmxrgmk .gt_title {
+#drttrnejwk .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -639,7 +643,7 @@ n= 228 </code></pre>
   border-bottom-width: 0;
 }
 
-#nyirmxrgmk .gt_subtitle {
+#drttrnejwk .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -651,7 +655,7 @@ n= 228 </code></pre>
   border-top-width: 0;
 }
 
-#nyirmxrgmk .gt_heading {
+#drttrnejwk .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -663,13 +667,13 @@ n= 228 </code></pre>
   border-right-color: #D3D3D3;
 }
 
-#nyirmxrgmk .gt_bottom_border {
+#drttrnejwk .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#nyirmxrgmk .gt_col_headings {
+#drttrnejwk .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -684,7 +688,7 @@ n= 228 </code></pre>
   border-right-color: #D3D3D3;
 }
 
-#nyirmxrgmk .gt_col_heading {
+#drttrnejwk .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -704,7 +708,7 @@ n= 228 </code></pre>
   overflow-x: hidden;
 }
 
-#nyirmxrgmk .gt_column_spanner_outer {
+#drttrnejwk .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -716,15 +720,15 @@ n= 228 </code></pre>
   padding-right: 4px;
 }
 
-#nyirmxrgmk .gt_column_spanner_outer:first-child {
+#drttrnejwk .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#nyirmxrgmk .gt_column_spanner_outer:last-child {
+#drttrnejwk .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#nyirmxrgmk .gt_column_spanner {
+#drttrnejwk .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -736,11 +740,11 @@ n= 228 </code></pre>
   width: 100%;
 }
 
-#nyirmxrgmk .gt_spanner_row {
+#drttrnejwk .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#nyirmxrgmk .gt_group_heading {
+#drttrnejwk .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -766,7 +770,7 @@ n= 228 </code></pre>
   text-align: left;
 }
 
-#nyirmxrgmk .gt_empty_group_heading {
+#drttrnejwk .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -781,15 +785,15 @@ n= 228 </code></pre>
   vertical-align: middle;
 }
 
-#nyirmxrgmk .gt_from_md > :first-child {
+#drttrnejwk .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#nyirmxrgmk .gt_from_md > :last-child {
+#drttrnejwk .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#nyirmxrgmk .gt_row {
+#drttrnejwk .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -808,7 +812,7 @@ n= 228 </code></pre>
   overflow-x: hidden;
 }
 
-#nyirmxrgmk .gt_stub {
+#drttrnejwk .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -821,7 +825,7 @@ n= 228 </code></pre>
   padding-right: 5px;
 }
 
-#nyirmxrgmk .gt_stub_row_group {
+#drttrnejwk .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -835,15 +839,15 @@ n= 228 </code></pre>
   vertical-align: top;
 }
 
-#nyirmxrgmk .gt_row_group_first td {
+#drttrnejwk .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#nyirmxrgmk .gt_row_group_first th {
+#drttrnejwk .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#nyirmxrgmk .gt_summary_row {
+#drttrnejwk .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -853,16 +857,16 @@ n= 228 </code></pre>
   padding-right: 5px;
 }
 
-#nyirmxrgmk .gt_first_summary_row {
+#drttrnejwk .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#nyirmxrgmk .gt_first_summary_row.thick {
+#drttrnejwk .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#nyirmxrgmk .gt_last_summary_row {
+#drttrnejwk .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -872,7 +876,7 @@ n= 228 </code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#nyirmxrgmk .gt_grand_summary_row {
+#drttrnejwk .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -882,7 +886,7 @@ n= 228 </code></pre>
   padding-right: 5px;
 }
 
-#nyirmxrgmk .gt_first_grand_summary_row {
+#drttrnejwk .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -892,7 +896,7 @@ n= 228 </code></pre>
   border-top-color: #D3D3D3;
 }
 
-#nyirmxrgmk .gt_last_grand_summary_row_top {
+#drttrnejwk .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -902,11 +906,11 @@ n= 228 </code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#nyirmxrgmk .gt_striped {
+#drttrnejwk .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#nyirmxrgmk .gt_table_body {
+#drttrnejwk .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -915,7 +919,7 @@ n= 228 </code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#nyirmxrgmk .gt_footnotes {
+#drttrnejwk .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -929,7 +933,7 @@ n= 228 </code></pre>
   border-right-color: #D3D3D3;
 }
 
-#nyirmxrgmk .gt_footnote {
+#drttrnejwk .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -938,7 +942,7 @@ n= 228 </code></pre>
   padding-right: 5px;
 }
 
-#nyirmxrgmk .gt_sourcenotes {
+#drttrnejwk .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -952,7 +956,7 @@ n= 228 </code></pre>
   border-right-color: #D3D3D3;
 }
 
-#nyirmxrgmk .gt_sourcenote {
+#drttrnejwk .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -960,94 +964,101 @@ n= 228 </code></pre>
   padding-right: 5px;
 }
 
-#nyirmxrgmk .gt_left {
+#drttrnejwk .gt_left {
   text-align: left;
 }
 
-#nyirmxrgmk .gt_center {
+#drttrnejwk .gt_center {
   text-align: center;
 }
 
-#nyirmxrgmk .gt_right {
+#drttrnejwk .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#nyirmxrgmk .gt_font_normal {
+#drttrnejwk .gt_font_normal {
   font-weight: normal;
 }
 
-#nyirmxrgmk .gt_font_bold {
+#drttrnejwk .gt_font_bold {
   font-weight: bold;
 }
 
-#nyirmxrgmk .gt_font_italic {
+#drttrnejwk .gt_font_italic {
   font-style: italic;
 }
 
-#nyirmxrgmk .gt_super {
+#drttrnejwk .gt_super {
   font-size: 65%;
 }
 
-#nyirmxrgmk .gt_footnote_marks {
+#drttrnejwk .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#nyirmxrgmk .gt_asterisk {
+#drttrnejwk .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#nyirmxrgmk .gt_indent_1 {
+#drttrnejwk .gt_indent_1 {
   text-indent: 5px;
 }
 
-#nyirmxrgmk .gt_indent_2 {
+#drttrnejwk .gt_indent_2 {
   text-indent: 10px;
 }
 
-#nyirmxrgmk .gt_indent_3 {
+#drttrnejwk .gt_indent_3 {
   text-indent: 15px;
 }
 
-#nyirmxrgmk .gt_indent_4 {
+#drttrnejwk .gt_indent_4 {
   text-indent: 20px;
 }
 
-#nyirmxrgmk .gt_indent_5 {
+#drttrnejwk .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Distribution">Distribution</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id=" df"> df</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="Distribution" class="gt_row gt_left">exponential</td>
-<td headers="df" class="gt_row gt_right"> 1 </td></tr>
-    <tr><td headers="Distribution" class="gt_row gt_left">Weibull</td>
-<td headers="df" class="gt_row gt_right"> 2 </td></tr>
-    <tr><td headers="Distribution" class="gt_row gt_left">lognormal</td>
-<td headers="df" class="gt_row gt_right"> 2 </td></tr>
-    <tr><td headers="Distribution" class="gt_row gt_left">log logistic</td>
-<td headers="df" class="gt_row gt_right"> 2 </td></tr>
-  </tbody>
-  
-  
+
+<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="Distribution" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Distribution</th>
+<th id=" df" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">df</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Distribution">exponential</td>
+<td class="gt_row gt_right" headers=" df">1</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Distribution">Weibull</td>
+<td class="gt_row gt_right" headers=" df">2</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Distribution">lognormal</td>
+<td class="gt_row gt_right" headers=" df">2</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Distribution">log logistic</td>
+<td class="gt_row gt_right" headers=" df">2</td>
+</tr>
+</tbody>
 </table>
+
 </div>
 </div>
 </div>
 <p>Can use AIC to choose best</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>m_w <span class="ot">&lt;-</span> <span class="fu">update</span>(m_ll, <span class="at">dist =</span> <span class="st">"weibull"</span>)</span>
-<span id="cb16-2"><a href="#cb16-2"></a><span class="fu">AIC</span>(m_ll, m_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>m_w <span class="ot">&lt;-</span> <span class="fu">update</span>(m_ll, <span class="at">dist =</span> <span class="st">"weibull"</span>)</span>
+<span id="cb16-2"><a></a><span class="fu">AIC</span>(m_ll, m_w)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     df      AIC
 m_ll  4 2313.794
@@ -1055,108 +1066,160 @@ m_w   4 2302.109</code></pre>
 </div>
 </div>
 </section>
-<section id="summary" class="slide level2">
-<h2>Summary</h2>
-</section>
-<section id="most-important-things" class="slide level2">
-<h2>Most important things</h2>
-<ol type="1">
-<li>Designing an experiment</li>
-<li>R tips and tricks</li>
-<li>Entering data into a spreadsheet</li>
-<li>Importing data</li>
-<li>Cleaning data</li>
-<li>Data visualisation</li>
-<li>Using quarto</li>
-<li>Choosing a model type</li>
-<li>Interpreting model output</li>
-</ol>
-</section>
-<section id="method-choice---2-key-questions" class="slide level2">
-<h2>Method choice - 2 key questions</h2>
-<p>Are the data clustered/grouped?</p>
-<p>What is the distribution of the residuals?</p>
-<p>(also other types of model - survival etc)</p>
-</section>
-<section id="clustered-data" class="slide level2">
-<h2>Clustered data</h2>
-<p>Mixed effect models</p>
+<section id="mixed-effect-survival-analysis" class="slide level2">
+<h2>Mixed effect survival analysis</h2>
+<p>Survival of nestlings in nests</p>
 <ul>
-<li>Normal distribution: linear mixed effect models</li>
-<li>Binomial/poisson: generalised linear mixed effect models</li>
+<li>nest is a random effect</li>
 </ul>
-</section>
-<section id="independent-data-normal-distribution" class="slide level2">
-<h2>Independent data, normal distribution</h2>
-<p>Linear models - ordinary least squares</p>
-<ul>
-<li>t-tests</li>
-<li>two sample t-test</li>
-<li>one sample t-test</li>
-<li>paired t-test</li>
-<li>lm</li>
-</ul>
-</section>
-<section id="independent-data-non-normal-distribution" class="slide level2">
-<h2>Independent data, non-normal distribution</h2>
-<p>generalised linear models</p>
-<ul>
-<li>glm</li>
-</ul>
-<p>Binomial &amp; Poisson distributions</p>
-</section>
-<section id="interpreting-model-output" class="slide level2">
-<h2>Interpreting model output</h2>
+<p><code>coxme</code> package</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">data</span>(penguins, <span class="at">package =</span> <span class="st">"palmerpenguins"</span>)</span>
-<span id="cb18-2"><a href="#cb18-2"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> sex <span class="sc">*</span> species, <span class="at">data =</span> penguins)</span>
-<span id="cb18-3"><a href="#cb18-3"></a><span class="fu">summary</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a><span class="fu">library</span>(coxme)</span>
+<span id="cb18-2"><a></a>fit <span class="ot">&lt;-</span> <span class="fu">coxme</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> ph.ecog <span class="sc">+</span> age <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>inst), <span class="at">data =</span> lung)</span>
+<span id="cb18-3"><a></a>fit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = bill_length_mm ~ sex * species, data = penguins)
+<pre><code>Cox mixed-effects model fit by maximum likelihood
+  Data: lung
+  events, n = 163, 226 (2 observations deleted due to missingness)
+  Iterations= 18 75 
+                   NULL Integrated    Fitted
+Log-likelihood -739.375  -729.7294 -727.0504
 
-Residuals:
-    Min      1Q  Median      3Q     Max 
--5.7904 -1.3735 -0.0638  1.2096 11.4265 
+                  Chisq   df          p   AIC  BIC
+Integrated loglik 19.29 3.00 2.3800e-04 13.29 4.01
+ Penalized loglik 24.65 4.48 9.7942e-05 15.69 1.83
 
-Coefficients:
-                         Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)               37.2575     0.2710 137.473  &lt; 2e-16 ***
-sexmale                    3.1329     0.3833   8.174 6.64e-15 ***
-speciesChinstrap           9.3160     0.4808  19.377  &lt; 2e-16 ***
-speciesGentoo              8.3063     0.4073  20.393  &lt; 2e-16 ***
-sexmale:speciesChinstrap   1.3877     0.6799   2.041   0.0421 *  
-sexmale:speciesGentoo      0.7771     0.5721   1.358   0.1753    
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+Model:  Surv(time, status) ~ ph.ecog + age + (1 | inst) 
+Fixed coefficients
+              coef exp(coef)    se(coef)    z       p
+ph.ecog 0.47319522  1.605115 0.119179189 3.97 7.2e-05
+age     0.01139445  1.011460 0.009430508 1.21 2.3e-01
 
-Residual standard error: 2.316 on 327 degrees of freedom
-  (11 observations deleted due to missingness)
-Multiple R-squared:  0.8234,    Adjusted R-squared:  0.8207 
-F-statistic:   305 on 5 and 327 DF,  p-value: &lt; 2.2e-16</code></pre>
+Random effects
+ Group Variable  Std Dev    Variance  
+ inst  Intercept 0.14695545 0.02159591</code></pre>
 </div>
 </div>
 </section>
-<section id="more-statistics-at-bio" class="slide level2">
-<h2>More statistics at BIO</h2>
-<h3 id="bio302-spring-semester">Bio302 Spring semester</h3>
+<section id="multivariate-data" class="slide level2">
+<h2>Multivariate data</h2>
+<p>All methods so far - single <strong>response</strong> variable</p>
+<p>Multivariate statistics - multiple <strong>response</strong> variable</p>
 <ul>
-<li>more regression methods</li>
-<li>more R</li>
-<li>GitHub</li>
+<li>plant species abundances</li>
+<li>physical &amp; chemical measurements</li>
+<li>climate data</li>
 </ul>
-<h3 id="bio303">Bio303</h3>
+<p>Ordinations, cluster analysis</p>
+</section>
+<section id="correlation-matrices" class="slide level2">
+<h2>Correlation matrices</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a><span class="fu">library</span>(analogue)</span>
+<span id="cb20-2"><a></a><span class="fu">library</span>(corrplot)</span>
+<span id="cb20-3"><a></a><span class="fu">data</span>(<span class="st">"Climate"</span>)</span>
+<span id="cb20-4"><a></a>ppt <span class="ot">&lt;-</span> Climate <span class="sc">|&gt;</span> <span class="fu">select</span>(pjan<span class="sc">:</span>pdec)</span>
+<span id="cb20-5"><a></a>mat <span class="ot">&lt;-</span> <span class="fu">cor</span>(ppt)</span>
+<span id="cb20-6"><a></a><span class="fu">corrplot</span>(mat) <span class="co"># also try GGally::ggpairs</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="lecture_11_survival_multivariate_files/figure-revealjs/unnamed-chunk-13-1.png" width="960" class="r-stretch"></section>
+<section id="ordinations" class="slide level2">
+<h2>Ordinations</h2>
 <ul>
-<li>multivariate methods
+<li>make sense of multivariate data by focusing on main axes of variability</li>
+<li>separate signal from noise</li>
+</ul>
+<p>Several methods appropriate for different types of data</p>
 <ul>
-<li>ordinations</li>
-<li>cluster analysis</li>
-</ul></li>
+<li>principal components analysis</li>
+<li>correspondence analysis</li>
+<li>non-metric multidimensional scaling</li>
+</ul>
+</section>
+<section id="principal-components-analysis" class="slide level2">
+<h2>Principal components analysis</h2>
+
+<img data-src="lecture_11_survival_multivariate_files/figure-revealjs/unnamed-chunk-14-1.png" width="960" class="r-stretch"></section>
+<section id="principal-components-analysis-in-r" class="slide level2">
+<h2>Principal components analysis in R</h2>
+<p>Implemented in several packages</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a><span class="fu">library</span>(vegan)</span>
+<span id="cb21-2"><a></a>pca <span class="ot">&lt;-</span> <span class="fu">rda</span>(ppt)</span>
+<span id="cb21-3"><a></a>pca</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call: rda(X = ppt)
+
+              Inertia Rank
+Total           29114     
+Unconstrained   29114   12
+Inertia is variance 
+
+Eigenvalues for unconstrained axes:
+  PC1   PC2   PC3   PC4   PC5   PC6   PC7   PC8   PC9  PC10  PC11  PC12 
+21534  5967   698   415   218    97    65    34    30    25    17    14 </code></pre>
+</div>
+</div>
+</section>
+<section id="screeplots" class="slide level2">
+<h2>Screeplots</h2>
+<ul>
+<li>Show length of each eigenvector</li>
+<li>Can help decide how many axes to interpret</li>
+<li>Can use broken stick null model to help decide</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a><span class="fu">screeplot</span>(pca, <span class="at">bstick =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="lecture_11_survival_multivariate_files/figure-revealjs/unnamed-chunk-16-1.png" width="960" class="r-stretch"></section>
+<section id="plotting-the-pca" class="slide level2">
+<h2>Plotting the PCA</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a><span class="co"># plot(pca) # can make prettier</span></span>
+<span id="cb24-2"><a></a><span class="fu">library</span>(ggvegan) <span class="co">#remotes::install_github("gavinsimpson/ggvegan")</span></span>
+<span id="cb24-3"><a></a><span class="fu">autoplot</span>(pca) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="lecture_11_survival_multivariate_files/figure-revealjs/unnamed-chunk-17-1.png" width="960" class="r-stretch"></section>
+<section id="interpreting-the-plot" class="slide level2">
+<h2>Interpreting the plot</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li>dots are observations (sites)</li>
+<li>dots close together are similar</li>
+<li>arrows are variables</li>
+<li>arrows point in direction of increasing values</li>
+<li>arrows close together are correlated</li>
+<li>arrow length shows importance on axes shown</li>
+</ul>
+</div><div class="column">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lecture_11_survival_multivariate_files/figure-revealjs/unnamed-chunk-18-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="artefacts" class="slide level2">
+<h2>Artefacts</h2>
+<ul>
+<li>PCA assumes linear relationships between variables</li>
+<li>appropriate for most environmental data</li>
+<li>can fail with species data on long gradients</li>
 </ul>
 
+
+<img data-src="lecture_11_survival_multivariate_files/figure-revealjs/unnamed-chunk-19-1.png" width="960" class="r-stretch"><div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 
+</div>
 </div>
 </section>
     </div>
@@ -1441,18 +1504,7 @@ F-statistic:   305 on 5 and 327 DF,  p-value: &lt; 2.2e-16</code></pre>
         }
         return false;
       }
-      const clipboard = new window.ClipboardJS('.code-copy-button', {
-        text: function(trigger) {
-          const codeEl = trigger.previousElementSibling.cloneNode(true);
-          for (const childEl of codeEl.children) {
-            if (isCodeAnnotation(childEl)) {
-              childEl.remove();
-            }
-          }
-          return codeEl.innerText;
-        }
-      });
-      clipboard.on('success', function(e) {
+      const onCopySuccess = function(e) {
         // button target
         const button = e.trigger;
         // don't keep focus
@@ -1484,7 +1536,47 @@ F-statistic:   305 on 5 and 327 DF,  p-value: &lt; 2.2e-16</code></pre>
         }, 1000);
         // clear code selection
         e.clearSelection();
+      }
+      const getTextToCopy = function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+        text: getTextToCopy
       });
+      clipboard.on('success', onCopySuccess);
+      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+        // For code content inside modals, clipBoardJS needs to be initialized with a container option
+        // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+          text: getTextToCopy,
+          container: window.document.getElementById('quarto-embedded-source-code-modal')
+        });
+        clipboardModal.on('success', onCopySuccess);
+      }
+        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+        var mailtoRegex = new RegExp(/^mailto:/);
+          var filterRegex = new RegExp('/' + window.location.host + '/');
+        var isInternal = (href) => {
+            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+        }
+        // Inspect non-navigation links and adorn them if external
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+        for (var i=0; i<links.length; i++) {
+          const link = links[i];
+          if (!isInternal(link.href)) {
+            // undo the damage that might have been done by quarto-nav.js in the case of
+            // links that we want to consider external
+            if (link.dataset.originalHref !== undefined) {
+              link.href = link.dataset.originalHref;
+            }
+          }
+        }
       function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
         const config = {
           allowHTML: true,
@@ -1521,7 +1613,11 @@ F-statistic:   305 on 5 and 327 DF,  p-value: &lt; 2.2e-16</code></pre>
           try { href = new URL(href).hash; } catch {}
           const id = href.replace(/^#\/?/, "");
           const note = window.document.getElementById(id);
-          return note.innerHTML;
+          if (note) {
+            return note.innerHTML;
+          } else {
+            return "";
+          }
         });
       }
       const findCites = (el) => {
