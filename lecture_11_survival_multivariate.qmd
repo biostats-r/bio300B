@@ -329,13 +329,26 @@ autoplot(pca) + theme(legend.position = "none")
 ## Artefacts
 
 - PCA assumes linear relationships between variables
-- appropriate for most environmental data
-- can fail with species data on long gradients
+- valid for environmental data; fails for species data with long gradients
 
 ```{r}
+#| label: fig-pca-artefacts
 #| echo: false
 data(ImbrieKipp)
+data(SumSST)
+p1 <- ImbrieKipp |> 
+  mutate(sst = SumSST) |> 
+  pivot_longer(-sst, names_to = "species", values_to = "percent") |> 
+  mutate(relative_abundance = percent / 100) |> 
+  filter(.by = "species", max(percent) > 17) |> 
+#summarise(.by = species, mx = max(percent), n = sum(percent > 0))
+ggplot(aes(x = sst, y = relative_abundance, colour = species)) +
+  geom_smooth(se = FALSE, method = "gam", method.args = list(family = quasibinomial)) +
+  labs(title = "Atlantic planktic foraminifera assemblages", x = "Summer SST (°C)", y = "Relative abundance")
+
 pca_ik <- rda(sqrt(ImbrieKipp))
-autoplot(pca_ik) + theme(legend.position = "none") + labs(title = "Atlantic planktic foraminifera assemblages")
+p2 <- autoplot(pca_ik) + theme(legend.position = "none") + labs(title = "Atlantic planktic foraminifera assemblages")
+
+p1 + p2
 ```
 

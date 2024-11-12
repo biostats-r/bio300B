@@ -4,6 +4,10 @@
 .httr-oauth
 .DS_Store
 
+*_cache/
 
-# solutions
-solutions/
+/.quarto/
+
+p_control/*
+examen/*
+website/_freeze/*
