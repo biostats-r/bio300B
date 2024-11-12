@@ -1,0 +1,394 @@
+---
+title: "Non-linear analyses and summary"
+subtitle: "Bio300B Lecture 12"
+author: "Richard J. Telford (Richard.Telford@uib.no)"
+institute: "Institutt for biovitenskap, UiB"
+date: today
+date-format: "D MMMM YYYY"
+format: 
+  revealjs:
+    theme: [default, css/custom.scss]
+    chalkboard: true
+execute: 
+  echo: true
+  warning: false
+  error: true
+---
+
+```{r setup, echo=FALSE, message=FALSE}
+library("tidyverse")
+library(performance)
+
+# set default theme
+theme_set(theme_bw(base_size = 18))
+```
+
+## Assumptions of Least Squares 
+
+
+1. [**Linear relationship between response and predictors.**]{style="color: red;"}
+2. The residuals have a mean of zero.
+3. The residuals have constant variance (not heteroscedastic).
+4. The residuals are independent (uncorrelated).
+5. The residuals are normally distributed.
+
+Not all relationships are linear.
+
+**Non-linear least squares** can be used when relationship is non-linear.
+
+## Non-linear least squares
+
+::: columns
+::: {.column width="50%"}
+We know something about the relationship
+
+```{r, echo=FALSE, fig.width=5, fig.height = 3.5}
+data(wtloss, package = "MASS")
+p <- ggplot(wtloss, aes(x = Days, y = Weight)) +
+  geom_point() +
+  labs(y = "Mass kg")
+p
+```
+
+Upper or lower bound (asymptote)
+:::
+
+::: {.column width="50%"}
+Three options
+
+-   Transform response
+-   Use polynomials ($x^2$)
+-   Non-linear expression
+:::
+:::
+
+## Transformations
+
+-   statistics must be correct on transformed scale
+-   Log transform assumes that error is a constant proportion of the response - valid for lognormal distribution
+- check diagnostics
+
+```{r}
+#| label: fig-log
+#| echo: false
+
+ggplot(wtloss, aes(x = Days, y = log(Weight))) +
+  geom_point() +
+  labs(y = "log(Mass kg)")
+```
+
+
+## Polynomial
+
+$$y_i=\beta_0 + \beta_1x_i+\beta_2x^2 + \epsilon_i$$
+
+:::: columns
+::: {.column width="50%"}
+-   Very useful
+-   Can give incorrect predictions
+- Orthogonal polynomials with `poly()`
+:::
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.width=5, fig.height = 3.5}
+p +
+  geom_smooth(method = "lm", formula = y ~ x + I(x^2))
+```
+:::
+::::
+## Non-linear least squares
+
+The relationship has an asymptote, and a exponential decline
+
+::: columns
+::: {.column width="50%"}
+$y_i = \beta_0 + \beta_1\exp(\beta_2x_i) + \epsilon_i$ <br> If $\beta_2 < 0$
+
+x -\> inf
+
+-   $\beta_1\exp(\beta_2x_i) = 0$
+
+x -\> 0
+
+-   $\beta_1\exp(\beta_2x_i) = β_1$
+:::
+
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.width=5, fig.height = 3}
+b0 = 0
+b1 = 10
+b2 = -0.1
+
+tibble(x = 1:50, y  = b0 + b1 * exp(b2 * x)) |> 
+ggplot(aes(x, y)) +
+geom_line() +
+labs(title = "Exponential decay") +
+geom_hline(yintercept = b0, linetype = "dashed", colour = "darkred") +
+annotate("text", y = b0 + 0.5, x = 6, label  = "Asymptote: b0",  colour = "darkred") +
+annotate("segment", xend = 0, yend = b0 + b1, x = 10, y = b0 + b1 -1,
+                  arrow = arrow(length = unit(0.5, "cm")), colour = "darkred") +
+annotate("text", y = b0 + b1 -1, x = 10, label  = "Intercept: b0 + b1",  colour = "darkred", hjust = 0) +
+
+annotate("segment", xend = 20, yend = 1.25, x = 5, y = 5,
+                  arrow = arrow(length = unit(0.5, "cm")), colour = "darkred") +
+annotate("text", x = 12.5, y = 3.5, label  = "b2",  colour = "darkred", hjust = 0) 
+
+```
+
+-   $\beta_0$ = asymptote
+-   $\beta_0 + \beta_1$ = intercept
+-   $\beta_2$ = slope (proportional change)
+:::
+:::
+
+## Fitting an NLS
+
+```{r}
+#| label: fit-nls
+library(nlme)
+# tibble(days = 1:200, weight = 100 + 70 * exp(-.1 * days)) |> 
+# ggplot(aes(x = days, y = weight)) + geom_line()
+
+fit.nls <- nls(Weight ~ b0 + b1 * exp(b2 * Days), 
+               data = wtloss, 
+               start = c(b0 = 100, b1 = 70, b2 = -0.1))
+summary(fit.nls)
+```
+
+## Model diagnostics
+
+```{r}
+#| label: fig-diagnostics
+
+plot(fit.nls)
+```
+
+
+## Plotting the model
+
+```{r}
+#| label: fig-preds
+p +  geom_line(data = broom::augment(fit.nls), aes(y = .fitted))
+```
+
+## Uncertainty on model predictions
+
+Not calculated by the model
+
+Bootstrap - resample data and refit model many times
+
+```{r}
+#| label: fig-uncert
+library(nlstools)
+fit.boot <- nlsBoot(fit.nls)
+pred <- nlsBootPredict(fit.boot, interval = "prediction") |> 
+  bind_cols(wtloss)
+
+p + geom_ribbon(aes(ymin = `2.5%`, ymax = `97.5%`), data = pred, alpha = 0.3, fill = "red") +
+  geom_line(aes(y = Median), data = pred)
+```
+
+
+## Working with NLS
+
+1.  Is there a natural expression
+2.  Identify parameters
+3.  Roughly estimate parameters
+4.  Start NLS
+
+## Example NLS models
+
+- Exponential decay
+- Logistic growth
+- Von Bertalanffy Growth Models
+- Michaelis–Menten kinetics
+- Sine waves
+
+```{r}
+#| label: models
+#| echo: false
+
+b0 = 0
+b1 = 10
+b2 = -0.1
+
+exp_decline <- tibble(x = 1:50, y  = b0 + b1 * exp(b2 * x)) |> 
+ggplot(aes(x, y)) +
+geom_line() +
+labs(title = "Exponential decay")
+
+
+a = 1
+b = 0.5
+c = 25
+
+logistic_growth <- tibble(x = 1:50, y  = a/(1 + exp(-b * (x-c)) )) |> 
+ggplot(aes(x, y)) +
+geom_line() +
+labs(title = "Logistic growth")
+
+library(patchwork)
+exp_decline + logistic_growth
+```
+
+
+
+
+# Questionable <br> Research Practices
+
+And how to avoid them
+
+## Questionable Research Practices
+
+Activities that distort results towards a researcher’s hypotheses
+
+-   P-hacking
+-   Hypothesising after results known (HARKing)
+
+Make science less reproducible
+
+
+Distinct from misconduct (fabrication, falsification)
+
+But much more common
+
+## Example
+
+A scientist does an experiment
+
+::: {.incremental}
+- "null results"
+- "failed results"
+- Asks student to re-analyse data
+- Finds "solutions that held up"
+- Publishes new findings.
+:::
+
+::: aside
+[Gotta Be a Conclusion In Here Somewhere](https://www.science.org/content/blog-post/gotta-be-conclusion-here-somewhere)
+:::
+
+## Prevalence
+
+```{r}
+#| label: fig-qrp
+#| echo: false
+#| out-height: "6.5in"
+
+knitr::include_graphics("figures/QRPpone.0200303.g001.png")
+```
+
+::: aside
+[Fraser et al 2018](https://doi.org/10.1371/journal.pone.0200303)
+:::
+## Solutions
+
+Preregister analyses
+
+- Describe methods to be used
+- use simulated data to explore how analysis will work
+
+Registered reports
+
+- Submit ms to journal with just introduction and methods
+
+
+
+
+## Summary
+
+questionable research practices.
+
+## Most important things
+
+1.  Designing an experiment
+2.  R tips and tricks
+3.  Entering data into a spreadsheet
+4.  Importing data
+5.  Cleaning data
+6.  Data visualisation
+7.  Using quarto
+8.  Choosing a model type
+9.  Interpreting model output
+
+## Method choice - 3 key questions
+
+What is the relationship between the predictors and the response?
+
+Are the data clustered/grouped?
+
+What is the distribution of the residuals?
+
+(also other types of model - survival, multivariate etc)
+
+Answers usually usually known before data collection.
+
+## Clustered data
+
+Mixed effect models
+
+-   Normal distribution: linear mixed effect models
+-   Binomial/poisson: generalised linear mixed effect models
+
+## Independent data, normal distribution
+
+Linear models - ordinary least squares
+
+-   t-tests
+-   two sample t-test
+-   one sample t-test
+-   paired t-test
+-   lm
+
+## Independent data, non-normal distribution
+
+generalised linear models
+
+-   glm
+
+
+Binomial & Poisson distributions
+
+
+
+## Non-linear relationships
+
+- nls
+
+## All model are wrong; some are useful
+
+```{r}
+#| label: fig-many-ecologists
+#| echo: false
+#| out-height: "6.5in"
+knitr::include_graphics("figures/fig-forest-plots-Zr-1.png")
+```
+
+::: aside
+[Gould et al 2023](https://egouldo.github.io/ManyAnalysts/)
+:::
+
+
+## Interpreting model output
+
+```{r}
+#| label: penguins
+data(penguins, package = "palmerpenguins")
+mod <- lm(bill_length_mm ~ sex * species, data = penguins)
+summary(mod)
+```
+
+## More statistics at BIO {.smaller}
+
+### Bio302 Spring semester
+
+-   more regression methods
+-   more R
+-   GitHub & open science
+
+### Bio303
+
+-   multivariate methods
+    -   ordinations
+    -   cluster analysis
+
+### Master's supervision
