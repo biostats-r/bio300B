@@ -1,0 +1,22 @@
+---
+title: "Datalab 12: non-linear regression"
+format: html
+---
+
+An exponential decay has the formula $y_i = \beta_0 + \beta_1exp(\beta_2 * x_i)$
+
+Plot the data in `wtloss` from package MASS and estimate values for the coefficients of an exponential decay model.
+
+Plot of the curve your coefficients imply.
+
+Fit an nls model to the wtloss data.
+
+Examine the model's diagnostics.
+
+Plot the model and it's confidence interval.
+
+Interpret the model's coefficients.
+
+See what happens when you try some bad starting values.
+
+Fit a polynomial to the data and make a prediction for the patients mass at day 1000.
