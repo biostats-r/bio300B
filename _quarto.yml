@@ -57,6 +57,7 @@ format:
       light: [zephyr, css/light.scss]
       dark: [zephyr, css/dark.scss, css/light.scss]
     code-link: true
+    respect-user-color-scheme: true
 
 execute:
   freeze: auto

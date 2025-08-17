@@ -1,5 +1,5 @@
 ---
-title: Bio300B Logistics 2024
+title: Bio300B Logistics 2025
 subtitle: Biostatistics
 author: Richard J. Telford (Richard.Telford@uib.no)
 institute: Institutt for biovitenskap, UiB
@@ -21,18 +21,17 @@ format:
 library(fontawesome)
 ```
 
-:::: {.columns}
-
-::: {.column}
+::::: columns
+::: column
 ```{r}
 #| fig-alt: Photograph of Richard Telford with Ulriken in the background
 knitr::include_graphics("figures/telford2_2_1.jpg")
 ```
+
 email: [richard.telford\@uib.no](mailto:richard.telford@uib.no)
 :::
 
-::: {.column}
-
+::: column
 -   Palaeoecologist/ecologist with numerical interests
 
 -   R user since 2002
@@ -42,170 +41,166 @@ email: [richard.telford\@uib.no](mailto:richard.telford@uib.no)
     -   Reconstructing environmental change
     -   Effect of climate change on ecosystems
     -   Reproducibility in science
-
 :::
-
-::::
-
+:::::
 
 ## Teaching Assistants
 
-:::: {.columns}
-
-::: {.column}
+:::::: columns
+::: {.column width="30%"}
 #### Lotta Schultz
 
 ```{r}
-#| out-height: 3.8in
+#| out-height: 3in
 #| fig-alt: Photograph of Lotta Schultz in the mountains
 knitr::include_graphics("https://www.uib.no/sites/w3.uib.no/files/styles/user_thumbnail/public/pictures/picture-405514-1675929953.jpg?itok=ErHSJE4C")
 ```
 
-Interests in global change ecology, biogeography and conservation biology.
+Global change ecology, conservation biology.
 :::
 
-::: {.column}
-#### Mika Helene Kirkhus 
+::: {.column width="30%"}
+#### Mika Kirkhus
 
 ```{r}
-#| out-height: 3.8in
+#| out-height: 3in
 #| fig-alt: Photograph of Mika Helene Kirkhus with a tree
 knitr::include_graphics("https://profile.uib.no/sites/default/files/styles/profile_image/public/pictures/picture-407394-1700047107.jpg?h=8bc2e66f&itok=djQ-CciE")
 ```
 
-Interests in mycorrhizae
+Mycorrhizae
 :::
 
-::::
+::: {.column width="30%"}
+#### Ingeborg Kahrs
+
+```{r}
+#| out-height: 3in
+#| fig-alt: Photograph of Ingeborg Kahrs wearing a silly hat
+knitr::include_graphics("https://profile.uib.no/sites/default/files/styles/profile_image/public/picture/Skjermbilde%202025-07-04%20083205.png?h=0cbd6f0c&itok=tHg1BtPL")
+```
+
+Fish parasitology and immunology, salmon lice vaccine
+:::
+::::::
 
 ## Students
 
-124 Students
+112 Students
 
-Including about 6 PhD students
+Including about 3 PhD students
 
-::: {.notes}
-
-- R users
-- RStudio
-
+::: notes
+-   R users
+-   RStudio
 :::
 
 # When & Where
 
 ## Lectures
 
--   Start Tuesday 20^th^ August  1415--1600
+-   Start Monday 18^th^ August 1215--1400
 -   Thormøhlens gate 51 (VilVite), Auditorium
 
+Clashes ???
 
-
-- Bio230 (August)
+- Bio206
 - Bio325 (End Sept / early Oct)
 - ???
 
-::: {.notes}
-
-- Any other courses? When?
-
+::: notes
+-   Any other courses? When?
 :::
 
 ## Printing Lecture notes
 
 Slides made with quarto & revealjs
 
-- Toggle into Print View using the E key (or using the Navigation Menu)
--  Open the browser's print dialogue ({{< kbd mac=Command-p win=Control-p linux=Ctrl-p >}}).
--  Change the Destination setting to Save as PDF.
-- Change the Layout to Landscape.
-- Change the Margins to None.
-- Enable the Background graphics option.
-- Click Save 🎉
-
+-   Toggle into Print View using the E key (or using the Navigation Menu)
+-   Open the browser's print dialogue ({{< kbd mac=Command-p win=Control-p linux=Ctrl-p >}}).
+-   Change the Destination setting to Save as PDF.
+-   Change the Layout to Landscape.
+-   Change the Margins to None.
+-   Enable the Background graphics option.
+-   Click Save 🎉
 
 ## Data labs
 
 3 Groups per week
 
-|         |                       |                         |
-|---------|-----------------------|-------------------------|
-| Group 1 | Wednesday 1215--1400   | K1 + K2 (Bio Blokk B)   |
-| Group 2 | Thursday 1015--1200   | K3 + K4 (Bio Blokk B)   |
-| Group 3 | Thursday 1415--1600 | K1 + K2 (Bio Blokk A) \*  |
-
-\* except week 43
+|         |                     |             |
+|---------|---------------------|-------------|
+| Group 1 | Tuesday 1015--1200  | HiB Aktiv 3 |
+| Group 2 | Thursday 1015--1200 | HiB Aktiv 3 |
+| Group 3 | Friday 1015--1200   | HiB Aktiv 3 |
 
 Please sign up for **one** group
 
 Possible to change group **if** space available
 
-::: {.notes}
-
-- 2 hour practicals
-- need to prepare
-
+::: notes
+-   2 hour practicals
+-   need to prepare
 :::
 
 ## Assessment
 
 Portfolio assessment
 
-- submissions on different aspects of the course
-  - Six assignments, best five are counted
-- extra work for PhD on heisemner
+-   submissions on different aspects of the course
+    -   Six assignments, best five are counted
+    -   Oral assessment for random subset
+-   extra work for PhD on heisemner
 
-
-::: {.notes}
-
-- can skip one without penalty
-- deadline after datalab to allow for last-minute fixes
-- extensions available e.g. if you/family member are sick. please tell me
-- plagiarism
-
+::: notes
+-   can skip one without penalty
+-   deadline after datalab to allow for last-minute fixes
+-   extensions available e.g. if you/family member are sick. please tell me
+-   plagiarism
 :::
-
 
 ## Hours
 
 5 Credit course
 
-125--150 hours
+1 ECTS = 25--30 hours
+
+Total = 125--150 hours
 
 12 weeks
 
-\~ 10--12 hours per week
-
+\~ 10--12 hours per week (including lecture and datalab)
 
 # What
 
 ## Course contents
 
-- Using R with RStudio
-- Importing and manipulating data with tidyverse
-- Data visualisation with ggplot2
-- Executable documents with quarto
-- Experimental design & Power analysis
-- Linear regression
-- Generalised linear regression
-- Mixed effect models
-- Survival analysis
+-   Using R with RStudio
+-   Importing and manipulating data with tidyverse
+-   Data visualisation with ggplot2
+-   Executable documents with quarto
+-   Experimental design & Power analysis
+-   Linear regression
+-   Generalised linear regression
+-   Mixed effect models
+-   Survival analysis
 
 ## Software requirements
 
 -   R version \>= 4.4
--   RStudio version \>= 2024.04.0
+-   RStudio version \>= 2024.12.0
 -   quarto
 
 For installation & configuration instructions see [Chapter 1](https://biostats-r.github.io/biostats/workingInR/0010_Getting_Started_with_RStudio.html) of the Working in R coursebook
 
 ## R packages
 
--    `tidyverse` (for data manipulation and plotting)
--    `remotes` (for installing packages from GitHub)
--    `usethis`  (for setting up some course material)
--    `here` (for helping load file)
--    `gt` (for making tables)
--    `quarto` (for making reproducible documents)
+-   `tidyverse` (for data manipulation and plotting)
+-   `remotes` (for installing packages from GitHub)
+-   `usethis` (for setting up some course material)
+-   `here` (for helping load file)
+-   `gt` (for making tables)
+-   `quarto` (for making reproducible documents)
 
 See [Chapter 5](https://biostats-r.github.io/biostats/workingInR/0013_packages.html) of the Working in R coursebook
 
@@ -221,21 +216,20 @@ See [Chapter 5](https://biostats-r.github.io/biostats/workingInR/0013_packages.h
 knitr::include_url("https://biostats-r.github.io/biostats/")
 ```
 
--   R books 
+-   R books
 -   Interactive tutorials & apps
 
 ## Found a mistake / got a suggestion?
 
 Make an issue on github
 
-- [Books](https://github.com/biostats-r/biostats/issues) 
-- [Interactive tutorials & apps](https://github.com/biostats-r/biostats.tutorials/issues)
-- [Lecture notes](https://github.com/biostats-r/bio300B/issues)
+-   [Books](https://github.com/biostats-r/biostats/issues)
+-   [Interactive tutorials & apps](https://github.com/biostats-r/biostats.tutorials/issues)
+-   [Lecture notes](https://github.com/biostats-r/bio300B/issues)
 
 ## Reading
 
-:::: {.columns}
-
+:::::: columns
 ::: {.column width="30%"}
 #### [R for Data Science](https://r4ds.hadley.nz/)
 
@@ -243,7 +237,6 @@ Make an issue on github
 #| fig-alt: Front cover of R for Data Science showing a Kakapo Parrot
 knitr::include_graphics("figures/r4ds-cover.jpg")
 ```
-
 :::
 
 ::: {.column width="30%"}
@@ -253,7 +246,6 @@ knitr::include_graphics("figures/r4ds-cover.jpg")
 #| fig-alt: Front cover of Fundamentals of Data Visualization showing a Western Rosella Parakeet
 knitr::include_graphics("figures/fdv-cover.png")
 ```
-
 :::
 
 ::: {.column width="30%"}
@@ -263,12 +255,8 @@ knitr::include_graphics("figures/fdv-cover.png")
 #| fig-alt: Front cover of Introduction to Modern Statistics
 knitr::include_graphics("figures/IMS1_front_cover.png")
 ```
-
 :::
-
-::::
-
-
+::::::
 
 # More `r fa("r-project", fill = "steelblue")` & biostatistics
 
@@ -278,15 +266,15 @@ knitr::include_graphics("figures/IMS1_front_cover.png")
     -   Autumn semester
 -   Bio302 Biostatisics II
     -   Spring semester
-    
-Open Science course ([Hjerkinn - 4--9 November](https://www.uib.no/en/rg/EECRG/171658/open-reproducible-and-transparent-science-ecology))
+
+Open Science course ([Hjerkinn - 10--15 November](https://www.gbif.no/events/2025/course-on-open-science-2025.html))
 
 ## Rklubben
 
 “The first rule about R club is you talk about R.”
 
-- Come and help fix someone else's R problems
-- And get help yourself
+-   Come and help fix someone else's R problems
+-   And get help yourself
 
 Fridays 1400-1600 in Tunet (4^th^ floor Bio A)
 
