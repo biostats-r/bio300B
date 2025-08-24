@@ -129,6 +129,8 @@ Sex coded as 0 & 1
 
 ::: {.notes}
 Show bad_data.xlsx for group discussion
+
+Show fisheries directorat data
 :::
 
 ## Data importing
