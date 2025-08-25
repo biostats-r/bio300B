@@ -22,6 +22,8 @@ filters:
 
 ## Why code?
 
+Why not just use Excel for everything?
+
 ## R as a calculator
 
 ```{r}
@@ -337,6 +339,38 @@ ChickWeight
 - the top ten rows
 - the weight and Time columns
 
+## Logical tests
+
+Return TRUE or FALSE
+
+- `a == b` TRUE if a equals b (test of equality - single `=` assignment)
+- `a != b` TRUE if a not equal to b
+- `a > b` TRUE if a greater than b
+- `a <= b` TRUE if a less than or equal to b
+
+Useful with subsetting, `ifelse()` or `dplyr::case_when()` 
+
+## Boolean logic
+
+logical conditions can be combined
+
+```{r}
+animal <- "cat"
+number <- 3
+```
+
+- `&` AND - TRUE if **both** TRUE
+- `|` OR - TRUE if **either** TRUE 
+- `!` NOT - TRUE if FALSE 
+
+```{r}
+animal == "cat" & number == 7
+animal == "cat" | number == 7
+!animal == "cat" | number == 7
+!(animal == "cat" | number == 7)
+```
+
+
 ## Control flow
 
 `if` statements for choice
@@ -351,49 +385,7 @@ if (logical_condition) {
 
 `else` is optional
 
-use `ifelse()` or `dplyr::case_when()` for vectorised `if`
-
-## Boolean logic
-
-logical conditions can be combined
-
-```{r}
-animal <- "cat"
-number <- 3
-```
-
-- `&&` AND - TRUE if **both** TRUE
-- `||` OR - TRUE if **either** TRUE 
-- `!` NOT - TRUE if FALSE (or use `!=` for not equal)
-
-```{r}
-animal == "cat" && number == 7
-animal == "cat" || number == 7
-!animal == "cat" || number == 7
-!(animal == "cat" || number == 7)
-```
-
-## Vectorised Boolean logic
-
-`&&` and `||` return a single TRUE/FALSE
-
-Useful for `if` statements
-
-
-`&` and `|` return a vector of TRUE/FALSE
-
-Useful with `ifelse()` or `dplyr::case_when()` 
-
-```{r}
-a <- 1:10
-b <- rep(c("cat", "dog"), 5)
-
-a > 5 && b == "dog" # gives error
-a > 5 & b == "dog"
-```
-
-
-
+Use `&&` and `||` to return a single TRUE/FALSE
 
 ## loops
 
@@ -465,7 +457,7 @@ map_dbl(lst, mean) # returns vector of doubles
 
 Need understandable code
 
-Goodstylemakescodeeasiertoread
+Badstylemakescodehardertoread
 
 ## Journal code archiving requirements {.scrollable}
 
@@ -512,7 +504,7 @@ Make your own style - but be consistent
 -   Names must begin with a letter or "."
 -   Avoid using names of existing functions - confusing
 -   Make names concise yet meaningful
--   Reserved words include TRUE, for, if
+-   Reserved words include `TRUE`, `for`, `if`
 
 ## Which of these are valid names in R {.smaller}
 
@@ -706,9 +698,11 @@ For example:
 Import with
 
 ```{r, eval = FALSE}
-source("loadData.R")
-source("functions.R")
+source("1-functions.R")
+source("2-loadData.R")
 ```
+
+Number files so they sort alphabetically in order of use.
 
 ## Don't repeat yourself
 
