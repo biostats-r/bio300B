@@ -2,7 +2,7 @@
 title: Data manipulation
 subtitle: Bio300B Lecture 3
 author: Richard J. Telford (Richard.Telford@uib.no)
-institute: Institutt for biovitenskap, UiB
+institute: Institutt for Biovitenskap, UiB
 date: today
 date-format: "D MMMM YYYY"
 format: 
@@ -73,17 +73,74 @@ Find the data rectangle and import just that.
 
 ## Paths
 
+
+
+```{r}
+#| eval: false
+# absolute path - bad
+read_delim("c://users/richard/documents/biostats/data/data.csv")
+```
+::: fragment
+
 Use RStudio projects
 
 Use relative paths
 
 ```{r}
 #| eval: false
-# absolute path - bad
-"c://users/richard/documents/biostats/data/data.csv"
-# relative path - good
-"data/data.csv"
+# relative path - better
+read_delim("data/data.csv")
 ```
+:::
+
+::: fragment
+
+`here()` finds files relative to the project root
+
+```{r}
+#| eval: false
+# here::here() - best
+library(here)
+read_delim(here("data/data.csv"))
+```
+
+:::
+
+## Organising a project
+
+All in one directory - messy
+
+```{r}
+#| echo: false
+d <- file.path(tempdir(), "bad")
+fs::dir_create(d)
+fs::file_create(file.path(d, "thesis.Rproj"))
+fs::file_create(file.path(d, "data1.csv"))
+fs::file_create(file.path(d, "data2.csv"))
+fs::file_create(file.path(d, "introduction.qmd"))
+fs::file_create(file.path(d, "discussion.qmd"))
+
+fs::dir_tree(d)
+```
+
+Directories for each type of file - clean
+
+```{r}
+#| echo: false
+d <- file.path(tempdir(), "good")
+fs::dir_create(d)
+fs::dir_create(file.path(d, "data"))
+fs::dir_create(file.path(d, "chapters"))
+
+fs::file_create(file.path(d, "thesis.Rproj"))
+fs::file_create(file.path(d, "data", "data1.csv"))
+fs::file_create(file.path(d, "data", "data2.csv"))
+fs::file_create(file.path(d, "chapters", "1-introduction.qmd"))
+fs::file_create(file.path(d, "chapters", "2-discussion.qmd"))
+
+fs::dir_tree(d)
+```
+
 
 ## Pipes
 
@@ -101,9 +158,10 @@ Nested functions
 
 ```{r}
 summarise(
-  group_by(drop_na(penguins, sex), species, sex), 
+  group_by(drop_na(penguins, sex), species, sex),
   bill_length_mean = mean(bill_length_mm),
-  .groups = "drop")
+  .groups = "drop"
+)
 ```
 
 ---
@@ -118,6 +176,7 @@ p <- summarise(p,
         .groups = "drop")
 ```
 
+::: fragment
 Third solution
 
 ```{r}
@@ -127,10 +186,11 @@ p_3 <- summarise(p_2,
          bill_length_mean = mean(bill_length_mm),
         .groups = "drop")
 ```
+:::
 
 ---
 
-### pipe solution
+### Pipe solution
 
 ```{r}
 p <- penguins |> 
@@ -269,7 +329,7 @@ options(dplyr.print_min = 2, dplyr.print_max = 3)
 
 ## Processing data with `dplyr`
 
-Key dplyr functions
+Key `dplyr` functions
 
 - `select()`
 - `filter()`
@@ -338,7 +398,7 @@ How would you make a data frame with
 `dplyr::filter()`
 
 ```{r}
-penguins |> filter(species == "Gentoo")
+penguins |> filter(species == "Gentoo", island == "Biscoe")
 ```
 
 One or more logical statements
@@ -377,6 +437,10 @@ Solution:
 near(sqrt(2) ^ 2, 2)
 ```
 
+. . .
+
+Beware of testing equality of doubles
+
 ::: notes
 
 data stored as doubles - finite precision
@@ -385,16 +449,16 @@ data stored as doubles - finite precision
 
 ## `%in%`
 
-Problem
+Problem species is A OR B.
 
 ```{r}
 penguins |> 
-  filter(species == "Gentoo" | species == "Chinstrap")
+  filter(species == "Gentoo" | species == "Chinstrap") # | OR 
 ```
 
-- `|` OR
+. . . 
 
-Solution
+Solution `%in%`
 
 ```{r}
 penguins |> 
@@ -448,7 +512,7 @@ Get a data frame with
 
 
 
-## Mutating columns with mutate()
+## Mutating columns with `mutate()`
 
 Make a new column or change an existing column
 
@@ -466,6 +530,7 @@ penguins |> mutate(
 - mutate character columns with `stringr`, `glue`
 - mutate factor columns with `forcats`
 - mutate dates with `lubridate`
+- conditional mutations with `case_when()` or `if_else()`
 
 
 ## Summarising data with summarise
@@ -581,7 +646,7 @@ band_instruments
 
 ::::
 ```{r}
-band_members %>% 
+band_members |>  
   left_join(band_instruments, by = join_by(name))
 ```
 
@@ -601,11 +666,11 @@ band_members %>%
 
 ```{r}
 #semi join
-band_members %>% 
+band_members |> 
   semi_join(band_instruments, by = join_by(name))
 
 #anti join
-band_members %>% 
+band_members |>  
   anti_join(band_instruments, by = join_by(name))
 ```
 

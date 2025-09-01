@@ -11,7 +11,7 @@
   <meta name="generator" content="quarto-1.8.20">
 
   <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)">
-  <meta name="dcterms.date" content="2025-08-17">
+  <meta name="dcterms.date" content="2025-09-01">
   <title>Bio302 - Biostatistikk – Data manipulation</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -204,12 +204,12 @@
 Richard J. Telford (Richard.Telford@uib.no) 
 </div>
         <p class="quarto-title-affiliation">
-            Institutt for biovitenskap, UiB
+            Institutt for Biovitenskap, UiB
           </p>
     </div>
 </div>
 
-  <p class="date">17 August 2025</p>
+  <p class="date">1 September 2025</p>
 </section>
 <section id="data-cleaning" class="slide level2">
 <h2>Data cleaning</h2>
@@ -287,13 +287,52 @@ Richard J. Telford (Richard.Telford@uib.no)
 </section>
 <section id="paths" class="slide level2">
 <h2>Paths</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="co"># absolute path - bad</span></span>
+<span id="cb3-2"><a></a><span class="fu">read_delim</span>(<span class="st">"c://users/richard/documents/biostats/data/data.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="fragment">
 <p>Use RStudio projects</p>
 <p>Use relative paths</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="co"># absolute path - bad</span></span>
-<span id="cb3-2"><a></a><span class="st">"c://users/richard/documents/biostats/data/data.csv"</span></span>
-<span id="cb3-3"><a></a><span class="co"># relative path - good</span></span>
-<span id="cb3-4"><a></a><span class="st">"data/data.csv"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="co"># relative path - better</span></span>
+<span id="cb4-2"><a></a><span class="fu">read_delim</span>(<span class="st">"data/data.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<div class="fragment">
+<p><code>here()</code> finds files relative to the project root</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="co"># here::here() - best</span></span>
+<span id="cb5-2"><a></a><span class="fu">library</span>(here)</span>
+<span id="cb5-3"><a></a><span class="fu">read_delim</span>(<span class="fu">here</span>(<span class="st">"data/data.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+<section id="organising-a-project" class="slide level2">
+<h2>Organising a project</h2>
+<p>All in one directory - messy</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>/tmp/Rtmplte830/bad
+├── data1.csv
+├── data2.csv
+├── discussion.qmd
+├── introduction.qmd
+└── thesis.Rproj</code></pre>
+</div>
+</div>
+<p>Directories for each type of file - clean</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>/tmp/Rtmplte830/good
+├── chapters
+│   ├── 1-introduction.qmd
+│   └── 2-discussion.qmd
+├── data
+│   ├── data1.csv
+│   └── data2.csv
+└── thesis.Rproj</code></pre>
+</div>
 </div>
 </section>
 <section id="pipes" class="slide level2">
@@ -310,10 +349,11 @@ Richard J. Telford (Richard.Telford@uib.no)
 <p>First solution</p>
 <p>Nested functions</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">summarise</span>(</span>
-<span id="cb4-2"><a></a>  <span class="fu">group_by</span>(<span class="fu">drop_na</span>(penguins, sex), species, sex), </span>
-<span id="cb4-3"><a></a>  <span class="at">bill_length_mean =</span> <span class="fu">mean</span>(bill_length_mm),</span>
-<span id="cb4-4"><a></a>  <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="fu">summarise</span>(</span>
+<span id="cb8-2"><a></a>  <span class="fu">group_by</span>(<span class="fu">drop_na</span>(penguins, sex), species, sex),</span>
+<span id="cb8-3"><a></a>  <span class="at">bill_length_mean =</span> <span class="fu">mean</span>(bill_length_mm),</span>
+<span id="cb8-4"><a></a>  <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb8-5"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 3
   species sex    bill_length_mean
@@ -328,31 +368,33 @@ Richard J. Telford (Richard.Telford@uib.no)
 
 <p>Second solution</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>p <span class="ot">&lt;-</span> <span class="fu">drop_na</span>(penguins, sex)</span>
-<span id="cb6-2"><a></a>p <span class="ot">&lt;-</span> <span class="fu">group_by</span>(p, species, sex)</span>
-<span id="cb6-3"><a></a>p <span class="ot">&lt;-</span> <span class="fu">summarise</span>(p,</span>
-<span id="cb6-4"><a></a>         <span class="at">bill_length_mean =</span> <span class="fu">mean</span>(bill_length_mm),</span>
-<span id="cb6-5"><a></a>        <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>p <span class="ot">&lt;-</span> <span class="fu">drop_na</span>(penguins, sex)</span>
+<span id="cb10-2"><a></a>p <span class="ot">&lt;-</span> <span class="fu">group_by</span>(p, species, sex)</span>
+<span id="cb10-3"><a></a>p <span class="ot">&lt;-</span> <span class="fu">summarise</span>(p,</span>
+<span id="cb10-4"><a></a>         <span class="at">bill_length_mean =</span> <span class="fu">mean</span>(bill_length_mm),</span>
+<span id="cb10-5"><a></a>        <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<div class="fragment">
 <p>Third solution</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>p_1 <span class="ot">&lt;-</span> <span class="fu">drop_na</span>(penguins, sex)</span>
-<span id="cb7-2"><a></a>p_2 <span class="ot">&lt;-</span> <span class="fu">group_by</span>(p_1, species, sex)</span>
-<span id="cb7-3"><a></a>p_3 <span class="ot">&lt;-</span> <span class="fu">summarise</span>(p_2,</span>
-<span id="cb7-4"><a></a>         <span class="at">bill_length_mean =</span> <span class="fu">mean</span>(bill_length_mm),</span>
-<span id="cb7-5"><a></a>        <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>p_1 <span class="ot">&lt;-</span> <span class="fu">drop_na</span>(penguins, sex)</span>
+<span id="cb11-2"><a></a>p_2 <span class="ot">&lt;-</span> <span class="fu">group_by</span>(p_1, species, sex)</span>
+<span id="cb11-3"><a></a>p_3 <span class="ot">&lt;-</span> <span class="fu">summarise</span>(p_2,</span>
+<span id="cb11-4"><a></a>         <span class="at">bill_length_mean =</span> <span class="fu">mean</span>(bill_length_mm),</span>
+<span id="cb11-5"><a></a>        <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </div>
 </section>
 <section class="slide level2">
 
-<h3 id="pipe-solution">pipe solution</h3>
+<h3 id="pipe-solution">Pipe solution</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>p <span class="ot">&lt;-</span> penguins <span class="sc">|&gt;</span> </span>
-<span id="cb8-2"><a></a>  <span class="fu">drop_na</span>(sex) <span class="sc">|&gt;</span> </span>
-<span id="cb8-3"><a></a>  <span class="fu">group_by</span>(species, sex) <span class="sc">|&gt;</span> </span>
-<span id="cb8-4"><a></a>  <span class="fu">summarise</span>(</span>
-<span id="cb8-5"><a></a>    <span class="at">bill_length_mean =</span> <span class="fu">mean</span>(bill_length_mm),</span>
-<span id="cb8-6"><a></a>    <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>p <span class="ot">&lt;-</span> penguins <span class="sc">|&gt;</span> </span>
+<span id="cb12-2"><a></a>  <span class="fu">drop_na</span>(sex) <span class="sc">|&gt;</span> </span>
+<span id="cb12-3"><a></a>  <span class="fu">group_by</span>(species, sex) <span class="sc">|&gt;</span> </span>
+<span id="cb12-4"><a></a>  <span class="fu">summarise</span>(</span>
+<span id="cb12-5"><a></a>    <span class="at">bill_length_mean =</span> <span class="fu">mean</span>(bill_length_mm),</span>
+<span id="cb12-6"><a></a>    <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Pipe puts result of left hand side into first available argument on right hand side</p>
 <ul>
@@ -578,7 +620,7 @@ Richard J. Telford (Richard.Telford@uib.no)
 
 <p>Wide data</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>mites <span class="co"># part of vegan::mite</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>mites <span class="co"># part of vegan::mite</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  sample Brachy PHTH HPAV RARD
 1      1     17    5    5    3
@@ -594,11 +636,11 @@ Richard J. Telford (Richard.Telford@uib.no)
 <h2>Making longer data</h2>
 <p><code>tidyr::pivot_longer()</code></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>mites_long <span class="ot">&lt;-</span> mites <span class="sc">|&gt;</span> </span>
-<span id="cb11-2"><a></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> Brachy<span class="sc">:</span>RARD, </span>
-<span id="cb11-3"><a></a>               <span class="at">names_to =</span> <span class="st">"taxon"</span>, </span>
-<span id="cb11-4"><a></a>               <span class="at">values_to =</span> <span class="st">"count"</span>)</span>
-<span id="cb11-5"><a></a>mites_long</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>mites_long <span class="ot">&lt;-</span> mites <span class="sc">|&gt;</span> </span>
+<span id="cb15-2"><a></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> Brachy<span class="sc">:</span>RARD, </span>
+<span id="cb15-3"><a></a>               <span class="at">names_to =</span> <span class="st">"taxon"</span>, </span>
+<span id="cb15-4"><a></a>               <span class="at">values_to =</span> <span class="st">"count"</span>)</span>
+<span id="cb15-5"><a></a>mites_long</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 20 × 3
    sample taxon  count
@@ -621,10 +663,10 @@ Richard J. Telford (Richard.Telford@uib.no)
 <h2>Making wider data</h2>
 <p><code>tidyr::pivot_wider()</code></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>mites_wide <span class="ot">&lt;-</span> mites_long <span class="sc">|&gt;</span> </span>
-<span id="cb13-2"><a></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> <span class="st">"taxon"</span>, </span>
-<span id="cb13-3"><a></a>              <span class="at">values_from =</span> <span class="st">"count"</span>)</span>
-<span id="cb13-4"><a></a>mites_wide</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>mites_wide <span class="ot">&lt;-</span> mites_long <span class="sc">|&gt;</span> </span>
+<span id="cb17-2"><a></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> <span class="st">"taxon"</span>, </span>
+<span id="cb17-3"><a></a>              <span class="at">values_from =</span> <span class="st">"count"</span>)</span>
+<span id="cb17-4"><a></a>mites_wide</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 5
   sample Brachy  PHTH  HPAV  RARD
@@ -639,7 +681,7 @@ Richard J. Telford (Richard.Telford@uib.no)
 </section>
 <section id="processing-data-with-dplyr" class="slide level2">
 <h2>Processing data with <code>dplyr</code></h2>
-<p>Key dplyr functions</p>
+<p>Key <code>dplyr</code> functions</p>
 <ul>
 <li><code>select()</code></li>
 <li><code>filter()</code></li>
@@ -653,8 +695,8 @@ Richard J. Telford (Richard.Telford@uib.no)
 <h2>Selecting columns</h2>
 <p><code>dplyr::select()</code></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb15-2"><a></a>  <span class="fu">select</span>(species, bill_length_mm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb19-2"><a></a>  <span class="fu">select</span>(species, bill_length_mm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 344 × 2
   species bill_length_mm
@@ -665,8 +707,8 @@ Richard J. Telford (Richard.Telford@uib.no)
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb17-2"><a></a>  <span class="fu">select</span>(<span class="sc">-</span>bill_length_mm, <span class="sc">-</span>bill_depth_mm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb21-2"><a></a>  <span class="fu">select</span>(<span class="sc">-</span>bill_length_mm, <span class="sc">-</span>bill_depth_mm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 344 × 6
   species island    flipper_length_mm body_mass_g sex     year
@@ -680,8 +722,8 @@ Richard J. Telford (Richard.Telford@uib.no)
 <section id="selecting-adjacent-columns" class="slide level2">
 <h2>Selecting adjacent columns</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb19-2"><a></a>  <span class="fu">select</span>(bill_length_mm<span class="sc">:</span>body_mass_g)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb23-2"><a></a>  <span class="fu">select</span>(bill_length_mm<span class="sc">:</span>body_mass_g)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 344 × 4
   bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
@@ -692,8 +734,8 @@ Richard J. Telford (Richard.Telford@uib.no)
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb21-2"><a></a>  <span class="fu">select</span>(<span class="sc">-</span>(bill_length_mm<span class="sc">:</span>body_mass_g))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb25-2"><a></a>  <span class="fu">select</span>(<span class="sc">-</span>(bill_length_mm<span class="sc">:</span>body_mass_g))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 344 × 4
   species island    sex     year
@@ -708,8 +750,8 @@ Richard J. Telford (Richard.Telford@uib.no)
 <h2>Select helpers</h2>
 <p><code>ends_with()</code></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb23-2"><a></a>  <span class="fu">select</span>(species, <span class="fu">ends_with</span>(<span class="st">"mm"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb27-2"><a></a>  <span class="fu">select</span>(species, <span class="fu">ends_with</span>(<span class="st">"mm"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 344 × 4
   species bill_length_mm bill_depth_mm flipper_length_mm
@@ -728,7 +770,7 @@ Richard J. Telford (Richard.Telford@uib.no)
 <section id="your-turn" class="slide level2">
 <h2>Your turn</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a><span class="fu">names</span>(penguins)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a><span class="fu">names</span>(penguins)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "species"           "island"            "bill_length_mm"   
 [4] "bill_depth_mm"     "flipper_length_mm" "body_mass_g"      
@@ -746,7 +788,7 @@ Richard J. Telford (Richard.Telford@uib.no)
 <h2>Filtering rows</h2>
 <p><code>dplyr::filter()</code></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>penguins <span class="sc">|&gt;</span> <span class="fu">filter</span>(species <span class="sc">==</span> <span class="st">"Gentoo"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a>penguins <span class="sc">|&gt;</span> <span class="fu">filter</span>(species <span class="sc">==</span> <span class="st">"Gentoo"</span>, island <span class="sc">==</span> <span class="st">"Biscoe"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 124 × 8
   species island bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
@@ -782,7 +824,7 @@ Richard J. Telford (Richard.Telford@uib.no)
 <h2>near()</h2>
 <p>Problem:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a><span class="fu">sqrt</span>(<span class="dv">2</span>) <span class="sc">^</span> <span class="dv">2</span> <span class="sc">==</span> <span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a><span class="fu">sqrt</span>(<span class="dv">2</span>) <span class="sc">^</span> <span class="dv">2</span> <span class="sc">==</span> <span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output cell-output-stdout">
@@ -791,7 +833,7 @@ Richard J. Telford (Richard.Telford@uib.no)
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a><span class="fu">sqrt</span>(<span class="dv">2</span>) <span class="sc">^</span> <span class="dv">2</span> <span class="sc">-</span> <span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a><span class="fu">sqrt</span>(<span class="dv">2</span>) <span class="sc">^</span> <span class="dv">2</span> <span class="sc">-</span> <span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 4.440892e-16</code></pre>
 </div>
@@ -801,11 +843,14 @@ Richard J. Telford (Richard.Telford@uib.no)
 <p><span class="math inline">\(\sqrt{2}\)</span> is irrational - cannot be perfectly represented</p>
 <p>Solution:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a><span class="fu">near</span>(<span class="fu">sqrt</span>(<span class="dv">2</span>) <span class="sc">^</span> <span class="dv">2</span>, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a><span class="fu">near</span>(<span class="fu">sqrt</span>(<span class="dv">2</span>) <span class="sc">^</span> <span class="dv">2</span>, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
 </div>
 </div>
+</div>
+<div class="fragment">
+<p>Beware of testing equality of doubles</p>
 <aside class="notes">
 <p>data stored as doubles - finite precision</p>
 <style type="text/css">
@@ -823,10 +868,10 @@ Richard J. Telford (Richard.Telford@uib.no)
 </section>
 <section id="in" class="slide level2">
 <h2><code>%in%</code></h2>
-<p>Problem</p>
+<p>Problem species is A OR B.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb35-2"><a></a>  <span class="fu">filter</span>(species <span class="sc">==</span> <span class="st">"Gentoo"</span> <span class="sc">|</span> species <span class="sc">==</span> <span class="st">"Chinstrap"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb39-2"><a></a>  <span class="fu">filter</span>(species <span class="sc">==</span> <span class="st">"Gentoo"</span> <span class="sc">|</span> species <span class="sc">==</span> <span class="st">"Chinstrap"</span>) <span class="co"># | OR </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 192 × 8
   species island bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
@@ -837,13 +882,11 @@ Richard J. Telford (Richard.Telford@uib.no)
 # ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
 </div>
 </div>
-<ul>
-<li><code>|</code> OR</li>
-</ul>
-<p>Solution</p>
+<div class="fragment">
+<p>Solution <code>%in%</code></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb37-2"><a></a>  <span class="fu">filter</span>(species <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Gentoo"</span>, <span class="st">"Chinstrap"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb41-2"><a></a>  <span class="fu">filter</span>(species <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Gentoo"</span>, <span class="st">"Chinstrap"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 192 × 8
   species island bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
@@ -852,6 +895,7 @@ Richard J. Telford (Richard.Telford@uib.no)
 2 Gentoo  Biscoe           50            16.3               230        5700
 # ℹ 190 more rows
 # ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
+</div>
 </div>
 </div>
 </section>
@@ -859,8 +903,8 @@ Richard J. Telford (Richard.Telford@uib.no)
 <h2><code>between()</code></h2>
 <p>Problem</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb39-2"><a></a>  <span class="fu">filter</span>(body_mass_g <span class="sc">&gt;=</span> <span class="dv">2000</span>, body_mass_g <span class="sc">&lt;=</span> <span class="dv">3000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb43-2"><a></a>  <span class="fu">filter</span>(body_mass_g <span class="sc">&gt;=</span> <span class="dv">2000</span>, body_mass_g <span class="sc">&lt;=</span> <span class="dv">3000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 11 × 8
   species island bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
@@ -873,8 +917,8 @@ Richard J. Telford (Richard.Telford@uib.no)
 </div>
 <p>Solution</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb41-2"><a></a>  <span class="fu">filter</span>(<span class="fu">between</span>(body_mass_g, <span class="at">left =</span> <span class="dv">2000</span>, <span class="at">right =</span> <span class="dv">3000</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb45-2"><a></a>  <span class="fu">filter</span>(<span class="fu">between</span>(body_mass_g, <span class="at">left =</span> <span class="dv">2000</span>, <span class="at">right =</span> <span class="dv">3000</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 11 × 8
   species island bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
@@ -892,8 +936,8 @@ Richard J. Telford (Richard.Telford@uib.no)
 <p>Want to filter by partial text match</p>
 <p>solution: <code>stringr</code> package</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb43-2"><a></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(species, <span class="st">"G"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb47-2"><a></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(species, <span class="st">"G"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 124 × 8
   species island bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
@@ -909,7 +953,7 @@ Richard J. Telford (Richard.Telford@uib.no)
 <section id="how-would-you" class="slide level2">
 <h2>How would you</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a></a>penguins</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a></a>penguins</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 344 × 8
   species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
@@ -928,14 +972,14 @@ Richard J. Telford (Richard.Telford@uib.no)
 </ul>
 </section>
 <section id="mutating-columns-with-mutate" class="slide level2">
-<h2>Mutating columns with mutate()</h2>
+<h2>Mutating columns with <code>mutate()</code></h2>
 <p>Make a new column or change an existing column</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a></a>penguins <span class="sc">|&gt;</span> <span class="fu">mutate</span>(</span>
-<span id="cb47-2"><a></a>  <span class="at">species =</span> <span class="fu">tolower</span>(species),</span>
-<span id="cb47-3"><a></a>  <span class="at">body_mass_kg =</span> body_mass_g<span class="sc">/</span><span class="dv">1000</span>,</span>
-<span id="cb47-4"><a></a>  <span class="at">bill_ratio =</span> bill_length_mm<span class="sc">/</span>bill_depth_mm</span>
-<span id="cb47-5"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a></a>penguins <span class="sc">|&gt;</span> <span class="fu">mutate</span>(</span>
+<span id="cb51-2"><a></a>  <span class="at">species =</span> <span class="fu">tolower</span>(species),</span>
+<span id="cb51-3"><a></a>  <span class="at">body_mass_kg =</span> body_mass_g<span class="sc">/</span><span class="dv">1000</span>,</span>
+<span id="cb51-4"><a></a>  <span class="at">bill_ratio =</span> bill_length_mm<span class="sc">/</span>bill_depth_mm</span>
+<span id="cb51-5"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 344 × 10
   species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
@@ -954,16 +998,17 @@ Richard J. Telford (Richard.Telford@uib.no)
 <li>mutate character columns with <code>stringr</code>, <code>glue</code></li>
 <li>mutate factor columns with <code>forcats</code></li>
 <li>mutate dates with <code>lubridate</code></li>
+<li>conditional mutations with <code>case_when()</code> or <code>if_else()</code></li>
 </ul>
 </section>
 <section id="summarising-data-with-summarise" class="slide level2">
 <h2>Summarising data with summarise</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb49-2"><a></a>  <span class="fu">summarise</span>(</span>
-<span id="cb49-3"><a></a>    <span class="at">max_mass =</span> <span class="fu">max</span>(body_mass_g, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb49-4"><a></a>    <span class="at">mean_bill_length =</span> <span class="fu">mean</span>(bill_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb49-5"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb53-2"><a></a>  <span class="fu">summarise</span>(</span>
+<span id="cb53-3"><a></a>    <span class="at">max_mass =</span> <span class="fu">max</span>(body_mass_g, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb53-4"><a></a>    <span class="at">mean_bill_length =</span> <span class="fu">mean</span>(bill_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb53-5"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 2
   max_mass mean_bill_length
@@ -982,8 +1027,8 @@ Richard J. Telford (Richard.Telford@uib.no)
 <section id="grouping-data" class="slide level2">
 <h2>Grouping data</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb51-2"><a></a>  <span class="fu">group_by</span>(species, island)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb55-2"><a></a>  <span class="fu">group_by</span>(species, island)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 344 × 8
 # Groups:   species, island [5]
@@ -1001,10 +1046,10 @@ Richard J. Telford (Richard.Telford@uib.no)
 <h2>Mutating grouped data</h2>
 <p>Analysis per group</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb53-2"><a></a>  <span class="fu">group_by</span>(species) <span class="sc">|&gt;</span> </span>
-<span id="cb53-3"><a></a>  <span class="fu">mutate</span>(<span class="at">bill_length_mean =</span> <span class="fu">mean</span>(bill_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb53-4"><a></a>         <span class="at">bill_length_centred =</span> bill_length_mm <span class="sc">-</span> bill_length_mean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb57-2"><a></a>  <span class="fu">group_by</span>(species) <span class="sc">|&gt;</span> </span>
+<span id="cb57-3"><a></a>  <span class="fu">mutate</span>(<span class="at">bill_length_mean =</span> <span class="fu">mean</span>(bill_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb57-4"><a></a>         <span class="at">bill_length_centred =</span> bill_length_mm <span class="sc">-</span> bill_length_mean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 344 × 10
 # Groups:   species [3]
@@ -1022,13 +1067,13 @@ Richard J. Telford (Richard.Telford@uib.no)
 <h2>Summarising grouped data</h2>
 <p>Summary per group</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb55-2"><a></a>  <span class="fu">group_by</span>(species) <span class="sc">|&gt;</span> </span>
-<span id="cb55-3"><a></a>  <span class="fu">summarise</span>(</span>
-<span id="cb55-4"><a></a>    <span class="at">max_mass =</span> <span class="fu">max</span>(body_mass_g),</span>
-<span id="cb55-5"><a></a>    <span class="at">mean_bill_length =</span> <span class="fu">mean</span>(bill_length_mm),</span>
-<span id="cb55-6"><a></a>   <span class="at">.groups =</span> <span class="st">"drop"</span></span>
-<span id="cb55-7"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb59-2"><a></a>  <span class="fu">group_by</span>(species) <span class="sc">|&gt;</span> </span>
+<span id="cb59-3"><a></a>  <span class="fu">summarise</span>(</span>
+<span id="cb59-4"><a></a>    <span class="at">max_mass =</span> <span class="fu">max</span>(body_mass_g),</span>
+<span id="cb59-5"><a></a>    <span class="at">mean_bill_length =</span> <span class="fu">mean</span>(bill_length_mm),</span>
+<span id="cb59-6"><a></a>   <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb59-7"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 3
   species   max_mass mean_bill_length
@@ -1044,13 +1089,13 @@ Richard J. Telford (Richard.Telford@uib.no)
 <p><code>NA</code> - Not available - missing data</p>
 <p><code>NA</code> are contagious: what is <code>5 + NA</code>?</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb57-2"><a></a>  <span class="fu">group_by</span>(species) <span class="sc">|&gt;</span> </span>
-<span id="cb57-3"><a></a>  <span class="fu">summarise</span>(</span>
-<span id="cb57-4"><a></a>    <span class="at">max_mass =</span> <span class="fu">max</span>(body_mass_g, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb57-5"><a></a>    <span class="at">mean_bill_length =</span> <span class="fu">mean</span>(bill_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb57-6"><a></a>   <span class="at">.groups =</span> <span class="st">"drop"</span></span>
-<span id="cb57-7"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb61-2"><a></a>  <span class="fu">group_by</span>(species) <span class="sc">|&gt;</span> </span>
+<span id="cb61-3"><a></a>  <span class="fu">summarise</span>(</span>
+<span id="cb61-4"><a></a>    <span class="at">max_mass =</span> <span class="fu">max</span>(body_mass_g, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb61-5"><a></a>    <span class="at">mean_bill_length =</span> <span class="fu">mean</span>(bill_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb61-6"><a></a>   <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb61-7"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 3
   species   max_mass mean_bill_length
@@ -1064,8 +1109,8 @@ Richard J. Telford (Richard.Telford@uib.no)
 <section id="counting-rows" class="slide level2">
 <h2>Counting rows</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb59-2"><a></a>  <span class="fu">count</span>(species, island, sex)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb63-2"><a></a>  <span class="fu">count</span>(species, island, sex)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 13 × 4
   species island sex        n
@@ -1074,9 +1119,9 @@ Richard J. Telford (Richard.Telford@uib.no)
 2 Adelie  Biscoe male      22
 # ℹ 11 more rows</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
-<span id="cb61-2"><a></a>  <span class="fu">group_by</span>(species, island, sex) <span class="sc">|&gt;</span> </span>
-<span id="cb61-3"><a></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a></a>penguins <span class="sc">|&gt;</span> </span>
+<span id="cb65-2"><a></a>  <span class="fu">group_by</span>(species, island, sex) <span class="sc">|&gt;</span> </span>
+<span id="cb65-3"><a></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 13 × 4
   species island sex        n
@@ -1097,7 +1142,7 @@ Richard J. Telford (Richard.Telford@uib.no)
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a></a>band_members</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a></a>band_members</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 2
   name  band   
@@ -1109,7 +1154,7 @@ Richard J. Telford (Richard.Telford@uib.no)
 </div>
 </div><div class="column" style="width:50%;">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a></a>band_instruments</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a></a>band_instruments</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 2
   name  plays 
@@ -1122,8 +1167,8 @@ Richard J. Telford (Richard.Telford@uib.no)
 </div><p>. . .</p>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a></a>band_members <span class="sc">%&gt;%</span> </span>
-<span id="cb67-2"><a></a>  <span class="fu">left_join</span>(band_instruments, <span class="at">by =</span> <span class="fu">join_by</span>(name))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a></a>band_members <span class="sc">|&gt;</span>  </span>
+<span id="cb71-2"><a></a>  <span class="fu">left_join</span>(band_instruments, <span class="at">by =</span> <span class="fu">join_by</span>(name))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 3
   name  band    plays 
@@ -1144,9 +1189,9 @@ Richard J. Telford (Richard.Telford@uib.no)
 <section id="filtering-joins" class="slide level2">
 <h2>Filtering joins</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a></a><span class="co">#semi join</span></span>
-<span id="cb69-2"><a></a>band_members <span class="sc">%&gt;%</span> </span>
-<span id="cb69-3"><a></a>  <span class="fu">semi_join</span>(band_instruments, <span class="at">by =</span> <span class="fu">join_by</span>(name))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb73"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a></a><span class="co">#semi join</span></span>
+<span id="cb73-2"><a></a>band_members <span class="sc">|&gt;</span> </span>
+<span id="cb73-3"><a></a>  <span class="fu">semi_join</span>(band_instruments, <span class="at">by =</span> <span class="fu">join_by</span>(name))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 2
   name  band   
@@ -1154,9 +1199,9 @@ Richard J. Telford (Richard.Telford@uib.no)
 1 John  Beatles
 2 Paul  Beatles</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a></a><span class="co">#anti join</span></span>
-<span id="cb71-2"><a></a>band_members <span class="sc">%&gt;%</span> </span>
-<span id="cb71-3"><a></a>  <span class="fu">anti_join</span>(band_instruments, <span class="at">by =</span> <span class="fu">join_by</span>(name))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a></a><span class="co">#anti join</span></span>
+<span id="cb75-2"><a></a>band_members <span class="sc">|&gt;</span>  </span>
+<span id="cb75-3"><a></a>  <span class="fu">anti_join</span>(band_instruments, <span class="at">by =</span> <span class="fu">join_by</span>(name))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 2
   name  band  
