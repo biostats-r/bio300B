@@ -7,11 +7,13 @@
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-bd0f20613ab34a035844aaae9062fb4e.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bd0f20613ab34a035844aaae9062fb4e.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/quarto-contrib/live-runtime/live-runtime.js" type="module"></script>
+<link href="site_libs/quarto-contrib/live-runtime/live-runtime.css" rel="stylesheet"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.8.20">
 
   <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)">
-  <meta name="dcterms.date" content="2025-08-17">
+  <meta name="dcterms.date" content="2025-09-08">
   <title>Bio302 - Biostatistikk – Data visualisation</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -189,6 +191,8 @@
       margin-right: 0; 
     }
   </style>
+  <script type="module" src="site_libs/quarto-ojs/quarto-ojs-runtime.js"></script>
+  <link href="site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -209,7 +213,17 @@ Richard J. Telford (Richard.Telford@uib.no)
     </div>
 </div>
 
-  <p class="date">17 August 2025</p>
+  <p class="date">8 September 2025</p>
+</section>
+<section class="slide level2">
+
+<div class="cell">
+<style type="text/css">
+.shrink {
+  font-size: 60%;
+}
+</style>
+</div>
 </section>
 <section id="data-visualisation" class="slide level2">
 <h2>Data visualisation</h2>
@@ -225,11 +239,15 @@ Richard J. Telford (Richard.Telford@uib.no)
 <section id="ggplot2" class="slide level2">
 <h2>ggplot2</h2>
 <ul>
-<li>one of at three schemes for graphics in R</li>
+<li>one of at least three schemes for graphics in R</li>
 <li>part of tidyverse</li>
 </ul>
+<blockquote>
 <p>A system for ‘declaratively’ creating graphics, based on “The Grammar of Graphics”.</p>
+</blockquote>
+<blockquote>
 <p>You provide the data, tell ‘ggplot2’ how to map variables to aesthetics, what graphical primitives to use, it takes care of the details.</p>
+</blockquote>
 </section>
 <section id="ggplot-in-action" class="slide level2">
 <h2>ggplot in action</h2>
@@ -240,7 +258,7 @@ Richard J. Telford (Richard.Telford@uib.no)
 <span id="cb1-4"><a></a>         <span class="at">y =</span> bill_length_mm, </span>
 <span id="cb1-5"><a></a>         <span class="at">colour =</span> species)) <span class="sc">+</span></span>
 <span id="cb1-6"><a></a>  <span class="fu">geom_point</span>() <span class="sc">+</span>                    <span class="co"># Geometries</span></span>
-<span id="cb1-7"><a></a>  <span class="fu">scale_colour_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>) <span class="sc">+</span> <span class="co"># scales</span></span>
+<span id="cb1-7"><a></a>  <span class="fu">scale_colour_brewer</span>(<span class="at">palette =</span> <span class="st">"Set2"</span>) <span class="sc">+</span> <span class="co"># scales</span></span>
 <span id="cb1-8"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Body mass, g"</span>,          <span class="co"># labels</span></span>
 <span id="cb1-9"><a></a>       <span class="at">y =</span> <span class="st">"Bill length mm"</span>, </span>
 <span id="cb1-10"><a></a>       <span class="at">colour =</span> <span class="st">"Species"</span>) <span class="sc">+</span></span>
@@ -271,7 +289,7 @@ Richard J. Telford (Richard.Telford@uib.no)
 <span id="cb2-4"><a></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> species), <span class="at">data =</span> penguin_summary, <span class="at">colour =</span> <span class="st">"black"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
-<img data-src="lecture_4_data_visualisation_files/figure-revealjs/unnamed-chunk-1-1.png" width="960" class="r-stretch"></section>
+<img data-src="lecture_4_data_visualisation_files/figure-revealjs/unnamed-chunk-3-1.png" width="960" class="r-stretch"></section>
 <section id="aesthetics" class="slide level2">
 <h2>Aesthetics</h2>
 <p><code>mapping</code> specifies which variables in the data should be mapped onto which aesthetics with <code>aes()</code></p>
@@ -279,7 +297,7 @@ Richard J. Telford (Richard.Telford@uib.no)
 <p>Common aesthetics</p>
 <ul>
 <li>x, y</li>
-<li>fill, colour</li>
+<li>fill, colour, alpha</li>
 <li>shape</li>
 <li>linetype</li>
 <li>group</li>
@@ -335,46 +353,163 @@ Richard J. Telford (Richard.Telford@uib.no)
 </section>
 <section id="geoms-to-show-distributions" class="slide level2">
 <h2>Geoms to show distributions</h2>
+<h3 id="histogram">Histogram</h3>
+<p>Count how many observations in each bin</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>base <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm))</span>
-<span id="cb5-2"><a></a>hist <span class="ot">&lt;-</span> base <span class="sc">+</span> <span class="fu">geom_histogram</span>()</span>
-<span id="cb5-3"><a></a>dens <span class="ot">&lt;-</span> base <span class="sc">+</span> <span class="fu">geom_density</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm)) <span class="sc">+</span> <span class="fu">geom_histogram</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<p>Critical question - how many bins? Set with <code>bins</code> argument</p>
+<div class="cell" data-edit="false" data-define="do_penguins_hist">
+<div>
+<div id="webr-1" class="exercise-cell">
 
-<img data-src="lecture_4_data_visualisation_files/figure-revealjs/dist-1.png" width="960" class="r-stretch"></section>
+</div>
+<script type="webr-1-contents">
+eyJhdHRyIjp7ImF1dG9ydW4iOnRydWUsImRlZmluZSI6WyJkb19wZW5ndWluc19oaXN0Il0sImVkaXQiOmZhbHNlLCJldmFsIjp0cnVlLCJmaWctaGVpZ2h0IjoiNSIsImZpZy13aWR0aCI6IjExIiwibGFiZWwiOiJoaXN0LXdlYnIiLCJvdXRwdXQiOmZhbHNlfSwiY29kZSI6ImRvX3Blbmd1aW5zX2hpc3QgPC0gZnVuY3Rpb24oc3BlY2llcywgbWVhc3VyZSwgYmlucykge1xuICBcbnBlbmcgPC0gcGVuZ3VpbnNbcGVuZ3VpbnMkc3BlY2llcyA9PSBzcGVjaWVzLCBdWywgbWVhc3VyZSwgZHJvcCA9IFRSVUVdIHw+IFxuICBuYS5vbWl0KClcblxuYnJlYWtzIDwtIHNlcShtaW4ocGVuZyksIG1heChwZW5nKSwgbGVuZ3RoLm91dCA9IGJpbnMgKyAxKVxuXG5wYXIobWFyID0gYygzLCAzLCAxLCAxKSwgbWdwID0gYygxLjUsIDAuNSwgMCksIHRjbCA9IC0wLjMsIGNleCA9IDEuNSlcbmhpc3QocGVuZywgbWFpbiA9IHNwZWNpZXMsIGJyZWFrcyA9IGJyZWFrcyxcbiAgICAgeGxhYiA9IGdzdWIocGF0dGVybiA9IFwiX1wiLCByZXBsYWNlbWVudCA9IFwiIFwiLCB4ID0gbWVhc3VyZSksXG4gICAgIGNvbCA9IGMoQWRlbGllID0gXCIjOTkwMDAwOTBcIiwgQ2hpbnN0cmFwID0gXCIjMTEwMGRkOTBcIiwgR2VudG9vID0gXCIjMDBiYjEwOTBcIilbc3BlY2llc11cbiAgICAgKVxuaW52aXNpYmxlKClcbn0ifQ==
+</script>
+</div>
+</div>
+<div class="shrink">
+<div class="columns">
+<div class="column">
+<div id="hist-ojs" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb6" data-startfrom="200" data-source-offset="-1"><pre class="sourceCode numberSource js number-lines code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 199;"><span id="cb6-200"><a></a>viewof bins <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>(</span>
+<span id="cb6-201"><a></a>  [ <span class="dv">1</span><span class="op">,</span> <span class="dv">50</span> ]<span class="op">,</span> </span>
+<span id="cb6-202"><a></a>  { <span class="dt">label</span><span class="op">:</span> <span class="st">"Number of bins"</span><span class="op">,</span> <span class="dt">step</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">30</span> }<span class="op">,</span> </span>
+<span id="cb6-203"><a></a>)</span>
+<span id="cb6-204"><a></a></span>
+<span id="cb6-205"><a></a>viewof measure2 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
+<span id="cb6-206"><a></a>  [ <span class="st">"flipper_length_mm"</span><span class="op">,</span> <span class="st">"bill_length_mm"</span><span class="op">,</span> <span class="st">"bill_depth_mm"</span><span class="op">,</span> <span class="st">"body_mass_g"</span> ]<span class="op">,</span></span>
+<span id="cb6-207"><a></a>  { <span class="dt">label</span><span class="op">:</span> <span class="st">"Measure"</span> }</span>
+<span id="cb6-208"><a></a>)<span class="op">;</span></span>
+<span id="cb6-209"><a></a></span>
+<span id="cb6-210"><a></a>viewof species <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
+<span id="cb6-211"><a></a>  [ <span class="st">"Adelie"</span><span class="op">,</span> <span class="st">"Chinstrap"</span><span class="op">,</span> <span class="st">"Gentoo"</span> ]<span class="op">,</span></span>
+<span id="cb6-212"><a></a>  { <span class="dt">label</span><span class="op">:</span> <span class="st">"Species"</span> }</span>
+<span id="cb6-213"><a></a>)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="hist-ojs-1">
+<div id="ojs-cell-1-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="hist-ojs-2">
+<div id="ojs-cell-1-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="hist-ojs-3">
+<div id="ojs-cell-1-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+</div><div class="column">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb7" data-startfrom="220" data-source-offset="0"><pre class="sourceCode numberSource js number-lines code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 219;"><span id="cb7-220"><a></a><span class="fu">do_penguins_hist</span>(species<span class="op">,</span> measure2<span class="op">,</span> bins)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="hist2-ojs" class="cell-output cell-output-display">
+<div id="ojs-cell-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div></div>
+</div>
+</section>
+<section id="density" class="slide level2">
+<h2>Density</h2>
+<p>Smoothed histograms</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm)) <span class="sc">+</span> <span class="fu">geom_density</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="lecture_4_data_visualisation_files/figure-revealjs/unnamed-chunk-4-1.png" width="960" class="r-stretch"><p><code>adjust</code> argument adjusts bandwidth to control how smooth</p>
+<div class="cell" data-edit="false" data-define="do_penguins_density">
+<div>
+<div id="webr-2" class="exercise-cell">
+
+</div>
+<script type="webr-2-contents">
+eyJhdHRyIjp7ImF1dG9ydW4iOnRydWUsImRlZmluZSI6WyJkb19wZW5ndWluc19kZW5zaXR5Il0sImVkaXQiOmZhbHNlLCJldmFsIjp0cnVlLCJmaWctaGVpZ2h0IjoiNSIsImZpZy13aWR0aCI6IjExIiwibGFiZWwiOiJkZW5zaXR5LXdlYnIiLCJvdXRwdXQiOmZhbHNlfSwiY29kZSI6ImRvX3Blbmd1aW5zX2RlbnNpdHkgPC0gZnVuY3Rpb24obWVhc3VyZSwgYWRqdXN0KSB7XG4gIFxucGVuZ19kIDwtIHNwbGl0KHBlbmd1aW5zW1ttZWFzdXJlXV0sIGYgPSBwZW5ndWlucyRzcGVjaWVzKSB8PiBcbiAgbGFwcGx5KG5hLm9taXQpIHw+IFxuICBsYXBwbHkoZGVuc2l0eSwgYWRqdXN0ID0gYWRqdXN0KVxuXG5wYXIobWFyID0gYygzLCAzLCAxLCAxKSwgbWdwID0gYygxLjUsIDAuNSwgMCksIHRjbCA9IC0wLjMsIGNleCA9IDEuNSlcbnBsb3QocGVuZ19kW1sxXV0sIHR5cGUgPSBcIm5cIiwgbWFpbiA9IFwiXCIsIFxuICAgICB4bGFiID0gZ3N1YihwYXR0ZXJuID0gXCJfXCIsIHJlcGxhY2VtZW50ID0gXCIgXCIsIHggPSBtZWFzdXJlKSwgXG4gICAgIHhsaW0gPSByYW5nZShsYXBwbHkocGVuZ19kLCBcXChkKXJhbmdlKGQkeCkpKSxcbiAgICAgeWxpbSA9IHJhbmdlKGxhcHBseShwZW5nX2QsIFxcKGQpcmFuZ2UoZCR5KSkpKVxubWFwcGx5KFxcKGQsIGNvbClwb2x5Z29uKGQsIGNvbCA9IGNvbCwgYm9yZGVyID0gc3Vic3RyKGNvbCwgMSwgNykpLCBkID0gcGVuZ19kLCBjb2wgPSBjKFwiIzk5MDAwMDkwXCIsIFwiIzExMDBkZDkwXCIsIFwiIzAwYmIxMDkwXCIpKVxuaW52aXNpYmxlKClcbn0ifQ==
+</script>
+</div>
+</div>
+<div class="shrink">
+<div class="columns">
+<div class="column">
+<div id="density-ojs" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb9" data-startfrom="268" data-source-offset="-1"><pre class="sourceCode numberSource js number-lines code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 267;"><span id="cb9-268"><a></a>viewof adjust <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>(</span>
+<span id="cb9-269"><a></a>  [ <span class="fl">0.1</span><span class="op">,</span> <span class="dv">2</span> ]<span class="op">,</span> </span>
+<span id="cb9-270"><a></a>  { <span class="dt">label</span><span class="op">:</span> <span class="st">"Adjust density"</span><span class="op">,</span> <span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">1</span> }<span class="op">,</span> </span>
+<span id="cb9-271"><a></a>)</span>
+<span id="cb9-272"><a></a></span>
+<span id="cb9-273"><a></a>viewof measure <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
+<span id="cb9-274"><a></a>  [ <span class="st">"flipper_length_mm"</span><span class="op">,</span> <span class="st">"bill_length_mm"</span><span class="op">,</span> <span class="st">"bill_depth_mm"</span><span class="op">,</span> <span class="st">"body_mass_g"</span> ]<span class="op">,</span></span>
+<span id="cb9-275"><a></a>  { <span class="dt">label</span><span class="op">:</span> <span class="st">"Measure"</span> }</span>
+<span id="cb9-276"><a></a>)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="density-ojs-1">
+<div id="ojs-cell-3-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div id="density-ojs-2">
+<div id="ojs-cell-3-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+</div><div class="column">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb10" data-startfrom="283" data-source-offset="0"><pre class="sourceCode numberSource js number-lines code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 282;"><span id="cb10-283"><a></a><span class="fu">do_penguins_density</span>(measure<span class="op">,</span> adjust)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="density-ojs2" class="cell-output cell-output-display">
+<div id="ojs-cell-4" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div></div>
+</div>
+</section>
 <section id="geoms-to-show-many-distributions" class="slide level2">
 <h2>Geoms to show many distributions</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>base <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">y =</span> flipper_length_mm))</span>
-<span id="cb6-2"><a></a></span>
-<span id="cb6-3"><a></a>p_prange <span class="ot">&lt;-</span> base <span class="sc">+</span> <span class="fu">stat_summary</span>(<span class="at">fun =</span> <span class="st">"mean"</span>, <span class="at">geom =</span> <span class="st">"col"</span>)</span>
-<span id="cb6-4"><a></a>p_box <span class="ot">&lt;-</span> base <span class="sc">+</span> <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">fill =</span> species))</span>
-<span id="cb6-5"><a></a>p_vio <span class="ot">&lt;-</span> base <span class="sc">+</span> <span class="fu">geom_violin</span>(<span class="fu">aes</span>(<span class="at">fill =</span> species))</span>
-<span id="cb6-6"><a></a>p_jit <span class="ot">&lt;-</span> base <span class="sc">+</span> <span class="fu">geom_jitter</span>(<span class="fu">aes</span>(<span class="at">colour =</span> species))</span>
-<span id="cb6-7"><a></a><span class="fu">library</span>(ggbeeswarm)</span>
-<span id="cb6-8"><a></a>p_quasi <span class="ot">&lt;-</span> base <span class="sc">+</span> <span class="fu">geom_quasirandom</span>(<span class="fu">aes</span>(<span class="at">colour =</span> species))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>base <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">y =</span> flipper_length_mm))</span>
+<span id="cb11-2"><a></a></span>
+<span id="cb11-3"><a></a>p_prange <span class="ot">&lt;-</span> base <span class="sc">+</span> <span class="fu">stat_summary</span>(<span class="at">fun =</span> <span class="st">"mean"</span>, <span class="at">geom =</span> <span class="st">"col"</span>)</span>
+<span id="cb11-4"><a></a>p_box <span class="ot">&lt;-</span> base <span class="sc">+</span> <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">fill =</span> species))</span>
+<span id="cb11-5"><a></a>p_vio <span class="ot">&lt;-</span> base <span class="sc">+</span> <span class="fu">geom_violin</span>(<span class="fu">aes</span>(<span class="at">fill =</span> species))</span>
+<span id="cb11-6"><a></a>p_jit <span class="ot">&lt;-</span> base <span class="sc">+</span> <span class="fu">geom_jitter</span>(<span class="fu">aes</span>(<span class="at">colour =</span> species))</span>
+<span id="cb11-7"><a></a><span class="fu">library</span>(ggbeeswarm)</span>
+<span id="cb11-8"><a></a>p_quasi <span class="ot">&lt;-</span> base <span class="sc">+</span> <span class="fu">geom_quasirandom</span>(<span class="fu">aes</span>(<span class="at">colour =</span> species))</span>
+<span id="cb11-9"><a></a>p_quasi2 <span class="ot">&lt;-</span> base <span class="sc">+</span> <span class="fu">geom_violin</span>(<span class="fu">aes</span>(<span class="at">fill =</span> species), <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb11-10"><a></a>  <span class="fu">geom_quasirandom</span>(<span class="fu">aes</span>(<span class="at">colour =</span> species))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section class="slide level2">
 
 
-<img data-src="lecture_4_data_visualisation_files/figure-revealjs/boxplots-etc-plot-1.png" width="864" class="r-stretch"></section>
+<img data-src="lecture_4_data_visualisation_files/figure-revealjs/boxplots-etc-plot-1.png" width="1152" class="r-stretch"></section>
 <section id="boxplots-can-mislead" class="slide level2">
 <h2>Boxplots can mislead</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>p <span class="ot">&lt;-</span> datasauRus<span class="sc">::</span>box_plots <span class="sc">|&gt;</span> </span>
-<span id="cb7-2"><a></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>()) <span class="sc">|&gt;</span> </span>
-<span id="cb7-3"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> name, <span class="at">y =</span> value))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in loadNamespace(x): there is no package called 'datasauRus'</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>p <span class="ot">&lt;-</span> datasauRus<span class="sc">::</span>box_plots <span class="sc">|&gt;</span> </span>
+<span id="cb12-2"><a></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb12-3"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> name, <span class="at">y =</span> value))</span>
+<span id="cb12-4"><a></a></span>
+<span id="cb12-5"><a></a>p <span class="sc">+</span> <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb12-6"><a></a>p <span class="sc">+</span> <span class="fu">geom_violin</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>p <span class="sc">+</span> <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
-<span id="cb9-2"><a></a>p <span class="sc">+</span> <span class="fu">geom_violin</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error: object 'p' not found</code></pre>
-</div>
-</div>
-</section>
+<img data-src="lecture_4_data_visualisation_files/figure-revealjs/datasaurus-1.png" width="960" class="r-stretch"></section>
 <section id="show-the-raw-data" class="slide level2">
 <h2>Show the raw data</h2>
 <div class="cell">
@@ -393,12 +528,12 @@ Richard J. Telford (Richard.Telford@uib.no)
 <section id="geoms-for-scatterplots" class="slide level2">
 <h2>geoms for scatterplots</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> body_mass_g,  <span class="at">y =</span> bill_length_mm, <span class="at">colour =</span> species)) <span class="sc">+</span></span>
-<span id="cb11-2"><a></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb11-3"><a></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> body_mass_g,  <span class="at">y =</span> bill_length_mm, <span class="at">colour =</span> species)) <span class="sc">+</span></span>
+<span id="cb13-2"><a></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb13-3"><a></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
-<img data-src="lecture_4_data_visualisation_files/figure-revealjs/unnamed-chunk-3-1.png" width="960" class="r-stretch"></section>
+<img data-src="lecture_4_data_visualisation_files/figure-revealjs/unnamed-chunk-5-1.png" width="960" class="r-stretch"></section>
 <section id="scales" class="slide level2">
 <h2>Scales</h2>
 <p>Control how</p>
@@ -420,12 +555,12 @@ Richard J. Telford (Richard.Telford@uib.no)
 <li>plot, axis and legend titles</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> body_mass_g, <span class="at">y =</span> bill_length_mm, <span class="at">colour =</span> species)) <span class="sc">+</span></span>
-<span id="cb12-2"><a></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb12-3"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Body mass g"</span>,</span>
-<span id="cb12-4"><a></a>       <span class="at">y =</span> <span class="st">"Bill length mm"</span>, </span>
-<span id="cb12-5"><a></a>       <span class="at">colour =</span> <span class="st">"Species"</span>, </span>
-<span id="cb12-6"><a></a>       <span class="at">title =</span> <span class="st">"Bill length against body mass "</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a><span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> body_mass_g, <span class="at">y =</span> bill_length_mm, <span class="at">colour =</span> species)) <span class="sc">+</span></span>
+<span id="cb14-2"><a></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb14-3"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Body mass g"</span>,</span>
+<span id="cb14-4"><a></a>       <span class="at">y =</span> <span class="st">"Bill length mm"</span>, </span>
+<span id="cb14-5"><a></a>       <span class="at">colour =</span> <span class="st">"Species"</span>, </span>
+<span id="cb14-6"><a></a>       <span class="at">title =</span> <span class="st">"Bill length against body mass "</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="lecture_4_data_visualisation_files/figure-revealjs/labs-1.png" width="960" class="r-stretch"></section>
@@ -433,7 +568,7 @@ Richard J. Telford (Richard.Telford@uib.no)
 <h2>Facets</h2>
 <p>Split data into separate panels.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>plot <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="at">facets =</span> <span class="fu">vars</span>(species))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>plot <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="at">facets =</span> <span class="fu">vars</span>(species))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="lecture_4_data_visualisation_files/figure-revealjs/facets-1.png" width="960" class="r-stretch"></section>
@@ -441,9 +576,10 @@ Richard J. Telford (Richard.Telford@uib.no)
 
 <p><code>facet_grid()</code> for two dimensional arrays of subplots</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>plot <span class="sc">+</span> <span class="fu">facet_grid</span>(<span class="at">rows =</span> <span class="fu">vars</span>(species),</span>
-<span id="cb14-2"><a></a>                  <span class="at">cols =</span> <span class="fu">vars</span>(island)</span>
-<span id="cb14-3"><a></a>                  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>plot <span class="sc">+</span> <span class="fu">facet_grid</span>(</span>
+<span id="cb16-2"><a></a>  <span class="at">rows =</span> <span class="fu">vars</span>(species),</span>
+<span id="cb16-3"><a></a>  <span class="at">cols =</span> <span class="fu">vars</span>(island)</span>
+<span id="cb16-4"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="lecture_4_data_visualisation_files/figure-revealjs/facet-grid-1.png" width="960" class="r-stretch"></section>
@@ -457,14 +593,14 @@ Richard J. Telford (Richard.Telford@uib.no)
 <h2>Themes</h2>
 <p>Can also change individual elements</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>plot <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>plot <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="lecture_4_data_visualisation_files/figure-revealjs/theme2-1.png" width="960" class="r-stretch"></section>
 <section id="removing-elements" class="slide level2">
 <h2>Removing elements</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>plot <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">panel.grid =</span> <span class="fu">element_blank</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>plot <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">panel.grid =</span> <span class="fu">element_blank</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="lecture_4_data_visualisation_files/figure-revealjs/theme3-1.png" width="960" class="r-stretch"></section>
@@ -472,55 +608,57 @@ Richard J. Telford (Richard.Telford@uib.no)
 <h2>Colour &amp; fills</h2>
 
 <img data-src="lecture_4_data_visualisation_files/figure-revealjs/fill-colour-1.png" width="960" class="r-stretch"></section>
+<section id="avoid-primary-colours" class="slide level2">
+<h2>Avoid primary colours</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a><span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">fill =</span> species)) <span class="sc">+</span></span>
+<span id="cb19-2"><a></a>  <span class="fu">geom_histogram</span>() <span class="sc">+</span></span>
+<span id="cb19-3"><a></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span>)) <span class="sc">+</span></span>
+<span id="cb19-4"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Flipper length mm"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="lecture_4_data_visualisation_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch"></section>
 <section id="colour-deficient-vision" class="slide level2">
 <h2>Colour deficient vision</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>den <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> bill_length_mm, <span class="at">fill =</span> species)) <span class="sc">+</span></span>
-<span id="cb17-2"><a></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.7</span>)</span>
-<span id="cb17-3"><a></a>den</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>den <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> bill_length_mm, <span class="at">fill =</span> species)) <span class="sc">+</span></span>
+<span id="cb20-2"><a></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.7</span>)</span>
+<span id="cb20-3"><a></a>den</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="lecture_4_data_visualisation_files/figure-revealjs/cvd-1.png" width="768" class="r-stretch"></section>
 <section class="slide level2">
 
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>colorBlindness<span class="sc">::</span><span class="fu">cvdPlot</span>(den)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in loadNamespace(x): there is no package called 'colorBlindness'</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>colorBlindness<span class="sc">::</span><span class="fu">cvdPlot</span>(den)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
 </div>
-</div>
-</section>
+<img data-src="lecture_4_data_visualisation_files/figure-revealjs/cvd-grid-1.png" width="864" class="r-stretch"></section>
 <section id="end-rainbow" class="slide level2">
 <h2>#End rainbow</h2>
 
 <img data-src="figures/jpe12646-fig-0003-m.webp" class="r-stretch"></section>
 <section id="section" class="slide level2">
 <h2></h2>
-<div class="cell">
-<div class="cell-output cell-output-error">
-<pre><code>Error in loadNamespace(x): there is no package called 'colorBlindness'</code></pre>
-</div>
-</div>
-</section>
+
+<img data-src="lecture_4_data_visualisation_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"></section>
 <section id="better-colour-scale" class="slide level2">
 <h2>Better colour scale</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>den <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> bill_length_mm, <span class="at">fill =</span> species)) <span class="sc">+</span></span>
-<span id="cb21-2"><a></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb21-3"><a></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>)</span>
-<span id="cb21-4"><a></a>den</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>den <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> bill_length_mm, <span class="at">fill =</span> species)) <span class="sc">+</span></span>
+<span id="cb22-2"><a></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb22-3"><a></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set2"</span>)</span>
+<span id="cb22-4"><a></a>den</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="lecture_4_data_visualisation_files/figure-revealjs/cvd2-1.png" width="768" class="r-stretch"></section>
 <section class="slide level2">
 
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>colorBlindness<span class="sc">::</span><span class="fu">cvdPlot</span>(den)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in loadNamespace(x): there is no package called 'colorBlindness'</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>colorBlindness<span class="sc">::</span><span class="fu">cvdPlot</span>(den)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
 </div>
-</div>
-</section>
+<img data-src="lecture_4_data_visualisation_files/figure-revealjs/cvd2-grid-1.png" width="864" class="r-stretch"></section>
 <section id="using-colour-effectively" class="slide level2">
 <h2>Using colour effectively</h2>
 <p>Choose an appropriate palette.</p>
@@ -561,35 +699,36 @@ Richard J. Telford (Richard.Telford@uib.no)
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a><span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> body_mass_g, <span class="at">y =</span> flipper_length_mm)) <span class="sc">+</span></span>
 <span id="cb28-2"><a></a>  <span class="fu">geom_point</span>(<span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
 <span id="cb28-3"><a></a>  gghighlight<span class="sc">::</span><span class="fu">gghighlight</span>(species <span class="sc">==</span> <span class="st">"Chinstrap"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in loadNamespace(x): there is no package called 'gghighlight'</code></pre>
+
 </div>
-</div>
-</section>
+<img data-src="lecture_4_data_visualisation_files/figure-revealjs/highlight-1.png" width="960" class="r-stretch"></section>
 <section id="redundant-encoding" class="slide level2">
 <h2>Redundant encoding</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a><span class="fu">ggplot</span>(penguins, </span>
-<span id="cb30-2"><a></a>       <span class="fu">aes</span>(<span class="at">x =</span> body_mass_g,</span>
-<span id="cb30-3"><a></a>           <span class="at">y =</span> flipper_length_mm,</span>
-<span id="cb30-4"><a></a>           <span class="at">colour =</span> species,</span>
-<span id="cb30-5"><a></a>           <span class="at">shape =</span> species)) <span class="sc">+</span></span>
-<span id="cb30-6"><a></a>  <span class="fu">geom_point</span>() </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a><span class="fu">ggplot</span>(penguins, </span>
+<span id="cb29-2"><a></a>       <span class="fu">aes</span>(<span class="at">x =</span> body_mass_g,</span>
+<span id="cb29-3"><a></a>           <span class="at">y =</span> flipper_length_mm,</span>
+<span id="cb29-4"><a></a>           <span class="at">colour =</span> species,</span>
+<span id="cb29-5"><a></a>           <span class="at">shape =</span> species)) <span class="sc">+</span></span>
+<span id="cb29-6"><a></a>  <span class="fu">geom_point</span>() </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
-<img data-src="lecture_4_data_visualisation_files/figure-revealjs/unnamed-chunk-5-1.png" width="960" class="r-stretch"></section>
+<img data-src="lecture_4_data_visualisation_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"></section>
 <section id="avoiding-legends" class="slide level2">
 <h2>Avoiding legends</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a><span class="fu">library</span>(directlabels)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in library(directlabels): there is no package called 'directlabels'</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a></a><span class="fu">library</span>(directlabels)</span>
+<span id="cb30-2"><a></a><span class="fu">direct.label</span>(plot) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a><span class="fu">direct.label</span>(plot) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in direct.label(plot): could not find function "direct.label"</code></pre>
-</div>
-</div>
+<img data-src="lecture_4_data_visualisation_files/figure-revealjs/direct-labels-1.png" width="960" class="r-stretch"></section>
+<section id="avoiding-overplotting" class="slide level2">
+<h2>Avoiding overplotting</h2>
+<p>Problem - points plot on top of each other.</p>
+
+<img data-src="lecture_4_data_visualisation_files/figure-revealjs/overplotting-1.png" width="1056" class="r-stretch"><ul>
+<li>also jitter for ~discrete data</li>
+</ul>
 </section>
 <section id="most-common-mistake-in-presentations" class="slide level2">
 <h2>Most common mistake in presentations</h2>
@@ -597,19 +736,40 @@ Richard J. Telford (Richard.Telford@uib.no)
 <img data-src="lecture_4_data_visualisation_files/figure-revealjs/common-mistake-1.png" alt="plot with very small labels" width="960" class="r-stretch"><div class="fragment">
 <h3 id="solution">Solution</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a><span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">18</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a><span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">18</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </section>
 <section id="summary" class="slide level2">
 <h2>Summary</h2>
 <ul>
-<li>You can plot anything you can imagine</li>
+<li>If you can imagine it, you can plot it</li>
 <li>Whole ecosystem of packages to help</li>
-<li><a href="https://www.r-bloggers.com/2021/12/a-year-of-tidytuesday/">#tidytuesday</a> for inspiration</li>
 </ul>
+</section>
+<section id="further-reading" class="slide level2">
+<h2>Further reading</h2>
+<h4 id="fundamentals-of-data-visualization"><a href="https://clauswilke.com/dataviz/">Fundamentals of Data Visualization</a></h4>
 
 
+
+<img data-src="figures/fdv-cover.png" alt="Front cover of Fundamentals of Data Visualization showing a Western Rosella Parakeet" width="304" class="r-stretch"><script type="webr-data">
+eyJvcHRpb25zIjp7ImJhc2VVcmwiOiJodHRwczovL3dlYnIuci13YXNtLm9yZy92MC41LjQvIn0sInBhY2thZ2VzIjp7InBrZ3MiOlsiZXZhbHVhdGUiLCJrbml0ciIsImh0bWx0b29scyIsInBhbG1lcnBlbmd1aW5zIl0sInJlcG9zIjpbXX0sInJlbmRlcl9kZiI6ImRlZmF1bHQifQ==
+</script>
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W3siY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC0yIiwiaW5saW5lIjpmYWxzZSwibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoie1xuICAvLyBXYWl0IGZvciBvdXRwdXQgdG8gYmUgd3JpdHRlbiB0byB0aGUgRE9NLCB0aGVuIHRyaWdnZXIgd2lkZ2V0IHJlbmRlcmluZ1xuICBhd2FpdCBfd2Vicl92YWx1ZV8yO1xuICBpZiAod2luZG93LkhUTUxXaWRnZXRzKSB7XG4gICAgd2luZG93LkhUTUxXaWRnZXRzLnN0YXRpY1JlbmRlcigpO1xuICB9XG4gIGlmICh3aW5kb3cuUGFnZWRUYWJsZURvYykge1xuICAgIHdpbmRvdy5QYWdlZFRhYmxlRG9jLmluaXRBbGwoKTtcbiAgfVxufVxuIn0seyJjZWxsTmFtZSI6IndlYnItMiIsImlubGluZSI6ZmFsc2UsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJzb3VyY2UiOiJfd2Vicl92YWx1ZV8yID0ge1xuICBjb25zdCB7IGhpZ2hsaWdodFIsIGI2NERlY29kZSB9ID0gd2luZG93Ll9leGVyY2lzZV9vanNfcnVudGltZTtcbiAgY29uc3Qgc2NyaXB0Q29udGVudCA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoYHNjcmlwdFt0eXBlPVxcXCJ3ZWJyLTItY29udGVudHNcXFwiXWApLnRleHRDb250ZW50O1xuICBjb25zdCBibG9jayA9IEpTT04ucGFyc2UoYjY0RGVjb2RlKHNjcmlwdENvbnRlbnQpKTtcblxuICAvLyBEZWZhdWx0IGV2YWx1YXRpb24gY29uZmlndXJhdGlvblxuICBjb25zdCBvcHRpb25zID0gT2JqZWN0LmFzc2lnbih7XG4gICAgaWQ6IFwid2Vici0yLWNvbnRlbnRzXCIsXG4gICAgZWNobzogdHJ1ZSxcbiAgICBvdXRwdXQ6IHRydWVcbiAgfSwgYmxvY2suYXR0cik7XG5cbiAgLy8gRXZhbHVhdGUgdGhlIHByb3ZpZGVkIFIgY29kZVxuICBjb25zdCByZXN1bHQgPSB3ZWJST2pzLnByb2Nlc3Moe2NvZGU6IGJsb2NrLmNvZGUsIG9wdGlvbnN9LCB7fSk7XG5cbiAgLy8gRWFybHkgeWllbGQgd2hpbGUgd2Ugd2FpdCBmb3IgdGhlIGZpcnN0IGV2YWx1YXRpb24gYW5kIHJlbmRlclxuICBpZiAob3B0aW9ucy5vdXRwdXQgJiYgIShcIjJcIiBpbiB3ZWJST2pzLnJlbmRlcmVkT2pzKSkge1xuICAgIGNvbnN0IGNvbnRhaW5lciA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoXCJkaXZcIik7XG4gICAgY29uc3Qgc3Bpbm5lciA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoXCJkaXZcIik7XG5cbiAgICBpZiAob3B0aW9ucy5lY2hvKSB7XG4gICAgICAvLyBTaG93IG91dHB1dCBhcyBoaWdobGlnaHRlZCBzb3VyY2VcbiAgICAgIGNvbnN0IHByZUVsZW0gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KFwicHJlXCIpO1xuICAgICAgY29udGFpbmVyLmNsYXNzTmFtZSA9IFwic291cmNlQ29kZVwiO1xuICAgICAgcHJlRWxlbS5jbGFzc05hbWUgPSBcInNvdXJjZUNvZGUgclwiO1xuICAgICAgcHJlRWxlbS5hcHBlbmRDaGlsZChoaWdobGlnaHRSKGJsb2NrLmNvZGUpKTtcbiAgICAgIHNwaW5uZXIuY2xhc3NOYW1lID0gXCJzcGlubmVyLWdyb3cgc3Bpbm5lci1ncm93LXNtIG0tMiBwb3NpdGlvbi1hYnNvbHV0ZSB0b3AtMCBlbmQtMFwiO1xuICAgICAgcHJlRWxlbS5hcHBlbmRDaGlsZChzcGlubmVyKTtcbiAgICAgIGNvbnRhaW5lci5hcHBlbmRDaGlsZChwcmVFbGVtKTtcbiAgICB9IGVsc2Uge1xuICAgICAgc3Bpbm5lci5jbGFzc05hbWUgPSBcInNwaW5uZXItYm9yZGVyIHNwaW5uZXItYm9yZGVyLXNtXCI7XG4gICAgICBjb250YWluZXIuYXBwZW5kQ2hpbGQoc3Bpbm5lcik7XG4gICAgfVxuXG4gICAgeWllbGQgY29udGFpbmVyO1xuICB9XG5cbiAgd2ViUk9qcy5yZW5kZXJlZE9qc1tcIjJcIl0gPSB0cnVlO1xuICB5aWVsZCBhd2FpdCByZXN1bHQ7XG59XG4ifSx7ImNlbGxOYW1lIjoid2Vici13aWRnZXQtMSIsImlubGluZSI6ZmFsc2UsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsInNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfMTtcbiAgaWYgKHdpbmRvdy5IVE1MV2lkZ2V0cykge1xuICAgIHdpbmRvdy5IVE1MV2lkZ2V0cy5zdGF0aWNSZW5kZXIoKTtcbiAgfVxuICBpZiAod2luZG93LlBhZ2VkVGFibGVEb2MpIHtcbiAgICB3aW5kb3cuUGFnZWRUYWJsZURvYy5pbml0QWxsKCk7XG4gIH1cbn1cbiJ9LHsiY2VsbE5hbWUiOiJ3ZWJyLTEiLCJpbmxpbmUiOmZhbHNlLCJtZXRob2ROYW1lIjoiaW50ZXJwcmV0Iiwic291cmNlIjoiX3dlYnJfdmFsdWVfMSA9IHtcbiAgY29uc3QgeyBoaWdobGlnaHRSLCBiNjREZWNvZGUgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG4gIGNvbnN0IHNjcmlwdENvbnRlbnQgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKGBzY3JpcHRbdHlwZT1cXFwid2Vici0xLWNvbnRlbnRzXFxcIl1gKS50ZXh0Q29udGVudDtcbiAgY29uc3QgYmxvY2sgPSBKU09OLnBhcnNlKGI2NERlY29kZShzY3JpcHRDb250ZW50KSk7XG5cbiAgLy8gRGVmYXVsdCBldmFsdWF0aW9uIGNvbmZpZ3VyYXRpb25cbiAgY29uc3Qgb3B0aW9ucyA9IE9iamVjdC5hc3NpZ24oe1xuICAgIGlkOiBcIndlYnItMS1jb250ZW50c1wiLFxuICAgIGVjaG86IHRydWUsXG4gICAgb3V0cHV0OiB0cnVlXG4gIH0sIGJsb2NrLmF0dHIpO1xuXG4gIC8vIEV2YWx1YXRlIHRoZSBwcm92aWRlZCBSIGNvZGVcbiAgY29uc3QgcmVzdWx0ID0gd2ViUk9qcy5wcm9jZXNzKHtjb2RlOiBibG9jay5jb2RlLCBvcHRpb25zfSwge30pO1xuXG4gIC8vIEVhcmx5IHlpZWxkIHdoaWxlIHdlIHdhaXQgZm9yIHRoZSBmaXJzdCBldmFsdWF0aW9uIGFuZCByZW5kZXJcbiAgaWYgKG9wdGlvbnMub3V0cHV0ICYmICEoXCIxXCIgaW4gd2ViUk9qcy5yZW5kZXJlZE9qcykpIHtcbiAgICBjb25zdCBjb250YWluZXIgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KFwiZGl2XCIpO1xuICAgIGNvbnN0IHNwaW5uZXIgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KFwiZGl2XCIpO1xuXG4gICAgaWYgKG9wdGlvbnMuZWNobykge1xuICAgICAgLy8gU2hvdyBvdXRwdXQgYXMgaGlnaGxpZ2h0ZWQgc291cmNlXG4gICAgICBjb25zdCBwcmVFbGVtID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudChcInByZVwiKTtcbiAgICAgIGNvbnRhaW5lci5jbGFzc05hbWUgPSBcInNvdXJjZUNvZGVcIjtcbiAgICAgIHByZUVsZW0uY2xhc3NOYW1lID0gXCJzb3VyY2VDb2RlIHJcIjtcbiAgICAgIHByZUVsZW0uYXBwZW5kQ2hpbGQoaGlnaGxpZ2h0UihibG9jay5jb2RlKSk7XG4gICAgICBzcGlubmVyLmNsYXNzTmFtZSA9IFwic3Bpbm5lci1ncm93IHNwaW5uZXItZ3Jvdy1zbSBtLTIgcG9zaXRpb24tYWJzb2x1dGUgdG9wLTAgZW5kLTBcIjtcbiAgICAgIHByZUVsZW0uYXBwZW5kQ2hpbGQoc3Bpbm5lcik7XG4gICAgICBjb250YWluZXIuYXBwZW5kQ2hpbGQocHJlRWxlbSk7XG4gICAgfSBlbHNlIHtcbiAgICAgIHNwaW5uZXIuY2xhc3NOYW1lID0gXCJzcGlubmVyLWJvcmRlciBzcGlubmVyLWJvcmRlci1zbVwiO1xuICAgICAgY29udGFpbmVyLmFwcGVuZENoaWxkKHNwaW5uZXIpO1xuICAgIH1cblxuICAgIHlpZWxkIGNvbnRhaW5lcjtcbiAgfVxuXG4gIHdlYlJPanMucmVuZGVyZWRPanNbXCIxXCJdID0gdHJ1ZTtcbiAgeWllbGQgYXdhaXQgcmVzdWx0O1xufVxuIn0seyJjZWxsTmFtZSI6IndlYnItcHJlbHVkZSIsImlubGluZSI6ZmFsc2UsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsInNvdXJjZSI6IndlYlJPanMgPSB7XG4gIGNvbnN0IHsgV2ViUiwgQ2hhbm5lbFR5cGUgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWUuV2ViUjtcbiAgY29uc3Qge1xuICAgIFdlYlJFdmFsdWF0b3IsXG4gICAgV2ViUkVudmlyb25tZW50TWFuYWdlcixcbiAgICBzZXR1cFIsXG4gICAgYjY0RGVjb2RlLFxuICAgIGNvbGxhcHNlUGF0aFxuICB9ID0gd2luZG93Ll9leGVyY2lzZV9vanNfcnVudGltZTtcblxuICBjb25zdCBzdGF0dXNDb250YWluZXIgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZChcImV4ZXJjaXNlLWxvYWRpbmctc3RhdHVzXCIpO1xuICBjb25zdCBpbmRpY2F0b3JDb250YWluZXIgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZChcImV4ZXJjaXNlLWxvYWRpbmctaW5kaWNhdG9yXCIpO1xuICBpbmRpY2F0b3JDb250YWluZXIuY2xhc3NMaXN0LnJlbW92ZShcImQtbm9uZVwiKTtcblxuICBsZXQgc3RhdHVzVGV4dCA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoXCJkaXZcIilcbiAgc3RhdHVzVGV4dC5jbGFzc0xpc3QgPSBcImV4ZXJjaXNlLWxvYWRpbmctZGV0YWlsc1wiO1xuICBzdGF0dXNUZXh0ID0gc3RhdHVzQ29udGFpbmVyLmFwcGVuZENoaWxkKHN0YXR1c1RleHQpO1xuICBzdGF0dXNUZXh0LnRleHRDb250ZW50ID0gYEluaXRpYWxpc2VgO1xuXG4gIC8vIEhvaXN0IGluZGljYXRvciBvdXQgZnJvbSBmaW5hbCBzbGlkZSB3aGVuIHJ1bm5pbmcgdW5kZXIgcmV2ZWFsXG4gIGNvbnN0IHJldmVhbFN0YXR1cyA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoXCIucmV2ZWFsIC5leGVyY2lzZS1sb2FkaW5nLWluZGljYXRvclwiKTtcbiAgaWYgKHJldmVhbFN0YXR1cykge1xuICAgIHJldmVhbFN0YXR1cy5yZW1vdmUoKTtcbiAgICBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKFwiLnJldmVhbCA+IC5zbGlkZXNcIikuYXBwZW5kQ2hpbGQocmV2ZWFsU3RhdHVzKTtcbiAgfVxuXG4gIC8vIE1ha2UgYW55IHJldmVhbCBzbGlkZXMgd2l0aCBsaXZlIGNlbGxzIHNjcm9sbGFibGVcbiAgZG9jdW1lbnQucXVlcnlTZWxlY3RvckFsbChcIi5yZXZlYWwgLmV4ZXJjaXNlLWNlbGxcIikuZm9yRWFjaCgoZWwpID0+IHtcbiAgICBlbC5jbG9zZXN0KCdzZWN0aW9uLnNsaWRlJykuY2xhc3NMaXN0LmFkZChcInNjcm9sbGFibGVcIik7XG4gIH0pXG5cbiAgLy8gd2ViUiBzdXBwbGVtZW50YWwgZGF0YSBhbmQgb3B0aW9uc1xuICBjb25zdCBkYXRhQ29udGVudCA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoYHNjcmlwdFt0eXBlPVxcXCJ3ZWJyLWRhdGFcXFwiXWApLnRleHRDb250ZW50O1xuICBjb25zdCBkYXRhID0gSlNPTi5wYXJzZShiNjREZWNvZGUoZGF0YUNvbnRlbnQpKTtcblxuICAvLyBHcmFiIGxpc3Qgb2YgcmVzb3VyY2VzIHRvIGJlIGRvd25sb2FkZWRcbiAgY29uc3QgZmlsZXNDb250ZW50ID0gZG9jdW1lbnQucXVlcnlTZWxlY3Rvcihgc2NyaXB0W3R5cGU9XFxcInZmcy1maWxlXFxcIl1gKS50ZXh0Q29udGVudDtcbiAgY29uc3QgZmlsZXMgPSBKU09OLnBhcnNlKGI2NERlY29kZShmaWxlc0NvbnRlbnQpKTtcblxuICAvLyBVc2UgUG9zdE1lc3NhZ2UgY2hhbm5lbCBmb3IgYXN5bmMgY29tbXVuaWNhdGlvblxuICAvLyBXZSBkbyBub3QgZXhwZWN0IHRvIHRha2UgbmVzdGVkIHByb21wdCBpbnB1dCBpbiBRdWFydG8gTGl2ZSBjZWxsc1xuICBkYXRhLm9wdGlvbnMuY2hhbm5lbFR5cGUgPSBDaGFubmVsVHlwZS5Qb3N0TWVzc2FnZTtcblxuICAvLyBJbml0aWFsaXNlIHdlYlIgYW5kIHNldHVwIGZvciBSIGNvZGUgZXZhbHVhdGlvblxuICBsZXQgd2ViUlByb21pc2UgPSAoYXN5bmMgKHdlYlIpID0+IHtcbiAgICBzdGF0dXNUZXh0LnRleHRDb250ZW50ID0gYERvd25sb2FkaW5nIHdlYlJgO1xuICAgIGF3YWl0IHdlYlIuaW5pdCgpO1xuXG4gICAgLy8gSW5zdGFsbCBwcm92aWRlZCBsaXN0IG9mIHBhY2thZ2VzXG4gICAgLy8gRW5zdXJlIHdlYlIgZGVmYXVsdCByZXBvIGlzIGluY2x1ZGVkXG4gICAgZGF0YS5wYWNrYWdlcy5yZXBvcy5wdXNoKFwiaHR0cHM6Ly9yZXBvLnItd2FzbS5vcmdcIilcbiAgICBhd2FpdCBkYXRhLnBhY2thZ2VzLnBrZ3MubWFwKChwa2cpID0+ICgpID0+IHtcbiAgICAgIHN0YXR1c1RleHQudGV4dENvbnRlbnQgPSBgRG93bmxvYWRpbmcgcGFja2FnZTogJHtwa2d9YDtcbiAgICAgIHJldHVybiB3ZWJSLmV2YWxSVm9pZChgXG4gICAgICAgIHdlYnI6Omluc3RhbGwocGtnLCByZXBvcyA9IHJlcG9zKVxuICAgICAgICBsaWJyYXJ5KHBrZywgY2hhcmFjdGVyLm9ubHkgPSBUUlVFKVxuICAgICAgYCwgeyBlbnY6IHtcbiAgICAgICAgcGtnOiBwa2csXG4gICAgICAgIHJlcG9zOiBkYXRhLnBhY2thZ2VzLnJlcG9zLFxuICAgICAgfX0pO1xuICAgIH0pLnJlZHVjZSgoY3VyLCBuZXh0KSA9PiBjdXIudGhlbihuZXh0KSwgUHJvbWlzZS5yZXNvbHZlKCkpO1xuXG4gICAgLy8gRG93bmxvYWQgYW5kIGluc3RhbGwgcmVzb3VyY2VzXG4gICAgYXdhaXQgZmlsZXMubWFwKChmaWxlKSA9PiBhc3luYyAoKSA9PiB7XG4gICAgICBjb25zdCBuYW1lID0gZmlsZS5zdWJzdHJpbmcoZmlsZS5sYXN0SW5kZXhPZignLycpICsgMSk7XG4gICAgICBzdGF0dXNUZXh0LnRleHRDb250ZW50ID0gYERvd25sb2FkaW5nIHJlc291cmNlOiAke25hbWV9YDtcbiAgICAgIGNvbnN0IHJlc3BvbnNlID0gYXdhaXQgZmV0Y2goZmlsZSk7XG4gICAgICBpZiAoIXJlc3BvbnNlLm9rKSB7XG4gICAgICAgIHRocm93IG5ldyBFcnJvcihgQ2FuJ3QgZG93bmxvYWQgXFxgJHtmaWxlfVxcYC4gRXJyb3IgJHtyZXNwb25zZS5zdGF0dXN9OiBcIiR7cmVzcG9uc2Uuc3RhdHVzVGV4dH1cIi5gKTtcbiAgICAgIH1cbiAgICAgIGNvbnN0IGRhdGEgPSBhd2FpdCByZXNwb25zZS5hcnJheUJ1ZmZlcigpO1xuXG4gICAgICAvLyBTdG9yZSBVUkxzIGluIHRoZSBjd2Qgd2l0aG91dCBhbnkgc3ViZGlyZWN0b3J5IHN0cnVjdHVyZVxuICAgICAgaWYgKGZpbGUuaW5jbHVkZXMoXCI6Ly9cIikpIHtcbiAgICAgICAgZmlsZSA9IG5hbWU7XG4gICAgICB9XG5cbiAgICAgIC8vIENvbGxhcHNlIGhpZ2hlciBkaXJlY3Rvcnkgc3RydWN0dXJlXG4gICAgICBmaWxlID0gY29sbGFwc2VQYXRoKGZpbGUpO1xuXG4gICAgICAvLyBDcmVhdGUgZGlyZWN0b3J5IHRyZWUsIGlnbm9yaW5nIFwiZGlyZWN0b3J5IGV4aXN0c1wiIFZGUyBlcnJvcnNcbiAgICAgIGNvbnN0IHBhcnRzID0gZmlsZS5zcGxpdCgnLycpLnNsaWNlKDAsIC0xKTtcbiAgICAgIGxldCBwYXRoID0gJyc7XG4gICAgICB3aGlsZSAocGFydHMubGVuZ3RoID4gMCkge1xuICAgICAgICBwYXRoICs9IHBhcnRzLnNoaWZ0KCkgKyAnLyc7XG4gICAgICAgIGNvbnN0IGFuYWx5c2lzID0gYXdhaXQgd2ViUi5GUy5hbmFseXplUGF0aChwYXRoKTtcbiAgICAgICAgaWYgKCFhbmFseXNpcy5leGlzdHMpIHtcbiAgICAgICAgICB0cnkge1xuICAgICAgICAgICAgYXdhaXQgd2ViUi5GUy5ta2RpcihwYXRoKTtcbiAgICAgICAgICB9IGNhdGNoIChlKSB7XG4gICAgICAgICAgICB0aHJvdyBuZXcgRXJyb3IoYEZpbGVzeXN0ZW0gRXJyb3I6IFwiJHtlLm1lc3NhZ2V9XCIuYCk7XG4gICAgICAgICAgfVxuICAgICAgICB9XG4gICAgICB9XG5cbiAgICAgIC8vIFdyaXRlIHRoaXMgZmlsZSB0byB0aGUgVkZTXG4gICAgICByZXR1cm4gYXdhaXQgd2ViUi5GUy53cml0ZUZpbGUoZmlsZSwgbmV3IFVpbnQ4QXJyYXkoZGF0YSkpO1xuICAgIH0pLnJlZHVjZSgoY3VyLCBuZXh0KSA9PiBjdXIudGhlbihuZXh0KSwgUHJvbWlzZS5yZXNvbHZlKCkpO1xuXG4gICAgc3RhdHVzVGV4dC50ZXh0Q29udGVudCA9IGBJbnN0YWxsaW5nIHdlYlIgc2hpbXNgO1xuICAgIGF3YWl0IHdlYlIuZXZhbFJWb2lkKGB3ZWJyOjpzaGltX2luc3RhbGwoKWApO1xuXG4gICAgc3RhdHVzVGV4dC50ZXh0Q29udGVudCA9IGBXZWJSIGVudmlyb25tZW50IHNldHVwYDtcbiAgICBhd2FpdCBzZXR1cFIod2ViUiwgZGF0YSk7XG5cbiAgICBzdGF0dXNUZXh0LnJlbW92ZSgpO1xuICAgIGlmIChzdGF0dXNDb250YWluZXIuY2hpbGRyZW4ubGVuZ3RoID09IDApIHtcbiAgICAgIHN0YXR1c0NvbnRhaW5lci5wYXJlbnROb2RlLnJlbW92ZSgpO1xuICAgIH1cbiAgICByZXR1cm4gd2ViUjtcbiAgfSkobmV3IFdlYlIoZGF0YS5vcHRpb25zKSk7XG5cbiAgLy8gS2VlcCB0cmFjayBvZiBpbml0aWFsIE9KUyBibG9jayByZW5kZXJcbiAgY29uc3QgcmVuZGVyZWRPanMgPSB7fTtcblxuICBjb25zdCBwcm9jZXNzID0gYXN5bmMgKGNvbnRleHQsIGlucHV0cykgPT4ge1xuICAgIGNvbnN0IHdlYlIgPSBhd2FpdCB3ZWJSUHJvbWlzZTtcbiAgICBjb25zdCBldmFsdWF0b3IgPSBuZXcgV2ViUkV2YWx1YXRvcih3ZWJSLCBjb250ZXh0KVxuICAgIGF3YWl0IGV2YWx1YXRvci5wcm9jZXNzKGlucHV0cyk7XG4gICAgcmV0dXJuIGV2YWx1YXRvci5jb250YWluZXI7XG4gIH1cblxuICByZXR1cm4ge1xuICAgIHByb2Nlc3MsXG4gICAgd2ViUlByb21pc2UsXG4gICAgcmVuZGVyZWRPanMsXG4gIH07XG59XG4ifV19
+</script>
+<div id="exercise-loading-indicator" class="exercise-loading-indicator d-none d-flex align-items-center gap-2">
+<div id="exercise-loading-status" class="d-flex gap-2">
+
+</div>
+<div class="spinner-grow spinner-grow-sm">
+
+</div>
+</div>
+<script type="vfs-file">
+W10=
+</script>
 </section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
@@ -825,6 +985,17 @@ Richard J. Telford (Richard.Telford@uib.no)
           RevealZoom
         ]
       });
+    </script>
+    <script type="ojs-module-contents">
+    eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldExlbmllbnQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTEiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcbnZpZXdvZiBiaW5zID0gSW5wdXRzLnJhbmdlKFxuICBbIDEsIDUwIF0sIFxuICB7IGxhYmVsOiBcIk51bWJlciBvZiBiaW5zXCIsIHN0ZXA6IDEsIHZhbHVlOiAzMCB9LCBcbilcblxudmlld29mIG1lYXN1cmUyID0gSW5wdXRzLnNlbGVjdChcbiAgWyBcImZsaXBwZXJfbGVuZ3RoX21tXCIsIFwiYmlsbF9sZW5ndGhfbW1cIiwgXCJiaWxsX2RlcHRoX21tXCIsIFwiYm9keV9tYXNzX2dcIiBdLFxuICB7IGxhYmVsOiBcIk1lYXN1cmVcIiB9XG4pO1xuXG52aWV3b2Ygc3BlY2llcyA9IElucHV0cy5zZWxlY3QoXG4gIFsgXCJBZGVsaWVcIiwgXCJDaGluc3RyYXBcIiwgXCJHZW50b29cIiBdLFxuICB7IGxhYmVsOiBcIlNwZWNpZXNcIiB9XG4pO1xuXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXRMZW5pZW50IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0yIiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiZG9fcGVuZ3VpbnNfaGlzdChzcGVjaWVzLCBtZWFzdXJlMiwgYmlucyk7XG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXRMZW5pZW50IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0zIiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiXG52aWV3b2YgYWRqdXN0ID0gSW5wdXRzLnJhbmdlKFxuICBbIDAuMSwgMiBdLCBcbiAgeyBsYWJlbDogXCJBZGp1c3QgZGVuc2l0eVwiLCBzdGVwOiAwLjEsIHZhbHVlOiAxIH0sIFxuKVxuXG52aWV3b2YgbWVhc3VyZSA9IElucHV0cy5zZWxlY3QoXG4gIFsgXCJmbGlwcGVyX2xlbmd0aF9tbVwiLCBcImJpbGxfbGVuZ3RoX21tXCIsIFwiYmlsbF9kZXB0aF9tbVwiLCBcImJvZHlfbWFzc19nXCIgXSxcbiAgeyBsYWJlbDogXCJNZWFzdXJlXCIgfVxuKTtcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldExlbmllbnQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTQiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcbmRvX3Blbmd1aW5zX2RlbnNpdHkobWVhc3VyZSwgYWRqdXN0KTtcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgnYmlucycpIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJzaGlueUlucHV0KCdtZWFzdXJlMicpIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJzaGlueUlucHV0KCdzcGVjaWVzJykifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsInNvdXJjZSI6InNoaW55SW5wdXQoJ2FkanVzdCcpIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJzaGlueUlucHV0KCdtZWFzdXJlJykifV19
+    </script>
+    <script type="module">
+    if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
+    window._ojs.paths.runtimeToDoc = "../..";
+    window._ojs.paths.runtimeToRoot = "../..";
+    window._ojs.paths.docToRoot = "";
+    window._ojs.selfContained = false;
+    window._ojs.runtime.interpretFromScriptTags();
     </script>
     
     <script>

@@ -6,13 +6,29 @@ institute: Institutt for biovitenskap, UiB
 date: today
 date-format: "D MMMM YYYY"
 format: 
-  revealjs:
+  live-revealjs:
     theme: [default, css/custom.scss]
 execute: 
   echo: true
   warning: false
   error: true
+webr:
+  cell-options:
+    autorun: true
+    fig-width: 11
+    fig-height: 5
+  packages:
+  - palmerpenguins
 ---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}} 
+
+```{css, echo=FALSE}
+.shrink {
+  font-size: 60%;
+}
+```
+
 
 ## Data visualisation
 
@@ -33,12 +49,12 @@ library(patchwork)
 
 ## ggplot2
 
-- one of at three schemes for graphics in R
+- one of at least three schemes for graphics in R
 - part of tidyverse
 
-A system for 'declaratively' creating graphics, based on "The Grammar of Graphics".
+> A system for 'declaratively' creating graphics, based on "The Grammar of Graphics".
 
-You provide the data, tell 'ggplot2' how to map variables to aesthetics, what graphical primitives to use, it takes care of the details.
+> You provide the data, tell 'ggplot2' how to map variables to aesthetics, what graphical primitives to use, it takes care of the details.
 
 ## ggplot in action
 
@@ -52,7 +68,7 @@ plot <- ggplot(data = penguins,     # Data
          y = bill_length_mm, 
          colour = species)) +
   geom_point() +                    # Geometries
-  scale_colour_brewer(palette = "Set1") + # scales
+  scale_colour_brewer(palette = "Set2") + # scales
   labs(x = "Body mass, g",          # labels
        y = "Bill length mm", 
        colour = "Species") +
@@ -90,7 +106,7 @@ Each geom takes different aesthetics
 Common aesthetics
 
 - x, y
-- fill, colour
+- fill, colour, alpha
 - shape
 - linetype
 - group
@@ -138,15 +154,141 @@ Many geoms, some in extra packages
 
 ## Geoms to show distributions
 
+### Histogram
+
+Count how many observations in each bin
+
 ```{r}
-base <- ggplot(penguins, aes(x = flipper_length_mm))
-hist <- base + geom_histogram()
-dens <- base + geom_density()
+#| label: hist-code
+#| eval: false
+
+ggplot(penguins, aes(x = flipper_length_mm)) + geom_histogram()
 ```
 
-```{r dist, echo = FALSE, fig.height = 6, message = FALSE}
-hist + dens
+Critical question - how many bins? Set with `bins` argument
+
+```{webr}
+#| label: hist-webr
+#| edit: false
+#| output: false
+#| define:
+#|   - do_penguins_hist
+do_penguins_hist <- function(species, measure, bins) {
+  
+peng <- penguins[penguins$species == species, ][, measure, drop = TRUE] |> 
+  na.omit()
+
+breaks <- seq(min(peng), max(peng), length.out = bins + 1)
+
+par(mar = c(3, 3, 1, 1), mgp = c(1.5, 0.5, 0), tcl = -0.3, cex = 1.5)
+hist(peng, main = species, breaks = breaks,
+     xlab = gsub(pattern = "_", replacement = " ", x = measure),
+     col = c(Adelie = "#99000090", Chinstrap = "#1100dd90", Gentoo = "#00bb1090")[species]
+     )
+invisible()
+}
+
 ```
+::: {.shrink}
+
+:::: {.columns}
+::: {.column}
+```{ojs}
+//| label: hist-ojs
+//| echo: false
+
+viewof bins = Inputs.range(
+  [ 1, 50 ], 
+  { label: "Number of bins", step: 1, value: 30 }, 
+)
+
+viewof measure2 = Inputs.select(
+  [ "flipper_length_mm", "bill_length_mm", "bill_depth_mm", "body_mass_g" ],
+  { label: "Measure" }
+);
+
+viewof species = Inputs.select(
+  [ "Adelie", "Chinstrap", "Gentoo" ],
+  { label: "Species" }
+);
+
+```
+:::
+::: {.column}
+```{ojs}
+//| label: hist2-ojs
+//| echo: false
+do_penguins_hist(species, measure2, bins);
+```
+:::
+::::
+
+:::
+
+## Density
+
+Smoothed histograms
+
+```{r}
+ggplot(penguins, aes(x = flipper_length_mm)) + geom_density()
+```
+
+`adjust` argument adjusts bandwidth to control how smooth
+
+```{webr}
+#| label: density-webr
+#| edit: false
+#| output: false
+#| define:
+#|   - do_penguins_density
+do_penguins_density <- function(measure, adjust) {
+  
+peng_d <- split(penguins[[measure]], f = penguins$species) |> 
+  lapply(na.omit) |> 
+  lapply(density, adjust = adjust)
+
+par(mar = c(3, 3, 1, 1), mgp = c(1.5, 0.5, 0), tcl = -0.3, cex = 1.5)
+plot(peng_d[[1]], type = "n", main = "", 
+     xlab = gsub(pattern = "_", replacement = " ", x = measure), 
+     xlim = range(lapply(peng_d, \(d)range(d$x))),
+     ylim = range(lapply(peng_d, \(d)range(d$y))))
+mapply(\(d, col)polygon(d, col = col, border = substr(col, 1, 7)), d = peng_d, col = c("#99000090", "#1100dd90", "#00bb1090"))
+invisible()
+}
+
+
+```
+::: {.shrink}
+:::: {.columns}
+::: {.column}
+```{ojs}
+//| label: density-ojs
+//| echo: false
+
+viewof adjust = Inputs.range(
+  [ 0.1, 2 ], 
+  { label: "Adjust density", step: 0.1, value: 1 }, 
+)
+
+viewof measure = Inputs.select(
+  [ "flipper_length_mm", "bill_length_mm", "bill_depth_mm", "body_mass_g" ],
+  { label: "Measure" }
+);
+```
+
+:::
+::: {.column}
+```{ojs}
+//| label: density-ojs2
+//| echo: false
+
+do_penguins_density(measure, adjust);
+```
+
+:::
+::::
+:::
+
 
 ## Geoms to show many distributions
 
@@ -161,17 +303,25 @@ p_vio <- base + geom_violin(aes(fill = species))
 p_jit <- base + geom_jitter(aes(colour = species))
 library(ggbeeswarm)
 p_quasi <- base + geom_quasirandom(aes(colour = species))
+p_quasi2 <- base + geom_violin(aes(fill = species), alpha = 0.3) +
+  geom_quasirandom(aes(colour = species))
 
 ```
 
 ---
 
-```{r boxplots-etc-plot, echo=FALSE, fig.width=9}
+```{r}
+#| label: boxplots-etc-plot
+#| echo: false
+#| fig-width: 12
+#| fig-height: 7
+
 p_prange + labs(title= "geom_col()") + 
 p_box + labs(title = "geom_boxplot()") +
   p_vio + labs(title = "geom_violin()") +
   p_jit + labs(title = "geom_jitter()") +
   p_quasi + labs(title = "geom_quasirandom()") +
+  p_quasi2 + labs(title = "quasirandom & violin") +
   plot_layout(nrow = 2) &
   labs(y = "Flipper length") &
   theme(axis.title.x = element_blank(), legend.position = "none")
@@ -253,9 +403,10 @@ plot + facet_wrap(facets = vars(species))
 `facet_grid()` for two dimensional arrays of subplots
 
 ```{r facet-grid, fig.height = 5}
-plot + facet_grid(rows = vars(species),
-                  cols = vars(island)
-                  )
+plot + facet_grid(
+  rows = vars(species),
+  cols = vars(island)
+)
 ```
 
 ## Themes
@@ -300,6 +451,17 @@ colour + labs(title = "colour = species") + fill + labs(title = "fill = species"
 as <- ggplot(penguins, aes(x = species,  y = flipper_length_mm, fill = species, colour = after_scale(colorspace::darken(fill, amount = 0.4)))) +
   geom_boxplot()
 ```
+
+## Avoid primary colours
+
+```{r}
+ggplot(penguins, aes(x = flipper_length_mm, fill = species)) +
+  geom_histogram() +
+  scale_fill_manual(values = c("red", "green", "blue")) +
+  labs(x = "Flipper length mm")
+```
+
+
 
 ## Colour deficient vision
 
@@ -346,7 +508,7 @@ colorBlindness::cvdPlot(rb)
 ```{r cvd2, fig.width=8, fig.height=6}
 den <- ggplot(penguins, aes(x = bill_length_mm, fill = species)) +
   geom_density(alpha = 0.7) +
-  scale_fill_brewer(palette = "Set1")
+  scale_fill_brewer(palette = "Set2")
 den
 ```
 
@@ -417,6 +579,34 @@ library(directlabels)
 direct.label(plot) 
 ```
 
+## Avoiding overplotting
+
+Problem - points plot on top of each other.
+
+```{r}
+#| label: overplotting
+#| echo: false
+#| fig-width: 11
+(diamonds |> 
+  ggplot(aes(x = carat, y = price)) +
+  geom_point() +
+  labs(title = "Original"))+
+(diamonds |> 
+  ggplot(aes(x = carat, y = price)) +
+  geom_point(alpha = 0.1) +
+  labs(title = "Reduce alpha"))+
+(diamonds |> 
+  ggplot(aes(x = carat, y = price)) +
+  geom_hex() +
+  scale_fill_viridis_c() +
+  labs(title = "Hex bin"))
+
+```
+
+
+- also jitter for ~discrete data
+
+
 ## Most common mistake in presentations
 
 ```{r}
@@ -445,8 +635,17 @@ theme_bw(base_size = 18)
 
 ## Summary
 
-- You can plot anything you can imagine
+- If you can imagine it, you can plot it
 - Whole ecosystem of packages to help
-- [\#tidytuesday](https://www.r-bloggers.com/2021/12/a-year-of-tidytuesday/) for inspiration
 
+## Further reading
+
+#### [Fundamentals of Data Visualization](https://clauswilke.com/dataviz/)
+
+```{r}
+#| label: fun-data-vis
+#| echo: false
+#| fig-alt: Front cover of Fundamentals of Data Visualization showing a Western Rosella Parakeet
+knitr::include_graphics("figures/fdv-cover.png")
+```
 
