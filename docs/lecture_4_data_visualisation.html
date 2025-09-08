@@ -215,8 +215,8 @@ Richard J. Telford (Richard.Telford@uib.no)
 
   <p class="date">8 September 2025</p>
 </section>
-<section class="slide level2">
-
+<section id="data-visualisation" class="slide level2">
+<h2>Data visualisation</h2>
 <div class="cell">
 <style type="text/css">
 .shrink {
@@ -224,9 +224,6 @@ Richard J. Telford (Richard.Telford@uib.no)
 }
 </style>
 </div>
-</section>
-<section id="data-visualisation" class="slide level2">
-<h2>Data visualisation</h2>
 <ul>
 <li>A picture is worth a thousand words</li>
 <li>Tell a story with figures</li>
@@ -289,7 +286,7 @@ Richard J. Telford (Richard.Telford@uib.no)
 <span id="cb2-4"><a></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> species), <span class="at">data =</span> penguin_summary, <span class="at">colour =</span> <span class="st">"black"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
-<img data-src="lecture_4_data_visualisation_files/figure-revealjs/unnamed-chunk-3-1.png" width="960" class="r-stretch"></section>
+<img data-src="lecture_4_data_visualisation_files/figure-revealjs/data-plot-1.png" alt="plot of penguin bill length against body mass coloured by species. The species name is written in the middle of each species' cluster of points." width="960" class="r-stretch"></section>
 <section id="aesthetics" class="slide level2">
 <h2>Aesthetics</h2>
 <p><code>mapping</code> specifies which variables in the data should be mapped onto which aesthetics with <code>aes()</code></p>
@@ -298,8 +295,8 @@ Richard J. Telford (Richard.Telford@uib.no)
 <ul>
 <li>x, y</li>
 <li>fill, colour, alpha</li>
-<li>shape</li>
-<li>linetype</li>
+<li>shape, size</li>
+<li>linetype, linewidth</li>
 <li>group</li>
 </ul>
 </section>
@@ -373,20 +370,20 @@ eyJhdHRyIjp7ImF1dG9ydW4iOnRydWUsImRlZmluZSI6WyJkb19wZW5ndWluc19oaXN0Il0sImVkaXQi
 <div class="columns">
 <div class="column">
 <div id="hist-ojs" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb6" data-startfrom="200" data-source-offset="-1"><pre class="sourceCode numberSource js number-lines code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 199;"><span id="cb6-200"><a></a>viewof bins <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>(</span>
-<span id="cb6-201"><a></a>  [ <span class="dv">1</span><span class="op">,</span> <span class="dv">50</span> ]<span class="op">,</span> </span>
-<span id="cb6-202"><a></a>  { <span class="dt">label</span><span class="op">:</span> <span class="st">"Number of bins"</span><span class="op">,</span> <span class="dt">step</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">30</span> }<span class="op">,</span> </span>
-<span id="cb6-203"><a></a>)</span>
-<span id="cb6-204"><a></a></span>
-<span id="cb6-205"><a></a>viewof measure2 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
-<span id="cb6-206"><a></a>  [ <span class="st">"flipper_length_mm"</span><span class="op">,</span> <span class="st">"bill_length_mm"</span><span class="op">,</span> <span class="st">"bill_depth_mm"</span><span class="op">,</span> <span class="st">"body_mass_g"</span> ]<span class="op">,</span></span>
-<span id="cb6-207"><a></a>  { <span class="dt">label</span><span class="op">:</span> <span class="st">"Measure"</span> }</span>
-<span id="cb6-208"><a></a>)<span class="op">;</span></span>
-<span id="cb6-209"><a></a></span>
-<span id="cb6-210"><a></a>viewof species <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
-<span id="cb6-211"><a></a>  [ <span class="st">"Adelie"</span><span class="op">,</span> <span class="st">"Chinstrap"</span><span class="op">,</span> <span class="st">"Gentoo"</span> ]<span class="op">,</span></span>
-<span id="cb6-212"><a></a>  { <span class="dt">label</span><span class="op">:</span> <span class="st">"Species"</span> }</span>
-<span id="cb6-213"><a></a>)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb6" data-startfrom="202" data-source-offset="-1"><pre class="sourceCode numberSource js number-lines code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 201;"><span id="cb6-202"><a></a>viewof bins <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>(</span>
+<span id="cb6-203"><a></a>  [ <span class="dv">1</span><span class="op">,</span> <span class="dv">50</span> ]<span class="op">,</span> </span>
+<span id="cb6-204"><a></a>  { <span class="dt">label</span><span class="op">:</span> <span class="st">"Number of bins"</span><span class="op">,</span> <span class="dt">step</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">30</span> }<span class="op">,</span> </span>
+<span id="cb6-205"><a></a>)</span>
+<span id="cb6-206"><a></a></span>
+<span id="cb6-207"><a></a>viewof measure2 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
+<span id="cb6-208"><a></a>  [ <span class="st">"flipper_length_mm"</span><span class="op">,</span> <span class="st">"bill_length_mm"</span><span class="op">,</span> <span class="st">"bill_depth_mm"</span><span class="op">,</span> <span class="st">"body_mass_g"</span> ]<span class="op">,</span></span>
+<span id="cb6-209"><a></a>  { <span class="dt">label</span><span class="op">:</span> <span class="st">"Measure"</span> }</span>
+<span id="cb6-210"><a></a>)<span class="op">;</span></span>
+<span id="cb6-211"><a></a></span>
+<span id="cb6-212"><a></a>viewof species <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
+<span id="cb6-213"><a></a>  [ <span class="st">"Adelie"</span><span class="op">,</span> <span class="st">"Chinstrap"</span><span class="op">,</span> <span class="st">"Gentoo"</span> ]<span class="op">,</span></span>
+<span id="cb6-214"><a></a>  { <span class="dt">label</span><span class="op">:</span> <span class="st">"Species"</span> }</span>
+<span id="cb6-215"><a></a>)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div id="hist-ojs-1">
 <div id="ojs-cell-1-1" data-nodetype="declaration">
@@ -411,7 +408,7 @@ eyJhdHRyIjp7ImF1dG9ydW4iOnRydWUsImRlZmluZSI6WyJkb19wZW5ndWluc19oaXN0Il0sImVkaXQi
 </div>
 </div><div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb7" data-startfrom="220" data-source-offset="0"><pre class="sourceCode numberSource js number-lines code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 219;"><span id="cb7-220"><a></a><span class="fu">do_penguins_hist</span>(species<span class="op">,</span> measure2<span class="op">,</span> bins)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb7" data-startfrom="222" data-source-offset="0"><pre class="sourceCode numberSource js number-lines code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 221;"><span id="cb7-222"><a></a><span class="fu">do_penguins_hist</span>(species<span class="op">,</span> measure2<span class="op">,</span> bins)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div id="hist2-ojs" class="cell-output cell-output-display">
 <div id="ojs-cell-2" data-nodetype="expression">
 
@@ -426,9 +423,8 @@ eyJhdHRyIjp7ImF1dG9ydW4iOnRydWUsImRlZmluZSI6WyJkb19wZW5ndWluc19oaXN0Il0sImVkaXQi
 <p>Smoothed histograms</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm)) <span class="sc">+</span> <span class="fu">geom_density</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-
 </div>
-<img data-src="lecture_4_data_visualisation_files/figure-revealjs/unnamed-chunk-4-1.png" width="960" class="r-stretch"><p><code>adjust</code> argument adjusts bandwidth to control how smooth</p>
+<p><code>adjust</code> argument adjusts bandwidth to control how smooth</p>
 <div class="cell" data-edit="false" data-define="do_penguins_density">
 <div>
 <div id="webr-2" class="exercise-cell">
@@ -443,15 +439,15 @@ eyJhdHRyIjp7ImF1dG9ydW4iOnRydWUsImRlZmluZSI6WyJkb19wZW5ndWluc19kZW5zaXR5Il0sImVk
 <div class="columns">
 <div class="column">
 <div id="density-ojs" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb9" data-startfrom="268" data-source-offset="-1"><pre class="sourceCode numberSource js number-lines code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 267;"><span id="cb9-268"><a></a>viewof adjust <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>(</span>
-<span id="cb9-269"><a></a>  [ <span class="fl">0.1</span><span class="op">,</span> <span class="dv">2</span> ]<span class="op">,</span> </span>
-<span id="cb9-270"><a></a>  { <span class="dt">label</span><span class="op">:</span> <span class="st">"Adjust density"</span><span class="op">,</span> <span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">1</span> }<span class="op">,</span> </span>
-<span id="cb9-271"><a></a>)</span>
-<span id="cb9-272"><a></a></span>
-<span id="cb9-273"><a></a>viewof measure <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
-<span id="cb9-274"><a></a>  [ <span class="st">"flipper_length_mm"</span><span class="op">,</span> <span class="st">"bill_length_mm"</span><span class="op">,</span> <span class="st">"bill_depth_mm"</span><span class="op">,</span> <span class="st">"body_mass_g"</span> ]<span class="op">,</span></span>
-<span id="cb9-275"><a></a>  { <span class="dt">label</span><span class="op">:</span> <span class="st">"Measure"</span> }</span>
-<span id="cb9-276"><a></a>)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb9" data-startfrom="273" data-source-offset="-1"><pre class="sourceCode numberSource js number-lines code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 272;"><span id="cb9-273"><a></a>viewof adjust <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>(</span>
+<span id="cb9-274"><a></a>  [ <span class="fl">0.1</span><span class="op">,</span> <span class="dv">2</span> ]<span class="op">,</span> </span>
+<span id="cb9-275"><a></a>  { <span class="dt">label</span><span class="op">:</span> <span class="st">"Adjust density"</span><span class="op">,</span> <span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">1</span> }<span class="op">,</span> </span>
+<span id="cb9-276"><a></a>)</span>
+<span id="cb9-277"><a></a></span>
+<span id="cb9-278"><a></a>viewof measure <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
+<span id="cb9-279"><a></a>  [ <span class="st">"flipper_length_mm"</span><span class="op">,</span> <span class="st">"bill_length_mm"</span><span class="op">,</span> <span class="st">"bill_depth_mm"</span><span class="op">,</span> <span class="st">"body_mass_g"</span> ]<span class="op">,</span></span>
+<span id="cb9-280"><a></a>  { <span class="dt">label</span><span class="op">:</span> <span class="st">"Measure"</span> }</span>
+<span id="cb9-281"><a></a>)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div id="density-ojs-1">
 <div id="ojs-cell-3-1" data-nodetype="declaration">
@@ -469,7 +465,7 @@ eyJhdHRyIjp7ImF1dG9ydW4iOnRydWUsImRlZmluZSI6WyJkb19wZW5ndWluc19kZW5zaXR5Il0sImVk
 </div>
 </div><div class="column">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb10" data-startfrom="283" data-source-offset="0"><pre class="sourceCode numberSource js number-lines code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 282;"><span id="cb10-283"><a></a><span class="fu">do_penguins_density</span>(measure<span class="op">,</span> adjust)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb10" data-startfrom="288" data-source-offset="0"><pre class="sourceCode numberSource js number-lines code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 287;"><span id="cb10-288"><a></a><span class="fu">do_penguins_density</span>(measure<span class="op">,</span> adjust)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div id="density-ojs2" class="cell-output cell-output-display">
 <div id="ojs-cell-4" data-nodetype="expression">
 
@@ -505,11 +501,11 @@ eyJhdHRyIjp7ImF1dG9ydW4iOnRydWUsImRlZmluZSI6WyJkb19wZW5ndWluc19kZW5zaXR5Il0sImVk
 <span id="cb12-2"><a></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>()) <span class="sc">|&gt;</span> </span>
 <span id="cb12-3"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> name, <span class="at">y =</span> value))</span>
 <span id="cb12-4"><a></a></span>
-<span id="cb12-5"><a></a>p <span class="sc">+</span> <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
-<span id="cb12-6"><a></a>p <span class="sc">+</span> <span class="fu">geom_violin</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-
+<span id="cb12-5"><a></a>p1 <span class="ot">&lt;-</span> p <span class="sc">+</span> <span class="fu">geom_boxplot</span>()</span>
+<span id="cb12-6"><a></a>p2 <span class="ot">&lt;-</span> p <span class="sc">+</span> <span class="fu">geom_violin</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<img data-src="lecture_4_data_visualisation_files/figure-revealjs/datasaurus-1.png" width="960" class="r-stretch"></section>
+
+<img data-src="lecture_4_data_visualisation_files/figure-revealjs/datasaurus-patchwork-1.png" alt="Left hand side shows five identical boxplots, right hand side shows very different violin plots for the same datasets." width="960" class="r-stretch"></section>
 <section id="show-the-raw-data" class="slide level2">
 <h2>Show the raw data</h2>
 <div class="cell">
@@ -533,7 +529,11 @@ eyJhdHRyIjp7ImF1dG9ydW4iOnRydWUsImRlZmluZSI6WyJkb19wZW5ndWluc19kZW5zaXR5Il0sImVk
 <span id="cb13-3"><a></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
-<img data-src="lecture_4_data_visualisation_files/figure-revealjs/unnamed-chunk-5-1.png" width="960" class="r-stretch"></section>
+<img data-src="lecture_4_data_visualisation_files/figure-revealjs/scatter-plot-geoms-1.png" width="960" class="r-stretch"><ul>
+<li><code>geom_line()</code> - join observations from left-right</li>
+<li><code>geom_path()</code> - join observations from first to last in data</li>
+</ul>
+</section>
 <section id="scales" class="slide level2">
 <h2>Scales</h2>
 <p>Control how</p>
@@ -576,10 +576,10 @@ eyJhdHRyIjp7ImF1dG9ydW4iOnRydWUsImRlZmluZSI6WyJkb19wZW5ndWluc19kZW5zaXR5Il0sImVk
 
 <p><code>facet_grid()</code> for two dimensional arrays of subplots</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>plot <span class="sc">+</span> <span class="fu">facet_grid</span>(</span>
-<span id="cb16-2"><a></a>  <span class="at">rows =</span> <span class="fu">vars</span>(species),</span>
-<span id="cb16-3"><a></a>  <span class="at">cols =</span> <span class="fu">vars</span>(island)</span>
-<span id="cb16-4"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>diamonds <span class="sc">|&gt;</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> carat, <span class="at">y =</span> price)) <span class="sc">+</span></span>
+<span id="cb16-2"><a></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> diamonds <span class="sc">|&gt;</span> <span class="fu">select</span>(carat, price), <span class="at">colour =</span> <span class="st">"grey80"</span>) <span class="sc">+</span></span>
+<span id="cb16-3"><a></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb16-4"><a></a>  <span class="fu">facet_grid</span>(<span class="at">rows =</span> <span class="fu">vars</span>(color), <span class="at">cols =</span> <span class="fu">vars</span>(clarity))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="lecture_4_data_visualisation_files/figure-revealjs/facet-grid-1.png" width="960" class="r-stretch"></section>
@@ -617,7 +617,7 @@ eyJhdHRyIjp7ImF1dG9ydW4iOnRydWUsImRlZmluZSI6WyJkb19wZW5ndWluc19kZW5zaXR5Il0sImVk
 <span id="cb19-4"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Flipper length mm"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
-<img data-src="lecture_4_data_visualisation_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch"></section>
+<img data-src="lecture_4_data_visualisation_files/figure-revealjs/primary-1.png" width="960" class="r-stretch"></section>
 <section id="colour-deficient-vision" class="slide level2">
 <h2>Colour deficient vision</h2>
 <div class="cell">
@@ -641,7 +641,7 @@ eyJhdHRyIjp7ImF1dG9ydW4iOnRydWUsImRlZmluZSI6WyJkb19wZW5ndWluc19kZW5zaXR5Il0sImVk
 <section id="section" class="slide level2">
 <h2></h2>
 
-<img data-src="lecture_4_data_visualisation_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"></section>
+<img data-src="lecture_4_data_visualisation_files/figure-revealjs/rainbow-cdv-1.png" width="960" class="r-stretch"></section>
 <section id="better-colour-scale" class="slide level2">
 <h2>Better colour scale</h2>
 <div class="cell">
@@ -713,7 +713,8 @@ eyJhdHRyIjp7ImF1dG9ydW4iOnRydWUsImRlZmluZSI6WyJkb19wZW5ndWluc19kZW5zaXR5Il0sImVk
 <span id="cb29-6"><a></a>  <span class="fu">geom_point</span>() </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
-<img data-src="lecture_4_data_visualisation_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"></section>
+<img data-src="lecture_4_data_visualisation_files/figure-revealjs/redundant-1.png" alt="Plot of penguin data with points distinguished by both colour and shape" width="960" class="r-stretch"><p>Also <code>colour</code> and <code>linetype</code>/<code>linewidth</code></p>
+</section>
 <section id="avoiding-legends" class="slide level2">
 <h2>Avoiding legends</h2>
 <div class="cell">
@@ -721,15 +722,17 @@ eyJhdHRyIjp7ImF1dG9ydW4iOnRydWUsImRlZmluZSI6WyJkb19wZW5ndWluc19kZW5zaXR5Il0sImVk
 <span id="cb30-2"><a></a><span class="fu">direct.label</span>(plot) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
-<img data-src="lecture_4_data_visualisation_files/figure-revealjs/direct-labels-1.png" width="960" class="r-stretch"></section>
+<img data-src="lecture_4_data_visualisation_files/figure-revealjs/direct-labels-1.png" alt="Plot of penguins data with labels applied directly to the plot instead of using a legend." width="960" class="r-stretch"></section>
 <section id="avoiding-overplotting" class="slide level2">
 <h2>Avoiding overplotting</h2>
 <p>Problem - points plot on top of each other.</p>
 
-<img data-src="lecture_4_data_visualisation_files/figure-revealjs/overplotting-1.png" width="1056" class="r-stretch"><ul>
-<li>also jitter for ~discrete data</li>
-</ul>
-</section>
+<img data-src="lecture_4_data_visualisation_files/figure-revealjs/overplotting-jitter-1.png" alt="Plot of body mass against species for the penguin data. With geom_point() the data are all in one line with lots of overplotting. geom_jitter speads the points out to reduce overplotting." width="960" class="r-stretch"></section>
+<section id="more-overplotting" class="slide level2">
+<h2>More overplotting</h2>
+<p>Problem - too much data</p>
+
+<img data-src="lecture_4_data_visualisation_files/figure-revealjs/overplotting-1.png" alt="Plots of diamond price ($) against mass in carats. First plot with default argument to geom_point() is difficult to interpret as points everywhere. Second plot, made by setting alpha to 0.1 is better as rare combinations of mass and price are shown in a paler colour. Plot shows strips with few diamonds sold at just below 1 or 2 carats. Third plot uses hexbinning and highlights the large number of small diamonds sold at a relatively low price." width="1056" class="r-stretch"></section>
 <section id="most-common-mistake-in-presentations" class="slide level2">
 <h2>Most common mistake in presentations</h2>
 
@@ -749,11 +752,33 @@ eyJhdHRyIjp7ImF1dG9ydW4iOnRydWUsImRlZmluZSI6WyJkb19wZW5ndWluc19kZW5zaXR5Il0sImVk
 </section>
 <section id="further-reading" class="slide level2">
 <h2>Further reading</h2>
-<h4 id="fundamentals-of-data-visualization"><a href="https://clauswilke.com/dataviz/">Fundamentals of Data Visualization</a></h4>
+<div class="columns">
+<div class="column">
+<h4 id="fundamentals-of-data-visualization-wilke"><a href="https://clauswilke.com/dataviz/">Fundamentals of Data Visualization</a> Wilke</h4>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="figures/fdv-cover.png" alt="Front cover of Fundamentals of Data Visualization showing a Western Rosella Parakeet" width="304"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column">
+<h4 id="ggplot2-elegant-graphics-for-data-analysis-3e-wickham-navarro-and-pedersen."><a href="https://ggplot2-book.org/">ggplot2: Elegant Graphics for Data Analysis (3e)</a> Wickham, Navarro, and Pedersen.</h4>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="figures/ggplotbook-cover.jpg" style="width:3in" alt="Yellow/orange front cover of gplot2: Elegant Graphics for Data Analysis"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
 
 
-
-<img data-src="figures/fdv-cover.png" alt="Front cover of Fundamentals of Data Visualization showing a Western Rosella Parakeet" width="304" class="r-stretch"><script type="webr-data">
+<script type="webr-data">
 eyJvcHRpb25zIjp7ImJhc2VVcmwiOiJodHRwczovL3dlYnIuci13YXNtLm9yZy92MC41LjQvIn0sInBhY2thZ2VzIjp7InBrZ3MiOlsiZXZhbHVhdGUiLCJrbml0ciIsImh0bWx0b29scyIsInBhbG1lcnBlbmd1aW5zIl0sInJlcG9zIjpbXX0sInJlbmRlcl9kZiI6ImRlZmF1bHQifQ==
 </script>
 <script type="ojs-module-contents">

@@ -21,6 +21,8 @@ webr:
   - palmerpenguins
 ---
 
+## Data visualisation
+
 {{< include ./_extensions/r-wasm/live/_knitr.qmd >}} 
 
 ```{css, echo=FALSE}
@@ -28,9 +30,6 @@ webr:
   font-size: 60%;
 }
 ```
-
-
-## Data visualisation
 
 ```{r setup, echo=FALSE, message=FALSE}
 library("tidyverse")
@@ -89,6 +88,9 @@ Can process data within `ggplot` but usually best to do it first
 Can add data to the whole plot or to individual geoms
 
 ```{r}
+#| label: data-plot
+#| fig-alt: plot of penguin bill length against body mass coloured by species.
+#|   The species name is written in the middle of each species' cluster of points.
 penguin_summary <- penguins |> group_by(species) |> summarise(body_mass_g = mean(body_mass_g, na.rm = TRUE), bill_length_mm = mean(bill_length_mm, na.rm = TRUE) )
 ggplot(penguins, aes(x = body_mass_g, y = bill_length_mm, colour = species)) +
   geom_point() +
@@ -107,8 +109,8 @@ Common aesthetics
 
 - x, y
 - fill, colour, alpha
-- shape
-- linetype
+- shape, size
+- linetype, linewidth
 - group
 
 ## Setting vs mapping
@@ -230,6 +232,9 @@ do_penguins_hist(species, measure2, bins);
 Smoothed histograms
 
 ```{r}
+#| label: geom_density-code
+#| eval: false
+
 ggplot(penguins, aes(x = flipper_length_mm)) + geom_density()
 ```
 
@@ -329,14 +334,23 @@ p_box + labs(title = "geom_boxplot()") +
 
 ## Boxplots can mislead
 
-```{r datasaurus}
+```{r}
+#| label: datasaurus
 p <- datasauRus::box_plots |> 
   pivot_longer(everything()) |> 
   ggplot(aes(x = name, y = value))
 
-p + geom_boxplot() +
-p + geom_violin()
+p1 <- p + geom_boxplot()
+p2 <- p + geom_violin()
 ```
+
+```{r}
+#| label: datasaurus-patchwork
+#| echo: false
+#| fig-alt: Left hand side shows five identical boxplots, right hand side shows very different violin plots for the same datasets.
+p1 + p2
+```
+
 ## Show the raw data
 
 ```{r}
@@ -354,10 +368,15 @@ knitr::include_graphics("figures/pnas.2302491120fig01.jpg")
 ## geoms for scatterplots
 
 ```{r}
+#| label: scatter-plot-geoms
 ggplot(penguins, aes(x = body_mass_g,  y = bill_length_mm, colour = species)) +
   geom_point() +
   geom_smooth(method = "lm")
 ```
+
+- `geom_line()` - join observations from left-right
+- `geom_path()` - join observations from first to last in data
+
 
 
 ## Scales
@@ -403,10 +422,10 @@ plot + facet_wrap(facets = vars(species))
 `facet_grid()` for two dimensional arrays of subplots
 
 ```{r facet-grid, fig.height = 5}
-plot + facet_grid(
-  rows = vars(species),
-  cols = vars(island)
-)
+diamonds |> ggplot(aes(x = carat, y = price)) +
+  geom_point(data = diamonds |> select(carat, price), colour = "grey80") +
+  geom_point() +
+  facet_grid(rows = vars(color), cols = vars(clarity))
 ```
 
 ## Themes
@@ -440,21 +459,25 @@ plot + theme(panel.grid = element_blank())
 ## Colour & fills
 
 ```{r fill-colour, echo = FALSE}
-fill <- ggplot(penguins, aes(x = species, y = flipper_length_mm, fill = species)) +
-  geom_boxplot()
+p <- ggplot(penguins, aes(x = species, y = flipper_length_mm)) +
+  geom_boxplot() +
+  labs(y = "Flipper length mm")
 
-colour <- ggplot(penguins, aes(x = species, y = flipper_length_mm, colour = species)) +
-  geom_boxplot()
+fill <- p + aes(fill = species) + labs(title = "fill = species")
 
-colour + labs(title = "colour = species") + fill + labs(title = "fill = species") & theme(legend.position = "none")
+colour <- p + aes(colour = species) + labs(title = "colour = species") 
 
-as <- ggplot(penguins, aes(x = species,  y = flipper_length_mm, fill = species, colour = after_scale(colorspace::darken(fill, amount = 0.4)))) +
-  geom_boxplot()
+as <- p + aes(fill = species, colour = after_scale(colorspace::darken(fill, amount = 0.4))) + labs(title = "fill and colour")
+
+colour + fill + as & theme(legend.position = "none")
+
+
 ```
 
 ## Avoid primary colours
 
 ```{r}
+#| label: primary
 ggplot(penguins, aes(x = flipper_length_mm, fill = species)) +
   geom_histogram() +
   scale_fill_manual(values = c("red", "green", "blue")) +
@@ -486,7 +509,9 @@ knitr::include_graphics("figures/jpe12646-fig-0003-m.webp")
 
 ##
 
-```{r echo = FALSE}
+```{r}
+#| label: rainbow-cdv
+#| echo: false
 n <- 100
 rainb <- rainbow(n = n)
 
@@ -564,6 +589,9 @@ ggplot(penguins, aes(x = body_mass_g, y = flipper_length_mm)) +
 ## Redundant encoding 
 
 ```{r}
+#| label: redundant
+#| fig-alt: Plot of penguin data with points distinguished by both colour and shape
+
 ggplot(penguins, 
        aes(x = body_mass_g,
            y = flipper_length_mm,
@@ -572,9 +600,16 @@ ggplot(penguins,
   geom_point() 
 ```
 
+Also `colour` and `linetype`/`linewidth`
+
+
+
 ## Avoiding legends
 
-```{r direct-labels, fig.height=5}
+```{r}
+#| label: direct-labels
+#| fig-height: 5
+#| fig-alt: Plot of penguins data with labels applied directly to the plot instead of using a legend. 
 library(directlabels)
 direct.label(plot) 
 ```
@@ -584,27 +619,48 @@ direct.label(plot)
 Problem - points plot on top of each other.
 
 ```{r}
+#| label: overplotting-jitter
+#| echo: false
+#| fig-alt: Plot of body mass against species for the penguin data. With geom_point() the data are all in one line with lots of overplotting. geom_jitter speads the points out to reduce overplotting.
+p <- ggplot(penguins, aes(x = species, y = body_mass_g))
+{p + geom_point() + labs(title = "geom_point()")} +
+{p + geom_jitter(height = 0) + labs(title = "geom_jitter(height = 0)")}
+```
+
+
+
+## More overplotting
+
+Problem - too much data
+
+```{r}
 #| label: overplotting
 #| echo: false
 #| fig-width: 11
-(diamonds |> 
-  ggplot(aes(x = carat, y = price)) +
+#| fig-alt: Plots of diamond price ($) against mass in carats.
+#|  First plot with default argument to geom_point() is difficult to interpret 
+#|  as points everywhere.
+#|  Second plot, made by setting alpha to 0.1 is better as rare combinations of 
+#|  mass and price are shown in a paler colour. 
+#|  Plot shows strips with few diamonds sold at just below 1 or 2 carats.
+#|  Third plot uses hexbinning and highlights the large number of small diamonds
+#|  sold at a relatively low price.  
+
+p <- diamonds |> 
+  ggplot(aes(x = carat, y = price))
+(p +
   geom_point() +
   labs(title = "Original"))+
-(diamonds |> 
-  ggplot(aes(x = carat, y = price)) +
+(p +
   geom_point(alpha = 0.1) +
   labs(title = "Reduce alpha"))+
-(diamonds |> 
-  ggplot(aes(x = carat, y = price)) +
+(p +
   geom_hex() +
   scale_fill_viridis_c() +
   labs(title = "Hex bin"))
 
 ```
 
-
-- also jitter for ~discrete data
 
 
 ## Most common mistake in presentations
@@ -640,7 +696,10 @@ theme_bw(base_size = 18)
 
 ## Further reading
 
-#### [Fundamentals of Data Visualization](https://clauswilke.com/dataviz/)
+
+:::: {.columns}
+::: {.column}
+#### [Fundamentals of Data Visualization](https://clauswilke.com/dataviz/) Wilke
 
 ```{r}
 #| label: fun-data-vis
@@ -648,4 +707,18 @@ theme_bw(base_size = 18)
 #| fig-alt: Front cover of Fundamentals of Data Visualization showing a Western Rosella Parakeet
 knitr::include_graphics("figures/fdv-cover.png")
 ```
+:::
+::: {.column}
+#### [ggplot2: Elegant Graphics for Data Analysis (3e)](https://ggplot2-book.org/) Wickham, Navarro, and Pedersen.
+
+```{r}
+#| label: ggplot-book
+#| echo: false
+#| out-width: 3in
+#| fig-alt: "Yellow/orange front cover of gplot2: Elegant Graphics for Data Analysis" 
+knitr::include_graphics("figures/ggplotbook-cover.jpg")
+```
+
+:::
+::::
 
