@@ -34,7 +34,6 @@ Alternative hypothesis H<sub>1</sub> - relationship
 
 ## Testing a hypothesis - types of evidence
 
-
 - Observational
 - Computer simulations
 - Experimental
@@ -102,6 +101,31 @@ field and compare their food intake in the laboratory.
 knitr::include_graphics("figures/design-conditioned.png")
 ```
 
+## Systematic errors
+
+Example: You want to test the yield of five different types
+of barley to determine what grain type is the best.
+
+Design 1: Each grain type is planted in separate areas of
+the field.
+
+```{r}
+knitr::include_graphics("figures/design-systematic-errors.png")
+```
+
+## Systematic errors
+
+Design 2: Each grain type is randomly planted in
+several squares of the field to avoid systematic
+errors
+
+```{r}
+knitr::include_graphics("figures/design-randomisation.png")
+```
+
+Randomisation is the cure for systematic errors.
+
+Block designs may also be useful.
 
 ## Replication
 
@@ -153,6 +177,11 @@ confounding factor in the experiment.
 ```{r}
 knitr::include_graphics("figures/design-age-size.png")
 ```
+
+
+## Blocking
+
+
 
 
 ## Blinding
@@ -211,4 +240,10 @@ Then, you randomly place control and treatment jars in a climate chamber.
 ```{r}
 knitr::include_graphics("figures/design-daphnia.png")
 ```
+
+## Conclusions
+
+Design the experiment/observations to test your hypothesis
+
+Consider how you will analyse the data when designing the experiment
 
