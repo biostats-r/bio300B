@@ -16,7 +16,7 @@
   <meta name="generator" content="quarto-1.8.20">
 
   <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)">
-  <meta name="dcterms.date" content="2025-08-17">
+  <meta name="dcterms.date" content="2025-09-22">
   <title>Bio302 - Biostatistikk – Descriptive statistics and Introduction to statistical inference</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -214,7 +214,7 @@ Richard J. Telford (Richard.Telford@uib.no)
     </div>
 </div>
 
-  <p class="date">17 August 2025</p>
+  <p class="date">22 September 2025</p>
 </section>
 <section id="describing-a-distribution" class="slide level2">
 <h2>Describing a distribution</h2>
@@ -436,11 +436,10 @@ positive skew <code>e1071::skewness()</code></p>
 <section class="slide level2">
 
 <p>Histograms of samples</p>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>NULL</code></pre>
-</div>
-</div>
+
+<img data-src="lecture_6_descriptive_files/figure-revealjs/samples-1.gif" class="r-stretch"></section>
+<section class="slide level2">
+
 <p>Histogram of sample means</p>
 
 <img data-src="lecture_6_descriptive_files/figure-revealjs/sample-means-1.png" width="576" class="r-stretch"></section>
@@ -551,11 +550,11 @@ H<sub>0</sub>: The bill length of Gentoo penguins does not depend on sex.</p>
 <section id="t-test-in-r" class="slide level2">
 <h2>t-test in R</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>gentoo <span class="ot">&lt;-</span> penguins <span class="sc">|&gt;</span></span>
-<span id="cb22-2"><a></a>  <span class="fu">filter</span>(species <span class="sc">==</span> <span class="st">"Gentoo"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb22-3"><a></a>  <span class="fu">drop_na</span>(bill_length_mm, sex)</span>
-<span id="cb22-4"><a></a></span>
-<span id="cb22-5"><a></a>mod1 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(bill_length_mm <span class="sc">~</span> sex, <span class="at">data =</span> gentoo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a>gentoo <span class="ot">&lt;-</span> penguins <span class="sc">|&gt;</span></span>
+<span id="cb21-2"><a></a>  <span class="fu">filter</span>(species <span class="sc">==</span> <span class="st">"Gentoo"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb21-3"><a></a>  <span class="fu">drop_na</span>(bill_length_mm, sex)</span>
+<span id="cb21-4"><a></a></span>
+<span id="cb21-5"><a></a>mod1 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(bill_length_mm <span class="sc">~</span> sex, <span class="at">data =</span> gentoo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section class="slide level2">
@@ -592,23 +591,23 @@ mean in group female   mean in group male
 <h2>Type 1 and type 2 errors</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div id="ouhujuflvx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ouhujuflvx table {
+<div id="lfqomnayce" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#lfqomnayce table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ouhujuflvx thead, #ouhujuflvx tbody, #ouhujuflvx tfoot, #ouhujuflvx tr, #ouhujuflvx td, #ouhujuflvx th {
+#lfqomnayce thead, #lfqomnayce tbody, #lfqomnayce tfoot, #lfqomnayce tr, #lfqomnayce td, #lfqomnayce th {
   border-style: none;
 }
 
-#ouhujuflvx p {
+#lfqomnayce p {
   margin: 0;
   padding: 0;
 }
 
-#ouhujuflvx .gt_table {
+#lfqomnayce .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -634,12 +633,12 @@ mean in group female   mean in group male
   border-left-color: #D3D3D3;
 }
 
-#ouhujuflvx .gt_caption {
+#lfqomnayce .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ouhujuflvx .gt_title {
+#lfqomnayce .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -651,7 +650,7 @@ mean in group female   mean in group male
   border-bottom-width: 0;
 }
 
-#ouhujuflvx .gt_subtitle {
+#lfqomnayce .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -663,7 +662,7 @@ mean in group female   mean in group male
   border-top-width: 0;
 }
 
-#ouhujuflvx .gt_heading {
+#lfqomnayce .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -675,13 +674,13 @@ mean in group female   mean in group male
   border-right-color: #D3D3D3;
 }
 
-#ouhujuflvx .gt_bottom_border {
+#lfqomnayce .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ouhujuflvx .gt_col_headings {
+#lfqomnayce .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -696,7 +695,7 @@ mean in group female   mean in group male
   border-right-color: #D3D3D3;
 }
 
-#ouhujuflvx .gt_col_heading {
+#lfqomnayce .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -716,7 +715,7 @@ mean in group female   mean in group male
   overflow-x: hidden;
 }
 
-#ouhujuflvx .gt_column_spanner_outer {
+#lfqomnayce .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -728,15 +727,15 @@ mean in group female   mean in group male
   padding-right: 4px;
 }
 
-#ouhujuflvx .gt_column_spanner_outer:first-child {
+#lfqomnayce .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ouhujuflvx .gt_column_spanner_outer:last-child {
+#lfqomnayce .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ouhujuflvx .gt_column_spanner {
+#lfqomnayce .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -748,11 +747,11 @@ mean in group female   mean in group male
   width: 100%;
 }
 
-#ouhujuflvx .gt_spanner_row {
+#lfqomnayce .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ouhujuflvx .gt_group_heading {
+#lfqomnayce .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -778,7 +777,7 @@ mean in group female   mean in group male
   text-align: left;
 }
 
-#ouhujuflvx .gt_empty_group_heading {
+#lfqomnayce .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -793,15 +792,15 @@ mean in group female   mean in group male
   vertical-align: middle;
 }
 
-#ouhujuflvx .gt_from_md > :first-child {
+#lfqomnayce .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ouhujuflvx .gt_from_md > :last-child {
+#lfqomnayce .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ouhujuflvx .gt_row {
+#lfqomnayce .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -820,7 +819,7 @@ mean in group female   mean in group male
   overflow-x: hidden;
 }
 
-#ouhujuflvx .gt_stub {
+#lfqomnayce .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -833,7 +832,7 @@ mean in group female   mean in group male
   padding-right: 5px;
 }
 
-#ouhujuflvx .gt_stub_row_group {
+#lfqomnayce .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -847,15 +846,15 @@ mean in group female   mean in group male
   vertical-align: top;
 }
 
-#ouhujuflvx .gt_row_group_first td {
+#lfqomnayce .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ouhujuflvx .gt_row_group_first th {
+#lfqomnayce .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ouhujuflvx .gt_summary_row {
+#lfqomnayce .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -865,16 +864,16 @@ mean in group female   mean in group male
   padding-right: 5px;
 }
 
-#ouhujuflvx .gt_first_summary_row {
+#lfqomnayce .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ouhujuflvx .gt_first_summary_row.thick {
+#lfqomnayce .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ouhujuflvx .gt_last_summary_row {
+#lfqomnayce .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -884,7 +883,7 @@ mean in group female   mean in group male
   border-bottom-color: #D3D3D3;
 }
 
-#ouhujuflvx .gt_grand_summary_row {
+#lfqomnayce .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -894,7 +893,7 @@ mean in group female   mean in group male
   padding-right: 5px;
 }
 
-#ouhujuflvx .gt_first_grand_summary_row {
+#lfqomnayce .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -904,7 +903,7 @@ mean in group female   mean in group male
   border-top-color: #D3D3D3;
 }
 
-#ouhujuflvx .gt_last_grand_summary_row_top {
+#lfqomnayce .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -914,11 +913,11 @@ mean in group female   mean in group male
   border-bottom-color: #D3D3D3;
 }
 
-#ouhujuflvx .gt_striped {
+#lfqomnayce .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ouhujuflvx .gt_table_body {
+#lfqomnayce .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -927,7 +926,7 @@ mean in group female   mean in group male
   border-bottom-color: #D3D3D3;
 }
 
-#ouhujuflvx .gt_footnotes {
+#lfqomnayce .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -941,7 +940,7 @@ mean in group female   mean in group male
   border-right-color: #D3D3D3;
 }
 
-#ouhujuflvx .gt_footnote {
+#lfqomnayce .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -950,7 +949,7 @@ mean in group female   mean in group male
   padding-right: 5px;
 }
 
-#ouhujuflvx .gt_sourcenotes {
+#lfqomnayce .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -964,7 +963,7 @@ mean in group female   mean in group male
   border-right-color: #D3D3D3;
 }
 
-#ouhujuflvx .gt_sourcenote {
+#lfqomnayce .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -972,72 +971,72 @@ mean in group female   mean in group male
   padding-right: 5px;
 }
 
-#ouhujuflvx .gt_left {
+#lfqomnayce .gt_left {
   text-align: left;
 }
 
-#ouhujuflvx .gt_center {
+#lfqomnayce .gt_center {
   text-align: center;
 }
 
-#ouhujuflvx .gt_right {
+#lfqomnayce .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ouhujuflvx .gt_font_normal {
+#lfqomnayce .gt_font_normal {
   font-weight: normal;
 }
 
-#ouhujuflvx .gt_font_bold {
+#lfqomnayce .gt_font_bold {
   font-weight: bold;
 }
 
-#ouhujuflvx .gt_font_italic {
+#lfqomnayce .gt_font_italic {
   font-style: italic;
 }
 
-#ouhujuflvx .gt_super {
+#lfqomnayce .gt_super {
   font-size: 65%;
 }
 
-#ouhujuflvx .gt_footnote_marks {
+#lfqomnayce .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ouhujuflvx .gt_asterisk {
+#lfqomnayce .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ouhujuflvx .gt_indent_1 {
+#lfqomnayce .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ouhujuflvx .gt_indent_2 {
+#lfqomnayce .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ouhujuflvx .gt_indent_3 {
+#lfqomnayce .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ouhujuflvx .gt_indent_4 {
+#lfqomnayce .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ouhujuflvx .gt_indent_5 {
+#lfqomnayce .gt_indent_5 {
   text-indent: 25px;
 }
 
-#ouhujuflvx .katex-display {
+#lfqomnayce .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#ouhujuflvx div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#lfqomnayce div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1079,70 +1078,70 @@ mean in group female   mean in group male
 <img data-src="lecture_6_descriptive_files/figure-revealjs/TP-FP-1.png" width="960" class="r-stretch"></section>
 <section id="section" class="slide level2">
 <h2></h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24" data-engine="r"><pre class="sourceCode numberSource shinylive-r number-lines code-with-copy"><code class="sourceCode"><span id="cb24-1"><a></a>#| label: power-app</span>
-<span id="cb24-2"><a></a>#| standalone: true</span>
-<span id="cb24-3"><a></a>#| viewerHeight: 600</span>
-<span id="cb24-4"><a></a></span>
-<span id="cb24-5"><a></a>library(shiny)</span>
-<span id="cb24-6"><a></a></span>
-<span id="cb24-7"><a></a>ui &lt;-  fluidPage(</span>
-<span id="cb24-8"><a></a>        # Application title</span>
-<span id="cb24-9"><a></a>      titlePanel("One sided Z-test"),</span>
-<span id="cb24-10"><a></a>      sidebarLayout(</span>
-<span id="cb24-11"><a></a>          sidebarPanel(</span>
-<span id="cb24-12"><a></a>            sliderInput("delta", "True mean", value = 1, min = 0.1, max = 2),</span>
-<span id="cb24-13"><a></a>            sliderInput("sd", "Standard deviation", value = 1, min = 0.5, max = 2),</span>
-<span id="cb24-14"><a></a>            sliderInput("n", "Sample size, n", value = 10, min = 10, max = 100),</span>
-<span id="cb24-15"><a></a>            radioButtons("alpha", "Significance level, alpha", choices = c(0.05, 0.01, 0.001), selected = 0.05)</span>
-<span id="cb24-16"><a></a>         ),</span>
-<span id="cb24-17"><a></a>            # Show a plot of the generated distribution</span>
-<span id="cb24-18"><a></a>          mainPanel(</span>
-<span id="cb24-19"><a></a>             plotOutput("distPlot")</span>
-<span id="cb24-20"><a></a>          )</span>
-<span id="cb24-21"><a></a>))</span>
-<span id="cb24-22"><a></a></span>
-<span id="cb24-23"><a></a>server &lt;- function(input, output, session) {</span>
-<span id="cb24-24"><a></a>  output$distPlot &lt;- renderPlot({</span>
-<span id="cb24-25"><a></a>    n &lt;- input$n</span>
-<span id="cb24-26"><a></a>    alpha &lt;- as.numeric(input$alpha)</span>
-<span id="cb24-27"><a></a>    delta &lt;- input$delta</span>
-<span id="cb24-28"><a></a>    sd &lt;- input$sd</span>
-<span id="cb24-29"><a></a>    mx &lt;- 2.5</span>
-<span id="cb24-30"><a></a>    mn &lt;- -1.5</span>
-<span id="cb24-31"><a></a>    crit &lt;-</span>
-<span id="cb24-32"><a></a>      qnorm(</span>
-<span id="cb24-33"><a></a>        alpha,</span>
-<span id="cb24-34"><a></a>        mean = 0,</span>
-<span id="cb24-35"><a></a>        sd = sd / sqrt(n),</span>
-<span id="cb24-36"><a></a>        lower.tail = FALSE</span>
-<span id="cb24-37"><a></a>      )</span>
-<span id="cb24-38"><a></a>    H0 &lt;- data.frame(x = seq(mn, mx, length = 201))</span>
-<span id="cb24-39"><a></a>    H0$y &lt;- dnorm(x = H0$x, mean = 0, sd = sd / sqrt(n))</span>
-<span id="cb24-40"><a></a>    H0$what &lt;- ifelse(H0$x &lt; crit, yes = "True negative", no = "False positive")</span>
-<span id="cb24-41"><a></a>    H0$hypothesis &lt;- "H[0]"</span>
-<span id="cb24-42"><a></a></span>
-<span id="cb24-43"><a></a>    H1 &lt;- data.frame(x = seq(mn, mx, length = 201))</span>
-<span id="cb24-44"><a></a>    H1$y &lt;- dnorm(x = H1$x, mean = delta, sd = sd / sqrt(n))</span>
-<span id="cb24-45"><a></a>    H1$what &lt;- ifelse(H1$x &lt; crit, yes = "True negative", no = "False positive")</span>
-<span id="cb24-46"><a></a>    H1$hypothesis &lt;- "H[1]"</span>
-<span id="cb24-47"><a></a></span>
-<span id="cb24-48"><a></a>    par(oma=c(2,2,0,0), mar=c(1.2,2,2,1), mfrow=c(2,1), cex = 1.5, tcl = -0.1, mgp = c(3, 0.2, 0))</span>
-<span id="cb24-49"><a></a>    plot(H0$x, H0$y, type = "n", main = expression(H[0]~is~true), xlab = "", ylab = "")</span>
-<span id="cb24-50"><a></a>    polygon(H0$x, H0$y)</span>
-<span id="cb24-51"><a></a>    polygon(c(H0$x[H0$x &gt; crit][1], H0$x[H0$x &gt; crit]), c(0, H0$y[H0$x &gt; crit]), col = "#832424")</span>
-<span id="cb24-52"><a></a>    abline(v = crit)</span>
-<span id="cb24-53"><a></a>   </span>
-<span id="cb24-54"><a></a>    plot(H1$x, H1$y, type = "n", main = expression(H[1]~is~true), xlab = "", ylab = "")</span>
-<span id="cb24-55"><a></a>    polygon(H1$x, H1$y)</span>
-<span id="cb24-56"><a></a>    polygon(c(H1$x[H1$x &gt; crit][1], H1$x[H1$x &gt; crit]), c(0, H1$y[H1$x &gt; crit]), col = "#832424")</span>
-<span id="cb24-57"><a></a>    abline(v = crit) </span>
-<span id="cb24-58"><a></a>    mtext(text="x",side=1,line=0,outer=TRUE, 1.5)</span>
-<span id="cb24-59"><a></a>    mtext(text="Density",side=2,line=0,outer=TRUE, cex = 1.5)</span>
-<span id="cb24-60"><a></a>    </span>
-<span id="cb24-61"><a></a>  })</span>
-<span id="cb24-62"><a></a>}</span>
-<span id="cb24-63"><a></a></span>
-<span id="cb24-64"><a></a>shinyApp(ui, server)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23" data-engine="r"><pre class="sourceCode numberSource shinylive-r number-lines code-with-copy"><code class="sourceCode"><span id="cb23-1"><a></a>#| label: power-app</span>
+<span id="cb23-2"><a></a>#| standalone: true</span>
+<span id="cb23-3"><a></a>#| viewerHeight: 600</span>
+<span id="cb23-4"><a></a></span>
+<span id="cb23-5"><a></a>library(shiny)</span>
+<span id="cb23-6"><a></a></span>
+<span id="cb23-7"><a></a>ui &lt;-  fluidPage(</span>
+<span id="cb23-8"><a></a>        # Application title</span>
+<span id="cb23-9"><a></a>      titlePanel("One sided Z-test"),</span>
+<span id="cb23-10"><a></a>      sidebarLayout(</span>
+<span id="cb23-11"><a></a>          sidebarPanel(</span>
+<span id="cb23-12"><a></a>            sliderInput("delta", "True mean", value = 1, min = 0.1, max = 2),</span>
+<span id="cb23-13"><a></a>            sliderInput("sd", "Standard deviation", value = 1, min = 0.5, max = 2),</span>
+<span id="cb23-14"><a></a>            sliderInput("n", "Sample size, n", value = 10, min = 10, max = 100),</span>
+<span id="cb23-15"><a></a>            radioButtons("alpha", "Significance level, alpha", choices = c(0.05, 0.01, 0.001), selected = 0.05)</span>
+<span id="cb23-16"><a></a>         ),</span>
+<span id="cb23-17"><a></a>            # Show a plot of the generated distribution</span>
+<span id="cb23-18"><a></a>          mainPanel(</span>
+<span id="cb23-19"><a></a>             plotOutput("distPlot")</span>
+<span id="cb23-20"><a></a>          )</span>
+<span id="cb23-21"><a></a>))</span>
+<span id="cb23-22"><a></a></span>
+<span id="cb23-23"><a></a>server &lt;- function(input, output, session) {</span>
+<span id="cb23-24"><a></a>  output$distPlot &lt;- renderPlot({</span>
+<span id="cb23-25"><a></a>    n &lt;- input$n</span>
+<span id="cb23-26"><a></a>    alpha &lt;- as.numeric(input$alpha)</span>
+<span id="cb23-27"><a></a>    delta &lt;- input$delta</span>
+<span id="cb23-28"><a></a>    sd &lt;- input$sd</span>
+<span id="cb23-29"><a></a>    mx &lt;- 2.5</span>
+<span id="cb23-30"><a></a>    mn &lt;- -1.5</span>
+<span id="cb23-31"><a></a>    crit &lt;-</span>
+<span id="cb23-32"><a></a>      qnorm(</span>
+<span id="cb23-33"><a></a>        alpha,</span>
+<span id="cb23-34"><a></a>        mean = 0,</span>
+<span id="cb23-35"><a></a>        sd = sd / sqrt(n),</span>
+<span id="cb23-36"><a></a>        lower.tail = FALSE</span>
+<span id="cb23-37"><a></a>      )</span>
+<span id="cb23-38"><a></a>    H0 &lt;- data.frame(x = seq(mn, mx, length = 201))</span>
+<span id="cb23-39"><a></a>    H0$y &lt;- dnorm(x = H0$x, mean = 0, sd = sd / sqrt(n))</span>
+<span id="cb23-40"><a></a>    H0$what &lt;- ifelse(H0$x &lt; crit, yes = "True negative", no = "False positive")</span>
+<span id="cb23-41"><a></a>    H0$hypothesis &lt;- "H[0]"</span>
+<span id="cb23-42"><a></a></span>
+<span id="cb23-43"><a></a>    H1 &lt;- data.frame(x = seq(mn, mx, length = 201))</span>
+<span id="cb23-44"><a></a>    H1$y &lt;- dnorm(x = H1$x, mean = delta, sd = sd / sqrt(n))</span>
+<span id="cb23-45"><a></a>    H1$what &lt;- ifelse(H1$x &lt; crit, yes = "True negative", no = "False positive")</span>
+<span id="cb23-46"><a></a>    H1$hypothesis &lt;- "H[1]"</span>
+<span id="cb23-47"><a></a></span>
+<span id="cb23-48"><a></a>    par(oma=c(2,2,0,0), mar=c(1.2,2,2,1), mfrow=c(2,1), cex = 1.5, tcl = -0.1, mgp = c(3, 0.2, 0))</span>
+<span id="cb23-49"><a></a>    plot(H0$x, H0$y, type = "n", main = expression(H[0]~is~true), xlab = "", ylab = "")</span>
+<span id="cb23-50"><a></a>    polygon(H0$x, H0$y)</span>
+<span id="cb23-51"><a></a>    polygon(c(H0$x[H0$x &gt; crit][1], H0$x[H0$x &gt; crit]), c(0, H0$y[H0$x &gt; crit]), col = "#832424")</span>
+<span id="cb23-52"><a></a>    abline(v = crit)</span>
+<span id="cb23-53"><a></a>   </span>
+<span id="cb23-54"><a></a>    plot(H1$x, H1$y, type = "n", main = expression(H[1]~is~true), xlab = "", ylab = "")</span>
+<span id="cb23-55"><a></a>    polygon(H1$x, H1$y)</span>
+<span id="cb23-56"><a></a>    polygon(c(H1$x[H1$x &gt; crit][1], H1$x[H1$x &gt; crit]), c(0, H1$y[H1$x &gt; crit]), col = "#832424")</span>
+<span id="cb23-57"><a></a>    abline(v = crit) </span>
+<span id="cb23-58"><a></a>    mtext(text="x",side=1,line=0,outer=TRUE, 1.5)</span>
+<span id="cb23-59"><a></a>    mtext(text="Density",side=2,line=0,outer=TRUE, cex = 1.5)</span>
+<span id="cb23-60"><a></a>    </span>
+<span id="cb23-61"><a></a>  })</span>
+<span id="cb23-62"><a></a>}</span>
+<span id="cb23-63"><a></a></span>
+<span id="cb23-64"><a></a>shinyApp(ui, server)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="the-need-for-power" class="slide level2">
 <h2>The need for power</h2>
@@ -1183,9 +1182,9 @@ mean in group female   mean in group male
 <section id="power-t-test" class="slide level2">
 <h2>Power t test</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a><span class="fu">library</span>(<span class="st">"pwr"</span>)</span>
-<span id="cb25-2"><a></a>pow <span class="ot">&lt;-</span> <span class="fu">pwr.t.test</span>(<span class="at">d =</span> <span class="fl">0.5</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">power =</span> <span class="fl">0.8</span>)</span>
-<span id="cb25-3"><a></a>pow</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a><span class="fu">library</span>(<span class="st">"pwr"</span>)</span>
+<span id="cb24-2"><a></a>pow <span class="ot">&lt;-</span> <span class="fu">pwr.t.test</span>(<span class="at">d =</span> <span class="fl">0.5</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">power =</span> <span class="fl">0.8</span>)</span>
+<span id="cb24-3"><a></a>pow</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
      Two-sample t test power calculation 
@@ -1204,7 +1203,7 @@ NOTE: n is number in *each* group</code></pre>
 <section class="slide level2">
 
 
-<img data-src="lecture_6_descriptive_files/figure-revealjs/pwr-plot, echo-1.png" width="960" class="r-stretch"></section>
+<img data-src="lecture_6_descriptive_files/figure-revealjs/pwr-plot-1.png" width="960" class="r-stretch"></section>
 <section class="slide level2">
 
 <ul>
