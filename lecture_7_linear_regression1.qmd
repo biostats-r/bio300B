@@ -189,7 +189,7 @@ p1 + p2
 
 ## We want the parameters $\beta$
 
-$$y_i = \beta_0 + \beta_1x_i + \epsilon_i  $$
+$$y_i = \beta_0 + \beta_1x_i + \varepsilon_i  $$
 
 - $y$ = continuous response
 - $x$ = continuous or categorical predictor
@@ -204,7 +204,7 @@ Residuals are actual - predicted
 
 ## Criteria
 
-- $\epsilon \sim N(0, \sigma)$ 
+- $\varepsilon \sim N(0, \sigma)$ 
 - $y \sim N(\mu, \sigma)$
 
 Use when
@@ -246,7 +246,7 @@ Studying foraminifera test composition and temperature
 
 Choose $\beta$ that minimise the sum of squares of residuals
 
-$$\sum_{i = 1}^{n}\epsilon_i^2 =   \sum_{i = 1}^{n}(y_i - (\beta_0 + \beta_1x_i))^2$$
+$$\sum_{i = 1}^{n}\varepsilon_i^2 =   \sum_{i = 1}^{n}(y_i - (\beta_0 + \beta_1x_i))^2$$
 
 ---
 

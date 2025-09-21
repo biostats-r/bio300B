@@ -80,7 +80,7 @@ ggplot(wtloss, aes(x = Days, y = log(Weight))) +
 
 ## Polynomial
 
-$$y_i=\beta_0 + \beta_1x_i+\beta_2x^2 + \epsilon_i$$
+$$y_i=\beta_0 + \beta_1x_i+\beta_2x^2 + \varepsilon_i$$
 
 :::: columns
 ::: {.column width="50%"}
@@ -101,7 +101,7 @@ The relationship has an asymptote, and a exponential decline
 
 ::: columns
 ::: {.column width="50%"}
-$y_i = \beta_0 + \beta_1\exp(\beta_2x_i) + \epsilon_i$ <br> If $\beta_2 < 0$
+$y_i = \beta_0 + \beta_1\exp(\beta_2x_i) + \varepsilon_i$ <br> If $\beta_2 < 0$
 
 x -\> inf
 

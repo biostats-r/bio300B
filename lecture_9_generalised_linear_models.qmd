@@ -55,7 +55,7 @@ data(penguins, package = "palmerpenguins")
 
 Choose $\beta$ that minimise the sum of squares of residuals
 
-$$\sum_{i = 1}^{n}\epsilon_i^2 =   \sum_{i = 1}^{n}(y_i - (\beta_0 + \beta_1x_i))^2$$
+$$\sum_{i = 1}^{n}\varepsilon_i^2 =   \sum_{i = 1}^{n}(y_i - (\beta_0 + \beta_1x_i))^2$$
 
 
 ```{r, echo = FALSE}

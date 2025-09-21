@@ -132,7 +132,7 @@ summary(mod_bit)
 
 ### <font color = "red">Fixed effect</font> effect model
 
-$$y_i = \color{red}{\beta_0} + \color{red}{\beta_1}x_i + \color{red}{\beta_2}tank_i  +\color{blue}{ \epsilon_i}$$
+$$y_i = \color{red}{\beta_0} + \color{red}{\beta_1}x_i + \color{red}{\beta_2}tank_i  +\color{blue}{ \varepsilon_i}$$
 
 Not interested in effect of tank 
 
@@ -142,11 +142,11 @@ Use a <font color = "blue">Random effect</font>
 
 Assumes observed tanks from a population of possible tanks
  
-$$y_{ij} = \color{red}{\beta_0} +\color{blue}{b_{0i}}+ \color{red}{\beta_1}x_i +\color{blue}{ \epsilon_{ij}}$$
+$$y_{ij} = \color{red}{\beta_0} +\color{blue}{b_{0i}}+ \color{red}{\beta_1}x_i +\color{blue}{ \varepsilon_{ij}}$$
 
 ## Random effects
 
-Residuals from a normal distribution $\color{blue}{ \epsilon_{ij}} \sim N(0, \sigma_{ind})$  
+Residuals from a normal distribution $\color{blue}{ \varepsilon_{ij}} \sim N(0, \sigma_{ind})$  
 Random effects from a normal distribution $\color{blue}{b_{0i}} \sim N(0, \sigma_{clu})$
 
 ```{r control, echo = FALSE, fig.height = 5}
