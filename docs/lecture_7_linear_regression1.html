@@ -16,7 +16,7 @@
   <meta name="generator" content="quarto-1.8.20">
 
   <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)">
-  <meta name="dcterms.date" content="2025-08-17">
+  <meta name="dcterms.date" content="2025-09-29">
   <title>Bio302 - Biostatistikk – Linear Regression 1</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -214,7 +214,7 @@ Richard J. Telford (Richard.Telford@uib.no)
     </div>
 </div>
 
-  <p class="date">17 August 2025</p>
+  <p class="date">29 September 2025</p>
 </section>
 <section id="bivariate-descriptive-statistics" class="slide level2">
 <h2>Bivariate descriptive statistics</h2>
@@ -276,6 +276,7 @@ Richard J. Telford (Richard.Telford@uib.no)
 </section>
 <section id="correlations-in-r" class="slide level2">
 <h2>Correlations in R</h2>
+<p>Correlation between two variables</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">cor</span>(</span>
 <span id="cb1-2"><a></a>  <span class="at">x =</span> penguins<span class="sc">$</span>bill_length_mm,</span>
@@ -286,6 +287,7 @@ Richard J. Telford (Richard.Telford@uib.no)
 <pre><code>[1] 0.5951</code></pre>
 </div>
 </div>
+<p>Correlation matrix</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>penguins <span class="sc">|&gt;</span></span>
 <span id="cb3-2"><a></a>  <span class="fu">select</span>(bill_length_mm<span class="sc">:</span>body_mass_g) <span class="sc">|&gt;</span></span>
@@ -304,7 +306,7 @@ body_mass_g               0.5951       -0.4719            0.8712      1.0000</co
 <p>Coefficient of determination</p>
 <p><span class="math display">\[R^2 = r^2\]</span></p>
 <ul>
-<li>0 - 1</li>
+<li>0 – 1</li>
 <li>proportion of variance explained</li>
 <li><span class="math inline">\(R^2\)</span> = 0.5, 50% of variation in data explained</li>
 </ul>
@@ -362,7 +364,7 @@ sample estimates:
 </section>
 <section id="we-want-the-parameters-beta" class="slide level2">
 <h2>We want the parameters <span class="math inline">\(\beta\)</span></h2>
-<p><span class="math display">\[y_i = \beta_0 + \beta_1x_i + \epsilon_i  \]</span></p>
+<p><span class="math display">\[y_i = \beta_0 + \beta_1x_i + \varepsilon_i  \]</span></p>
 <ul>
 <li><span class="math inline">\(y\)</span> = continuous response</li>
 <li><span class="math inline">\(x\)</span> = continuous or categorical predictor</li>
@@ -376,7 +378,7 @@ sample estimates:
 <section id="criteria" class="slide level2">
 <h2>Criteria</h2>
 <ul>
-<li><span class="math inline">\(\epsilon \sim N(0, \sigma)\)</span></li>
+<li><span class="math inline">\(\varepsilon \sim N(0, \sigma)\)</span></li>
 <li><span class="math inline">\(y \sim N(\mu, \sigma)\)</span></li>
 </ul>
 <p>Use when</p>
@@ -411,218 +413,224 @@ sample estimates:
 </section>
 <section id="which-distribution-matters" class="slide level2">
 <h2>Which distribution matters?</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" data-engine="r"><pre class="sourceCode numberSource shinylive-r number-lines code-with-copy"><code class="sourceCode"><span id="cb7-1"><a></a>#| label: ydistribution-lm-app</span>
-<span id="cb7-2"><a></a>#| standalone: true</span>
-<span id="cb7-3"><a></a>#| viewerHeight: 600</span>
-<span id="cb7-4"><a></a></span>
-<span id="cb7-5"><a></a>library(shiny)</span>
-<span id="cb7-6"><a></a></span>
-<span id="cb7-7"><a></a>ui &lt;-  fluidPage(</span>
-<span id="cb7-8"><a></a>  # Application title</span>
-<span id="cb7-9"><a></a>  titlePanel("Which distribution is important?"),</span>
-<span id="cb7-10"><a></a>  sidebarLayout(</span>
-<span id="cb7-11"><a></a>    sidebarPanel(</span>
-<span id="cb7-12"><a></a>      radioButtons("dist", "Predictor distributor", choices = c("Normal", "Skewed", "Bimodal"), selected = "Normal"),</span>
-<span id="cb7-13"><a></a>      checkboxInput("show_residuals", label = "Show residuals", value = FALSE),</span>
-<span id="cb7-14"><a></a>      radioButtons("residual_plot", "Residual plot", choices = c("None", "Histogram", "QQplot"), selected = "None")</span>
-<span id="cb7-15"><a></a>    ),</span>
-<span id="cb7-16"><a></a>    # Show a plot of the generated distribution</span>
-<span id="cb7-17"><a></a>    mainPanel(</span>
-<span id="cb7-18"><a></a>      plotOutput("distPlot")</span>
-<span id="cb7-19"><a></a>    )</span>
-<span id="cb7-20"><a></a>  ))</span>
-<span id="cb7-21"><a></a></span>
-<span id="cb7-22"><a></a>  horizHist &lt;- function(</span>
-<span id="cb7-23"><a></a>    Data,</span>
-<span id="cb7-24"><a></a>    breaks="Sturges",</span>
-<span id="cb7-25"><a></a>    freq=TRUE,</span>
-<span id="cb7-26"><a></a>    plot=TRUE,</span>
-<span id="cb7-27"><a></a>    col=par("bg"),</span>
-<span id="cb7-28"><a></a>    border=par("fg"),</span>
-<span id="cb7-29"><a></a>    las=1,</span>
-<span id="cb7-30"><a></a>    xlab=if(freq)"Frequency" else "Density",</span>
-<span id="cb7-31"><a></a>    main=paste("Histogram of",deparse(substitute(Data))),</span>
-<span id="cb7-32"><a></a>    ylim=range(HBreaks),</span>
-<span id="cb7-33"><a></a>    labelat=pretty(ylim),</span>
-<span id="cb7-34"><a></a>    labels=labelat,</span>
-<span id="cb7-35"><a></a>    ... )</span>
-<span id="cb7-36"><a></a>  {</span>
-<span id="cb7-37"><a></a>    a &lt;- hist(Data, plot=FALSE, breaks=breaks)</span>
-<span id="cb7-38"><a></a>    HBreaks &lt;- a$breaks</span>
-<span id="cb7-39"><a></a>    hpos &lt;- function(Pos) (Pos-HBreaks[1])*(length(HBreaks)-1)/ diff(range(HBreaks))</span>
-<span id="cb7-40"><a></a>    if(plot)</span>
-<span id="cb7-41"><a></a>    {</span>
-<span id="cb7-42"><a></a>      barplot(if(freq)a$counts else a$density, space=0, horiz=TRUE, ylim=hpos(ylim), col=col, border=border,</span>
-<span id="cb7-43"><a></a>              xlab=xlab, main=main, ...)</span>
-<span id="cb7-44"><a></a>    }</span>
-<span id="cb7-45"><a></a>  } # End of function</span>
-<span id="cb7-46"><a></a></span>
-<span id="cb7-47"><a></a>server &lt;- function(input, output, session) {</span>
-<span id="cb7-48"><a></a>  x &lt;- reactive(switch(input$dist,</span>
-<span id="cb7-49"><a></a>                Normal = rnorm(50),</span>
-<span id="cb7-50"><a></a>                Skewed = exp(rnorm(50)),</span>
-<span id="cb7-51"><a></a>                Bimodal = c(rnorm(25, mean = 1, sd = 0.4), rnorm(25, mean = 5, sd = 0.4))</span>
-<span id="cb7-52"><a></a>        ))</span>
-<span id="cb7-53"><a></a>  y &lt;- reactive(rnorm(length(x()), mean = x()))</span>
-<span id="cb7-54"><a></a>  mod &lt;- reactive(lm(y() ~ x()))</span>
-<span id="cb7-55"><a></a>  </span>
-<span id="cb7-56"><a></a>  output$distPlot &lt;- renderPlot({</span>
-<span id="cb7-57"><a></a></span>
-<span id="cb7-58"><a></a></span>
-<span id="cb7-59"><a></a>    layout(mat = matrix(c(1, 2, 4, 0, 3, 0),</span>
-<span id="cb7-60"><a></a>                        nrow = 3,</span>
-<span id="cb7-61"><a></a>                        ncol = 2),</span>
-<span id="cb7-62"><a></a>           heights = c(1, 3, 3),    # Heights of the two rows</span>
-<span id="cb7-63"><a></a>           widths = c(3, 1))     # Widths of the two columns</span>
-<span id="cb7-64"><a></a>    par(mar=c(1.2,2,2,1),  cex = 1.3, tcl = -0.1, mgp = c(1.5, 0.2, 0))</span>
-<span id="cb7-65"><a></a>    par(mar = c(0, 3, 0, 0))</span>
-<span id="cb7-66"><a></a>    hist(x(), axes = FALSE, main = "", ylab = "", xlab = "", breaks = 10)</span>
-<span id="cb7-67"><a></a>    par(mar = c(3, 3, 0, 0))</span>
-<span id="cb7-68"><a></a>    plot(x(), y(), xlab = "Predictor", ylab = "Response")</span>
-<span id="cb7-69"><a></a>    abline(coef = coef(mod()))</span>
-<span id="cb7-70"><a></a>    if (input$show_residuals) {</span>
-<span id="cb7-71"><a></a>      segments(x0 = x(), y0 = y(), x1 = x(), y1 = fitted(mod()))</span>
-<span id="cb7-72"><a></a>    }</span>
-<span id="cb7-73"><a></a>    par(mar = c(3, 0.2, 0, 0))</span>
-<span id="cb7-74"><a></a>    horizHist(y(), axes = FALSE, main = "", ylab = "", xlab = "", col = "lightgrey", breaks = 10)</span>
-<span id="cb7-75"><a></a>    </span>
-<span id="cb7-76"><a></a>    if (input$residual_plot == "Histogram") {</span>
-<span id="cb7-77"><a></a>        par(mar = c(3, 3, 1, 0))</span>
-<span id="cb7-78"><a></a>        hist(resid(mod()), freq = FALSE)</span>
-<span id="cb7-79"><a></a>        x_norm &lt;- seq(-10, 10, length.out = 100)</span>
-<span id="cb7-80"><a></a>        lines(x_norm, dnorm(x_norm, mean = 0, sd = sd(resid(mod()))), col = "#832424", xlab = "Residuals", main = "Histogram of residuals")</span>
-<span id="cb7-81"><a></a>    } else if (input$residual_plot == "QQplot") {</span>
-<span id="cb7-82"><a></a>        par(mar = c(3, 3, 1, 0))</span>
-<span id="cb7-83"><a></a>        plot(mod(), which = 2, id.n = 0)</span>
-<span id="cb7-84"><a></a>    }</span>
-<span id="cb7-85"><a></a></span>
-<span id="cb7-86"><a></a>  })</span>
-<span id="cb7-87"><a></a>}</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" data-engine="r"><pre class="sourceCode numberSource shinylive-r number-lines code-with-copy"><code class="sourceCode"><span id="cb7-1"><a></a>#| '!! shinylive warning !!': |</span>
+<span id="cb7-2"><a></a>#|   shinylive does not work in self-contained HTML documents.</span>
+<span id="cb7-3"><a></a>#|   Please set `embed-resources: false` in your metadata.</span>
+<span id="cb7-4"><a></a>#| label: ydistribution-lm-app</span>
+<span id="cb7-5"><a></a>#| standalone: true</span>
+<span id="cb7-6"><a></a>#| viewerHeight: 600</span>
+<span id="cb7-7"><a></a></span>
+<span id="cb7-8"><a></a>library(shiny)</span>
+<span id="cb7-9"><a></a></span>
+<span id="cb7-10"><a></a>ui &lt;-  fluidPage(</span>
+<span id="cb7-11"><a></a>  # Application title</span>
+<span id="cb7-12"><a></a>  titlePanel("Which distribution is important?"),</span>
+<span id="cb7-13"><a></a>  sidebarLayout(</span>
+<span id="cb7-14"><a></a>    sidebarPanel(</span>
+<span id="cb7-15"><a></a>      radioButtons("dist", "Predictor distributor", choices = c("Normal", "Skewed", "Bimodal"), selected = "Normal"),</span>
+<span id="cb7-16"><a></a>      checkboxInput("show_residuals", label = "Show residuals", value = FALSE),</span>
+<span id="cb7-17"><a></a>      radioButtons("residual_plot", "Residual plot", choices = c("None", "Histogram", "QQplot"), selected = "None")</span>
+<span id="cb7-18"><a></a>    ),</span>
+<span id="cb7-19"><a></a>    # Show a plot of the generated distribution</span>
+<span id="cb7-20"><a></a>    mainPanel(</span>
+<span id="cb7-21"><a></a>      plotOutput("distPlot")</span>
+<span id="cb7-22"><a></a>    )</span>
+<span id="cb7-23"><a></a>  ))</span>
+<span id="cb7-24"><a></a></span>
+<span id="cb7-25"><a></a>  horizHist &lt;- function(</span>
+<span id="cb7-26"><a></a>    Data,</span>
+<span id="cb7-27"><a></a>    breaks="Sturges",</span>
+<span id="cb7-28"><a></a>    freq=TRUE,</span>
+<span id="cb7-29"><a></a>    plot=TRUE,</span>
+<span id="cb7-30"><a></a>    col=par("bg"),</span>
+<span id="cb7-31"><a></a>    border=par("fg"),</span>
+<span id="cb7-32"><a></a>    las=1,</span>
+<span id="cb7-33"><a></a>    xlab=if(freq)"Frequency" else "Density",</span>
+<span id="cb7-34"><a></a>    main=paste("Histogram of",deparse(substitute(Data))),</span>
+<span id="cb7-35"><a></a>    ylim=range(HBreaks),</span>
+<span id="cb7-36"><a></a>    labelat=pretty(ylim),</span>
+<span id="cb7-37"><a></a>    labels=labelat,</span>
+<span id="cb7-38"><a></a>    ... )</span>
+<span id="cb7-39"><a></a>  {</span>
+<span id="cb7-40"><a></a>    a &lt;- hist(Data, plot=FALSE, breaks=breaks)</span>
+<span id="cb7-41"><a></a>    HBreaks &lt;- a$breaks</span>
+<span id="cb7-42"><a></a>    hpos &lt;- function(Pos) (Pos-HBreaks[1])*(length(HBreaks)-1)/ diff(range(HBreaks))</span>
+<span id="cb7-43"><a></a>    if(plot)</span>
+<span id="cb7-44"><a></a>    {</span>
+<span id="cb7-45"><a></a>      barplot(if(freq)a$counts else a$density, space=0, horiz=TRUE, ylim=hpos(ylim), col=col, border=border,</span>
+<span id="cb7-46"><a></a>              xlab=xlab, main=main, ...)</span>
+<span id="cb7-47"><a></a>    }</span>
+<span id="cb7-48"><a></a>  } # End of function</span>
+<span id="cb7-49"><a></a></span>
+<span id="cb7-50"><a></a>server &lt;- function(input, output, session) {</span>
+<span id="cb7-51"><a></a>  x &lt;- reactive(switch(input$dist,</span>
+<span id="cb7-52"><a></a>                Normal = rnorm(50),</span>
+<span id="cb7-53"><a></a>                Skewed = exp(rnorm(50)),</span>
+<span id="cb7-54"><a></a>                Bimodal = c(rnorm(25, mean = 1, sd = 0.4), rnorm(25, mean = 5, sd = 0.4))</span>
+<span id="cb7-55"><a></a>        ))</span>
+<span id="cb7-56"><a></a>  y &lt;- reactive(rnorm(length(x()), mean = x()))</span>
+<span id="cb7-57"><a></a>  mod &lt;- reactive(lm(y() ~ x()))</span>
+<span id="cb7-58"><a></a>  </span>
+<span id="cb7-59"><a></a>  output$distPlot &lt;- renderPlot({</span>
+<span id="cb7-60"><a></a></span>
+<span id="cb7-61"><a></a></span>
+<span id="cb7-62"><a></a>    layout(mat = matrix(c(1, 2, 4, 0, 3, 0),</span>
+<span id="cb7-63"><a></a>                        nrow = 3,</span>
+<span id="cb7-64"><a></a>                        ncol = 2),</span>
+<span id="cb7-65"><a></a>           heights = c(1, 3, 3),    # Heights of the two rows</span>
+<span id="cb7-66"><a></a>           widths = c(3, 1))     # Widths of the two columns</span>
+<span id="cb7-67"><a></a>    par(mar=c(1.2,2,2,1),  cex = 1.3, tcl = -0.1, mgp = c(1.5, 0.2, 0))</span>
+<span id="cb7-68"><a></a>    par(mar = c(0, 3, 0, 0))</span>
+<span id="cb7-69"><a></a>    hist(x(), axes = FALSE, main = "", ylab = "", xlab = "", breaks = 10)</span>
+<span id="cb7-70"><a></a>    par(mar = c(3, 3, 0, 0))</span>
+<span id="cb7-71"><a></a>    plot(x(), y(), xlab = "Predictor", ylab = "Response")</span>
+<span id="cb7-72"><a></a>    abline(coef = coef(mod()))</span>
+<span id="cb7-73"><a></a>    if (input$show_residuals) {</span>
+<span id="cb7-74"><a></a>      segments(x0 = x(), y0 = y(), x1 = x(), y1 = fitted(mod()))</span>
+<span id="cb7-75"><a></a>    }</span>
+<span id="cb7-76"><a></a>    par(mar = c(3, 0.2, 0, 0))</span>
+<span id="cb7-77"><a></a>    horizHist(y(), axes = FALSE, main = "", ylab = "", xlab = "", col = "lightgrey", breaks = 10)</span>
+<span id="cb7-78"><a></a>    </span>
+<span id="cb7-79"><a></a>    if (input$residual_plot == "Histogram") {</span>
+<span id="cb7-80"><a></a>        par(mar = c(3, 3, 1, 0))</span>
+<span id="cb7-81"><a></a>        hist(resid(mod()), freq = FALSE)</span>
+<span id="cb7-82"><a></a>        x_norm &lt;- seq(-10, 10, length.out = 100)</span>
+<span id="cb7-83"><a></a>        lines(x_norm, dnorm(x_norm, mean = 0, sd = sd(resid(mod()))), col = "#832424", xlab = "Residuals", main = "Histogram of residuals")</span>
+<span id="cb7-84"><a></a>    } else if (input$residual_plot == "QQplot") {</span>
+<span id="cb7-85"><a></a>        par(mar = c(3, 3, 1, 0))</span>
+<span id="cb7-86"><a></a>        plot(mod(), which = 2, id.n = 0)</span>
+<span id="cb7-87"><a></a>    }</span>
 <span id="cb7-88"><a></a></span>
-<span id="cb7-89"><a></a>shinyApp(ui, server)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-89"><a></a>  })</span>
+<span id="cb7-90"><a></a>}</span>
+<span id="cb7-91"><a></a></span>
+<span id="cb7-92"><a></a>shinyApp(ui, server)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="estimating-beta" class="slide level2">
 <h2>Estimating <span class="math inline">\(\beta\)</span></h2>
 <p>Choose <span class="math inline">\(\beta\)</span> that minimise the sum of squares of residuals</p>
-<p><span class="math display">\[\sum_{i = 1}^{n}\epsilon_i^2 =   \sum_{i = 1}^{n}(y_i - (\beta_0 + \beta_1x_i))^2\]</span></p>
+<p><span class="math display">\[\sum_{i = 1}^{n}\varepsilon_i^2 =   \sum_{i = 1}^{n}(y_i - (\beta_0 + \beta_1x_i))^2\]</span></p>
 </section>
 <section class="slide level2">
 
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" data-engine="r"><pre class="sourceCode numberSource shinylive-r number-lines code-with-copy"><code class="sourceCode"><span id="cb8-1"><a></a>#| label: regression-line-ss-app</span>
-<span id="cb8-2"><a></a>#| standalone: true</span>
-<span id="cb8-3"><a></a>#| viewerHeight: 600</span>
-<span id="cb8-4"><a></a>library(shiny)</span>
-<span id="cb8-5"><a></a></span>
-<span id="cb8-6"><a></a>ui &lt;-  fluidPage(</span>
-<span id="cb8-7"><a></a>        # Application title</span>
-<span id="cb8-8"><a></a>      titlePanel("Minimise the sum of squared residuals"),</span>
-<span id="cb8-9"><a></a>      sidebarLayout(</span>
-<span id="cb8-10"><a></a>          sidebarPanel(</span>
-<span id="cb8-11"><a></a>            radioButtons("residuals", "Show residuals", choices = c("None", "Residuals", "Squared-residuals"), selected = "None"),</span>
-<span id="cb8-12"><a></a>            checkboxInput("best", "Show best model"),</span>
-<span id="cb8-13"><a></a>            textOutput("slope"),</span>
-<span id="cb8-14"><a></a>            textOutput("intercept")</span>
-<span id="cb8-15"><a></a>         ),</span>
-<span id="cb8-16"><a></a>            # Show a plot of the generated distribution</span>
-<span id="cb8-17"><a></a>          mainPanel(</span>
-<span id="cb8-18"><a></a>             plotOutput("plot", click = "plot_click"),</span>
-<span id="cb8-19"><a></a>             h3(textOutput("SumSq"))</span>
-<span id="cb8-20"><a></a>          )</span>
-<span id="cb8-21"><a></a>))</span>
-<span id="cb8-22"><a></a></span>
-<span id="cb8-23"><a></a>server &lt;- function(input, output, session) {</span>
-<span id="cb8-24"><a></a>  # make some data</span>
-<span id="cb8-25"><a></a>  set.seed(Sys.Date())</span>
-<span id="cb8-26"><a></a>  data &lt;- data.frame(x = 1:10, y = rnorm(10, 1:10))</span>
-<span id="cb8-27"><a></a>  xlab &lt;- "Predictor"</span>
-<span id="cb8-28"><a></a>  ylab &lt;- "Response"</span>
-<span id="cb8-29"><a></a>  </span>
-<span id="cb8-30"><a></a>  v &lt;- reactiveValues(</span>
-<span id="cb8-31"><a></a>    click1 = NULL,  # Represents the first mouse click, if any</span>
-<span id="cb8-32"><a></a>    intercept = NULL,    # After two clicks, this stores the intercept</span>
-<span id="cb8-33"><a></a>    slope = NULL, # after two clicks, this stores the slope,</span>
-<span id="cb8-34"><a></a>    pred = NULL,</span>
-<span id="cb8-35"><a></a>    resid = NULL</span>
-<span id="cb8-36"><a></a>  )</span>
-<span id="cb8-37"><a></a></span>
-<span id="cb8-38"><a></a>  # Handle clicks on the plot</span>
-<span id="cb8-39"><a></a> observeEvent(input$plot_click, {</span>
-<span id="cb8-40"><a></a>    if (is.null(v$click1)) {</span>
-<span id="cb8-41"><a></a>      # We don't have a first click, so this is the first click</span>
-<span id="cb8-42"><a></a>      v$click1 &lt;- input$plot_click</span>
-<span id="cb8-43"><a></a>    } else {</span>
-<span id="cb8-44"><a></a>      # We already had a first click, so this is the second click.</span>
-<span id="cb8-45"><a></a>      # Make slope and intercept from the previous click and this one.</span>
-<span id="cb8-46"><a></a>      v$slope &lt;- (input$plot_click$y - v$click1$y)/(input$plot_click$x - v$click1$x)</span>
-<span id="cb8-47"><a></a>      v$intercept &lt;- (input$plot_click$y + v$click1$y)/2 - v$slope * (input$plot_click$x + v$click1$x)/2</span>
-<span id="cb8-48"><a></a></span>
-<span id="cb8-49"><a></a>      # predictions &amp; residuals</span>
-<span id="cb8-50"><a></a>       v$pred &lt;- v$intercept +  v$slope * data$x</span>
-<span id="cb8-51"><a></a>       v$resid &lt;- v$pred - data$y</span>
-<span id="cb8-52"><a></a>      # And clear the first click so the next click starts a new line.</span>
-<span id="cb8-53"><a></a>      v$click1 &lt;- NULL</span>
-<span id="cb8-54"><a></a>    }</span>
-<span id="cb8-55"><a></a>  })</span>
-<span id="cb8-56"><a></a></span>
-<span id="cb8-57"><a></a></span>
-<span id="cb8-58"><a></a> output$plot &lt;- renderPlot({</span>
-<span id="cb8-59"><a></a>   par(cex = 1.5, mar = c(3, 3, 1, 1), tcl = -0.1, mgp = c(2, 0.2, 0))</span>
-<span id="cb8-60"><a></a>   plot(data, pch = 16, xlab = xlab, ylab = ylab)</span>
-<span id="cb8-61"><a></a>   if (input$best) {</span>
-<span id="cb8-62"><a></a>     mod &lt;- lm(y ~ x, data = data)</span>
-<span id="cb8-63"><a></a>     abline(mod, colour = "navy", lty = "dashed")</span>
-<span id="cb8-64"><a></a>   }</span>
-<span id="cb8-65"><a></a>   if (!is.null(v$intercept)) {</span>
-<span id="cb8-66"><a></a>     abline(a = v$intercept, b = v$slope)</span>
-<span id="cb8-67"><a></a>     if (input$residuals == "Residuals") {</span>
-<span id="cb8-68"><a></a>       segments(</span>
-<span id="cb8-69"><a></a>         x0 = data$x,</span>
-<span id="cb8-70"><a></a>         x1 = data$x,</span>
-<span id="cb8-71"><a></a>         y0 = data$y,</span>
-<span id="cb8-72"><a></a>         y1 = v$pred</span>
-<span id="cb8-73"><a></a>       )</span>
-<span id="cb8-74"><a></a>     } else if (input$residuals == "Squared-residuals") {</span>
-<span id="cb8-75"><a></a>       w   &lt;- par("pin")[1] / diff(par("usr")[1:2])</span>
-<span id="cb8-76"><a></a>       h   &lt;- par("pin")[2] / diff(par("usr")[3:4])</span>
-<span id="cb8-77"><a></a>       asp &lt;- w/h</span>
-<span id="cb8-78"><a></a>       rect(xleft = ifelse(v$resid &lt; 0,  data$x, data$x + v$resid / asp),</span>
-<span id="cb8-79"><a></a>            ybottom = ifelse(v$resid &lt; 0, v$pred, data$y),</span>
-<span id="cb8-80"><a></a>            xright = ifelse(v$resid &lt; 0, data$x + v$resid / asp, data$x),</span>
-<span id="cb8-81"><a></a>            ytop = ifelse(v$resid &lt; 0, data$y, v$pred),</span>
-<span id="cb8-82"><a></a>            col = "#83242455", border = "#832424")</span>
-<span id="cb8-83"><a></a>     }</span>
-<span id="cb8-84"><a></a>     </span>
-<span id="cb8-85"><a></a>   }</span>
-<span id="cb8-86"><a></a> })</span>
-<span id="cb8-87"><a></a> output$SumSq &lt;- renderText({</span>
-<span id="cb8-88"><a></a>   if (is.null(v$click1) &amp;&amp; is.null(v$intercept)) { # initial state</span>
-<span id="cb8-89"><a></a>     "Click on the plot to start a line"</span>
-<span id="cb8-90"><a></a>   } else if (!is.null(v$click1)) { #after one click</span>
-<span id="cb8-91"><a></a>      "Click again to finsh a line"</span>
-<span id="cb8-92"><a></a>   } else if(input$residuals == "None") {</span>
-<span id="cb8-93"><a></a>     "Use radio buttons to display residuals"</span>
-<span id="cb8-94"><a></a>   } else {</span>
-<span id="cb8-95"><a></a>      paste0("Sum of squares = ", signif(sum(v$resid ^ 2), 3))</span>
-<span id="cb8-96"><a></a>   }</span>
-<span id="cb8-97"><a></a></span>
-<span id="cb8-98"><a></a> })</span>
-<span id="cb8-99"><a></a>    output$slope &lt;- renderText({</span>
-<span id="cb8-100"><a></a>     if (!is.null(v$slope)) {</span>
-<span id="cb8-101"><a></a>       paste0("Slope = ", signif(v$slope, 3))</span>
-<span id="cb8-102"><a></a>     } else {</span>
-<span id="cb8-103"><a></a>       ""</span>
-<span id="cb8-104"><a></a>     }</span>
-<span id="cb8-105"><a></a>   })</span>
-<span id="cb8-106"><a></a>  output$intercept &lt;- renderText({</span>
-<span id="cb8-107"><a></a>     if (!is.null(v$intercept)) {</span>
-<span id="cb8-108"><a></a>       paste0("Intercept = ", signif(v$intercept, 3))</span>
-<span id="cb8-109"><a></a>     } else {</span>
-<span id="cb8-110"><a></a>       ""</span>
-<span id="cb8-111"><a></a>     }</span>
-<span id="cb8-112"><a></a>   })</span>
-<span id="cb8-113"><a></a>}</span>
-<span id="cb8-114"><a></a></span>
-<span id="cb8-115"><a></a>shinyApp(ui, server)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" data-engine="r"><pre class="sourceCode numberSource shinylive-r number-lines code-with-copy"><code class="sourceCode"><span id="cb8-1"><a></a>#| '!! shinylive warning !!': |</span>
+<span id="cb8-2"><a></a>#|   shinylive does not work in self-contained HTML documents.</span>
+<span id="cb8-3"><a></a>#|   Please set `embed-resources: false` in your metadata.</span>
+<span id="cb8-4"><a></a>#| label: regression-line-ss-app</span>
+<span id="cb8-5"><a></a>#| standalone: true</span>
+<span id="cb8-6"><a></a>#| viewerHeight: 600</span>
+<span id="cb8-7"><a></a>library(shiny)</span>
+<span id="cb8-8"><a></a></span>
+<span id="cb8-9"><a></a>ui &lt;-  fluidPage(</span>
+<span id="cb8-10"><a></a>        # Application title</span>
+<span id="cb8-11"><a></a>      titlePanel("Minimise the sum of squared residuals"),</span>
+<span id="cb8-12"><a></a>      sidebarLayout(</span>
+<span id="cb8-13"><a></a>          sidebarPanel(</span>
+<span id="cb8-14"><a></a>            radioButtons("residuals", "Show residuals", choices = c("None", "Residuals", "Squared-residuals"), selected = "None"),</span>
+<span id="cb8-15"><a></a>            checkboxInput("best", "Show best model"),</span>
+<span id="cb8-16"><a></a>            textOutput("slope"),</span>
+<span id="cb8-17"><a></a>            textOutput("intercept")</span>
+<span id="cb8-18"><a></a>         ),</span>
+<span id="cb8-19"><a></a>            # Show a plot of the generated distribution</span>
+<span id="cb8-20"><a></a>          mainPanel(</span>
+<span id="cb8-21"><a></a>             plotOutput("plot", click = "plot_click"),</span>
+<span id="cb8-22"><a></a>             h3(textOutput("SumSq"))</span>
+<span id="cb8-23"><a></a>          )</span>
+<span id="cb8-24"><a></a>))</span>
+<span id="cb8-25"><a></a></span>
+<span id="cb8-26"><a></a>server &lt;- function(input, output, session) {</span>
+<span id="cb8-27"><a></a>  # make some data</span>
+<span id="cb8-28"><a></a>  set.seed(Sys.Date())</span>
+<span id="cb8-29"><a></a>  data &lt;- data.frame(x = 1:10, y = rnorm(10, 1:10))</span>
+<span id="cb8-30"><a></a>  xlab &lt;- "Predictor"</span>
+<span id="cb8-31"><a></a>  ylab &lt;- "Response"</span>
+<span id="cb8-32"><a></a>  </span>
+<span id="cb8-33"><a></a>  v &lt;- reactiveValues(</span>
+<span id="cb8-34"><a></a>    click1 = NULL,  # Represents the first mouse click, if any</span>
+<span id="cb8-35"><a></a>    intercept = NULL,    # After two clicks, this stores the intercept</span>
+<span id="cb8-36"><a></a>    slope = NULL, # after two clicks, this stores the slope,</span>
+<span id="cb8-37"><a></a>    pred = NULL,</span>
+<span id="cb8-38"><a></a>    resid = NULL</span>
+<span id="cb8-39"><a></a>  )</span>
+<span id="cb8-40"><a></a></span>
+<span id="cb8-41"><a></a>  # Handle clicks on the plot</span>
+<span id="cb8-42"><a></a> observeEvent(input$plot_click, {</span>
+<span id="cb8-43"><a></a>    if (is.null(v$click1)) {</span>
+<span id="cb8-44"><a></a>      # We don't have a first click, so this is the first click</span>
+<span id="cb8-45"><a></a>      v$click1 &lt;- input$plot_click</span>
+<span id="cb8-46"><a></a>    } else {</span>
+<span id="cb8-47"><a></a>      # We already had a first click, so this is the second click.</span>
+<span id="cb8-48"><a></a>      # Make slope and intercept from the previous click and this one.</span>
+<span id="cb8-49"><a></a>      v$slope &lt;- (input$plot_click$y - v$click1$y)/(input$plot_click$x - v$click1$x)</span>
+<span id="cb8-50"><a></a>      v$intercept &lt;- (input$plot_click$y + v$click1$y)/2 - v$slope * (input$plot_click$x + v$click1$x)/2</span>
+<span id="cb8-51"><a></a></span>
+<span id="cb8-52"><a></a>      # predictions &amp; residuals</span>
+<span id="cb8-53"><a></a>       v$pred &lt;- v$intercept +  v$slope * data$x</span>
+<span id="cb8-54"><a></a>       v$resid &lt;- v$pred - data$y</span>
+<span id="cb8-55"><a></a>      # And clear the first click so the next click starts a new line.</span>
+<span id="cb8-56"><a></a>      v$click1 &lt;- NULL</span>
+<span id="cb8-57"><a></a>    }</span>
+<span id="cb8-58"><a></a>  })</span>
+<span id="cb8-59"><a></a></span>
+<span id="cb8-60"><a></a></span>
+<span id="cb8-61"><a></a> output$plot &lt;- renderPlot({</span>
+<span id="cb8-62"><a></a>   par(cex = 1.5, mar = c(3, 3, 1, 1), tcl = -0.1, mgp = c(2, 0.2, 0))</span>
+<span id="cb8-63"><a></a>   plot(data, pch = 16, xlab = xlab, ylab = ylab)</span>
+<span id="cb8-64"><a></a>   if (input$best) {</span>
+<span id="cb8-65"><a></a>     mod &lt;- lm(y ~ x, data = data)</span>
+<span id="cb8-66"><a></a>     abline(mod, colour = "navy", lty = "dashed")</span>
+<span id="cb8-67"><a></a>   }</span>
+<span id="cb8-68"><a></a>   if (!is.null(v$intercept)) {</span>
+<span id="cb8-69"><a></a>     abline(a = v$intercept, b = v$slope)</span>
+<span id="cb8-70"><a></a>     if (input$residuals == "Residuals") {</span>
+<span id="cb8-71"><a></a>       segments(</span>
+<span id="cb8-72"><a></a>         x0 = data$x,</span>
+<span id="cb8-73"><a></a>         x1 = data$x,</span>
+<span id="cb8-74"><a></a>         y0 = data$y,</span>
+<span id="cb8-75"><a></a>         y1 = v$pred</span>
+<span id="cb8-76"><a></a>       )</span>
+<span id="cb8-77"><a></a>     } else if (input$residuals == "Squared-residuals") {</span>
+<span id="cb8-78"><a></a>       w   &lt;- par("pin")[1] / diff(par("usr")[1:2])</span>
+<span id="cb8-79"><a></a>       h   &lt;- par("pin")[2] / diff(par("usr")[3:4])</span>
+<span id="cb8-80"><a></a>       asp &lt;- w/h</span>
+<span id="cb8-81"><a></a>       rect(xleft = ifelse(v$resid &lt; 0,  data$x, data$x + v$resid / asp),</span>
+<span id="cb8-82"><a></a>            ybottom = ifelse(v$resid &lt; 0, v$pred, data$y),</span>
+<span id="cb8-83"><a></a>            xright = ifelse(v$resid &lt; 0, data$x + v$resid / asp, data$x),</span>
+<span id="cb8-84"><a></a>            ytop = ifelse(v$resid &lt; 0, data$y, v$pred),</span>
+<span id="cb8-85"><a></a>            col = "#83242455", border = "#832424")</span>
+<span id="cb8-86"><a></a>     }</span>
+<span id="cb8-87"><a></a>     </span>
+<span id="cb8-88"><a></a>   }</span>
+<span id="cb8-89"><a></a> })</span>
+<span id="cb8-90"><a></a> output$SumSq &lt;- renderText({</span>
+<span id="cb8-91"><a></a>   if (is.null(v$click1) &amp;&amp; is.null(v$intercept)) { # initial state</span>
+<span id="cb8-92"><a></a>     "Click on the plot to start a line"</span>
+<span id="cb8-93"><a></a>   } else if (!is.null(v$click1)) { #after one click</span>
+<span id="cb8-94"><a></a>      "Click again to finsh a line"</span>
+<span id="cb8-95"><a></a>   } else if(input$residuals == "None") {</span>
+<span id="cb8-96"><a></a>     "Use radio buttons to display residuals"</span>
+<span id="cb8-97"><a></a>   } else {</span>
+<span id="cb8-98"><a></a>      paste0("Sum of squares = ", signif(sum(v$resid ^ 2), 3))</span>
+<span id="cb8-99"><a></a>   }</span>
+<span id="cb8-100"><a></a></span>
+<span id="cb8-101"><a></a> })</span>
+<span id="cb8-102"><a></a>    output$slope &lt;- renderText({</span>
+<span id="cb8-103"><a></a>     if (!is.null(v$slope)) {</span>
+<span id="cb8-104"><a></a>       paste0("Slope = ", signif(v$slope, 3))</span>
+<span id="cb8-105"><a></a>     } else {</span>
+<span id="cb8-106"><a></a>       ""</span>
+<span id="cb8-107"><a></a>     }</span>
+<span id="cb8-108"><a></a>   })</span>
+<span id="cb8-109"><a></a>  output$intercept &lt;- renderText({</span>
+<span id="cb8-110"><a></a>     if (!is.null(v$intercept)) {</span>
+<span id="cb8-111"><a></a>       paste0("Intercept = ", signif(v$intercept, 3))</span>
+<span id="cb8-112"><a></a>     } else {</span>
+<span id="cb8-113"><a></a>       ""</span>
+<span id="cb8-114"><a></a>     }</span>
+<span id="cb8-115"><a></a>   })</span>
+<span id="cb8-116"><a></a>}</span>
+<span id="cb8-117"><a></a></span>
+<span id="cb8-118"><a></a>shinyApp(ui, server)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="calculating-beta" class="slide level2">
 <h2>Calculating <span class="math inline">\(\beta\)</span></h2>
@@ -737,108 +745,119 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </section>
 <section id="the-f-distribution" class="slide level2">
 <h2>The F distribution</h2>
-<p>#’ F-test app #’ <span class="citation" data-cites="description">@description</span> #’ A shiny app to visualise how f-distribution changes with the number of #’ regression and residual degrees of freedom. #’ #’ <span class="citation" data-cites="import">@import</span> shiny #’ <span class="citation" data-cites="import">@import</span> bslib #’ <span class="citation" data-cites="importFrom">@importFrom</span> graphics par polygon lines text #’ <span class="citation" data-cites="examples">@examples</span> #’ </p>
-<p>#’ <span class="citation" data-cites="export">@export</span></p>
-<p>f_test_app &lt;- function(){ ui &lt;- fluidPage(</p>
-<pre><code>  # Application title
-  titlePanel("F test"),
-
-  # Sidebar with a slider input for number of bins
-  sidebarLayout(
-      sidebarPanel(
-        HTML('</code></pre>
-<style>
-.frac {
-    display: inline-block;
-    position: relative;
-    vertical-align: middle;
-    letter-spacing: 0.001em;
-    text-align: center;
-}
-.frac > span {
-    display: block;
-    padding: 0.1em;
-}
-.frac span.bottom {
-    border-top: thin solid black;
-}
-.frac span.symbol {
-    display: none;
-}
-</style>
-<div class="frac">
-<pre><code>&lt;h3&gt;&lt;span&gt;SS&lt;sub&gt;regression&lt;/sub&gt;/df&lt;sub&gt;regression&lt;/sub&gt;&lt;/span&gt;&lt;/h3&gt;
-&lt;span class="symbol"&gt;/&lt;/span&gt;
-&lt;h3&gt;&lt;span class="bottom"&gt;SS&lt;sub&gt;residual&lt;/sub&gt;/df&lt;sub&gt;residual&lt;/sub&gt;&lt;/span&gt;&lt;/h3&gt;</code></pre>
-</div>
-<pre><code> '),
-          sliderInput("numerator",
-                      "Regression degrees of freedom:",
-                      min = 1,
-                      max = 10,
-                      round = TRUE,
-                      value = 1),
-          sliderInput("denominator",
-                      "Residual degrees of freedom:",
-                      min = 1,
-                      max = 10,
-                      round = TRUE,
-                      value = 5),
-          radioButtons("alpha",
-                      "\u03b1:",
-                      c("p = 0.05" = "0.05", "p = 0.01" = "0.01")
-          )
-      ),
-
-      # Show a plot of the generated distribution
-      mainPanel(
-         plotOutput("distPlot")
-      )
-  )</code></pre>
-<p>)</p>
-</section>
-<section>
-<section id="define-server-logic-required-to-draw-a-histogram" class="title-slide slide level1 center">
-<h1>Define server logic required to draw a histogram</h1>
-<p>f_test_server &lt;- function(input, output) {</p>
-<pre><code>output$distPlot &lt;- renderPlot({
-    # generate bins based on input$bins from ui.R
-   axis_max &lt;- 500
-    xmax &lt;- min(axis_max,
-                qf(p = 0.995, df1 = input$numerator, df2 = input$denominator))
-    x    &lt;- seq(0, ceiling(xmax), length.out = 200)
-    y &lt;- df(x, df1 = input$numerator, df2 = input$denominator)
-    x &lt;- x[is.finite(y)]
-    y &lt;- y[is.finite(y)]
-
-    xthresh &lt;- qf(p = 1 - as.numeric(input$alpha),
-                  df1 = input$numerator, df2 = input$denominator)
-    if(xthresh &gt; axis_max) {
-      xthresh &lt;- NA_real_
-      x2 &lt;- numeric(0)
-    } else {
-      x2 &lt;- seq(xthresh, ceiling(xmax), length.out = 100)
-    }
-    y2 &lt;- df(x2, df1 = input$numerator, df2 = input$denominator)
-    df2 &lt;- data.frame(x = x2, y = y2)
-
-    par(par_list)
-    plot(x, y, type = "n",
-         xlab = expression(italic(F)~value),
-         ylab = "Density")
-    polygon(c(x[1], x, x[length(x)]), c(0, y, 0), col = "grey80", border = NA)
-    polygon(c(x2[1], x2, x2[length(x2)]), c(0, y2, 0), col =  "#832424", border = NA)
-    lines(x, y)
-    text(xthresh,
-         y2[1] + 0.05 * (max(y)- y2[1]),
-         labels = bquote(italic(F)[.(input$numerator)*','~.( input$denominator)*';'~.(input$alpha)]==.(round(xthresh, 2))),
-         adj = 0
-        )
-
-
-    #   annotate(geom = "text", x = , y = y2[1] + 0.05 * (max(y[is.finite(y)])- y2[1]), label =, hjust = 0, vjust = 0, parse = TRUE, size = 5)
-})</code></pre>
-<p>} # Run the application shinyApp(ui = ui, server = f_test_server) }</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15" data-engine="r"><pre class="sourceCode numberSource shinylive-r number-lines code-with-copy"><code class="sourceCode"><span id="cb15-1"><a></a>#| '!! shinylive warning !!': |</span>
+<span id="cb15-2"><a></a>#|   shinylive does not work in self-contained HTML documents.</span>
+<span id="cb15-3"><a></a>#|   Please set `embed-resources: false` in your metadata.</span>
+<span id="cb15-4"><a></a>#| label: f-test-app</span>
+<span id="cb15-5"><a></a>#| standalone: true</span>
+<span id="cb15-6"><a></a>#| viewerHeight: 600</span>
+<span id="cb15-7"><a></a></span>
+<span id="cb15-8"><a></a>f_dist_app &lt;- function() {</span>
+<span id="cb15-9"><a></a>  ui &lt;- page_sidebar(</span>
+<span id="cb15-10"><a></a>    # Application title</span>
+<span id="cb15-11"><a></a>    title = h1("F distribution"),</span>
+<span id="cb15-12"><a></a></span>
+<span id="cb15-13"><a></a>    # Sidebar with a slider input for number of bins</span>
+<span id="cb15-14"><a></a>    sidebar = sidebar(</span>
+<span id="cb15-15"><a></a>      sliderInput(</span>
+<span id="cb15-16"><a></a>        "numerator",</span>
+<span id="cb15-17"><a></a>        "Regression degrees of freedom:",</span>
+<span id="cb15-18"><a></a>        min = 1,</span>
+<span id="cb15-19"><a></a>        max = 10,</span>
+<span id="cb15-20"><a></a>        round = TRUE,</span>
+<span id="cb15-21"><a></a>        value = 1</span>
+<span id="cb15-22"><a></a>      ),</span>
+<span id="cb15-23"><a></a>      sliderInput(</span>
+<span id="cb15-24"><a></a>        "denominator",</span>
+<span id="cb15-25"><a></a>        "Residual degrees of freedom:",</span>
+<span id="cb15-26"><a></a>        min = 1,</span>
+<span id="cb15-27"><a></a>        max = 10,</span>
+<span id="cb15-28"><a></a>        round = TRUE,</span>
+<span id="cb15-29"><a></a>        value = 5</span>
+<span id="cb15-30"><a></a>      ),</span>
+<span id="cb15-31"><a></a>      radioButtons(</span>
+<span id="cb15-32"><a></a>        "alpha",</span>
+<span id="cb15-33"><a></a>        "\u03b1:",</span>
+<span id="cb15-34"><a></a>        c("p = 0.05" = "0.05", "p = 0.01" = "0.01")</span>
+<span id="cb15-35"><a></a>      )</span>
+<span id="cb15-36"><a></a>    ),</span>
+<span id="cb15-37"><a></a>    withMathJax(h3(</span>
+<span id="cb15-38"><a></a>      "$$F = \\frac{SS_{regression} / df_{regression}}{SS_{residual} / df_{residual}}$$"</span>
+<span id="cb15-39"><a></a>    )),</span>
+<span id="cb15-40"><a></a>    # Show a plot of the generated distribution</span>
+<span id="cb15-41"><a></a>    card(</span>
+<span id="cb15-42"><a></a>      plotOutput("distPlot")</span>
+<span id="cb15-43"><a></a>    )</span>
+<span id="cb15-44"><a></a>  )</span>
+<span id="cb15-45"><a></a></span>
+<span id="cb15-46"><a></a>  # Define server logic required to draw a histogram</span>
+<span id="cb15-47"><a></a>  f_test_server &lt;- function(input, output) {</span>
+<span id="cb15-48"><a></a>    output$distPlot &lt;- renderPlot({</span>
+<span id="cb15-49"><a></a>      # generate bins based on input$bins from ui.R</span>
+<span id="cb15-50"><a></a>      axis_max &lt;- 500</span>
+<span id="cb15-51"><a></a>      xmax &lt;- min(</span>
+<span id="cb15-52"><a></a>        axis_max,</span>
+<span id="cb15-53"><a></a>        qf(</span>
+<span id="cb15-54"><a></a>          p = 0.995,</span>
+<span id="cb15-55"><a></a>          df1 = input$numerator,</span>
+<span id="cb15-56"><a></a>          df2 = input$denominator</span>
+<span id="cb15-57"><a></a>        )</span>
+<span id="cb15-58"><a></a>      )</span>
+<span id="cb15-59"><a></a>      x &lt;- seq(0, ceiling(xmax), length.out = 200)</span>
+<span id="cb15-60"><a></a>      y &lt;- df(x, df1 = input$numerator, df2 = input$denominator)</span>
+<span id="cb15-61"><a></a>      x &lt;- x[is.finite(y)]</span>
+<span id="cb15-62"><a></a>      y &lt;- y[is.finite(y)]</span>
+<span id="cb15-63"><a></a></span>
+<span id="cb15-64"><a></a>      xthresh &lt;- qf(</span>
+<span id="cb15-65"><a></a>        p = 1 - as.numeric(input$alpha),</span>
+<span id="cb15-66"><a></a>        df1 = input$numerator,</span>
+<span id="cb15-67"><a></a>        df2 = input$denominator</span>
+<span id="cb15-68"><a></a>      )</span>
+<span id="cb15-69"><a></a>      if (xthresh &gt; axis_max) {</span>
+<span id="cb15-70"><a></a>        xthresh &lt;- NA_real_</span>
+<span id="cb15-71"><a></a>        x2 &lt;- numeric(0)</span>
+<span id="cb15-72"><a></a>      } else {</span>
+<span id="cb15-73"><a></a>        x2 &lt;- seq(xthresh, ceiling(xmax), length.out = 100)</span>
+<span id="cb15-74"><a></a>      }</span>
+<span id="cb15-75"><a></a>      y2 &lt;- df(x2, df1 = input$numerator, df2 = input$denominator)</span>
+<span id="cb15-76"><a></a>      # df2 &lt;- data.frame(x = x2, y = y2)</span>
+<span id="cb15-77"><a></a></span>
+<span id="cb15-78"><a></a>      par(cex = 1.5, mar = c(3, 3, 1, 1), tcl = -0.1, mgp = c(2, 0.2, 0))</span>
+<span id="cb15-79"><a></a>      plot(</span>
+<span id="cb15-80"><a></a>        x,</span>
+<span id="cb15-81"><a></a>        y,</span>
+<span id="cb15-82"><a></a>        type = "n",</span>
+<span id="cb15-83"><a></a>        xlab = expression(italic(F) ~ value),</span>
+<span id="cb15-84"><a></a>        ylab = "Density"</span>
+<span id="cb15-85"><a></a>      )</span>
+<span id="cb15-86"><a></a>      polygon(c(x[1], x, x[length(x)]), c(0, y, 0), col = "grey80", border = NA)</span>
+<span id="cb15-87"><a></a>      polygon(</span>
+<span id="cb15-88"><a></a>        c(x2[1], x2, x2[length(x2)]),</span>
+<span id="cb15-89"><a></a>        c(0, y2, 0),</span>
+<span id="cb15-90"><a></a>        col = "#832424",</span>
+<span id="cb15-91"><a></a>        border = NA</span>
+<span id="cb15-92"><a></a>      )</span>
+<span id="cb15-93"><a></a>      lines(x, y)</span>
+<span id="cb15-94"><a></a>      text(</span>
+<span id="cb15-95"><a></a>        xthresh,</span>
+<span id="cb15-96"><a></a>        y2[1] + 0.05 * (max(y) - y2[1]),</span>
+<span id="cb15-97"><a></a>        labels = bquote(</span>
+<span id="cb15-98"><a></a>          italic(F)[</span>
+<span id="cb15-99"><a></a>            .(input$numerator) * "," ~ .(input$denominator) * ";" ~</span>
+<span id="cb15-100"><a></a>              .(input$alpha)</span>
+<span id="cb15-101"><a></a>          ] ==</span>
+<span id="cb15-102"><a></a>            .(round(xthresh, 2))</span>
+<span id="cb15-103"><a></a>        ),</span>
+<span id="cb15-104"><a></a>        adj = 0</span>
+<span id="cb15-105"><a></a>      )</span>
+<span id="cb15-106"><a></a>    })</span>
+<span id="cb15-107"><a></a>  }</span>
+<span id="cb15-108"><a></a>  # Run the application</span>
+<span id="cb15-109"><a></a>  shinyApp(ui = ui, server = f_test_server)</span>
+<span id="cb15-110"><a></a>}</span>
+<span id="cb15-111"><a></a>library(shiny)</span>
+<span id="cb15-112"><a></a>library(bslib)</span>
+<span id="cb15-113"><a></a>f_dist_app()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="categorical-predictors" class="slide level2">
 <h2>Categorical predictors</h2>
@@ -851,12 +870,12 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <p><span class="math display">\[H_0: \mu_{Adelie} = \mu_{Chinstrap} = \mu_{Gentoo}\]</span> <span class="math inline">\(H_A\)</span> At least two of the means differ</p>
 </div><div class="column" style="width:40%;">
 <div class="cell">
-<div class="cell-output cell-output-error">
-<pre><code>Error in `geom_violin()`:
-! Problem while setting up geom aesthetics.
-ℹ Error occurred in the 1st layer.
-Caused by error in `loadNamespace()`:
-! there is no package called 'colorspace'</code></pre>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lecture_7_linear_regression1_files/figure-revealjs/species-plot-1.png" width="960"></p>
+</figure>
+</div>
 </div>
 </div>
 </div></div>
@@ -864,8 +883,8 @@ Caused by error in `loadNamespace()`:
 <section id="fitting-the-model" class="slide level2">
 <h2>Fitting the model</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> species, <span class="at">data =</span> penguins)</span>
-<span id="cb20-2"><a></a>mod2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> species, <span class="at">data =</span> penguins)</span>
+<span id="cb16-2"><a></a>mod2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -880,7 +899,7 @@ Coefficients:
 <section id="anova-for-categorical-variables" class="slide level2">
 <h2><code>Anova</code> for categorical variables</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>car<span class="sc">::</span><span class="fu">Anova</span>(mod2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a>car<span class="sc">::</span><span class="fu">Anova</span>(mod2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Anova Table (Type II tests)
 
@@ -897,7 +916,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <section id="summary-for-categorical-variables" class="slide level2">
 <h2><code>summary</code> for categorical variables</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a><span class="fu">summary</span>(mod2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a><span class="fu">summary</span>(mod2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -938,13 +957,13 @@ F-statistic:  344 on 2 and 339 DF,  p-value: &lt;2e-16</code></pre>
 <h2>Forcing the reference level</h2>
 <p>Very useful when you have a control</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a>penguins2 <span class="ot">&lt;-</span> penguins <span class="sc">|&gt;</span></span>
-<span id="cb26-2"><a></a>  <span class="fu">mutate</span>(<span class="at">species =</span> <span class="fu">factor</span>(species, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Gentoo"</span>, <span class="st">"Adelie"</span>, <span class="st">"Chinstrap"</span>)))</span>
-<span id="cb26-3"><a></a></span>
-<span id="cb26-4"><a></a>mod3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> species, <span class="at">data =</span> penguins2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a>penguins2 <span class="ot">&lt;-</span> penguins <span class="sc">|&gt;</span></span>
+<span id="cb22-2"><a></a>  <span class="fu">mutate</span>(<span class="at">species =</span> <span class="fu">factor</span>(species, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Gentoo"</span>, <span class="st">"Adelie"</span>, <span class="st">"Chinstrap"</span>)))</span>
+<span id="cb22-3"><a></a></span>
+<span id="cb22-4"><a></a>mod3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> species, <span class="at">data =</span> penguins2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>broom<span class="sc">::</span><span class="fu">tidy</span>(mod3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>broom<span class="sc">::</span><span class="fu">tidy</span>(mod3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 5
   term             estimate std.error statistic   p.value
@@ -962,39 +981,44 @@ F-statistic:  344 on 2 and 339 DF,  p-value: &lt;2e-16</code></pre>
 <li>use a post-hoc multiple comparisons test</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a><span class="fu">library</span>(multcomp) <span class="co"># need to be using conflicted package or disaster</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in library(package, pos = pos, lib.loc = lib.loc, character.only = TRUE, : there is no package called 'multcomp'</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a><span class="fu">library</span>(multcomp) <span class="co"># need to be using conflicted package or disaster</span></span>
+<span id="cb25-2"><a></a></span>
+<span id="cb25-3"><a></a>mc <span class="ot">&lt;-</span> <span class="fu">glht</span>(mod2, <span class="at">linfct =</span> <span class="fu">mcp</span>(<span class="at">species =</span> <span class="st">"Tukey"</span>))</span>
+<span id="cb25-4"><a></a><span class="fu">summary</span>(mc)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a>mc <span class="ot">&lt;-</span> <span class="fu">glht</span>(mod2, <span class="at">linfct =</span> <span class="fu">mcp</span>(<span class="at">species =</span> <span class="st">"Tukey"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in glht(mod2, linfct = mcp(species = "Tukey")): could not find function "glht"</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a><span class="fu">summary</span>(mc)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error: object 'mc' not found</code></pre>
+</section>
+<section class="slide level2">
+
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+     Simultaneous Tests for General Linear Hypotheses
+
+Multiple Comparisons of Means: Tukey Contrasts
+
+
+Fit: lm(formula = body_mass_g ~ species, data = penguins)
+
+Linear Hypotheses:
+                        Estimate Std. Error t value Pr(&gt;|t|)    
+Chinstrap - Adelie == 0     32.4       67.5    0.48     0.88    
+Gentoo - Adelie == 0      1375.4       56.1   24.50   &lt;1e-05 ***
+Gentoo - Chinstrap == 0   1342.9       69.9   19.22   &lt;1e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+(Adjusted p values reported -- single-step method)</code></pre>
 </div>
 </div>
 </section>
 <section class="slide level2">
 
 <div class="cell">
-<div class="cell-output cell-output-error">
-<pre><code>Error: object 'mc' not found</code></pre>
-</div>
-</div>
-</section>
-<section class="slide level2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a><span class="fu">ggplot</span>(<span class="fu">confint</span>(mc), <span class="fu">aes</span>(<span class="at">x =</span> lhs, <span class="at">y =</span> estimate, <span class="at">ymin =</span> lwr, <span class="at">ymax =</span> upr)) <span class="sc">+</span></span>
+<span id="cb27-2"><a></a>  <span class="fu">geom_pointrange</span>() <span class="sc">+</span></span>
+<span id="cb27-3"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a><span class="fu">ggplot</span>(<span class="fu">confint</span>(mc), <span class="fu">aes</span>(<span class="at">x =</span> lhs, <span class="at">y =</span> estimate, <span class="at">ymin =</span> lwr, <span class="at">ymax =</span> upr)) <span class="sc">+</span></span>
-<span id="cb36-2"><a></a>  <span class="fu">geom_pointrange</span>() <span class="sc">+</span></span>
-<span id="cb36-3"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error: object 'mc' not found</code></pre>
 </div>
-</div>
-</section>
+<img data-src="lecture_7_linear_regression1_files/figure-revealjs/multicomp-figure-1.png" width="960" class="r-stretch"></section>
 <section id="assumptions-of-least-squares" class="slide level2">
 <h2>Assumptions of Least Squares</h2>
 <ol type="1">
@@ -1018,14 +1042,11 @@ F-statistic:  344 on 2 and 339 DF,  p-value: &lt;2e-16</code></pre>
 <section id="performance" class="slide level2">
 <h2><code>performance</code></h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a><span class="fu">library</span>(performance)</span>
-<span id="cb38-2"><a></a><span class="fu">check_model</span>(mod)  </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error: Package `see` required for model diagnostic plots.
-  Please install it by running `install.packages("see")`.</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a></a><span class="fu">library</span>(performance)</span>
+<span id="cb28-2"><a></a><span class="fu">check_model</span>(mod)  </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
 </div>
-</div>
-</section>
+<img data-src="lecture_7_linear_regression1_files/figure-revealjs/check-model-1.png" width="960" class="r-stretch"></section>
 <section id="posterior-predictive-checks" class="slide level2">
 <h2>Posterior predictive checks</h2>
 <div class="columns">
@@ -1038,12 +1059,12 @@ F-statistic:  344 on 2 and 339 DF,  p-value: &lt;2e-16</code></pre>
 <p>Want green line to resemble blue lines</p>
 </div><div class="column" style="width:50%;">
 <div class="cell">
-<div class="cell-output cell-output-error">
-<pre><code>Error: Package `see` required for model diagnostic plots.
-  Please install it by running `install.packages("see")`.</code></pre>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lecture_7_linear_regression1_files/figure-revealjs/posterior-predictive-1.png" width="960"></p>
+</figure>
 </div>
-<div class="cell-output cell-output-error">
-<pre><code>Error: object 'diagnostic_plots' not found</code></pre>
 </div>
 </div>
 </div></div>
@@ -1060,8 +1081,12 @@ F-statistic:  344 on 2 and 339 DF,  p-value: &lt;2e-16</code></pre>
 <p>Want flat line</p>
 </div><div class="column" style="width:50%;">
 <div class="cell">
-<div class="cell-output cell-output-error">
-<pre><code>Error: object 'diagnostic_plots' not found</code></pre>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lecture_7_linear_regression1_files/figure-revealjs/residual-fitted-1.png" width="960"></p>
+</figure>
+</div>
 </div>
 </div>
 </div></div>
@@ -1078,8 +1103,12 @@ F-statistic:  344 on 2 and 339 DF,  p-value: &lt;2e-16</code></pre>
 <p>Points will lie on straight line if normally distributed</p>
 </div><div class="column" style="width:50%;">
 <div class="cell">
-<div class="cell-output cell-output-error">
-<pre><code>Error: object 'diagnostic_plots' not found</code></pre>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lecture_7_linear_regression1_files/figure-revealjs/qq-1.png" width="960"></p>
+</figure>
+</div>
 </div>
 </div>
 </div></div>
@@ -1096,8 +1125,12 @@ F-statistic:  344 on 2 and 339 DF,  p-value: &lt;2e-16</code></pre>
 <p>Want flat line</p>
 </div><div class="column" style="width:50%;">
 <div class="cell">
-<div class="cell-output cell-output-error">
-<pre><code>Error: object 'diagnostic_plots' not found</code></pre>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lecture_7_linear_regression1_files/figure-revealjs/scale-location-1.png" width="960"></p>
+</figure>
+</div>
 </div>
 </div>
 </div></div>
@@ -1110,8 +1143,12 @@ F-statistic:  344 on 2 and 339 DF,  p-value: &lt;2e-16</code></pre>
 <p>Observations with extreme leverage should be checked</p>
 </div><div class="column" style="width:50%;">
 <div class="cell">
-<div class="cell-output cell-output-error">
-<pre><code>Error: object 'diagnostic_plots' not found</code></pre>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lecture_7_linear_regression1_files/figure-revealjs/residual-leverage-1.png" width="960"></p>
+</figure>
+</div>
 </div>
 </div>
 </div></div>
@@ -1136,7 +1173,7 @@ F-statistic:  344 on 2 and 339 DF,  p-value: &lt;2e-16</code></pre>
 <section id="predict" class="slide level2">
 <h2>Predict</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a></a><span class="fu">predict</span>(<span class="at">object =</span> mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a><span class="fu">predict</span>(<span class="at">object =</span> mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    1     2     3     4     5     6     7     8     9    10    11    12    13 
 45.15 50.06 44.94 50.06 48.83 45.35 46.38 48.01 44.74 47.81 45.76 49.44 45.76 
@@ -1164,17 +1201,17 @@ F-statistic:  344 on 2 and 339 DF,  p-value: &lt;2e-16</code></pre>
 <section id="predict-with-new-data" class="slide level2">
 <h2>Predict with new data</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-23"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><a class="code-annotation-anchor" data-target-cell="annotated-cell-23" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-23-1" class="code-annotation-target"><a href="#annotated-cell-23-1"></a>nd <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">body_mass_g =</span> <span class="fu">c</span>(<span class="dv">5000</span>, <span class="dv">7000</span>))</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-23" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-23-2" class="code-annotation-target"><a href="#annotated-cell-23-2"></a><span class="fu">predict</span>(mod, <span class="at">newdata =</span> nd)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-19"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><a class="code-annotation-anchor" data-target-cell="annotated-cell-19" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-19-1" class="code-annotation-target"><a href="#annotated-cell-19-1"></a>nd <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">body_mass_g =</span> <span class="fu">c</span>(<span class="dv">5000</span>, <span class="dv">7000</span>))</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-19" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-19-2" class="code-annotation-target"><a href="#annotated-cell-19-2"></a><span class="fu">predict</span>(mod, <span class="at">newdata =</span> nd)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-23" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-19" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-23" data-code-lines="1" data-code-annotation="1">Make tibble or data.frame with new data. Must include all predictors.</span>
+<span data-code-cell="annotated-cell-19" data-code-lines="1" data-code-annotation="1">Make tibble or data.frame with new data. Must include all predictors.</span>
 </dd>
-<dt data-target-cell="annotated-cell-23" data-target-annotation="2">2</dt>
+<dt data-target-cell="annotated-cell-19" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-23" data-code-lines="2" data-code-annotation="2">Use <code>predict()</code> with the model and new data.</span>
+<span data-code-cell="annotated-cell-19" data-code-lines="2" data-code-annotation="2">Use <code>predict()</code> with the model and new data.</span>
 </dd>
 </dl>
 </div>
@@ -1188,7 +1225,7 @@ F-statistic:  344 on 2 and 339 DF,  p-value: &lt;2e-16</code></pre>
 <h2>Predictions with standard errors</h2>
 <p>Uncertainty of the mean</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a></a><span class="fu">predict</span>(mod, <span class="at">newdata =</span> nd, <span class="at">se.fit =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a><span class="fu">predict</span>(mod, <span class="at">newdata =</span> nd, <span class="at">se.fit =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$fit
     1     2 
@@ -1209,7 +1246,7 @@ $residual.scale
 <section id="predictions-with-confidence-interval" class="slide level2">
 <h2>Predictions with confidence interval</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a></a><span class="fu">predict</span>(mod, <span class="at">newdata =</span> nd, <span class="at">interval =</span> <span class="st">"confidence"</span>, <span class="at">level =</span> <span class="fl">0.95</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a></a><span class="fu">predict</span>(mod, <span class="at">newdata =</span> nd, <span class="at">interval =</span> <span class="st">"confidence"</span>, <span class="at">level =</span> <span class="fl">0.95</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    fit   lwr   upr
 1 47.19 46.78 47.61
@@ -1221,11 +1258,11 @@ $residual.scale
 
 <p>Often easier to use <code>broom::augment()</code></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a></a><span class="fu">augment</span>(mod, <span class="at">interval =</span> <span class="st">"confidence"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb53-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> body_mass_g, <span class="at">y =</span> bill_length_mm)) <span class="sc">+</span></span>
-<span id="cb53-3"><a></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb53-4"><a></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> .lower, <span class="at">ymax =</span> .upper), <span class="at">alpha =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb53-5"><a></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a><span class="fu">augment</span>(mod, <span class="at">interval =</span> <span class="st">"confidence"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb36-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> body_mass_g, <span class="at">y =</span> bill_length_mm)) <span class="sc">+</span></span>
+<span id="cb36-3"><a></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb36-4"><a></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> .lower, <span class="at">ymax =</span> .upper), <span class="at">alpha =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb36-5"><a></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="lecture_7_linear_regression1_files/figure-revealjs/augment-1.png" width="960" class="r-stretch"></section>
@@ -1233,16 +1270,16 @@ $residual.scale
 <h2>Predictions interval</h2>
 <p>Where will a new observation probably be</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a></a><span class="fu">augment</span>(mod, <span class="at">interval =</span> <span class="st">"prediction"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb54-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> body_mass_g, <span class="at">y =</span> bill_length_mm)) <span class="sc">+</span></span>
-<span id="cb54-3"><a></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb54-4"><a></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> .lower, <span class="at">ymax =</span> .upper), <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb54-5"><a></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a><span class="fu">augment</span>(mod, <span class="at">interval =</span> <span class="st">"prediction"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb37-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> body_mass_g, <span class="at">y =</span> bill_length_mm)) <span class="sc">+</span></span>
+<span id="cb37-3"><a></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb37-4"><a></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> .lower, <span class="at">ymax =</span> .upper), <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb37-5"><a></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 
 
-<img data-src="lecture_7_linear_regression1_files/figure-revealjs/prediction-interval-1.png" width="960" class="r-stretch"></section></section>
+<img data-src="lecture_7_linear_regression1_files/figure-revealjs/prediction-interval-1.png" width="960" class="r-stretch"></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
