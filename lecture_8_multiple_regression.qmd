@@ -283,9 +283,11 @@ penguins |>
 
 
 ```{shinylive-r}
-#| label: coef-explain-app
+#| label: coef-explain
 #| standalone: true
-#| viewerHeight: 650
+#| viewerHeight: 700
+#| echo: false
+
 
 library(shiny)
 library(bslib)
@@ -542,6 +544,7 @@ penguins <- structure(list(species = structure(c(1L, 1L, 1L, 1L, 1L, 1L,
     2009L, 2009L, 2009L, 2009L, 2009L, 2009L, 2009L, 2009L)), row.names = c(NA, 
 -344L), class = "data.frame")
 
+
 penguin_coef_explain_app <- function() {
   ui <- page_sidebar(
     sidebar = sidebar(
@@ -567,7 +570,6 @@ penguin_coef_explain_app <- function() {
 
     ),
     card(
-      card_header("Model formula"),
       textOutput("formula"),
       fill = FALSE
     ),
@@ -588,7 +590,7 @@ penguin_coef_explain_app <- function() {
 
 
   server <- function(input, output, session) {
-    data <- penguins |> na.omit()
+    data <-  penguins |> na.omit()
     data <- data[order(data$species), ]
     data <- data[order(data$sex), ]
 
@@ -654,7 +656,9 @@ penguin_coef_explain_app <- function() {
     })
 
 
-    output$formula <- renderText(form2())
+    output$formula <- renderText(
+      paste0("lm(", form2(), ", data = penguins)")
+      )
     output$coef_table <- renderTable(
       coef_table(),
       sanitize.text.function = function(x) x
@@ -668,12 +672,28 @@ penguin_coef_explain_app <- function() {
       if (fc[3] == "1") {
         stripchart(data[,input$response],
                    method = "jitter", jitter = 0.1,
-                   vertical = TRUE, pch = 1, ylim = ylim
-        )
+                   vertical = TRUE, pch = 1, ylim = ylim,
+                   ylab = fc[2]
+                   )
+        axis(side = 1, at = 1, labels = "All penguins")
       } else {
+        spp <- levels(data$species)
+        sex <- levels(data$sex)
+        group_names <-
+           if ("species" %in% input$pred & "sex" %in% input$pred) {
+          paste("\n", rep(spp, times = length(sex)), rep(sex, each = length(spp)), sep = "\n")
+          } else if ("species" %in% input$pred) {
+            spp
+          } else if ("sex" %in% input$pred) {
+            sex
+          } else {
+            1
+          }
+
         stripchart(f,
                    data = data, method = "jitter", jitter = 0.1,
-                   vertical = TRUE, pch = 1, ylim = ylim
+                   vertical = TRUE, pch = 1, ylim = ylim,
+                   group.names = group_names
         )
       }
 
@@ -773,8 +793,9 @@ penguin_coef_explain_app <- function() {
 }
 
 
+
 par_list <- list(
-  mar = c(2.2, 2.2, 0.8, 1),
+  mar = c(2.2, 2.2, 0.5, 0.5),
   cex = 1.5,
   tcl = -0.1,
   mgp = c(1.2, 0.2, 0)
