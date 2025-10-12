@@ -118,7 +118,7 @@ Assumes residuals have normal distribution
 
 ## Likelihood
 
-How likely is the model given the data? 
+How likely are the data given the model? 
 
 - choose coefficients to maximise likelihood
 - works with any distribution
@@ -630,10 +630,10 @@ Models can have less/more dispersion than expected
 - Poisson
 - Binomial when n trials > 1
 
-Overdispersion increases risk of type I error
+Overdispersion increases risk of false positives 
 
  - rejection of $H_0$ when it is true
- - false positive
+ - type I errors
 
 
 ## Checking for overdispersion
@@ -645,6 +645,10 @@ anova(mod_g)
 If residual deviance / residual df $\approx$ 1 then OK
 
 If not, then model under or over dispersed
+
+---
+
+Checking with `performance` package
 
 ```{r}
 performance::check_overdispersion(mod_g)
@@ -671,8 +675,11 @@ base + ylim(5,35) + ggtitle("Mt. Gonga Species Richness") + hist
 ## Fixes for overdispersion
 
 1) Include relevant missing predictors in model
+2) quasi-likelihood models
+3) More flexible distributions
+4) Individual-level random effects (see Lecture 10)
 
-## 2 quasi-likelihood models {.scrollable}
+## Quasi-likelihood models {.scrollable}
 
 - poission -> quasipoisson
 - binomial -> quasibinomial
@@ -689,12 +696,12 @@ anova(mod_q)
 
 
 
-## 3 Other distributions
+## Other distributions
 
 - poisson - negative binomial
 - binomial - beta-binomial
-- individual-level random effect
 - Zero-inflated models
+- individual-level random effect
 
 ```{r}
 #| eval: false

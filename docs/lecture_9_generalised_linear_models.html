@@ -16,7 +16,7 @@
   <meta name="generator" content="quarto-1.8.20">
 
   <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)">
-  <meta name="dcterms.date" content="2025-08-17">
+  <meta name="dcterms.date" content="2025-10-12">
   <title>Bio302 - Biostatistikk – Generalised Linear Models</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -216,7 +216,7 @@ Richard J. Telford (Richard.Telford@uib.no)
     </div>
 </div>
 
-  <p class="date">17 August 2025</p>
+  <p class="date">12 October 2025</p>
 </section>
 <section id="assumptions-of-least-squares" class="slide level2">
 <h2>Assumptions of Least Squares</h2>
@@ -244,7 +244,7 @@ Richard J. Telford (Richard.Telford@uib.no)
 <section id="least-squares" class="slide level2">
 <h2>Least squares</h2>
 <p>Choose <span class="math inline">\(\beta\)</span> that minimise the sum of squares of residuals</p>
-<p><span class="math display">\[\sum_{i = 1}^{n}\epsilon_i^2 =   \sum_{i = 1}^{n}(y_i - (\beta_0 + \beta_1x_i))^2\]</span></p>
+<p><span class="math display">\[\sum_{i = 1}^{n}\varepsilon_i^2 =   \sum_{i = 1}^{n}(y_i - (\beta_0 + \beta_1x_i))^2\]</span></p>
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell">
@@ -262,7 +262,7 @@ Richard J. Telford (Richard.Telford@uib.no)
 </section>
 <section id="likelihood" class="slide level2">
 <h2>Likelihood</h2>
-<p>How likely is the model given the data?</p>
+<p>How likely are the data given the model?</p>
 <ul>
 <li>choose coefficients to maximise likelihood</li>
 <li>works with any distribution</li>
@@ -411,23 +411,23 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
 <div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
-<div id="mbhkddmgdo" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#mbhkddmgdo table {
+<div id="kvlluegqpf" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#kvlluegqpf table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#mbhkddmgdo thead, #mbhkddmgdo tbody, #mbhkddmgdo tfoot, #mbhkddmgdo tr, #mbhkddmgdo td, #mbhkddmgdo th {
+#kvlluegqpf thead, #kvlluegqpf tbody, #kvlluegqpf tfoot, #kvlluegqpf tr, #kvlluegqpf td, #kvlluegqpf th {
   border-style: none;
 }
 
-#mbhkddmgdo p {
+#kvlluegqpf p {
   margin: 0;
   padding: 0;
 }
 
-#mbhkddmgdo .gt_table {
+#kvlluegqpf .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -453,12 +453,12 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#mbhkddmgdo .gt_caption {
+#kvlluegqpf .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#mbhkddmgdo .gt_title {
+#kvlluegqpf .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -470,7 +470,7 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
   border-bottom-width: 0;
 }
 
-#mbhkddmgdo .gt_subtitle {
+#kvlluegqpf .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -482,7 +482,7 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
   border-top-width: 0;
 }
 
-#mbhkddmgdo .gt_heading {
+#kvlluegqpf .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -494,13 +494,13 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#mbhkddmgdo .gt_bottom_border {
+#kvlluegqpf .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#mbhkddmgdo .gt_col_headings {
+#kvlluegqpf .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -515,7 +515,7 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#mbhkddmgdo .gt_col_heading {
+#kvlluegqpf .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -535,7 +535,7 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
   overflow-x: hidden;
 }
 
-#mbhkddmgdo .gt_column_spanner_outer {
+#kvlluegqpf .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -547,15 +547,15 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
   padding-right: 4px;
 }
 
-#mbhkddmgdo .gt_column_spanner_outer:first-child {
+#kvlluegqpf .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#mbhkddmgdo .gt_column_spanner_outer:last-child {
+#kvlluegqpf .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#mbhkddmgdo .gt_column_spanner {
+#kvlluegqpf .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -567,11 +567,11 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
   width: 100%;
 }
 
-#mbhkddmgdo .gt_spanner_row {
+#kvlluegqpf .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#mbhkddmgdo .gt_group_heading {
+#kvlluegqpf .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -597,7 +597,7 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
   text-align: left;
 }
 
-#mbhkddmgdo .gt_empty_group_heading {
+#kvlluegqpf .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -612,15 +612,15 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
   vertical-align: middle;
 }
 
-#mbhkddmgdo .gt_from_md > :first-child {
+#kvlluegqpf .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#mbhkddmgdo .gt_from_md > :last-child {
+#kvlluegqpf .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#mbhkddmgdo .gt_row {
+#kvlluegqpf .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -639,7 +639,7 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
   overflow-x: hidden;
 }
 
-#mbhkddmgdo .gt_stub {
+#kvlluegqpf .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -652,7 +652,7 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
   padding-right: 5px;
 }
 
-#mbhkddmgdo .gt_stub_row_group {
+#kvlluegqpf .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -666,15 +666,15 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
   vertical-align: top;
 }
 
-#mbhkddmgdo .gt_row_group_first td {
+#kvlluegqpf .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#mbhkddmgdo .gt_row_group_first th {
+#kvlluegqpf .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#mbhkddmgdo .gt_summary_row {
+#kvlluegqpf .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -684,16 +684,16 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
   padding-right: 5px;
 }
 
-#mbhkddmgdo .gt_first_summary_row {
+#kvlluegqpf .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#mbhkddmgdo .gt_first_summary_row.thick {
+#kvlluegqpf .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#mbhkddmgdo .gt_last_summary_row {
+#kvlluegqpf .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -703,7 +703,7 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#mbhkddmgdo .gt_grand_summary_row {
+#kvlluegqpf .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -713,7 +713,7 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
   padding-right: 5px;
 }
 
-#mbhkddmgdo .gt_first_grand_summary_row {
+#kvlluegqpf .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -723,7 +723,7 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#mbhkddmgdo .gt_last_grand_summary_row_top {
+#kvlluegqpf .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -733,11 +733,11 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#mbhkddmgdo .gt_striped {
+#kvlluegqpf .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#mbhkddmgdo .gt_table_body {
+#kvlluegqpf .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -746,7 +746,7 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#mbhkddmgdo .gt_footnotes {
+#kvlluegqpf .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -760,7 +760,7 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#mbhkddmgdo .gt_footnote {
+#kvlluegqpf .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -769,7 +769,7 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
   padding-right: 5px;
 }
 
-#mbhkddmgdo .gt_sourcenotes {
+#kvlluegqpf .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -783,7 +783,7 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#mbhkddmgdo .gt_sourcenote {
+#kvlluegqpf .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -791,72 +791,72 @@ island  2    7.479       148     1056.6 0.5238 0.5934</code></pre>
   padding-right: 5px;
 }
 
-#mbhkddmgdo .gt_left {
+#kvlluegqpf .gt_left {
   text-align: left;
 }
 
-#mbhkddmgdo .gt_center {
+#kvlluegqpf .gt_center {
   text-align: center;
 }
 
-#mbhkddmgdo .gt_right {
+#kvlluegqpf .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#mbhkddmgdo .gt_font_normal {
+#kvlluegqpf .gt_font_normal {
   font-weight: normal;
 }
 
-#mbhkddmgdo .gt_font_bold {
+#kvlluegqpf .gt_font_bold {
   font-weight: bold;
 }
 
-#mbhkddmgdo .gt_font_italic {
+#kvlluegqpf .gt_font_italic {
   font-style: italic;
 }
 
-#mbhkddmgdo .gt_super {
+#kvlluegqpf .gt_super {
   font-size: 65%;
 }
 
-#mbhkddmgdo .gt_footnote_marks {
+#kvlluegqpf .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#mbhkddmgdo .gt_asterisk {
+#kvlluegqpf .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#mbhkddmgdo .gt_indent_1 {
+#kvlluegqpf .gt_indent_1 {
   text-indent: 5px;
 }
 
-#mbhkddmgdo .gt_indent_2 {
+#kvlluegqpf .gt_indent_2 {
   text-indent: 10px;
 }
 
-#mbhkddmgdo .gt_indent_3 {
+#kvlluegqpf .gt_indent_3 {
   text-indent: 15px;
 }
 
-#mbhkddmgdo .gt_indent_4 {
+#kvlluegqpf .gt_indent_4 {
   text-indent: 20px;
 }
 
-#mbhkddmgdo .gt_indent_5 {
+#kvlluegqpf .gt_indent_5 {
   text-indent: 25px;
 }
 
-#mbhkddmgdo .katex-display {
+#kvlluegqpf .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#mbhkddmgdo div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#kvlluegqpf div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1467,10 +1467,10 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <li>Poisson</li>
 <li>Binomial when n trials &gt; 1</li>
 </ul>
-<p>Overdispersion increases risk of type I error</p>
+<p>Overdispersion increases risk of false positives</p>
 <ul>
 <li>rejection of <span class="math inline">\(H_0\)</span> when it is true</li>
-<li>false positive</li>
+<li>type I errors</li>
 </ul>
 </section>
 <section id="checking-for-overdispersion" class="slide level2">
@@ -1495,6 +1495,10 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <p>If residual deviance / residual df <span class="math inline">\(\approx\)</span> 1 then OK</p>
 <p>If not, then model under or over dispersed</p>
+</section>
+<section class="slide level2">
+
+<p>Checking with <code>performance</code> package</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a>performance<span class="sc">::</span><span class="fu">check_overdispersion</span>(mod_g)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -1514,10 +1518,13 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <h2>Fixes for overdispersion</h2>
 <ol type="1">
 <li>Include relevant missing predictors in model</li>
+<li>quasi-likelihood models</li>
+<li>More flexible distributions</li>
+<li>Individual-level random effects (see Lecture 10)</li>
 </ol>
 </section>
 <section id="quasi-likelihood-models" class="slide level2 scrollable">
-<h2>2 quasi-likelihood models</h2>
+<h2>Quasi-likelihood models</h2>
 <ul>
 <li>poission -&gt; quasipoisson</li>
 <li>binomial -&gt; quasibinomial</li>
@@ -1546,12 +1553,12 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </section>
 <section id="other-distributions" class="slide level2">
-<h2>3 Other distributions</h2>
+<h2>Other distributions</h2>
 <ul>
 <li>poisson - negative binomial</li>
 <li>binomial - beta-binomial</li>
-<li>individual-level random effect</li>
 <li>Zero-inflated models</li>
+<li>individual-level random effect</li>
 </ul>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a></a>performance<span class="sc">::</span><span class="fu">check_zeroinflation</span>(mod_g)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1559,72 +1566,72 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </section>
 <section class="slide level2">
 
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43" data-engine="r"><pre class="sourceCode numberSource shinylive-r number-lines code-with-copy"><code class="sourceCode"><span id="cb43-1"><a></a>#| label: count-app2</span>
-<span id="cb43-2"><a></a>#| standalone: true</span>
-<span id="cb43-3"><a></a>#| viewerHeight: 650</span>
-<span id="cb43-4"><a></a>library(shiny)</span>
-<span id="cb43-5"><a></a>library(bslib)</span>
-<span id="cb43-6"><a></a></span>
-<span id="cb43-7"><a></a>  ui &lt;- page_sidebar(title = h1("Distributions for count data"), </span>
-<span id="cb43-8"><a></a>    sidebar = sidebar(accordion(accordion_panel(title = "Distribution", </span>
-<span id="cb43-9"><a></a>      p("Two distributions are commonly used for count data."), </span>
-<span id="cb43-10"><a></a>      radioButtons("dist", "Distribution", choices = c("Poisson", </span>
-<span id="cb43-11"><a></a>        "Negative Binomial")), sliderInput("mean", "Mean", </span>
-<span id="cb43-12"><a></a>        min = 0, max = 10, round = FALSE, value = 1.5, </span>
-<span id="cb43-13"><a></a>        step = 0.5), uiOutput("negbin"), ), accordion_panel(title = "Zero Inflation", </span>
-<span id="cb43-14"><a></a>      p("A dataset with more zeros than expected from a Poisson/negative binomial distribution is zero inflated."), </span>
-<span id="cb43-15"><a></a>      sliderInput("zero", "Proportion excess zeros", min = 0, </span>
-<span id="cb43-16"><a></a>        max = 1, value = 0), p("In the plot, excess zeros are shown in red.")))), </span>
-<span id="cb43-17"><a></a>    layout_columns(col_widths = c(12), card(plotOutput("distPlot"))))</span>
-<span id="cb43-18"><a></a>  server &lt;- function(input, output) {</span>
-<span id="cb43-19"><a></a>    output$negbin &lt;- renderUI({</span>
-<span id="cb43-20"><a></a>      if (input$dist == "Negative Binomial") {</span>
-<span id="cb43-21"><a></a>        freezeReactiveValue(input, "variance")</span>
-<span id="cb43-22"><a></a>        list(sliderInput("variance", "Variance", min = input$mean, </span>
-<span id="cb43-23"><a></a>          max = 20, value = 10), p("With the negative binomial distribution, the variance can change independently of the mean, giving the distribution more flexibility."))</span>
-<span id="cb43-24"><a></a>      }</span>
-<span id="cb43-25"><a></a>      else {</span>
-<span id="cb43-26"><a></a>        p("With the Poisson distribution, the mean is equal to the variance.")</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43" data-engine="r"><pre class="sourceCode numberSource shinylive-r number-lines code-with-copy"><code class="sourceCode"><span id="cb43-1"><a></a>#| '!! shinylive warning !!': |</span>
+<span id="cb43-2"><a></a>#|   shinylive does not work in self-contained HTML documents.</span>
+<span id="cb43-3"><a></a>#|   Please set `embed-resources: false` in your metadata.</span>
+<span id="cb43-4"><a></a>#| label: count-app2</span>
+<span id="cb43-5"><a></a>#| standalone: true</span>
+<span id="cb43-6"><a></a>#| viewerHeight: 650</span>
+<span id="cb43-7"><a></a>library(shiny)</span>
+<span id="cb43-8"><a></a>library(bslib)</span>
+<span id="cb43-9"><a></a></span>
+<span id="cb43-10"><a></a>  ui &lt;- page_sidebar(title = h1("Distributions for count data"), </span>
+<span id="cb43-11"><a></a>    sidebar = sidebar(accordion(accordion_panel(title = "Distribution", </span>
+<span id="cb43-12"><a></a>      p("Two distributions are commonly used for count data."), </span>
+<span id="cb43-13"><a></a>      radioButtons("dist", "Distribution", choices = c("Poisson", </span>
+<span id="cb43-14"><a></a>        "Negative Binomial")), sliderInput("mean", "Mean", </span>
+<span id="cb43-15"><a></a>        min = 0, max = 10, round = FALSE, value = 1.5, </span>
+<span id="cb43-16"><a></a>        step = 0.5), uiOutput("negbin"), ), accordion_panel(title = "Zero Inflation", </span>
+<span id="cb43-17"><a></a>      p("A dataset with more zeros than expected from a Poisson/negative binomial distribution is zero inflated."), </span>
+<span id="cb43-18"><a></a>      sliderInput("zero", "Proportion excess zeros", min = 0, </span>
+<span id="cb43-19"><a></a>        max = 1, value = 0), p("In the plot, excess zeros are shown in red.")))), </span>
+<span id="cb43-20"><a></a>    layout_columns(col_widths = c(12), card(plotOutput("distPlot"))))</span>
+<span id="cb43-21"><a></a>  server &lt;- function(input, output) {</span>
+<span id="cb43-22"><a></a>    output$negbin &lt;- renderUI({</span>
+<span id="cb43-23"><a></a>      if (input$dist == "Negative Binomial") {</span>
+<span id="cb43-24"><a></a>        freezeReactiveValue(input, "variance")</span>
+<span id="cb43-25"><a></a>        list(sliderInput("variance", "Variance", min = input$mean, </span>
+<span id="cb43-26"><a></a>          max = 20, value = 10), p("With the negative binomial distribution, the variance can change independently of the mean, giving the distribution more flexibility."))</span>
 <span id="cb43-27"><a></a>      }</span>
-<span id="cb43-28"><a></a>    })</span>
-<span id="cb43-29"><a></a>    output$distPlot &lt;- renderPlot({</span>
-<span id="cb43-30"><a></a>      axis_max &lt;- 25</span>
-<span id="cb43-31"><a></a>      x &lt;- 0:axis_max</span>
-<span id="cb43-32"><a></a>      if (input$dist == "Poisson") {</span>
-<span id="cb43-33"><a></a>        y &lt;- dpois(x, lambda = input$mean)</span>
-<span id="cb43-34"><a></a>      }</span>
-<span id="cb43-35"><a></a>      else {</span>
-<span id="cb43-36"><a></a>        mu &lt;- input$mean</span>
-<span id="cb43-37"><a></a>        v &lt;- input$variance + 1e-04</span>
-<span id="cb43-38"><a></a>        size &lt;- mu^2/(v - mu)</span>
-<span id="cb43-39"><a></a>        prob &lt;- mu/v</span>
-<span id="cb43-40"><a></a>        y &lt;- dnbinom(x, prob = prob, size = size)</span>
-<span id="cb43-41"><a></a>      }</span>
-<span id="cb43-42"><a></a>      y &lt;- y * (1 - input$zero)</span>
-<span id="cb43-43"><a></a>      par(cex = 1.5, mar = c(3, 3, 1, 1), tcl = -0.1, </span>
-<span id="cb43-44"><a></a>        mgp = c(2, 0.2, 0))</span>
-<span id="cb43-45"><a></a>      plot(x, y, type = "n", ylim = c(0, max(max(y), y[x == </span>
-<span id="cb43-46"><a></a>        0] + (input$zero))), xlab = "Count", ylab = "Density")</span>
-<span id="cb43-47"><a></a>      segments(x, 0, x, y, lwd = 10, lend = 1)</span>
-<span id="cb43-48"><a></a>      segments(0, y[x == 0], 0, y[x == 0] + (input$zero), </span>
-<span id="cb43-49"><a></a>        col = "#832424", lwd = 10, lend = 1)</span>
-<span id="cb43-50"><a></a>    })</span>
-<span id="cb43-51"><a></a>  }</span>
-<span id="cb43-52"><a></a>  shinyApp(ui = ui, server = server)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb43-28"><a></a>      else {</span>
+<span id="cb43-29"><a></a>        p("With the Poisson distribution, the mean is equal to the variance.")</span>
+<span id="cb43-30"><a></a>      }</span>
+<span id="cb43-31"><a></a>    })</span>
+<span id="cb43-32"><a></a>    output$distPlot &lt;- renderPlot({</span>
+<span id="cb43-33"><a></a>      axis_max &lt;- 25</span>
+<span id="cb43-34"><a></a>      x &lt;- 0:axis_max</span>
+<span id="cb43-35"><a></a>      if (input$dist == "Poisson") {</span>
+<span id="cb43-36"><a></a>        y &lt;- dpois(x, lambda = input$mean)</span>
+<span id="cb43-37"><a></a>      }</span>
+<span id="cb43-38"><a></a>      else {</span>
+<span id="cb43-39"><a></a>        mu &lt;- input$mean</span>
+<span id="cb43-40"><a></a>        v &lt;- input$variance + 1e-04</span>
+<span id="cb43-41"><a></a>        size &lt;- mu^2/(v - mu)</span>
+<span id="cb43-42"><a></a>        prob &lt;- mu/v</span>
+<span id="cb43-43"><a></a>        y &lt;- dnbinom(x, prob = prob, size = size)</span>
+<span id="cb43-44"><a></a>      }</span>
+<span id="cb43-45"><a></a>      y &lt;- y * (1 - input$zero)</span>
+<span id="cb43-46"><a></a>      par(cex = 1.5, mar = c(3, 3, 1, 1), tcl = -0.1, </span>
+<span id="cb43-47"><a></a>        mgp = c(2, 0.2, 0))</span>
+<span id="cb43-48"><a></a>      plot(x, y, type = "n", ylim = c(0, max(max(y), y[x == </span>
+<span id="cb43-49"><a></a>        0] + (input$zero))), xlab = "Count", ylab = "Density")</span>
+<span id="cb43-50"><a></a>      segments(x, 0, x, y, lwd = 10, lend = 1)</span>
+<span id="cb43-51"><a></a>      segments(0, y[x == 0], 0, y[x == 0] + (input$zero), </span>
+<span id="cb43-52"><a></a>        col = "#832424", lwd = 10, lend = 1)</span>
+<span id="cb43-53"><a></a>    })</span>
+<span id="cb43-54"><a></a>  }</span>
+<span id="cb43-55"><a></a>  shinyApp(ui = ui, server = server)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="diagnostics-plots" class="slide level2">
 <h2>Diagnostics plots</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a></a><span class="fu">library</span>(performance)</span>
 <span id="cb44-2"><a></a><span class="fu">check_model</span>(budworm.lg)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error: Package `see` required for model diagnostic plots.
-  Please install it by running `install.packages("see")`.</code></pre>
-</div>
+
 </div>
 
 
-</section></section>
+<img data-src="lecture_9_generalised_linear_models_files/figure-revealjs/performance-plot-1.png" width="960" class="r-stretch"></section></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
