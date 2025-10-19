@@ -11,7 +11,7 @@
   <meta name="generator" content="quarto-1.8.20">
 
   <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)">
-  <meta name="dcterms.date" content="2025-08-17">
+  <meta name="dcterms.date" content="2025-10-19">
   <title>Bio302 - Biostatistikk – Mixed effect Models</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -211,15 +211,10 @@ Richard J. Telford (Richard.Telford@uib.no)
     </div>
 </div>
 
-  <p class="date">17 August 2025</p>
+  <p class="date">19 October 2025</p>
 </section>
 <section id="assumptions-of-least-squares" class="slide level2">
 <h2>Assumptions of Least Squares</h2>
-<div class="cell">
-<div class="cell-output cell-output-error">
-<pre><code>Error in library(faux): there is no package called 'faux'</code></pre>
-</div>
-</div>
 <ol type="1">
 <li>Linear relationship between response and predictors.</li>
 <li>The residuals have a mean of zero.</li>
@@ -246,134 +241,208 @@ Richard J. Telford (Richard.Telford@uib.no)
 </div></aside></section>
 <section id="two-tanks---bad-design" class="slide level2">
 <h2>Two tanks - bad design</h2>
-<div class="cell">
-<div class="cell-output cell-output-error">
-<pre><code>Error in add_ranef(add_ranef(add_recode(add_between(add_random(subj = subj_n, : could not find function "add_ranef"</code></pre>
-</div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in `ggplot()`:
-! `data` cannot be a function.
-ℹ Have you misspelled the `data` argument in `ggplot()`</code></pre>
-</div>
-</div>
-</section>
+<p>True effect of treatment: 100 g</p>
+
+<img data-src="lecture_10_mixed_effect_models_files/figure-revealjs/two-tanks-design-1.png" width="960" class="r-stretch"></section>
 <section id="two-tanks---bad-models" class="slide level2">
 <h2>Two tanks - bad models</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>mod_bad <span class="ot">&lt;-</span> <span class="fu">lm</span>(Mass_g <span class="sc">~</span> condition, <span class="at">data =</span> demo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in model.frame.default(formula = Mass_g ~ condition, data = demo, : 'data' must be a data.frame, environment, or list</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>mod_bad <span class="ot">&lt;-</span> <span class="fu">lm</span>(Mass_g <span class="sc">~</span> condition, <span class="at">data =</span> demo)</span>
+<span id="cb1-2"><a></a>mod_bad2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Mass_g <span class="sc">~</span> tank, <span class="at">data =</span> demo)</span>
+<span id="cb1-3"><a></a></span>
+<span id="cb1-4"><a></a>mod_bad</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Mass_g ~ condition, data = demo)
+
+Coefficients:
+  (Intercept)  conditiontest  
+       1147.6         -105.1  </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>mod_bad2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Mass_g <span class="sc">~</span> tank, <span class="at">data =</span> demo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in model.frame.default(formula = Mass_g ~ tank, data = demo, drop.unused.levels = TRUE): 'data' must be a data.frame, environment, or list</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>mod_bad</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error: object 'mod_bad' not found</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>mod_bad2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error: object 'mod_bad2' not found</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>mod_bad2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Mass_g ~ tank, data = demo)
+
+Coefficients:
+(Intercept)    tanktank2  
+     1147.6       -105.1  </code></pre>
 </div>
 </div>
 </section>
 <section id="better-design---replicate-tanks" class="slide level2">
 <h2>Better design - replicate tanks</h2>
-<div class="cell">
-<div class="cell-output cell-output-error">
-<pre><code>Error in add_ranef(add_ranef(add_recode(add_between(add_random(subj = subj_n, : could not find function "add_ranef"</code></pre>
-</div>
-<div class="cell-output cell-output-error">
-<pre><code>Error: object 'demo2' not found</code></pre>
-</div>
-<div class="cell-output cell-output-error">
-<pre><code>Error: object 'outer_plot' not found</code></pre>
-</div>
-</div>
-</section>
+
+<img data-src="lecture_10_mixed_effect_models_files/figure-revealjs/many-tanks-design-1.png" width="960" class="r-stretch"></section>
 <section id="better-design-bit-better-model" class="slide level2">
 <h2>Better design, bit better model</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>mod_bit <span class="ot">&lt;-</span> <span class="fu">lm</span>(Mass_g <span class="sc">~</span> condition <span class="sc">+</span> tank, <span class="at">data =</span> demo2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in eval(mf, parent.frame()): object 'demo2' not found</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">summary</span>(mod_bit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'summary': object 'mod_bit' not found</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>mod_bit <span class="ot">&lt;-</span> <span class="fu">lm</span>(Mass_g <span class="sc">~</span> condition <span class="sc">+</span> tank, <span class="at">data =</span> demo2)</span>
+<span id="cb5-2"><a></a><span class="fu">summary</span>(mod_bit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Mass_g ~ condition + tank, data = demo2)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-270.11  -59.70   20.80   71.17  224.67 
+
+Coefficients: (1 not defined because of singularities)
+              Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)    1202.37      33.38  36.021  &lt; 2e-16 ***
+conditiontest   -68.44      47.21  -1.450 0.151439    
+tanktank2      -118.07      47.21  -2.501 0.014654 *  
+tanktank3      -195.25      47.21  -4.136 9.44e-05 ***
+tanktank4        33.35      47.21   0.707 0.482102    
+tanktank5      -178.79      47.21  -3.788 0.000313 ***
+tanktank6       -49.47      47.21  -1.048 0.298128    
+tanktank7       -96.71      47.21  -2.049 0.044128 *  
+tanktank8           NA         NA      NA       NA    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 105.6 on 72 degrees of freedom
+Multiple R-squared:  0.3187,    Adjusted R-squared:  0.2525 
+F-statistic: 4.812 on 7 and 72 DF,  p-value: 0.0001745</code></pre>
 </div>
 </div>
 </section>
 <section id="fixed-effect-and-random-effects" class="slide level2">
 <h2>Fixed effect and random effects</h2>
 <h3 id="fixed-effect-effect-model"><font color="red">Fixed effect</font> effect model</h3>
-<p><span class="math display">\[y_i = \color{red}{\beta_0} + \color{red}{\beta_1}x_i + \color{red}{\beta_2}tank_i  +\color{blue}{ \epsilon_i}\]</span></p>
+<p><span class="math display">\[y_i = \color{red}{\beta_0} + \color{red}{\beta_1}x_i + \color{red}{\beta_2}tank_i  +\color{blue}{ \varepsilon_i}\]</span></p>
 <p>Not interested in effect of tank</p>
 <h3 id="mixed-effect-model">Mixed effect model</h3>
 <p>Use a <font color="blue">Random effect</font></p>
 <p>Assumes observed tanks from a population of possible tanks</p>
-<p><span class="math display">\[y_{ij} = \color{red}{\beta_0} +\color{blue}{b_{0i}}+ \color{red}{\beta_1}x_i +\color{blue}{ \epsilon_{ij}}\]</span></p>
+<p><span class="math display">\[y_{ij} = \color{red}{\beta_0} +\color{blue}{b_{0i}}+ \color{red}{\beta_1}x_i +\color{blue}{ \varepsilon_{ij}}\]</span></p>
 </section>
 <section id="random-effects" class="slide level2">
 <h2>Random effects</h2>
-<p>Residuals from a normal distribution <span class="math inline">\(\color{blue}{ \epsilon_{ij}} \sim N(0, \sigma_{ind})\)</span><br>
+<p>Residuals from a normal distribution <span class="math inline">\(\color{blue}{ \varepsilon_{ij}} \sim N(0, \sigma_{ind})\)</span><br>
 Random effects from a normal distribution <span class="math inline">\(\color{blue}{b_{0i}} \sim N(0, \sigma_{clu})\)</span></p>
-<div class="cell">
-<div class="cell-output cell-output-error">
-<pre><code>Error: object 'demo2' not found</code></pre>
-</div>
-<div class="cell-output cell-output-error">
-<pre><code>Error: object 'p1' not found</code></pre>
-</div>
-</div>
-</section>
+
+<img data-src="lecture_10_mixed_effect_models_files/figure-revealjs/control-1.png" width="960" class="r-stretch"></section>
 <section id="fitting-a-mixed-effect-model" class="slide level2">
 <h2>Fitting a mixed effect model</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a><span class="fu">library</span>(lme4)</span>
-<span id="cb21-2"><a></a>mod1 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(Mass_g <span class="sc">~</span> condition <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>tank), <span class="at">data =</span> demo2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error: bad 'data': object 'demo2' not found</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">library</span>(lme4)</span>
+<span id="cb7-2"><a></a>mod1 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(Mass_g <span class="sc">~</span> condition <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>tank), <span class="at">data =</span> demo2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section class="slide level2">
+
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="fu">summary</span>(mod1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML ['lmerMod']
+Formula: Mass_g ~ condition + (1 | tank)
+   Data: demo2
+
+REML criterion at convergence: 965.8
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.6916 -0.5419  0.1989  0.6274  2.2428 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ tank     (Intercept)  5059     71.13  
+ Residual             11142    105.56  
+Number of obs: 80, groups:  tank, 8
+
+Fixed effects:
+              Estimate Std. Error t value
+(Intercept)    1084.68      39.28  27.611
+conditiontest    15.70      55.56   0.283
+
+Correlation of Fixed Effects:
+            (Intr)
+conditintst -0.707</code></pre>
 </div>
 </div>
 </section>
 <section class="slide level2">
 
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a><span class="fu">summary</span>(mod1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'summary': object 'mod1' not found</code></pre>
-</div>
-</div>
-</section>
-<section class="slide level2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="fu">library</span>(lmerTest)</span>
+<span id="cb10-2"><a></a>mod1a <span class="ot">&lt;-</span> <span class="fu">lmer</span>(Mass_g <span class="sc">~</span> condition <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>tank), <span class="at">data =</span> demo2)</span>
+<span id="cb10-3"><a></a><span class="fu">summary</span>(mod1a)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: Mass_g ~ condition + (1 | tank)
+   Data: demo2
 
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a><span class="fu">library</span>(lmerTest)</span>
-<span id="cb25-2"><a></a>mod1a <span class="ot">&lt;-</span> <span class="fu">lmer</span>(Mass_g <span class="sc">~</span> condition <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>tank), <span class="at">data =</span> demo2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error: bad 'data': object 'demo2' not found</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a><span class="fu">summary</span>(mod1a)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'summary': object 'mod1a' not found</code></pre>
+REML criterion at convergence: 965.8
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.6916 -0.5419  0.1989  0.6274  2.2428 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ tank     (Intercept)  5059     71.13  
+ Residual             11142    105.56  
+Number of obs: 80, groups:  tank, 8
+
+Fixed effects:
+              Estimate Std. Error      df t value Pr(&gt;|t|)    
+(Intercept)    1084.68      39.28    6.00  27.611 1.49e-07 ***
+conditiontest    15.70      55.56    6.00   0.283    0.787    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Fixed Effects:
+            (Intr)
+conditintst -0.707</code></pre>
 </div>
 </div>
 </section>
 <section id="alternative-package" class="slide level2">
 <h2>Alternative package</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a><span class="fu">library</span>(nlme)</span>
-<span id="cb29-2"><a></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lme</span>(Mass_g <span class="sc">~</span> condition, <span class="at">data =</span> demo2, <span class="at">random =</span>  <span class="sc">~</span> <span class="dv">1</span><span class="sc">|</span>tank)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error: object 'demo2' not found</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">library</span>(nlme)</span>
+<span id="cb12-2"><a></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lme</span>(Mass_g <span class="sc">~</span> condition, <span class="at">data =</span> demo2, <span class="at">random =</span>  <span class="sc">~</span> <span class="dv">1</span><span class="sc">|</span>tank)</span>
+<span id="cb12-3"><a></a><span class="fu">summary</span>(mod2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed-effects model fit by REML
+  Data: demo2 
+       AIC      BIC    logLik
+  973.8449 983.2717 -482.9225
+
+Random effects:
+ Formula: ~1 | tank
+        (Intercept) Residual
+StdDev:    71.12618  105.555
+
+Fixed effects:  Mass_g ~ condition 
+                  Value Std.Error DF   t-value p-value
+(Intercept)   1084.6791  39.28460 72 27.610796   0.000
+conditiontest   15.7008  55.55682  6  0.282608   0.787
+ Correlation: 
+              (Intr)
+conditiontest -0.707
+
+Standardized Within-Group Residuals:
+       Min         Q1        Med         Q3        Max 
+-2.6916143 -0.5418500  0.1988656  0.6273686  2.2428518 
+
+Number of Observations: 80
+Number of Groups: 8 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a><span class="fu">summary</span>(mod2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'summary': object 'mod2' not found</code></pre>
 </div>
-</div>
+</section>
+<section id="other-packages" class="slide level2">
+<h2>Other packages</h2>
+<ul>
+<li><code>glmmTMB</code> - generalised linear mixed effect models</li>
+<li><code>brms</code> - Bayesian mixed effect models</li>
+</ul>
+<p>Both use similar syntax to <code>lme4</code> package</p>
 </section>
 <section id="fixed-or-random-effects" class="slide level2 scrollable">
 <h2>Fixed or random effects</h2>
@@ -416,14 +485,12 @@ Random effects from a normal distribution <span class="math inline">\(\color{blu
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell">
-<div class="cell-output cell-output-error">
-<pre><code>Error in add_ranef(add_ranef(add_recode(add_within(add_random(subj = subj_n/2, : could not find function "add_ranef"</code></pre>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lecture_10_mixed_effect_models_files/figure-revealjs/inner-outer-1.png" width="480"></p>
+</figure>
 </div>
-<div class="cell-output cell-output-error">
-<pre><code>Error: object 'outer_plot' not found</code></pre>
-</div>
-<div class="cell-output cell-output-error">
-<pre><code>Error: object 'outer_plot' not found</code></pre>
 </div>
 </div>
 </div><div class="column" style="width:50%;">
@@ -436,29 +503,52 @@ Random effects from a normal distribution <span class="math inline">\(\color{blu
 <section class="slide level2">
 
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a>mod3 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(Mass_g <span class="sc">~</span> condition <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>tank), <span class="at">data =</span> demo3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error: bad 'data': object 'demo3' not found</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a><span class="fu">summary</span>(mod3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'summary': object 'mod3' not found</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>mod3 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(Mass_g <span class="sc">~</span> condition <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>tank), <span class="at">data =</span> demo3)</span>
+<span id="cb14-2"><a></a><span class="fu">summary</span>(mod3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: Mass_g ~ condition + (1 | tank)
+   Data: demo3
+
+REML criterion at convergence: 975.8
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-2.72095 -0.58452  0.09483  0.55007  1.95600 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ tank     (Intercept)  6371     79.82  
+ Residual             12253    110.69  
+Number of obs: 80, groups:  tank, 8
+
+Fixed effects:
+              Estimate Std. Error       df t value Pr(&gt;|t|)    
+(Intercept)   1037.398     33.207    9.416  31.240 7.87e-11 ***
+conditiontest  110.263     24.752   71.000   4.455 3.06e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Fixed Effects:
+            (Intr)
+conditintst -0.373</code></pre>
 </div>
 </div>
 </section>
 <section id="continuous-inner-predictor" class="slide level2">
 <h2>Continuous inner predictor</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a></a><span class="fu">data</span>(<span class="st">"sleepstudy"</span>, <span class="at">package =</span> <span class="st">"lme4"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a><span class="fu">data</span>(<span class="st">"sleepstudy"</span>, <span class="at">package =</span> <span class="st">"lme4"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="lecture_10_mixed_effect_models_files/figure-revealjs/sleepstudy-1.png" width="960" class="r-stretch"></section>
 <section id="random-intercept" class="slide level2">
 <h2>Random intercept</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a>fm1 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(Reaction <span class="sc">~</span> Days <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>Subject), sleepstudy, <span class="at">subset =</span> Days<span class="sc">&gt;=</span><span class="dv">2</span>)</span>
-<span id="cb41-2"><a></a></span>
-<span id="cb41-3"><a></a><span class="fu">summary</span>(fm1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>fm1 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(Reaction <span class="sc">~</span> Days <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>Subject), sleepstudy, <span class="at">subset =</span> Days <span class="sc">&gt;=</span> <span class="dv">2</span>)</span>
+<span id="cb17-2"><a></a></span>
+<span id="cb17-3"><a></a><span class="fu">summary</span>(fm1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
@@ -494,28 +584,22 @@ Days -0.511</code></pre>
 <section class="slide level2">
 
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a></a><span class="fu">library</span>(broom.mixed)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in library(broom.mixed): there is no package called 'broom.mixed'</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a><span class="fu">library</span>(broom.mixed) <span class="co"># use predict() if you need se.fit</span></span>
+<span id="cb19-2"><a></a><span class="fu">augment</span>(fm1) <span class="sc">|&gt;</span> </span>
+<span id="cb19-3"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Days, <span class="at">y =</span> Reaction, <span class="at">colour =</span> Subject)) <span class="sc">+</span></span>
+<span id="cb19-4"><a></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb19-5"><a></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted)) <span class="sc">+</span></span>
+<span id="cb19-6"><a></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fixed), <span class="at">colour =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb19-7"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a></a><span class="fu">augment</span>(fm1) <span class="sc">|&gt;</span> </span>
-<span id="cb45-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Days, <span class="at">y =</span> Reaction, <span class="at">colour =</span> Subject)) <span class="sc">+</span></span>
-<span id="cb45-3"><a></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb45-4"><a></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted)) <span class="sc">+</span></span>
-<span id="cb45-5"><a></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fixed), <span class="at">colour =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
-<span id="cb45-6"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in `augment()`:
-! No `augment()` method for objects of class &lt;lmerModLmerTest&gt;.</code></pre>
-</div>
-</div>
-</section>
+<img data-src="lecture_10_mixed_effect_models_files/figure-revealjs/random-intercept-plot-1.png" width="960" class="r-stretch"></section>
 <section id="random-slope" class="slide level2">
 <h2>Random slope</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a></a>fm2 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(Reaction <span class="sc">~</span> Days <span class="sc">+</span> (Days<span class="sc">|</span>Subject), sleepstudy, <span class="at">subset =</span> Days<span class="sc">&gt;=</span><span class="dv">2</span>)</span>
-<span id="cb47-2"><a></a></span>
-<span id="cb47-3"><a></a><span class="fu">summary</span>(fm2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>fm2 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(Reaction <span class="sc">~</span> Days <span class="sc">+</span> (Days<span class="sc">|</span>Subject), sleepstudy, <span class="at">subset =</span> Days <span class="sc">&gt;=</span> <span class="dv">2</span>)</span>
+<span id="cb20-2"><a></a></span>
+<span id="cb20-3"><a></a><span class="fu">summary</span>(fm2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
@@ -551,17 +635,12 @@ Days -0.454</code></pre>
 </section>
 <section class="slide level2">
 
-<div class="cell">
-<div class="cell-output cell-output-error">
-<pre><code>Error in `augment()`:
-! No `augment()` method for objects of class &lt;lmerModLmerTest&gt;.</code></pre>
-</div>
-</div>
-</section>
+
+<img data-src="lecture_10_mixed_effect_models_files/figure-revealjs/random-slope-plot-1.png" width="960" class="r-stretch"></section>
 <section id="comparing-models" class="slide level2">
 <h2>Comparing models</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a></a><span class="fu">anova</span>(fm1, fm2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a><span class="fu">anova</span>(fm1, fm2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Data: sleepstudy
 Subset: Days &gt;= 2
@@ -585,19 +664,16 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <section id="performance-package" class="slide level2">
 <h2>performance package</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a></a>performance<span class="sc">::</span><span class="fu">check_model</span>(fm1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error: Package `see` required for model diagnostic plots.
-  Please install it by running `install.packages("see")`.</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a>performance<span class="sc">::</span><span class="fu">check_model</span>(fm1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
 </div>
-</div>
-</section>
+<img data-src="lecture_10_mixed_effect_models_files/figure-revealjs/performance-1.png" width="960" class="r-stretch"></section>
 <section id="crossed-random-effects" class="slide level2">
 <h2>Crossed random effects</h2>
 <p>Two random effects</p>
 <p>Eggs from birds nests (first random effect - lay_nest) moved to other nests (second random effect - hatch_nest)</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a></a><span class="fu">lmer</span>(mass <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>lay_nest) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>hatch_nest), <span class="at">data =</span> data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a><span class="fu">lmer</span>(mass <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>lay_nest) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>hatch_nest), <span class="at">data =</span> data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="nested-random-effects" class="slide level2">
@@ -609,7 +685,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <li>species nested in family</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a></a><span class="fu">lmer</span>(mass <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>site<span class="sc">/</span>plot), <span class="at">data =</span> data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a></a><span class="fu">lmer</span>(mass <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>site<span class="sc">/</span>plot), <span class="at">data =</span> data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="convergence-other-problems" class="slide level2">
@@ -629,8 +705,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <p>Fit with <code>glmer()</code></p>
 <p>Autocorrelated data</p>
 <ul>
-<li>repeat measurements</li>
-<li>fit with <code>nlme::lme()</code></li>
+<li>timeseries or spatial data</li>
+<li>fit with <code>nlme::lme()</code> or <code>glmmTMB::glmmTMB()</code></li>
 </ul>
 </section>
 <section id="glmmtmb-package" class="slide level2">
@@ -655,10 +731,13 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <p>Bayesian model can help</p>
 <p>Different statistical philosophy</p>
 <ul>
-<li>rstan</li>
-<li>nimble</li>
+<li><code>rstan</code></li>
+<li><code>nimble</code></li>
 </ul>
 <p>Use prior information (or uninformative priors)</p>
+<ul>
+<li><code>brms</code> package fits Bayesian mixed effect models with <code>lme4</code>-like syntax</li>
+</ul>
 </section>
 <section id="resources" class="slide level2">
 <h2>Resources</h2>

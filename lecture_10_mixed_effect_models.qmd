@@ -57,6 +57,8 @@ data(penguins, package = "palmerpenguins")
 
 ## Two tanks - bad design
 
+True effect of treatment: 100 g
+
 ```{r two-tanks-design, echo = FALSE}
 #simulate with faux package
 
@@ -198,6 +200,14 @@ mod2 <- lme(Mass_g ~ condition, data = demo2, random =  ~ 1|tank)
 summary(mod2)
 ```
 
+## Other packages
+
+- `glmmTMB` - generalised linear mixed effect models
+- `brms` - Bayesian mixed effect models
+
+Both use similar syntax to `lme4` package
+
+
 
 ## Fixed or random effects{.scrollable}
 
@@ -289,7 +299,7 @@ ggplot(aes(x = Days, y = Reaction, colour = Subject)) +
 
 
 ```{r random-intercept}
-fm1 <- lmer(Reaction ~ Days + (1|Subject), sleepstudy, subset = Days>=2)
+fm1 <- lmer(Reaction ~ Days + (1|Subject), sleepstudy, subset = Days >= 2)
 
 summary(fm1)
 
@@ -298,12 +308,12 @@ summary(fm1)
 ---
 
 ```{r random-intercept-plot, fig.height=5}
-library(broom.mixed)
+library(broom.mixed) # use predict() if you need se.fit
 augment(fm1) |> 
   ggplot(aes(x = Days, y = Reaction, colour = Subject)) +
   geom_point() +
   geom_line(aes(y = .fitted)) +
-  geom_line(aes(y = .fixed), colour = "black", size = 1.5) +
+  geom_line(aes(y = .fixed), colour = "black", linewidth = 1.5) +
   theme(legend.position = "none")
   
 ```
@@ -314,7 +324,7 @@ augment(fm1) |>
 
 
 ```{r random-slope}
-fm2 <- lmer(Reaction ~ Days + (Days|Subject), sleepstudy, subset = Days>=2)
+fm2 <- lmer(Reaction ~ Days + (Days|Subject), sleepstudy, subset = Days >= 2)
 
 summary(fm2)
 
@@ -327,7 +337,7 @@ augment(fm2) |>
   ggplot(aes(x = Days, y = Reaction, colour = Subject)) +
   geom_point() +
   geom_line(aes(y = .fitted)) +
-  geom_line(aes(y = .fixed), colour = "black", size = 1.5) +
+  geom_line(aes(y = .fixed), colour = "black", linewidth = 1.5) +
   theme(legend.position = "none")
   
 ```
@@ -399,8 +409,8 @@ Fit with `glmer()`
 
 Autocorrelated data 
 
-- repeat measurements
-- fit with `nlme::lme()`
+- timeseries or spatial data
+- fit with `nlme::lme()` or `glmmTMB::glmmTMB()`
 
 ## `glmmTMB` package
 
@@ -422,11 +432,12 @@ Bayesian model can help
 
 Different statistical philosophy
 
-- rstan
-- nimble
+- `rstan`
+- `nimble`
 
 Use prior information (or uninformative priors)
 
+- `brms` package fits Bayesian mixed effect models with `lme4`-like syntax
 
 ## Resources
 
