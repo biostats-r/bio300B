@@ -11,7 +11,7 @@
   <meta name="generator" content="quarto-1.8.20">
 
   <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)">
-  <meta name="dcterms.date" content="2025-08-17">
+  <meta name="dcterms.date" content="2025-10-27">
   <title>Bio302 - Biostatistikk – Survival analysis and Multivariate methods</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -211,7 +211,7 @@ Richard J. Telford (Richard.Telford@uib.no)
     </div>
 </div>
 
-  <p class="date">17 August 2025</p>
+  <p class="date">27 October 2025</p>
 </section>
 <section id="survival-analysis" class="slide level2">
 <h2>Survival analysis</h2>
@@ -288,26 +288,19 @@ sex=female  90     53    426     348     550</code></pre>
 <li>‘+’ mark censored data</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">library</span>(ggfortify)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in library(package, pos = pos, lib.loc = lib.loc, character.only = TRUE, : there is no package called 'ggfortify'</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">library</span>(ggfortify)</span>
+<span id="cb7-2"><a></a><span class="fu">autoplot</span>(mod_surv)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">autoplot</span>(mod_surv)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in `autoplot()`:
-! Objects of class &lt;survfit&gt; are not supported by autoplot.
-ℹ Have you loaded the required package?</code></pre>
-</div>
-</div>
-</section>
+<img data-src="lecture_11_survival_multivariate_files/figure-revealjs/survival-plot-1.png" width="960" class="r-stretch"></section>
 <section id="testing-differences-in-survival-time" class="slide level2">
 <h2>Testing differences in survival time</h2>
 <ul>
 <li>between two or more groups</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>mod_diff <span class="ot">&lt;-</span> <span class="fu">survdiff</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> sex, <span class="at">data =</span> lung)</span>
-<span id="cb11-2"><a></a>mod_diff</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>mod_diff <span class="ot">&lt;-</span> <span class="fu">survdiff</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> sex, <span class="at">data =</span> lung)</span>
+<span id="cb8-2"><a></a>mod_diff</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
 survdiff(formula = Surv(time, status) ~ sex, data = lung)
@@ -325,14 +318,9 @@ sex=female  90       53     73.4      5.68      10.3
 <p>Shape of the survival curve</p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-survivorship-curves" class="quarto-float quarto-figure quarto-figure-center" height="5in" width="7in">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-survivorship-curves-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img data-src="figures/Survivorship_Curves.jpg" id="fig-survivorship-curves" style="width:7in;height:5in">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-survivorship-curves-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1
-</figcaption>
+<div>
+<figure>
+<p><img data-src="figures/Survivorship_Curves.jpg" style="width:7in;height:5in"></p>
 </figure>
 </div>
 </div>
@@ -341,10 +329,10 @@ Figure&nbsp;1
 <section id="hazard-the-instantaneous-risk-of-death" class="slide level2">
 <h2>Hazard: The instantaneous risk of death</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>m_ll <span class="ot">&lt;-</span> <span class="fu">survreg</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> age <span class="sc">+</span> sex, </span>
-<span id="cb13-2"><a></a>                <span class="at">data =</span> lung,</span>
-<span id="cb13-3"><a></a>                <span class="at">dist =</span> <span class="st">"loglogistic"</span>)</span>
-<span id="cb13-4"><a></a><span class="fu">summary</span>(m_ll)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>m_ll <span class="ot">&lt;-</span> <span class="fu">survreg</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> age <span class="sc">+</span> sex, </span>
+<span id="cb10-2"><a></a>                <span class="at">data =</span> lung,</span>
+<span id="cb10-3"><a></a>                <span class="at">dist =</span> <span class="st">"loglogistic"</span>)</span>
+<span id="cb10-4"><a></a><span class="fu">summary</span>(m_ll)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -370,7 +358,7 @@ n= 228 </code></pre>
 
 <p>Exponentiated coefficients show relative increase or decrease in the expected survival times when a covariate is increased one step while others are fixed:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">exp</span>(<span class="fu">coef</span>(m_ll))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">exp</span>(<span class="fu">coef</span>(m_ll))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(Intercept)         age   sexfemale 
 601.7394821   0.9860925   1.6120541 </code></pre>
@@ -383,7 +371,7 @@ n= 228 </code></pre>
 
 <p>scale</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a>m_ll<span class="sc">$</span>scale</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>m_ll<span class="sc">$</span>scale</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.5655786</code></pre>
 </div>
@@ -394,23 +382,23 @@ n= 228 </code></pre>
 <h2>Choice of distribution</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div id="bhrdqngmnb" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#bhrdqngmnb table {
+<div id="uhnwedvggo" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#uhnwedvggo table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#bhrdqngmnb thead, #bhrdqngmnb tbody, #bhrdqngmnb tfoot, #bhrdqngmnb tr, #bhrdqngmnb td, #bhrdqngmnb th {
+#uhnwedvggo thead, #uhnwedvggo tbody, #uhnwedvggo tfoot, #uhnwedvggo tr, #uhnwedvggo td, #uhnwedvggo th {
   border-style: none;
 }
 
-#bhrdqngmnb p {
+#uhnwedvggo p {
   margin: 0;
   padding: 0;
 }
 
-#bhrdqngmnb .gt_table {
+#uhnwedvggo .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -436,12 +424,12 @@ n= 228 </code></pre>
   border-left-color: #D3D3D3;
 }
 
-#bhrdqngmnb .gt_caption {
+#uhnwedvggo .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#bhrdqngmnb .gt_title {
+#uhnwedvggo .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -453,7 +441,7 @@ n= 228 </code></pre>
   border-bottom-width: 0;
 }
 
-#bhrdqngmnb .gt_subtitle {
+#uhnwedvggo .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -465,7 +453,7 @@ n= 228 </code></pre>
   border-top-width: 0;
 }
 
-#bhrdqngmnb .gt_heading {
+#uhnwedvggo .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -477,13 +465,13 @@ n= 228 </code></pre>
   border-right-color: #D3D3D3;
 }
 
-#bhrdqngmnb .gt_bottom_border {
+#uhnwedvggo .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#bhrdqngmnb .gt_col_headings {
+#uhnwedvggo .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -498,7 +486,7 @@ n= 228 </code></pre>
   border-right-color: #D3D3D3;
 }
 
-#bhrdqngmnb .gt_col_heading {
+#uhnwedvggo .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -518,7 +506,7 @@ n= 228 </code></pre>
   overflow-x: hidden;
 }
 
-#bhrdqngmnb .gt_column_spanner_outer {
+#uhnwedvggo .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -530,15 +518,15 @@ n= 228 </code></pre>
   padding-right: 4px;
 }
 
-#bhrdqngmnb .gt_column_spanner_outer:first-child {
+#uhnwedvggo .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#bhrdqngmnb .gt_column_spanner_outer:last-child {
+#uhnwedvggo .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#bhrdqngmnb .gt_column_spanner {
+#uhnwedvggo .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -550,11 +538,11 @@ n= 228 </code></pre>
   width: 100%;
 }
 
-#bhrdqngmnb .gt_spanner_row {
+#uhnwedvggo .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#bhrdqngmnb .gt_group_heading {
+#uhnwedvggo .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -580,7 +568,7 @@ n= 228 </code></pre>
   text-align: left;
 }
 
-#bhrdqngmnb .gt_empty_group_heading {
+#uhnwedvggo .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -595,15 +583,15 @@ n= 228 </code></pre>
   vertical-align: middle;
 }
 
-#bhrdqngmnb .gt_from_md > :first-child {
+#uhnwedvggo .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#bhrdqngmnb .gt_from_md > :last-child {
+#uhnwedvggo .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#bhrdqngmnb .gt_row {
+#uhnwedvggo .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -622,7 +610,7 @@ n= 228 </code></pre>
   overflow-x: hidden;
 }
 
-#bhrdqngmnb .gt_stub {
+#uhnwedvggo .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -635,7 +623,7 @@ n= 228 </code></pre>
   padding-right: 5px;
 }
 
-#bhrdqngmnb .gt_stub_row_group {
+#uhnwedvggo .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -649,15 +637,15 @@ n= 228 </code></pre>
   vertical-align: top;
 }
 
-#bhrdqngmnb .gt_row_group_first td {
+#uhnwedvggo .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#bhrdqngmnb .gt_row_group_first th {
+#uhnwedvggo .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#bhrdqngmnb .gt_summary_row {
+#uhnwedvggo .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -667,16 +655,16 @@ n= 228 </code></pre>
   padding-right: 5px;
 }
 
-#bhrdqngmnb .gt_first_summary_row {
+#uhnwedvggo .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#bhrdqngmnb .gt_first_summary_row.thick {
+#uhnwedvggo .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#bhrdqngmnb .gt_last_summary_row {
+#uhnwedvggo .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -686,7 +674,7 @@ n= 228 </code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#bhrdqngmnb .gt_grand_summary_row {
+#uhnwedvggo .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -696,7 +684,7 @@ n= 228 </code></pre>
   padding-right: 5px;
 }
 
-#bhrdqngmnb .gt_first_grand_summary_row {
+#uhnwedvggo .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -706,7 +694,7 @@ n= 228 </code></pre>
   border-top-color: #D3D3D3;
 }
 
-#bhrdqngmnb .gt_last_grand_summary_row_top {
+#uhnwedvggo .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -716,11 +704,11 @@ n= 228 </code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#bhrdqngmnb .gt_striped {
+#uhnwedvggo .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#bhrdqngmnb .gt_table_body {
+#uhnwedvggo .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -729,7 +717,7 @@ n= 228 </code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#bhrdqngmnb .gt_footnotes {
+#uhnwedvggo .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -743,7 +731,7 @@ n= 228 </code></pre>
   border-right-color: #D3D3D3;
 }
 
-#bhrdqngmnb .gt_footnote {
+#uhnwedvggo .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -752,7 +740,7 @@ n= 228 </code></pre>
   padding-right: 5px;
 }
 
-#bhrdqngmnb .gt_sourcenotes {
+#uhnwedvggo .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -766,7 +754,7 @@ n= 228 </code></pre>
   border-right-color: #D3D3D3;
 }
 
-#bhrdqngmnb .gt_sourcenote {
+#uhnwedvggo .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -774,72 +762,72 @@ n= 228 </code></pre>
   padding-right: 5px;
 }
 
-#bhrdqngmnb .gt_left {
+#uhnwedvggo .gt_left {
   text-align: left;
 }
 
-#bhrdqngmnb .gt_center {
+#uhnwedvggo .gt_center {
   text-align: center;
 }
 
-#bhrdqngmnb .gt_right {
+#uhnwedvggo .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#bhrdqngmnb .gt_font_normal {
+#uhnwedvggo .gt_font_normal {
   font-weight: normal;
 }
 
-#bhrdqngmnb .gt_font_bold {
+#uhnwedvggo .gt_font_bold {
   font-weight: bold;
 }
 
-#bhrdqngmnb .gt_font_italic {
+#uhnwedvggo .gt_font_italic {
   font-style: italic;
 }
 
-#bhrdqngmnb .gt_super {
+#uhnwedvggo .gt_super {
   font-size: 65%;
 }
 
-#bhrdqngmnb .gt_footnote_marks {
+#uhnwedvggo .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#bhrdqngmnb .gt_asterisk {
+#uhnwedvggo .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#bhrdqngmnb .gt_indent_1 {
+#uhnwedvggo .gt_indent_1 {
   text-indent: 5px;
 }
 
-#bhrdqngmnb .gt_indent_2 {
+#uhnwedvggo .gt_indent_2 {
   text-indent: 10px;
 }
 
-#bhrdqngmnb .gt_indent_3 {
+#uhnwedvggo .gt_indent_3 {
   text-indent: 15px;
 }
 
-#bhrdqngmnb .gt_indent_4 {
+#uhnwedvggo .gt_indent_4 {
   text-indent: 20px;
 }
 
-#bhrdqngmnb .gt_indent_5 {
+#uhnwedvggo .gt_indent_5 {
   text-indent: 25px;
 }
 
-#bhrdqngmnb .katex-display {
+#uhnwedvggo .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#bhrdqngmnb div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#uhnwedvggo div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -876,8 +864,8 @@ n= 228 </code></pre>
 </div>
 <p>Can use AIC to choose best</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a>m_w <span class="ot">&lt;-</span> <span class="fu">update</span>(m_ll, <span class="at">dist =</span> <span class="st">"weibull"</span>)</span>
-<span id="cb19-2"><a></a><span class="fu">AIC</span>(m_ll, m_w)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>m_w <span class="ot">&lt;-</span> <span class="fu">update</span>(m_ll, <span class="at">dist =</span> <span class="st">"weibull"</span>)</span>
+<span id="cb16-2"><a></a><span class="fu">AIC</span>(m_ll, m_w)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     df      AIC
 m_ll  4 2313.794
@@ -893,17 +881,30 @@ m_w   4 2302.109</code></pre>
 </ul>
 <p><code>coxme</code> package</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a><span class="fu">library</span>(coxme)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in library(package, pos = pos, lib.loc = lib.loc, character.only = TRUE, : there is no package called 'coxme'</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>fit <span class="ot">&lt;-</span> <span class="fu">coxme</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> ph.ecog <span class="sc">+</span> age <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>inst), <span class="at">data =</span> lung)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in coxme(Surv(time, status) ~ ph.ecog + age + (1 | inst), data = lung): could not find function "coxme"</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a>fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error: object 'fit' not found</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a><span class="fu">library</span>(coxme)</span>
+<span id="cb18-2"><a></a>fit <span class="ot">&lt;-</span> <span class="fu">coxme</span>(<span class="fu">Surv</span>(time, status) <span class="sc">~</span> ph.ecog <span class="sc">+</span> age <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>inst), <span class="at">data =</span> lung)</span>
+<span id="cb18-3"><a></a>fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Cox mixed-effects model fit by maximum likelihood
+  Data: lung
+  events, n = 163, 226 (2 observations deleted due to missingness)
+  Iterations= 18 75 
+                   NULL Integrated    Fitted
+Log-likelihood -739.375  -729.7294 -727.0504
+
+                  Chisq   df          p   AIC  BIC
+Integrated loglik 19.29 3.00 2.3800e-04 13.29 4.01
+ Penalized loglik 24.65 4.48 9.7942e-05 15.69 1.83
+
+Model:  Surv(time, status) ~ ph.ecog + age + (1 | inst) 
+Fixed coefficients
+              coef exp(coef)    se(coef)    z       p
+ph.ecog 0.47319522  1.605115 0.119179189 3.97 7.2e-05
+age     0.01139445  1.011460 0.009430508 1.21 2.3e-01
+
+Random effects
+ Group Variable  Std Dev    Variance  
+ inst  Intercept 0.14695545 0.02159591</code></pre>
 </div>
 </div>
 </section>
@@ -921,20 +922,15 @@ m_w   4 2302.109</code></pre>
 <section id="correlation-matrices" class="slide level2">
 <h2>Correlation matrices</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a><span class="fu">library</span>(analogue)</span>
-<span id="cb27-2"><a></a><span class="fu">library</span>(corrplot)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in library(package, pos = pos, lib.loc = lib.loc, character.only = TRUE, : there is no package called 'corrplot'</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a><span class="fu">library</span>(analogue)</span>
+<span id="cb20-2"><a></a><span class="fu">library</span>(corrplot)</span>
+<span id="cb20-3"><a></a><span class="fu">data</span>(<span class="st">"Climate"</span>)</span>
+<span id="cb20-4"><a></a>ppt <span class="ot">&lt;-</span> Climate <span class="sc">|&gt;</span> <span class="fu">select</span>(pjan<span class="sc">:</span>pdec)</span>
+<span id="cb20-5"><a></a>mat <span class="ot">&lt;-</span> <span class="fu">cor</span>(ppt)</span>
+<span id="cb20-6"><a></a><span class="fu">corrplot</span>(mat) <span class="co"># also try GGally::ggpairs</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a><span class="fu">data</span>(<span class="st">"Climate"</span>)</span>
-<span id="cb29-2"><a></a>ppt <span class="ot">&lt;-</span> Climate <span class="sc">|&gt;</span> <span class="fu">select</span>(pjan<span class="sc">:</span>pdec)</span>
-<span id="cb29-3"><a></a>mat <span class="ot">&lt;-</span> <span class="fu">cor</span>(ppt)</span>
-<span id="cb29-4"><a></a><span class="fu">corrplot</span>(mat) <span class="co"># also try GGally::ggpairs</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in corrplot(mat): could not find function "corrplot"</code></pre>
-</div>
-</div>
-</section>
+<img data-src="lecture_11_survival_multivariate_files/figure-revealjs/unnamed-chunk-11-1.png" width="960" class="r-stretch"></section>
 <section id="ordinations" class="slide level2">
 <h2>Ordinations</h2>
 <ul>
@@ -951,14 +947,14 @@ m_w   4 2302.109</code></pre>
 <section id="principal-components-analysis" class="slide level2">
 <h2>Principal components analysis</h2>
 
-<img data-src="lecture_11_survival_multivariate_files/figure-revealjs/unnamed-chunk-12-1.png" width="960" class="r-stretch"></section>
+<img data-src="lecture_11_survival_multivariate_files/figure-revealjs/pca-idea-1.png" width="960" class="r-stretch"></section>
 <section id="principal-components-analysis-in-r" class="slide level2">
 <h2>Principal components analysis in R</h2>
 <p>Implemented in several packages</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a><span class="fu">library</span>(vegan)</span>
-<span id="cb31-2"><a></a>pca <span class="ot">&lt;-</span> <span class="fu">rda</span>(ppt)</span>
-<span id="cb31-3"><a></a>pca</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a><span class="fu">library</span>(vegan)</span>
+<span id="cb21-2"><a></a>pca <span class="ot">&lt;-</span> <span class="fu">rda</span>(ppt)</span>
+<span id="cb21-3"><a></a>pca</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call: rda(X = ppt)
 
@@ -986,26 +982,19 @@ Eigenvalues for unconstrained axes:
 <li>Can use broken stick null model to help decide</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a><span class="fu">screeplot</span>(pca, <span class="at">bstick =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a><span class="fu">screeplot</span>(pca, <span class="at">bstick =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
-<img data-src="lecture_11_survival_multivariate_files/figure-revealjs/unnamed-chunk-14-1.png" width="960" class="r-stretch"></section>
+<img data-src="lecture_11_survival_multivariate_files/figure-revealjs/unnamed-chunk-13-1.png" width="960" class="r-stretch"></section>
 <section id="plotting-the-pca" class="slide level2">
 <h2>Plotting the PCA</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a></a><span class="co"># plot(pca) # can make prettier</span></span>
-<span id="cb34-2"><a></a><span class="fu">library</span>(ggvegan) <span class="co">#remotes::install_github("gavinsimpson/ggvegan")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in library(package, pos = pos, lib.loc = lib.loc, character.only = TRUE, : there is no package called 'ggvegan'</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a></a><span class="co"># plot(pca) # can make prettier</span></span>
+<span id="cb24-2"><a></a><span class="fu">library</span>(ggvegan) <span class="co">#remotes::install_github("gavinsimpson/ggvegan")</span></span>
+<span id="cb24-3"><a></a><span class="fu">autoplot</span>(pca) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a><span class="fu">autoplot</span>(pca) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in `autoplot()`:
-! Objects of class &lt;rda&gt; are not supported by autoplot.
-ℹ Have you loaded the required package?</code></pre>
-</div>
-</div>
-</section>
+<img data-src="lecture_11_survival_multivariate_files/figure-revealjs/pca-climate-1.png" width="960" class="r-stretch"></section>
 <section id="interpreting-the-plot" class="slide level2">
 <h2>Interpreting the plot</h2>
 <div class="columns">
@@ -1020,10 +1009,12 @@ Eigenvalues for unconstrained axes:
 </ul>
 </div><div class="column">
 <div class="cell">
-<div class="cell-output cell-output-error">
-<pre><code>Error in `autoplot()`:
-! Objects of class &lt;rda&gt; are not supported by autoplot.
-ℹ Have you loaded the required package?</code></pre>
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="lecture_11_survival_multivariate_files/figure-revealjs/unnamed-chunk-14-1.png" width="960"></p>
+</figure>
+</div>
 </div>
 </div>
 </div></div>
@@ -1034,19 +1025,10 @@ Eigenvalues for unconstrained axes:
 <li>PCA assumes linear relationships between variables</li>
 <li>valid for environmental data; fails for species data with long gradients</li>
 </ul>
-<div class="cell">
-<div class="cell-output cell-output-error">
-<pre><code>Error in `autoplot()`:
-! Objects of class &lt;rda&gt; are not supported by autoplot.
-ℹ Have you loaded the required package?</code></pre>
-</div>
-
-</div>
 
 
-<img data-src="lecture_11_survival_multivariate_files/figure-revealjs/fig-pca-artefacts-1.png" id="fig-pca-artefacts" width="960" class="r-stretch quarto-figure-center"><p class="caption">
-Figure&nbsp;2
-</p></section>
+
+<img data-src="lecture_11_survival_multivariate_files/figure-revealjs/pca-artefacts-fig-1.png" width="1344" class="r-stretch"></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">

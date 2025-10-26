@@ -113,7 +113,7 @@ Shape of the survival curve
 
 
 ```{r}
-#| label: fig-survivorship-curves
+#| label: survivorship-curves-fig
 #| echo: false
 #| out-height: 5in
 #| out-width: 7in
@@ -250,6 +250,7 @@ Several methods appropriate for different types of data
 ## Principal components analysis
 
 ```{r}
+#| label: pca-idea
 #| fig-height: 6
 #| echo: false
 #| message: false
@@ -298,6 +299,7 @@ screeplot(pca, bstick = TRUE)
 ## Plotting the PCA
 
 ```{r}
+#| label: pca-climate
 # plot(pca) # can make prettier
 library(ggvegan) #remotes::install_github("gavinsimpson/ggvegan")
 autoplot(pca) + theme(legend.position = "none")
@@ -332,8 +334,9 @@ autoplot(pca) + theme(legend.position = "none")
 - valid for environmental data; fails for species data with long gradients
 
 ```{r}
-#| label: fig-pca-artefacts
+#| label: pca-artefacts-fig
 #| echo: false
+#| fig-width: 14
 data(ImbrieKipp)
 data(SumSST)
 p1 <- ImbrieKipp |> 
