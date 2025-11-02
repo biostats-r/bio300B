@@ -40,9 +40,14 @@ Not all relationships are linear.
 
 ::: columns
 ::: {.column width="50%"}
-We know something about the relationship
+We know something about\
+the relationship
 
-```{r, echo=FALSE, fig.width=5, fig.height = 3.5}
+```{r}
+#| label: wtloss
+#| echo: false
+#| fig-width: 5
+#| fig-height: 3.5
 data(wtloss, package = "MASS")
 p <- ggplot(wtloss, aes(x = Days, y = Weight)) +
   geom_point() +
@@ -50,7 +55,7 @@ p <- ggplot(wtloss, aes(x = Days, y = Weight)) +
 p
 ```
 
-Upper or lower bound (asymptote)
+Mass of a dieting patient - has lower bound - asymptote.
 :::
 
 ::: {.column width="50%"}
@@ -69,7 +74,7 @@ Three options
 - check diagnostics
 
 ```{r}
-#| label: fig-log
+#| label: ffig-log
 #| echo: false
 
 ggplot(wtloss, aes(x = Days, y = log(Weight))) +
@@ -103,11 +108,11 @@ The relationship has an asymptote, and a exponential decline
 ::: {.column width="50%"}
 $y_i = \beta_0 + \beta_1\exp(\beta_2x_i) + \varepsilon_i$ <br> If $\beta_2 < 0$
 
-x -\> inf
+limit $x\to\infty$
 
 -   $\beta_1\exp(\beta_2x_i) = 0$
 
-x -\> 0
+limit $x\to0$
 
 -   $\beta_1\exp(\beta_2x_i) = β_1$
 :::
@@ -144,10 +149,35 @@ annotate("text", x = 12.5, y = 3.5, label  = "b2",  colour = "darkred", hjust = 
 
 ```{r}
 #| label: fit-nls
+#| error: true
 library(nlme)
-# tibble(days = 1:200, weight = 100 + 70 * exp(-.1 * days)) |> 
-# ggplot(aes(x = days, y = weight)) + geom_line()
 
+fit.nls <- nls(Weight ~ b0 + b1 * exp(b2 * Days), data = wtloss)
+
+```
+Needs stating values - initial estimates of the coefficients
+
+## Estimating starting values
+
+::: columns
+::: {.column width="50%"}
+$y_i = \beta_0 + \beta_1\exp(\beta_2x_i) + \varepsilon_i$ 
+
+-   $\beta_0$ = asymptote
+-   $\beta_0 + \beta_1$ = intercept
+-   $\beta_2$ = slope (proportional change)
+
+:::
+::: {.column width="50%"}
+![](`r knitr::fig_chunk("wtloss", ext = "png")`)
+:::
+::::
+
+
+## With starting values
+
+```{r}
+#| label: fit-nls2
 fit.nls <- nls(Weight ~ b0 + b1 * exp(b2 * Days), 
                data = wtloss, 
                start = c(b0 = 100, b1 = 70, b2 = -0.1))
@@ -157,7 +187,8 @@ summary(fit.nls)
 ## Model diagnostics
 
 ```{r}
-#| label: fig-diagnostics
+#| label: ffig-diagnostics
+
 
 plot(fit.nls)
 ```
@@ -166,18 +197,16 @@ plot(fit.nls)
 ## Plotting the model
 
 ```{r}
-#| label: fig-preds
+#| label: ffig-preds
 p +  geom_line(data = broom::augment(fit.nls), aes(y = .fitted))
 ```
 
 ## Uncertainty on model predictions
 
-Not calculated by the model
-
-Bootstrap - resample data and refit model many times
+Not calculated by the model - use bootstrap
 
 ```{r}
-#| label: fig-uncert
+#| label: ffig-uncert
 library(nlstools)
 fit.boot <- nlsBoot(fit.nls)
 pred <- nlsBootPredict(fit.boot, interval = "prediction") |> 
@@ -199,9 +228,9 @@ p + geom_ribbon(aes(ymin = `2.5%`, ymax = `97.5%`), data = pred, alpha = 0.3, fi
 
 - Exponential decay
 - Logistic growth
-- Von Bertalanffy Growth Models
+- Von Bertalanffy and Gompertz growth models
 - Michaelis–Menten kinetics
-- Sine waves
+- Sine/cosine waves
 
 ```{r}
 #| label: models
@@ -322,12 +351,7 @@ What is the distribution of the residuals?
 
 Answers usually usually known before data collection.
 
-## Clustered data
 
-Mixed effect models
-
--   Normal distribution: linear mixed effect models
--   Binomial/poisson: generalised linear mixed effect models
 
 ## Independent data, normal distribution
 
@@ -353,6 +377,13 @@ Binomial & Poisson distributions
 ## Non-linear relationships
 
 - nls
+
+## Clustered data
+
+Mixed effect models
+
+-   Normal distribution: linear mixed effect models
+-   Binomial/poisson: generalised linear mixed effect models
 
 ## All model are wrong; some are useful
 
@@ -381,9 +412,10 @@ summary(mod)
 
 ### Bio302 Spring semester
 
--   more regression methods
+-   Open and reproducible science
 -   more R
--   GitHub & open science
+- `targets` package for reproducible analysis pipelines
+-   Git and GitHub
 
 ### Bio303
 

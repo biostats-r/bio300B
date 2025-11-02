@@ -11,7 +11,7 @@
   <meta name="generator" content="quarto-1.8.20">
 
   <meta name="author" content="Richard J. Telford (Richard.Telford@uib.no)">
-  <meta name="dcterms.date" content="2025-08-17">
+  <meta name="dcterms.date" content="2025-11-02">
   <title>Bio302 - Biostatistikk – Non-linear analyses and summary</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -211,7 +211,7 @@ Richard J. Telford (Richard.Telford@uib.no)
     </div>
 </div>
 
-  <p class="date">17 August 2025</p>
+  <p class="date">2 November 2025</p>
 </section>
 <section id="assumptions-of-least-squares" class="slide level2">
 <h2>Assumptions of Least Squares</h2>
@@ -229,17 +229,18 @@ Richard J. Telford (Richard.Telford@uib.no)
 <h2>Non-linear least squares</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
-<p>We know something about the relationship</p>
+<p>We know something about<br>
+the relationship</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="lecture_12_non-linear_files/figure-revealjs/unnamed-chunk-1-1.png" width="480"></p>
+<p><img data-src="lecture_12_non-linear_files/figure-revealjs/wtloss-1.png" width="480"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>Upper or lower bound (asymptote)</p>
+<p>Mass of a dieting patient - has lower bound - asymptote.</p>
 </div><div class="column" style="width:50%;">
 <p>Three options</p>
 <ul>
@@ -257,12 +258,10 @@ Richard J. Telford (Richard.Telford@uib.no)
 <li>check diagnostics</li>
 </ul>
 
-<img data-src="lecture_12_non-linear_files/figure-revealjs/fig-log-1.png" id="fig-log" width="960" class="r-stretch quarto-figure-center"><p class="caption">
-Figure&nbsp;1
-</p></section>
+<img data-src="lecture_12_non-linear_files/figure-revealjs/ffig-log-1.png" width="960" class="r-stretch"></section>
 <section id="polynomial" class="slide level2">
 <h2>Polynomial</h2>
-<p><span class="math display">\[y_i=\beta_0 + \beta_1x_i+\beta_2x^2 + \epsilon_i\]</span></p>
+<p><span class="math display">\[y_i=\beta_0 + \beta_1x_i+\beta_2x^2 + \varepsilon_i\]</span></p>
 <div class="columns">
 <div class="column" style="width:50%;">
 <ul>
@@ -275,7 +274,7 @@ Figure&nbsp;1
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="lecture_12_non-linear_files/figure-revealjs/unnamed-chunk-2-1.png" width="480"></p>
+<p><img data-src="lecture_12_non-linear_files/figure-revealjs/unnamed-chunk-1-1.png" width="480"></p>
 </figure>
 </div>
 </div>
@@ -287,12 +286,12 @@ Figure&nbsp;1
 <p>The relationship has an asymptote, and a exponential decline</p>
 <div class="columns">
 <div class="column" style="width:50%;">
-<p><span class="math inline">\(y_i = \beta_0 + \beta_1\exp(\beta_2x_i) + \epsilon_i\)</span> <br> If <span class="math inline">\(\beta_2 &lt; 0\)</span></p>
-<p>x -&gt; inf</p>
+<p><span class="math inline">\(y_i = \beta_0 + \beta_1\exp(\beta_2x_i) + \varepsilon_i\)</span> <br> If <span class="math inline">\(\beta_2 &lt; 0\)</span></p>
+<p>limit <span class="math inline">\(x\to\infty\)</span></p>
 <ul>
 <li><span class="math inline">\(\beta_1\exp(\beta_2x_i) = 0\)</span></li>
 </ul>
-<p>x -&gt; 0</p>
+<p>limit <span class="math inline">\(x\to0\)</span></p>
 <ul>
 <li><span class="math inline">\(\beta_1\exp(\beta_2x_i) = β_1\)</span></li>
 </ul>
@@ -301,7 +300,7 @@ Figure&nbsp;1
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="lecture_12_non-linear_files/figure-revealjs/unnamed-chunk-3-1.png" width="480"></p>
+<p><img data-src="lecture_12_non-linear_files/figure-revealjs/unnamed-chunk-2-1.png" width="480"></p>
 </figure>
 </div>
 </div>
@@ -317,13 +316,35 @@ Figure&nbsp;1
 <h2>Fitting an NLS</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(nlme)</span>
-<span id="cb1-2"><a></a><span class="co"># tibble(days = 1:200, weight = 100 + 70 * exp(-.1 * days)) |&gt; </span></span>
-<span id="cb1-3"><a></a><span class="co"># ggplot(aes(x = days, y = weight)) + geom_line()</span></span>
-<span id="cb1-4"><a></a></span>
-<span id="cb1-5"><a></a>fit.nls <span class="ot">&lt;-</span> <span class="fu">nls</span>(Weight <span class="sc">~</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> <span class="fu">exp</span>(b2 <span class="sc">*</span> Days), </span>
-<span id="cb1-6"><a></a>               <span class="at">data =</span> wtloss, </span>
-<span id="cb1-7"><a></a>               <span class="at">start =</span> <span class="fu">c</span>(<span class="at">b0 =</span> <span class="dv">100</span>, <span class="at">b1 =</span> <span class="dv">70</span>, <span class="at">b2 =</span> <span class="sc">-</span><span class="fl">0.1</span>))</span>
-<span id="cb1-8"><a></a><span class="fu">summary</span>(fit.nls)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-2"><a></a></span>
+<span id="cb1-3"><a></a>fit.nls <span class="ot">&lt;-</span> <span class="fu">nls</span>(Weight <span class="sc">~</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> <span class="fu">exp</span>(b2 <span class="sc">*</span> Days), <span class="at">data =</span> wtloss)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in getInitial.default(func, data, mCall = as.list(match.call(func, : no 'getInitial' method found for "function" objects</code></pre>
+</div>
+</div>
+<p>Needs stating values - initial estimates of the coefficients</p>
+</section>
+<section id="estimating-starting-values" class="slide level2">
+<h2>Estimating starting values</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><span class="math inline">\(y_i = \beta_0 + \beta_1\exp(\beta_2x_i) + \varepsilon_i\)</span></p>
+<ul>
+<li><span class="math inline">\(\beta_0\)</span> = asymptote</li>
+<li><span class="math inline">\(\beta_0 + \beta_1\)</span> = intercept</li>
+<li><span class="math inline">\(\beta_2\)</span> = slope (proportional change)</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><img data-src="lecture_12_non-linear_files/figure-revealjs/wtloss-1.png"></p>
+</div></div>
+</section>
+<section id="with-starting-values" class="slide level2">
+<h2>With starting values</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>fit.nls <span class="ot">&lt;-</span> <span class="fu">nls</span>(Weight <span class="sc">~</span> b0 <span class="sc">+</span> b1 <span class="sc">*</span> <span class="fu">exp</span>(b2 <span class="sc">*</span> Days), </span>
+<span id="cb3-2"><a></a>               <span class="at">data =</span> wtloss, </span>
+<span id="cb3-3"><a></a>               <span class="at">start =</span> <span class="fu">c</span>(<span class="at">b0 =</span> <span class="dv">100</span>, <span class="at">b1 =</span> <span class="dv">70</span>, <span class="at">b2 =</span> <span class="sc">-</span><span class="fl">0.1</span>))</span>
+<span id="cb3-4"><a></a><span class="fu">summary</span>(fit.nls)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Formula: Weight ~ b0 + b1 * exp(b2 * Days)
@@ -346,46 +367,31 @@ Achieved convergence tolerance: 1.763e-07</code></pre>
 <section id="model-diagnostics" class="slide level2">
 <h2>Model diagnostics</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">plot</span>(fit.nls)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="fu">plot</span>(fit.nls)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
-<img data-src="lecture_12_non-linear_files/figure-revealjs/fig-diagnostics-1.png" id="fig-diagnostics" width="960" class="r-stretch quarto-figure-center"><p class="caption">
-Figure&nbsp;2
-</p></section>
+<img data-src="lecture_12_non-linear_files/figure-revealjs/ffig-diagnostics-1.png" width="960" class="r-stretch"></section>
 <section id="plotting-the-model" class="slide level2">
 <h2>Plotting the model</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>p <span class="sc">+</span>  <span class="fu">geom_line</span>(<span class="at">data =</span> broom<span class="sc">::</span><span class="fu">augment</span>(fit.nls), <span class="fu">aes</span>(<span class="at">y =</span> .fitted))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>p <span class="sc">+</span>  <span class="fu">geom_line</span>(<span class="at">data =</span> broom<span class="sc">::</span><span class="fu">augment</span>(fit.nls), <span class="fu">aes</span>(<span class="at">y =</span> .fitted))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
-<img data-src="lecture_12_non-linear_files/figure-revealjs/fig-preds-1.png" id="fig-preds" width="960" class="r-stretch quarto-figure-center"><p class="caption">
-Figure&nbsp;3
-</p></section>
+<img data-src="lecture_12_non-linear_files/figure-revealjs/ffig-preds-1.png" width="960" class="r-stretch"></section>
 <section id="uncertainty-on-model-predictions" class="slide level2">
 <h2>Uncertainty on model predictions</h2>
-<p>Not calculated by the model</p>
-<p>Bootstrap - resample data and refit model many times</p>
+<p>Not calculated by the model - use bootstrap</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="fu">library</span>(nlstools)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in library(nlstools): there is no package called 'nlstools'</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">library</span>(nlstools)</span>
+<span id="cb7-2"><a></a>fit.boot <span class="ot">&lt;-</span> <span class="fu">nlsBoot</span>(fit.nls)</span>
+<span id="cb7-3"><a></a>pred <span class="ot">&lt;-</span> <span class="fu">nlsBootPredict</span>(fit.boot, <span class="at">interval =</span> <span class="st">"prediction"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb7-4"><a></a>  <span class="fu">bind_cols</span>(wtloss)</span>
+<span id="cb7-5"><a></a></span>
+<span id="cb7-6"><a></a>p <span class="sc">+</span> <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> <span class="st">`</span><span class="at">2.5%</span><span class="st">`</span>, <span class="at">ymax =</span> <span class="st">`</span><span class="at">97.5%</span><span class="st">`</span>), <span class="at">data =</span> pred, <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">fill =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb7-7"><a></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> Median), <span class="at">data =</span> pred)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>fit.boot <span class="ot">&lt;-</span> <span class="fu">nlsBoot</span>(fit.nls)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in nlsBoot(fit.nls): could not find function "nlsBoot"</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>pred <span class="ot">&lt;-</span> <span class="fu">nlsBootPredict</span>(fit.boot, <span class="at">interval =</span> <span class="st">"prediction"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb9-2"><a></a>  <span class="fu">bind_cols</span>(wtloss)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in nlsBootPredict(fit.boot, interval = "prediction"): could not find function "nlsBootPredict"</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>p <span class="sc">+</span> <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> <span class="st">`</span><span class="at">2.5%</span><span class="st">`</span>, <span class="at">ymax =</span> <span class="st">`</span><span class="at">97.5%</span><span class="st">`</span>), <span class="at">data =</span> pred, <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">fill =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb11-2"><a></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> Median), <span class="at">data =</span> pred)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error: object 'pred' not found</code></pre>
-</div>
-</div>
-</section>
+<img data-src="lecture_12_non-linear_files/figure-revealjs/ffig-uncert-1.png" width="960" class="r-stretch"></section>
 <section id="working-with-nls" class="slide level2">
 <h2>Working with NLS</h2>
 <ol type="1">
@@ -400,9 +406,9 @@ Figure&nbsp;3
 <ul>
 <li>Exponential decay</li>
 <li>Logistic growth</li>
-<li>Von Bertalanffy Growth Models</li>
+<li>Von Bertalanffy and Gompertz growth models</li>
 <li>Michaelis–Menten kinetics</li>
-<li>Sine waves</li>
+<li>Sine/cosine waves</li>
 </ul>
 
 <img data-src="lecture_12_non-linear_files/figure-revealjs/models-1.png" width="960" class="r-stretch"></section>
@@ -440,13 +446,13 @@ Figure&nbsp;3
 <h2>Prevalence</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-qrp" class="quarto-float quarto-figure quarto-figure-center" width="1110" height="6.5in">
+<div id="fig-qrp" class="quarto-float quarto-figure quarto-figure-center" height="6.5in" width="1110">
 <figure class="quarto-float quarto-float-fig">
 <div aria-describedby="fig-qrp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img data-src="figures/QRPpone.0200303.g001.png" id="fig-qrp" style="height:6.5in" width="1110">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-qrp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4
+Figure&nbsp;1
 </figcaption>
 </figure>
 </div>
@@ -494,14 +500,6 @@ Figure&nbsp;4
 <p>(also other types of model - survival, multivariate etc)</p>
 <p>Answers usually usually known before data collection.</p>
 </section>
-<section id="clustered-data" class="slide level2">
-<h2>Clustered data</h2>
-<p>Mixed effect models</p>
-<ul>
-<li>Normal distribution: linear mixed effect models</li>
-<li>Binomial/poisson: generalised linear mixed effect models</li>
-</ul>
-</section>
 <section id="independent-data-normal-distribution" class="slide level2">
 <h2>Independent data, normal distribution</h2>
 <p>Linear models - ordinary least squares</p>
@@ -527,17 +525,25 @@ Figure&nbsp;4
 <li>nls</li>
 </ul>
 </section>
+<section id="clustered-data" class="slide level2">
+<h2>Clustered data</h2>
+<p>Mixed effect models</p>
+<ul>
+<li>Normal distribution: linear mixed effect models</li>
+<li>Binomial/poisson: generalised linear mixed effect models</li>
+</ul>
+</section>
 <section id="all-model-are-wrong-some-are-useful" class="slide level2">
 <h2>All model are wrong; some are useful</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-many-ecologists" class="quarto-float quarto-figure quarto-figure-center" width="672" height="6.5in">
+<div id="fig-many-ecologists" class="quarto-float quarto-figure quarto-figure-center" height="6.5in" width="672">
 <figure class="quarto-float quarto-float-fig">
 <div aria-describedby="fig-many-ecologists-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img data-src="figures/fig-forest-plots-Zr-1.png" id="fig-many-ecologists" style="height:6.5in" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-many-ecologists-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5
+Figure&nbsp;2
 </figcaption>
 </figure>
 </div>
@@ -550,9 +556,9 @@ Figure&nbsp;5
 <section id="interpreting-model-output" class="slide level2">
 <h2>Interpreting model output</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">data</span>(penguins, <span class="at">package =</span> <span class="st">"palmerpenguins"</span>)</span>
-<span id="cb13-2"><a></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> sex <span class="sc">*</span> species, <span class="at">data =</span> penguins)</span>
-<span id="cb13-3"><a></a><span class="fu">summary</span>(mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="fu">data</span>(penguins, <span class="at">package =</span> <span class="st">"palmerpenguins"</span>)</span>
+<span id="cb8-2"><a></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> sex <span class="sc">*</span> species, <span class="at">data =</span> penguins)</span>
+<span id="cb8-3"><a></a><span class="fu">summary</span>(mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -584,9 +590,10 @@ F-statistic:   305 on 5 and 327 DF,  p-value: &lt; 2.2e-16</code></pre>
 <h2>More statistics at BIO</h2>
 <h3 id="bio302-spring-semester">Bio302 Spring semester</h3>
 <ul>
-<li>more regression methods</li>
+<li>Open and reproducible science</li>
 <li>more R</li>
-<li>GitHub &amp; open science</li>
+<li><code>targets</code> package for reproducible analysis pipelines</li>
+<li>Git and GitHub</li>
 </ul>
 <h3 id="bio303">Bio303</h3>
 <ul>
