@@ -3,13 +3,24 @@ title: "Datalab 12: non-linear regression"
 format: html
 ---
 
+With the `wtloss` data from package MASS which records the weight of a dieting patient.
+
+- Fit a quadratic ordinary least squares model to the data. Plot the data and model (with confidence intervals)  extrapolate (using newdata) the model to day 1000.
+
+- log-transform the response and fit an ordinary least squares model to the data. Plot the data and model (with confidence intervals) on the untransformed scale and extrapolate the model to day 1000.
+
+Do either of these models appear reasonable?
+
+
 An exponential decay has the formula $y_i = \beta_0 + \beta_1exp(\beta_2 * x_i)$
 
-Plot the data in `wtloss` from package MASS and estimate values for the coefficients of an exponential decay model.
+How should the coefficients be interpreted?
 
-Plot of the curve your coefficients imply.
+Plot the `wtloss` data and estimate values for the coefficients of an exponential decay model.
 
-Fit an nls model to the wtloss data.
+Plot the curve your estimated coefficients imply.
+
+Fit an nls model to the wtloss data using your estimates as starting values.
 
 Examine the model's diagnostics.
 
@@ -18,5 +29,3 @@ Plot the model and it's confidence interval.
 Interpret the model's coefficients.
 
 See what happens when you try some bad starting values.
-
-Fit a polynomial to the data and make a prediction for the patients mass at day 1000.
